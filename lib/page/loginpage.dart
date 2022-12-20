@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:miniworldapp/model/DTO/loginDTO.dart';
 import 'package:miniworldapp/model/login.dart';
 import 'package:provider/provider.dart';
+import 'package:retrofit/dio.dart';
 
 import '../service/login.dart';
 import '../service/provider/appdata.dart';
@@ -33,6 +34,7 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
   // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย
+
     loginService = 
         LoginService(Dio(), baseUrl: context.read<AppData>().baseurl); 
   // 2.2 async method
@@ -46,30 +48,64 @@ class _LoginPageState extends State<LoginPage> {
         title: const Text('Login Page'),
       ),
   // 3. เรียก service ในรูปแบบของ FutureBuilder (หรือจะไม่ใช้ก็ได้ แค่ตัวอย่างให้ดูเฉยๆ)
-      body: Column(
+      body: SingleChildScrollView(
+        child: Form(
+          child: Column(
+            children: <Widget>[
+          Padding(
+                //padding: const EdgeInsets.only(left:15.0,right:15.0,top:0,bottom: 0),
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: TextFormField(
+                  maxLines: 1,
+                  decoration: InputDecoration(                     
+                      labelText: 'Username',
+                      hintText: 'Enter your username'),
+                       validator: (value) {
+                      if (value == null || value.isEmpty) {
+                      return 'Please enter your username';
+                  }
+                   return null;
+                 },
+                ),
+              ),
+               Padding(
+                padding: const EdgeInsets.only(
+                    left: 15.0, right: 15.0, top: 15, bottom: 0),
+                //padding: EdgeInsets.symmetric(horizontal: 15),
+                child: TextFormField(
+                  obscureText: true,
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                      labelText: 'Password', hintText: 'Enter secure password'),
+                       validator: (value) {
+                          if (value!.trim().isEmpty) {
+                            return 'Enter the password';
+                          } else
+                            return null;
+                        },                  
+                ),
+              ),
+       Column(
         children: [
-          ElevatedButton(onPressed: () //async
+          ElevatedButton(onPressed: () async
           {
-           var user = {
-          "email" : "jame123@gmail.com",
-          "password" :"jame1234"
-          };
-          LoginDto login = LoginDto.fromJson(user);
-           addData(login);
-          
+            LoginDto dto = LoginDto(email:"jame123@gmail.com",password:"jame1234");
+            log(jsonEncode(dto));
+            HttpResponse<Login> login = await loginService.loginser(dto);
+            log(login.response.statusCode.toString());
           },
            child: Text('LOGIN')),
    
         ],
       )
-    );
+    ],),),),);
   }
   // 4. Async method ที่เรียก service เมื่อได้ข้อมูลก็เอาไปเก็บไว้ที่ destinations ที่ประกาศไว้ด้านบนเป็น List
-  Future<void> addData(LoginDto login) async {
-   var result =
-    await http.post(Uri.parse('http://202.28.34.197:9131/user/login'),
-    body: jsonEncode(login),
-    headers:{'Content-Type': 'application/json; charset=UTF-8'});    
-    log(result.body);
-  }
+  // Future<void> addData(LoginDto login) async {
+  //  var result =
+  //   await http.post(Uri.parse('http://202.28.34.197:9131/user/login'),
+  //   body: jsonEncode(login),
+  //   headers:{'Content-Type': 'application/json; charset=UTF-8'});    
+  //   log(result.body);
+  // }
 }
