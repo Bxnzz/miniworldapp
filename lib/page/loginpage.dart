@@ -1,0 +1,75 @@
+import 'dart:convert';
+import 'dart:developer';
+// import 'dart:html';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:miniworldapp/model/DTO/loginDTO.dart';
+import 'package:miniworldapp/model/login.dart';
+import 'package:provider/provider.dart';
+
+import '../service/login.dart';
+import '../service/provider/appdata.dart';
+import 'package:http/http.dart' as http;
+
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  // 1. กำหนดตัวแปร
+  List<Login> logins = [];
+  List<LoginDto> loginDTOs = [];
+  late Future<void> loadDataMethod;
+  late LoginService loginService;
+
+  // 2. สร้าง initState เพื่อสร้าง object ของ service 
+  // และ async method ที่จะใช้กับ FutureBuilder
+  @override
+  void initState() {
+    super.initState();
+  // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย
+    loginService = 
+        LoginService(Dio(), baseUrl: context.read<AppData>().baseurl); 
+  // 2.2 async method
+  //  loadDataMethod = addData(logins); 
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Login Page'),
+      ),
+  // 3. เรียก service ในรูปแบบของ FutureBuilder (หรือจะไม่ใช้ก็ได้ แค่ตัวอย่างให้ดูเฉยๆ)
+      body: Column(
+        children: [
+          ElevatedButton(onPressed: () //async
+          {
+           var user = {
+          "email" : "jame123@gmail.com",
+          "password" :"jame1234"
+          };
+          LoginDto login = LoginDto.fromJson(user);
+           addData(login);
+          
+          },
+           child: Text('LOGIN')),
+   
+        ],
+      )
+    );
+  }
+  // 4. Async method ที่เรียก service เมื่อได้ข้อมูลก็เอาไปเก็บไว้ที่ destinations ที่ประกาศไว้ด้านบนเป็น List
+  Future<void> addData(LoginDto login) async {
+   var result =
+    await http.post(Uri.parse('http://202.28.34.197:9131/user/login'),
+    body: jsonEncode(login),
+    headers:{'Content-Type': 'application/json; charset=UTF-8'});    
+    log(result.body);
+  }
+}
