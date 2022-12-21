@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:miniworldapp/model/DTO/loginDTO.dart';
 import 'package:miniworldapp/model/login.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +27,8 @@ class _LoginPageState extends State<LoginPage> {
   List<LoginDto> loginDTOs = [];
   late Future<void> loadDataMethod;
   late LoginService loginService;
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
 
   // 2. สร้าง initState เพื่อสร้าง object ของ service
   // และ async method ที่จะใช้กับ FutureBuilder
@@ -55,15 +58,16 @@ class _LoginPageState extends State<LoginPage> {
                 //padding: const EdgeInsets.only(left:15.0,right:15.0,top:0,bottom: 0),
                 padding: EdgeInsets.symmetric(horizontal: 15),
                 child: TextFormField(
+                  controller: email,
                   maxLines: 1,
                   decoration: InputDecoration(
-                      labelText: 'Username', hintText: 'Enter your username'),
-                  validator: (value) {
+                      labelText: 'E-mail', hintText: 'Enter your Email'),                      
+                  validator: (value) {                   
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your username';
+                      return 'Please enter your Email';
                     }
                     return null;
-                  },
+                  }, 
                 ),
               ),
               Padding(
@@ -71,10 +75,11 @@ class _LoginPageState extends State<LoginPage> {
                     left: 15.0, right: 15.0, top: 15, bottom: 0),
                 //padding: EdgeInsets.symmetric(horizontal: 15),
                 child: TextFormField(
+                  controller: password,
                   obscureText: true,
                   maxLines: 1,
                   decoration: InputDecoration(
-                      labelText: 'Password', hintText: 'Enter secure password'),
+                      labelText: 'Password', hintText: 'Enter secure password'),               
                   validator: (value) {
                     if (value!.trim().isEmpty) {
                       return 'Enter the password';
@@ -88,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                   ElevatedButton(
                       onPressed: () async {
                         LoginDto dto = LoginDto(
-                            email: "jame123@gmail.com", password: "jame12345");
+                            email: email.text, password: password.text);
                         log(jsonEncode(dto));
 
                         var login = await loginService.loginser(dto);
@@ -99,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                           }
                         // }
                         log(jsonEncode(login.data));
-
+                        
                         // try {
                         //   var login = await loginService.loginser(dto);
                         //   log(jsonEncode(login.data));
