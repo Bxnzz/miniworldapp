@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miniworldapp/page/home.dart';
 import 'package:miniworldapp/page/loginpage.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
        
         primarySwatch: Colors.blue,
       ),
-      home: const LoginPage(),
+      home: const HomePage(),
     );
   }
 }
