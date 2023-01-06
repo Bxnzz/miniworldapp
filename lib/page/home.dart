@@ -8,7 +8,7 @@ import 'package:miniworldapp/page/fecebook%20share.dart';
 import 'package:miniworldapp/page/loginpage.dart';
 import 'package:miniworldapp/page/notification.dart';
 import 'package:miniworldapp/page/photMap(realTime).dart';
-import 'package:miniworldapp/page/shopmap.dart';
+import 'package:miniworldapp/page/showmap.dart';
 import 'package:miniworldapp/page/uploadImage,video.dart';
 
 class HomePage extends StatefulWidget {
