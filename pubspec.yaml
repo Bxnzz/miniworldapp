@@ -44,6 +44,8 @@ dependencies:
   get: ^4.6.5
   get_storage: ^2.0.3
   http: ^0.13.5
+  flutter_facebook_auth: ^5.0.7
+
 
 dev_dependencies:
   flutter_test:
