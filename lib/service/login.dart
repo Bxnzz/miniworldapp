@@ -12,3 +12,4 @@ abstract class LoginService {
   @POST("/user/login")
    Future<HttpResponse<Login>> loginser(@Body() LoginDto loginDto);
 }
+
