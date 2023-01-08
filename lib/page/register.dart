@@ -41,7 +41,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     labelText: 'Username', hintText: 'Enter User name'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter Username';
+                    return 'Please enter Username.';
                   }
                   return null;
                 },
