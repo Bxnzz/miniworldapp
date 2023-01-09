@@ -21,7 +21,8 @@ class _FacebookLoginPageState extends  State<FacebookLoginPage>{
         body: Column(children: [
         ElevatedButton(
             onPressed: () async {
-            final LoginResult result = await FacebookAuth.instance.login(); // by default we request the email and the public profile           
+            final LoginResult result = await FacebookAuth.instance.login();
+            final userData = await FacebookAuth.instance.getUserData(); // by default we request the email and the public profile           
             // or FacebookAuth.i.login()
             if (result.status == LoginStatus.success) {
             // you are logged
