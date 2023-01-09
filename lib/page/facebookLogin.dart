@@ -30,7 +30,7 @@ class _FacebookLoginPageState extends  State<FacebookLoginPage>{
             log(accessToken.token);  
           }
             },
-            child: Text('FacebookLogin')),
+            child: Text('FacebookLogin')), 
             
         ])
     );
