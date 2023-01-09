@@ -50,6 +50,8 @@ dependencies:
   location: ^2.5.4
   url_launcher: ^5.2.7
   geolocator: ^9.0.2
+  flutterfire_cli: ^0.2.7
+  firebase_core: ^2.4.1
  
 
 dev_dependencies:
