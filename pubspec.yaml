@@ -44,8 +44,16 @@ dependencies:
   get: ^4.6.5
   get_storage: ^2.0.3
   http: ^0.13.5
+<<<<<<< HEAD
   flutter_facebook_auth: ^5.0.7
 
+=======
+  google_maps_flutter: ^2.2.2
+  location: ^2.5.4
+  url_launcher: ^5.2.7
+  geolocator: ^9.0.2
+ 
+>>>>>>> feature/showMap
 
 dev_dependencies:
   flutter_test:

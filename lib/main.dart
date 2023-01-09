@@ -4,6 +4,7 @@ import 'package:miniworldapp/page/loginpage.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:provider/provider.dart';
 
+
 void main() {
   runApp(MultiProvider(
     providers: [
