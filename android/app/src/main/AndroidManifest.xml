@@ -1,17 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"   
     package="com.example.miniworldapp">
-<<<<<<< HEAD
     <uses-permission android:name="android.permission.INTERNET"/>
-=======
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
->>>>>>> feature/showMap
    <application
         
         android:label="miniworldapp"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-<<<<<<< HEAD
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
 <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
@@ -29,11 +25,9 @@ android:exported="true">
 </intent-filter>
 </activity>
         <activity       
-=======
         <meta-data android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyC5TdqqiDt3Xe9TGoXvj9h7bQG9zRsznJg"/>
         <activity
->>>>>>> feature/showMap
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
