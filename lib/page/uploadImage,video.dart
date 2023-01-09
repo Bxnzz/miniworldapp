@@ -8,12 +8,13 @@ class UploadPage extends StatefulWidget {
   State<UploadPage> createState() => _UploadPageState();
 }
 
-class _UploadPageState extends  State<UploadPage>{
+class _UploadPageState extends State<UploadPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:Text('Upload') ,),
+        title: Text('Uploadd'),
+      ),
     );
   }
 }
