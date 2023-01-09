@@ -5,7 +5,7 @@ import 'package:miniworldapp/page/facebookLogin.dart';
 import 'package:miniworldapp/page/fecebook%20share.dart';
 import 'package:miniworldapp/page/loginpage.dart';
 import 'package:miniworldapp/page/notification.dart';
-import 'package:miniworldapp/page/photMap(realTime).dart';
+import 'package:miniworldapp/page/plotMap.dart';
 import 'package:miniworldapp/page/register.dart';
 import 'package:miniworldapp/page/showmap.dart';
 import 'package:miniworldapp/page/uploadImage,video.dart';

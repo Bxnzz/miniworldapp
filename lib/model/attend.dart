@@ -22,14 +22,14 @@ class LatlngDto {
     double? lat;
     double? lng;
     int? userId;
-    DateTime? datetime;
+    String? datetime;
 
     factory LatlngDto.fromJson(Map<String, dynamic> json) => LatlngDto(
         atId: json["AtId"],
         lat: json["Lat"].toDouble(),
         lng: json["Lng"].toDouble(),
         userId: json["UserID"],
-        datetime: DateTime.parse(json["Datetime"]),
+        datetime: json["Datetime"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -37,6 +37,6 @@ class LatlngDto {
         "Lat": lat,
         "Lng": lng,
         "UserID": userId,
-        "Datetime": datetime?.toIso8601String(),
+        "Datetime": datetime,
     };
 }
