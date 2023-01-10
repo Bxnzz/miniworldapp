@@ -35,8 +35,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย
-
+    // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วยR
     loginService =
         LoginService(Dio(), baseUrl: context.read<AppData>().baseurl);
     // 2.2 async method
