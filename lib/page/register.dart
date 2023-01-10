@@ -34,6 +34,18 @@ class _RegisterPageState extends State<RegisterPage> {
   late RegisterService registerService;
   List<Register> registers = [];
   
+  //late Map<String, dynamic> userFacebook;
+  
+  // var _length;
+  
+  // var _email;
+  
+  // var _Fullname;
+  
+  
+  
+  
+  
   @override
   void initState() {
     super.initState();
@@ -41,8 +53,15 @@ class _RegisterPageState extends State<RegisterPage> {
 
     registerService =
         RegisterService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
+ //    userFacebook = context.read<AppData>().userFacebook;      
     // 2.2 async method
     //  loadDataMethod = addData(logins);
+  // _length = userFacebook['UserName'].length;
+  //  if(_length > 0){
+  //    _email = userFacebook['email'];
+  //    _Fullname = userFacebook['UserName'];
+  //  }
   }
 
   @override
@@ -134,7 +153,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     RegisterDto dto =
                         RegisterDto(userName: username.text, userMail: email.text, userPassword: password.text, userFullname: userFullname.text,userDiscription: discription.text, userFacebookId: '', userImage: '');
                     
- 
+                  //  String _usernname = username.text;
+                  //  String _email = email.text;
+                  //  String _Fullname = userFullname.text;
+                  //  String _
                     log(jsonEncode(dto));
                     
 

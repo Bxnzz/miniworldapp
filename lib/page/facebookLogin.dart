@@ -29,20 +29,24 @@ class _FacebookLoginPageState extends  State<FacebookLoginPage>{
             final LoginResult result = await FacebookAuth.instance.login();
              // by default we request the email and the public profile           
             // or FacebookAuth.i.login()
+            log(result.status.toString());
             if (result.status == LoginStatus.success) {
             // you are logged
             final AccessToken accessToken = result.accessToken!;
             log(accessToken.token);  
             final userData = await FacebookAuth.instance.getUserData();
-            context.read<AppData>().userFacebook = userData;
+           // log(userData.toString());
+          //  context.read<AppData>().userFacebook = userData;
+            
             log(userData['email']);
-            log(userData.toString());
+            
           }else{
             print(result.status);
             print(result.message);
+            
           }
-           Navigator.push(context,
-                MaterialPageRoute(builder: (context) => RegisterPage()));
+          //  Navigator.push(context,
+          //       MaterialPageRoute(builder: (context) => RegisterPage()));
             },
             child: Text('FacebookLogin')), 
             
