@@ -3,6 +3,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:miniworldapp/page/register.dart';
+import 'package:miniworldapp/service/provider/appdata.dart';
+import 'package:provider/provider.dart';
+
+import 'loginpage.dart';
 
 
 class FacebookLoginPage extends StatefulWidget {
@@ -29,11 +34,15 @@ class _FacebookLoginPageState extends  State<FacebookLoginPage>{
             final AccessToken accessToken = result.accessToken!;
             log(accessToken.token);  
             final userData = await FacebookAuth.instance.getUserData();
+            context.read<AppData>().userFacebook = userData;
             log(userData['email']);
+            log(userData.toString());
           }else{
             print(result.status);
             print(result.message);
           }
+           Navigator.push(context,
+                MaterialPageRoute(builder: (context) => RegisterPage()));
             },
             child: Text('FacebookLogin')), 
             
