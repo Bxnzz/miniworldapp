@@ -17,20 +17,25 @@ class _FacebookLoginPageState extends  State<FacebookLoginPage>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:Text('FacebookLogin') ,),
+        title:Text('Facebook Login') ,),
         body: Column(children: [
         ElevatedButton(
             onPressed: () async {
             final LoginResult result = await FacebookAuth.instance.login();
-            final userData = await FacebookAuth.instance.getUserData(); // by default we request the email and the public profile           
+             // by default we request the email and the public profile           
             // or FacebookAuth.i.login()
             if (result.status == LoginStatus.success) {
             // you are logged
             final AccessToken accessToken = result.accessToken!;
             log(accessToken.token);  
+            final userData = await FacebookAuth.instance.getUserData();
+            log(userData['email']);
+          }else{
+            print(result.status);
+            print(result.message);
           }
             },
-            child: Text('FacebookLogin')),
+            child: Text('FacebookLogin')), 
             
         ])
     );
