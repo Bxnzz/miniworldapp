@@ -1,10 +1,16 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miniworldapp/model/DTO/loginDTO.dart';
+import 'package:miniworldapp/model/DTO/registerDTO.dart';
 import 'package:miniworldapp/service/Register.dart';
+import 'package:provider/provider.dart';
+
+import '../model/register.dart';
+import '../service/provider/appdata.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -14,13 +20,30 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  
   TextEditingController username = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController userFullname = TextEditingController();
   TextEditingController image = TextEditingController();
-  TextEditingController userDiscription = TextEditingController();
-  TextEditingController userFacebookID = TextEditingController();
+  TextEditingController discription = TextEditingController();
+  
+
+  List<RegisterDto> registerDTOs = [];
+  late Future<void> loadDataMethod;
+  late RegisterService registerService;
+  List<Register> registers = [];
+  
+  @override
+  void initState() {
+    super.initState();
+    // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย
+
+    registerService =
+        RegisterService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    // 2.2 async method
+    //  loadDataMethod = addData(logins);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,20 +111,39 @@ class _RegisterPageState extends State<RegisterPage> {
                   }
                   return null;
                 },
+              )
+              ),Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: TextFormField(
+                controller: discription,
+                maxLines: 1,
+                decoration: InputDecoration(
+                    labelText: 'Discription',
+                    hintText: 'Enter Discription'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please  Discription';
+                  }
+                  return null;
+                },
               )),
           Column(
             children: [
               ElevatedButton(
                   onPressed: () async {
-                    LoginDto dto =
-                        LoginDto(email: email.text, password: password.text);
+                    RegisterDto dto =
+                        RegisterDto(userName: username.text, userMail: email.text, userPassword: password.text, userFullname: userFullname.text,userDiscription: discription.text, userFacebookId: '', userImage: '');
+                    
+ 
                     log(jsonEncode(dto));
+                    
 
-                    //           var login = await RegisterService.register(dto);
-                    // if (login.response.statusCode == 200){
-
-                    // }
-                    //       log(jsonEncode(login.data));
+                   var register = await registerService.registers(dto);
+                   if (register.data.massage == "Register failed"){
+                          log("Register failed");                                  
+                            return;
+                   }
+                         log(jsonEncode(register.data));
                   },
                   child: Text('Register')),
             ],
