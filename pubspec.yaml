@@ -52,6 +52,12 @@ dependencies:
   geolocator: ^9.0.2
   flutterfire_cli: ^0.2.7
   firebase_core: ^2.4.1
+  
+  firebase_storage: ^11.0.10
+  file_picker: ^5.0.1
+  appinio_video_player: ^1.2.0
+
+
  
 
 dev_dependencies:
