@@ -34,6 +34,12 @@ class _RegisterPageState extends State<RegisterPage> {
   late RegisterService registerService;
   List<Register> registers = [];
   
+  late Map<String, dynamic> userFacebook;
+  
+  var _length;
+  
+
+  
   @override
   void initState() {
     super.initState();
@@ -43,6 +49,18 @@ class _RegisterPageState extends State<RegisterPage> {
         RegisterService(Dio(), baseUrl: context.read<AppData>().baseurl);
     // 2.2 async method
     //  loadDataMethod = addData(logins);
+    userFacebook = context.read<AppData>().userFacebook;
+
+    _length = userFacebook['name'].length;
+    if(_length > 0){
+      email.text = userFacebook['email'];
+      userFullname.text = userFacebook['name'];
+     // image = userFacebook['picture']['data']['url'];
+    }else{
+      email.text = "";
+      userFullname.text = "";
+      image.text = "";
+    }
   }
 
   @override
@@ -133,17 +151,21 @@ class _RegisterPageState extends State<RegisterPage> {
                   onPressed: () async {
                     RegisterDto dto =
                         RegisterDto(userName: username.text, userMail: email.text, userPassword: password.text, userFullname: userFullname.text,userDiscription: discription.text, userFacebookId: '', userImage: '');
-                    
- 
+
                     log(jsonEncode(dto));
-                    
+
 
                    var register = await registerService.registers(dto);
                    if (register.data.massage == "Register failed"){
                           log("Register failed");                                  
                             return;
                    }
-                         log(jsonEncode(register.data));
+                         log(jsonEncode(register.data));                    
+                    username.text = "";
+                    email.text = "";
+                    password.text = "";
+                    userFullname.text = "";
+                    discription.text = "";
                   },
                   child: Text('Register')),
             ],
