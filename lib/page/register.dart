@@ -47,6 +47,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
     registerService =
         RegisterService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
+ //    userFacebook = context.read<AppData>().userFacebook;      
     // 2.2 async method
     //  loadDataMethod = addData(logins);
     userFacebook = context.read<AppData>().userFacebook;
@@ -151,7 +153,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   onPressed: () async {
                     RegisterDto dto =
                         RegisterDto(userName: username.text, userMail: email.text, userPassword: password.text, userFullname: userFullname.text,userDiscription: discription.text, userFacebookId: '', userImage: '');
-
                     log(jsonEncode(dto));
 
 

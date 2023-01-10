@@ -29,6 +29,7 @@ class _FacebookLoginPageState extends  State<FacebookLoginPage>{
             final LoginResult result = await FacebookAuth.instance.login();
              // by default we request the email and the public profile           
             // or FacebookAuth.i.login()
+            log(result.status.toString());
             if (result.status == LoginStatus.success) {
             // you are logged
             final AccessToken accessToken = result.accessToken!;
