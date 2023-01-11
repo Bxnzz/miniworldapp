@@ -1,5 +1,6 @@
+import 'dart:developer';
 import 'dart:io';
-import 'dart:math';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,11 +24,11 @@ class _UploadPageState extends State<UploadPage> {
   UploadTask? uploadTask;
   VideoPlayerController? videoPlayerController;
   CustomVideoPlayerController? _customVideoPlayerController;
+  bool isImage = true;
 
   Future uploadFile() async {
     final path = 'files/${pickedFile!.name}';
     final file = File(pickedFile!.path!);
-
     final ref = FirebaseStorage.instance.ref().child(path);
 
     setState(() {
@@ -50,35 +51,54 @@ class _UploadPageState extends State<UploadPage> {
   }
 
   Future selectFile() async {
+    // final result = await FilePicker.platform.pickFiles();
     final result = await FilePicker.platform.pickFiles();
+
+    // FilePickerResult? result = await FilePicker.platform.pickFiles(
+    //   type: FileType.custom,
+    //   allowedExtensions: ['jpg', 'pdf', 'doc'],
+    // );
+
     if (result == null) return;
     pickedFile = result.files.single;
-    // setState(() {
-    //
-    // });
+    log(pickedFile!.extension.toString());
+    if (pickedFile!.extension == 'jpg' || pickedFile!.extension == 'PNG') {
+      setState(() {
+        isImage = true;
+      });
+    } else {
+      isImage = false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Upload'),
       ),
-      body: Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: ListView(
         children: [
           if (pickedFile != null)
-            // Card(
-            //   color: Colors.blue[100],
-            //   child: Image.file(File(pickedFile!.path!),
-            //       width: double.infinity, fit: BoxFit.cover),
-            // ),
-            //Text(pickedFile!.name!),
-            Expanded(
-              child: CustomVideoPlayer(
-                  customVideoPlayerController: _customVideoPlayerController!),
-            ),
+            ////
+            Builder(builder: (context) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  isImage == true
+                      ? Image.file(
+                          File(pickedFile!.path!),
+                          width: size.width * 0.8,
+                        )
+                      : CustomVideoPlayer(
+                          customVideoPlayerController:
+                              _customVideoPlayerController!),
+                  Text(pickedFile!.name),
+                ],
+              );
+            }),
           ElevatedButton(
             child: const Text('Select Image'),
             onPressed: selectFile,
@@ -90,7 +110,7 @@ class _UploadPageState extends State<UploadPage> {
             onPressed: uploadFile,
           ),
         ],
-      )),
+      ),
     );
   }
 
