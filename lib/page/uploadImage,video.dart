@@ -45,7 +45,7 @@ class _UploadPageState extends State<UploadPage> {
           context: context,
           videoPlayerController: videoPlayerController!,
         );
-        // Image.file(File(pickedFile!.path!));
+        Image.file(File(pickedFile!.path!));
       });
   }
 
@@ -69,18 +69,16 @@ class _UploadPageState extends State<UploadPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (pickedFile != null)
-            Card(
-              color: Colors.blue[100],
-              child: Image.file(File(pickedFile!.path!),
-                  width: double.infinity, fit: BoxFit.cover),
+            // Card(
+            //   color: Colors.blue[100],
+            //   child: Image.file(File(pickedFile!.path!),
+            //       width: double.infinity, fit: BoxFit.cover),
+            // ),
+            //Text(pickedFile!.name!),
+            Expanded(
+              child: CustomVideoPlayer(
+                  customVideoPlayerController: _customVideoPlayerController!),
             ),
-          //  Text(pickedFile!.name),
-
-          // Expanded(
-          //   child: CustomVideoPlayer(
-          //       customVideoPlayerController: _customVideoPlayerController!),
-          // ),
-
           ElevatedButton(
             child: const Text('Select Image'),
             onPressed: selectFile,
