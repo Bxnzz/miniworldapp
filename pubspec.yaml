@@ -57,6 +57,7 @@ dependencies:
   file_picker: ^5.0.1
   appinio_video_player: ^1.2.0
   onesignal_flutter: ^3.5.0
+  circular_profile_avatar: ^2.0.5
 
 
  
