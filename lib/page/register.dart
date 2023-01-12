@@ -33,6 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
   late Future<void> loadDataMethod;
   late RegisterService registerService;
   List<Register> registers = [];
+  late String camera;
   
   late Map<String, dynamic> userFacebook;
   
@@ -57,11 +58,11 @@ class _RegisterPageState extends State<RegisterPage> {
     if(_length > 0){
       email.text = userFacebook['email'];
       userFullname.text = userFacebook['name'];
-     // image = userFacebook['picture']['data']['url'];
+      camera = userFacebook['picture']['data']['url'];
     }else{
       email.text = "";
       userFullname.text = "";
-      image.text = "";
+      camera =Image.asset('lib/image/3135715.png') as String;
     }
   }
 
@@ -75,6 +76,12 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Form(
               child: Column(
         children: <Widget>[
+          Padding(padding:EdgeInsets.symmetric(horizontal: 15)),          
+            CircleAvatar(          
+          backgroundImage: NetworkImage(camera),
+          backgroundColor: Colors.greenAccent,
+          radius: 50,
+          ),
           Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextFormField(
@@ -152,7 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ElevatedButton(
                   onPressed: () async {
                     RegisterDto dto =
-                        RegisterDto(userName: username.text, userMail: email.text, userPassword: password.text, userFullname: userFullname.text,userDiscription: discription.text, userFacebookId: '', userImage: '');
+                        RegisterDto(userName: username.text, userMail: email.text, userPassword: password.text, userFullname: userFullname.text,userDiscription: discription.text, userFacebookId: '', userImage: camera);
                     log(jsonEncode(dto));
 
 
@@ -167,6 +174,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     password.text = "";
                     userFullname.text = "";
                     discription.text = "";
+                    camera = Image.asset('lib/image/3135715.png') as String;
                   },
                   child: Text('Register')),
             ],
