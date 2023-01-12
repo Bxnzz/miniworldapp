@@ -5,7 +5,7 @@ import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-
+import 'package:flutter_facebook_keyhash/flutter_facebook_keyhash.dart';
 // ...
 
 Future<void> main() async {
@@ -13,6 +13,12 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  //Generate Key on device a build app
+  // String? key = await FlutterFacebookKeyhash.getFaceBookKeyHash ??
+  //     'Unknown platform version';
+  // print(key ?? "");
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(
       create: (context) => AppData(),
