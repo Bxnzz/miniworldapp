@@ -9,6 +9,9 @@ import 'package:miniworldapp/page/plotMap.dart';
 import 'package:miniworldapp/page/register.dart';
 import 'package:miniworldapp/page/showmap.dart';
 import 'package:miniworldapp/page/uploadImage,video.dart';
+import 'package:provider/provider.dart';
+
+import '../service/provider/appdata.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -39,12 +42,20 @@ class _HomePageState extends State<HomePage> {
             child: Text('Login')),
         ElevatedButton(
             onPressed: () {
+              Map<String, dynamic> userData = {
+                "name": "",
+              };
+              context.read<AppData>().userFacebook = userData;
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => RegisterPage()));
             },
             child: Text('RegisterPage')),
         ElevatedButton(
             onPressed: () {
+               Map<String, dynamic> userData = {
+                "name": "",
+              };
+              context.read<AppData>().userFacebook = userData;
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => FacebookSherePage()));
             },

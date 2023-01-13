@@ -20,26 +20,23 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  
   TextEditingController username = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController userFullname = TextEditingController();
-  TextEditingController image = TextEditingController();
   TextEditingController discription = TextEditingController();
-  
 
   List<RegisterDto> registerDTOs = [];
   late Future<void> loadDataMethod;
   late RegisterService registerService;
   List<Register> registers = [];
-  
-  late Map<String, dynamic> userFacebook;
-  
-  var _length;
-  
+  late String image;
+  late String idFB;
 
-  
+  late Map<String, dynamic> userFacebook;
+
+  var _length;
+
   @override
   void initState() {
     super.initState();
@@ -48,20 +45,23 @@ class _RegisterPageState extends State<RegisterPage> {
     registerService =
         RegisterService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
- //    userFacebook = context.read<AppData>().userFacebook;      
+    //    userFacebook = context.read<AppData>().userFacebook;
     // 2.2 async method
     //  loadDataMethod = addData(logins);
     userFacebook = context.read<AppData>().userFacebook;
-
+    
+    
     _length = userFacebook['name'].length;
-    if(_length > 0){
+    if (_length > 0) {
       email.text = userFacebook['email'];
       userFullname.text = userFacebook['name'];
-     // image = userFacebook['picture']['data']['url'];
-    }else{
+      image = userFacebook['picture']['data']['url'];
+      idFB = userFacebook['id'];
+      log(idFB);
+    } else {
       email.text = "";
       userFullname.text = "";
-      image.text = "";
+      image = "https://riverlegacy.org/wp-content/uploads/2021/07/blank-profile-photo.jpeg";
     }
   }
 
@@ -75,6 +75,11 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Form(
               child: Column(
         children: <Widget>[
+          Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
+          CircleAvatar(
+            backgroundImage: NetworkImage(image),
+            radius: 50,
+          ),
           Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextFormField(
@@ -131,15 +136,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   }
                   return null;
                 },
-              )
-              ),Padding(
+              )),
+          Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextFormField(
                 controller: discription,
                 maxLines: 1,
                 decoration: InputDecoration(
-                    labelText: 'Discription',
-                    hintText: 'Enter Discription'),
+                    labelText: 'Discription', hintText: 'Enter Discription'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please  Discription';
@@ -151,22 +155,24 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
               ElevatedButton(
                   onPressed: () async {
-                    RegisterDto dto =
-                        RegisterDto(userName: username.text, userMail: email.text, userPassword: password.text, userFullname: userFullname.text,userDiscription: discription.text, userFacebookId: '', userImage: '');
+                    RegisterDto dto = RegisterDto(
+                        userName: username.text,
+                        userMail: email.text,
+                        userPassword: password.text,
+                        userFullname: userFullname.text,
+                        userDiscription: discription.text,
+                        userFacebookId: idFB,
+                        userImage: image);
                     log(jsonEncode(dto));
 
-
-                   var register = await registerService.registers(dto);
-                   if (register.data.massage == "Register failed"){
-                          log("Register failed");                                  
-                            return;
-                   }
-                         log(jsonEncode(register.data));                    
-                    username.text = "";
-                    email.text = "";
-                    password.text = "";
-                    userFullname.text = "";
-                    discription.text = "";
+                    var register = await registerService.registers(dto);
+                    if (register.data.massage == "Register failed") {
+                      log("Register failed");
+                      return;
+                    }
+                    log(jsonEncode(register.data));
+                
+                    
                   },
                   child: Text('Register')),
             ],
