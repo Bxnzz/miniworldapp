@@ -37,27 +37,23 @@ class _UploadPageState extends State<UploadPage> {
     final snapshot = await uploadTask!.whenComplete(() {});
 
     final urlDownload = await snapshot.ref.getDownloadURL();
-    print('Download Link:$urlDownload');
+    log('Download Link:$urlDownload');
     videoPlayerController = VideoPlayerController.network(urlDownload)
       ..initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
+        log(videoPlayerController.toString());
         _customVideoPlayerController = CustomVideoPlayerController(
           context: context,
           videoPlayerController: videoPlayerController!,
         );
         Image.file(File(pickedFile!.path!));
+        setState(() {});
       });
   }
 
   Future selectFile() async {
     // final result = await FilePicker.platform.pickFiles();
     final result = await FilePicker.platform.pickFiles();
-
-    // FilePickerResult? result = await FilePicker.platform.pickFiles(
-    //   type: FileType.custom,
-    //   allowedExtensions: ['jpg', 'pdf', 'doc'],
-    // );
 
     if (result == null) return;
     pickedFile = result.files.single;
@@ -83,22 +79,23 @@ class _UploadPageState extends State<UploadPage> {
         children: [
           if (pickedFile != null)
             ////
-            Builder(builder: (context) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  isImage == true
-                      ? Image.file(
-                          File(pickedFile!.path!),
-                          width: size.width * 0.8,
-                        )
-                      : CustomVideoPlayer(
-                          customVideoPlayerController:
-                              _customVideoPlayerController!),
-                  Text(pickedFile!.name),
-                ],
-              );
-            }),
+
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                isImage == true
+                    ? Image.file(
+                        File(pickedFile!.path!),
+                        width: size.width * 0.8,
+                      )
+                    : (_customVideoPlayerController != null)
+                        ? CustomVideoPlayer(
+                            customVideoPlayerController:
+                                _customVideoPlayerController!)
+                        : Container(),
+                Text(pickedFile!.name),
+              ],
+            ),
           ElevatedButton(
             child: const Text('Select Image'),
             onPressed: selectFile,
