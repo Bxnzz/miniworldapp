@@ -7,7 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:flutter/material.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:miniworldapp/model/attend.dart';
 import 'package:miniworldapp/service/attend.dart';
 import 'package:provider/provider.dart';
@@ -22,20 +24,24 @@ class ShowMapPage extends StatefulWidget {
 }
 
 class ShowMapPageState extends State<ShowMapPage> {
-  Completer<GoogleMapController> _controller = Completer();
-  List<LatlngDto> latlngDtos = [];
+
+  final Completer<GoogleMapController> _controller = Completer();
+  LatLng centerMap = const LatLng(16.245916, 103.252182);
+  List<LatlngDto> latlngDtos = [];   
+   late Future<void> loadDataMethod;
+  late AttendService attendService; 
+  Set<Marker> markers = {};
   late int atId;
   late double lat;
   late double lng;
   late int userId;
   late String datetime;
-  late Future<void> loadDataMethod;
-  late AttendService attendService;
-  late int range = 0;
-  LatLng centerMap = LatLng(16.245916, 103.252182);
-  Set<Marker> markers = {};
 
-  Future _goToSuwannabhumiAirport() async {
+  late int range = 0;
+  
+ 
+
+  Future _goToMarker() async {
     var latlngs = await attendService.attend();
 
     for (var latlng in latlngs.data) {
@@ -48,24 +54,17 @@ class ShowMapPageState extends State<ShowMapPage> {
       
     });
 
-    // log(jsonEncode(latlng.data));
-    // range=int.parse(jsonEncode(latlng.data.length));
-    // log(range.toString());
+
 
   
-    LatLng newMap = LatLng(16.245916, 103.252182);
-    // LatlngDto dto = LatlngDto(
-    //   atId: atId, lat: lat, lng: lng, userId: userId, datetime: datetime);
-
-    final GoogleMapController controller = await _controller.future;
-
-    controller.animateCamera(CameraUpdate.newLatLngZoom(newMap, 16));
+    // LatLng newMap = const LatLng(16.245916, 103.252182);
+    // final GoogleMapController controller = await _controller.future;
+    // controller.animateCamera(CameraUpdate.newLatLngZoom(newMap, 16));
   }
 
   @override
   void initState() {
     super.initState();
-    // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย
     attendService =
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
   }
@@ -73,13 +72,12 @@ class ShowMapPageState extends State<ShowMapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Map"), actions: <Widget>[
+        appBar: AppBar(title: const Text("Map"), actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.airplanemode_active),
-              onPressed: _goToSuwannabhumiAirport),
+              icon: const Icon(Icons.airplanemode_active),
+              onPressed: _goToMarker),
         ]),
-        body: GoogleMap(
-          myLocationEnabled: true,
+        body: GoogleMap(          
           markers:  markers,
           mapType: MapType.normal,
           initialCameraPosition: CameraPosition(

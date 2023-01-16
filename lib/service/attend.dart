@@ -1,5 +1,6 @@
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
+
 import 'package:miniworldapp/model/attend.dart';
 
 part 'attend.g.dart'; 

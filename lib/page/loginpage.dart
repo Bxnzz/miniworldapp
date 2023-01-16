@@ -48,18 +48,18 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: const Text('Login Page'),
       ),
-      // 3. เรียก service ในรูปแบบของ FutureBuilder (หรือจะไม่ใช้ก็ได้ แค่ตัวอย่างให้ดูเฉยๆ)
+  
       body: SingleChildScrollView(
         child: Form(
           child: Column(
             children: <Widget>[
               Padding(
-                //padding: const EdgeInsets.only(left:15.0,right:15.0,top:0,bottom: 0),
-                padding: EdgeInsets.symmetric(horizontal: 15),
+
+                padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: TextFormField(
                   controller: email,
                   maxLines: 1,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       labelText: 'E-mail', hintText: 'Enter your Email'),                      
                   validator: (value) {                   
                     if (value == null || value.isEmpty) {
@@ -77,13 +77,14 @@ class _LoginPageState extends State<LoginPage> {
                   controller: password,
                   obscureText: true,
                   maxLines: 1,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       labelText: 'Password', hintText: 'Enter secure password'),               
                   validator: (value) {
                     if (value!.trim().isEmpty) {
                       return 'Enter the password';
-                    } else
+                    } else {
                       return null;
+                    }
                   },
                 ),
               ),
@@ -96,28 +97,17 @@ class _LoginPageState extends State<LoginPage> {
                         log(jsonEncode(dto));
 
                         var login = await loginService.loginser(dto);
-                        // if (login.response.statusCode == 200){
+                     
                           if(login.data.userId == 0){
                             log("login fail");
                             return;
                           }
-                        // }
+                       
                         log(jsonEncode(login.data));
                         
-                        // try {
-                        //   var login = await loginService.loginser(dto);
-                        //   log(jsonEncode(login.data));
-                        // } catch (ex) {
-                        //   log("login fail");
-                        // }
-
-                        // loginService.loginser(dto).then((value) {
-                        //   log(jsonEncode(value.data));
-                        // }).onError((error, stackTrace) {
-                        //   log("login fail");
-                        // });
+                    
                       },
-                      child: Text('LOGIN')),
+                      child: const Text('LOGIN')),
                 ],
               )
             ],
@@ -126,14 +116,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-  // 4. Async method ที่เรียก service เมื่อได้ข้อมูลก็เอาไปเก็บไว้ที่ destinations ที่ประกาศไว้ด้านบนเป็น List
-  // Future<void> addData(LoginDto login) async {
-  //  var result =
-  //   await http.post(Uri.parse('http://202.28.34.197:9131/user/login'),
-  //   body: jsonEncode(login),
-  //   headers:{'Content-Type': 'application/json; charset=UTF-8'});
-  //   log(result.body);
-  // }
+ 
 }
 
 
