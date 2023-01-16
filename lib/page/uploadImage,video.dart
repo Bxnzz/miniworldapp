@@ -2,15 +2,9 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:appinio_video_player/appinio_video_player.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/rendering.dart';
-import 'package:get/get_connect/http/src/_http/_html/_file_decoder_html.dart';
 
 class UploadPage extends StatefulWidget {
   const UploadPage({super.key});
@@ -40,7 +34,6 @@ class _UploadPageState extends State<UploadPage> {
     log('Download Link:$urlDownload');
     videoPlayerController = VideoPlayerController.network(urlDownload)
       ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         log(videoPlayerController.toString());
         _customVideoPlayerController = CustomVideoPlayerController(
           context: context,
@@ -52,9 +45,7 @@ class _UploadPageState extends State<UploadPage> {
   }
 
   Future selectFile() async {
-    // final result = await FilePicker.platform.pickFiles();
     final result = await FilePicker.platform.pickFiles();
-
     if (result == null) return;
     pickedFile = result.files.single;
     log(pickedFile!.extension.toString());
@@ -73,7 +64,7 @@ class _UploadPageState extends State<UploadPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Upload'),
+        title: const Text('Upload'),
       ),
       body: ListView(
         children: [
@@ -97,14 +88,14 @@ class _UploadPageState extends State<UploadPage> {
               ],
             ),
           ElevatedButton(
-            child: const Text('Select Image'),
             onPressed: selectFile,
+            child: const Text('Select File'),
           ),
           const SizedBox(height: 2),
           buildProgress(),
           ElevatedButton(
-            child: const Text('Upload File'),
             onPressed: uploadFile,
+            child: const Text('Upload File'),
           ),
         ],
       ),
