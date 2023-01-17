@@ -30,13 +30,13 @@ class _FacebookLoginPageState extends  State<FacebookLoginPage>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:const Text('Facebook Login') ,),
+        title:const Text('Login Facebook') ,),
         body: Column(children: [
+       
         ElevatedButton(
             onPressed: () async {
             final LoginResult result = await FacebookAuth.instance.login();
         
-            log(result.status.toString());
             if (result.status == LoginStatus.success) {
            
             final AccessToken accessToken = result.accessToken!;
@@ -48,14 +48,7 @@ class _FacebookLoginPageState extends  State<FacebookLoginPage>{
 
             idFB = userData['id']; 
             
-             log(idFB.toString());
-            // log(userData['id']);
-           //  LoginFbdto fbdto = LoginFbdto(facebookid: idFB);
-
-            
-    
-            
-            
+             log(idFB.toString());         
           }else{
             log(result.status.toString());
             log(result.message.toString());
@@ -72,7 +65,7 @@ class _FacebookLoginPageState extends  State<FacebookLoginPage>{
           }   
       
             },
-            child: const Text('FacebookLogin')), 
+            child: const Text('Facebook Login')), 
             
         ])
     );
