@@ -1,12 +1,17 @@
 
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:miniworldapp/page/Newhome.dart';
 import 'package:miniworldapp/page/register.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:provider/provider.dart';
 
+import '../model/DTO/loginFBDTO.dart';
 import 'loginpage.dart';
 
 
@@ -18,37 +23,56 @@ class FacebookLoginPage extends StatefulWidget {
 }
 
 class _FacebookLoginPageState extends  State<FacebookLoginPage>{
+ 
+  late String idFB; 
+  //late String fblog;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:Text('Facebook Login') ,),
+        title:const Text('Facebook Login') ,),
         body: Column(children: [
         ElevatedButton(
             onPressed: () async {
             final LoginResult result = await FacebookAuth.instance.login();
-             // by default we request the email and the public profile           
-            // or FacebookAuth.i.login()
+        
             log(result.status.toString());
             if (result.status == LoginStatus.success) {
-            // you are logged
+           
             final AccessToken accessToken = result.accessToken!;
             log(accessToken.token);  
             final userData = await FacebookAuth.instance.getUserData();
             log(userData.toString());
+           
             context.read<AppData>().userFacebook = userData;
+
+            idFB = userData['id']; 
             
-            log(userData['email']);
+             log(idFB.toString());
+            // log(userData['id']);
+           //  LoginFbdto fbdto = LoginFbdto(facebookid: idFB);
+
+            
+    
+            
             
           }else{
             log(result.status.toString());
             log(result.message.toString());
-            
+           
           }
+          var fblog = int.parse(idFB);
+          
+          if(fblog > 0){
             Navigator.push(context,
-                 MaterialPageRoute(builder: (context) => RegisterPage()));
+                 MaterialPageRoute(builder: (context) => const NewHome()));
+          }else{
+            Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const RegisterPage()));
+          }   
+      
             },
-            child: Text('FacebookLogin')), 
+            child: const Text('FacebookLogin')), 
             
         ])
     );
