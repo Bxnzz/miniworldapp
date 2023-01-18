@@ -12,5 +12,5 @@ abstract class loginFBService {
   factory loginFBService(Dio dio, {String baseUrl}) = _loginFBService;
 
   @POST("/user/loginfacebook")
-   Future<HttpResponse<Login>> registers(@Body() LoginFbdto loginFBDto);
+   Future<HttpResponse<Login>> fblogin(@Body() LoginFbdto loginFBDto);
 }

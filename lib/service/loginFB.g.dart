@@ -19,7 +19,7 @@ class _loginFBService implements loginFBService {
   String? baseUrl;
 
   @override
-  Future<HttpResponse<Login>> registers(loginFBDto) async {
+  Future<HttpResponse<Login>> fblogin(loginFBDto) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
