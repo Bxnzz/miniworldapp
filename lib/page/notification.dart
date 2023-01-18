@@ -27,30 +27,16 @@ class _NontificationPageState extends State<NontificationPage> {
 
     var imUrlString =
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNoy-7N8x4HgYJQuQC3i7SW8nj9EaWzrvhRw&usqp=CAU";
-    // var notification = OSCreateNotification(
-    //     //playerID
-    //     //A9
-    //     playerIds: ['037f084d-7ed0-466f-9f5d-012f60789829'],
-    //     content: "Miniworld race nofi",
-    //     heading: "Test Notification :)",
-    //     iosAttachments: {"id1": imUrlString},
-    //     bigPicture: imUrlString,
-    //     buttons: [
-    //       OSActionButton(text: "test1", id: "id1"),
-    //       OSActionButton(text: "test2", id: "id2")
-    //     ]);
 
     var notification1 = OSCreateNotification(
         //playerID
-        //A51
-        // playerIds: [playerId.toString()], //(SelectPlayerID Ondevice connect)
+
         playerIds: [
-          'b8742e68-2547-4cca-90a0-d1561a5654cc', //ar
-          '037f084d-7ed0-466f-9f5d-012f60789829', //fd
-          '34e773ac-6440-4efa-a46c-8a6a1b23ad7d', //a9
-          '6b0d0b58-4cd4-44c4-b004-ebe4886ddf57', //lab
-          '65290994-aa27-494c-9622-7ce079857885', //lab
+          'b8742e68-2547-4cca-90a0-d1561a5654cc',
           '4d1080b5-f2ca-4891-855d-6a6c38b5f23d',
+          '65290994-aa27-494c-9622-7ce079857885',
+          'b8742e68-2547-4cca-90a0-d1561a5654cc',
+          '037f084d-7ed0-466f-9f5d-012f60789829'
         ],
         content: "โหลๆๆ",
         heading: "Test Notification❤ :)",
@@ -60,22 +46,7 @@ class _NontificationPageState extends State<NontificationPage> {
           OSActionButton(text: "ตกลง", id: "id1"),
           OSActionButton(text: "ยกเลิก", id: "id2")
         ]);
-    // var notification2 = OSCreateNotification(
-    //     //playerID
-    //     //oppo
-    //     playerIds: ['10a93fb7-f7e2-4a43-bdde-2ed3f752799e'],
-    //     content: "ได้เวลาสนุกแล้วสิ321 :) ",
-    //     heading: "Test Notification :)",
-    //     iosAttachments: {"id1": imUrlString},
-    //     bigPicture: imUrlString,
-    //     buttons: [
-    //       OSActionButton(text: "ตกลง", id: "id1"),
-    //       OSActionButton(text: "ยกเลิก", id: "id2")
-    //     ]);
-
-    //var response = await OneSignal.shared.postNotification(notification);
     var response1 = await OneSignal.shared.postNotification(notification1);
-    //var response2 = await OneSignal.shared.postNotification(notification2);
   }
 
   @override
@@ -84,16 +55,14 @@ class _NontificationPageState extends State<NontificationPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nontification'),
+        title: const Text('Nontification'),
       ),
-      body: Container(
-        child: Column(
-          children: [
-            ElevatedButton(
-                child: Text("Send noti"),
-                onPressed: () => _handleSendNotification()),
-          ],
-        ),
+      body: Column(
+        children: [
+          ElevatedButton(
+              child: const Text("Send noti"),
+              onPressed: () => _handleSendNotification()),
+        ],
       ),
     );
   }
