@@ -11,6 +11,7 @@ import 'package:miniworldapp/service/Register.dart';
 import 'package:provider/provider.dart';
 
 import '../model/register.dart';
+import '../service/loginFB.dart';
 import '../service/provider/appdata.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -30,9 +31,10 @@ class _RegisterPageState extends State<RegisterPage> {
   List<RegisterDto> registerDTOs = [];
   late Future<void> loadDataMethod;
   late RegisterService registerService;
+  late loginFBService loginfbService;
   List<Register> registers = [];
   late String image;
-  late String idFB;
+  String idFB = "";
 
   late Map<String, dynamic> userFacebook;
 
@@ -44,7 +46,7 @@ class _RegisterPageState extends State<RegisterPage> {
   
     registerService =
         RegisterService(Dio(), baseUrl: context.read<AppData>().baseurl);
-
+    
     userFacebook = context.read<AppData>().userFacebook;
   
     _length = userFacebook['name'].length;
@@ -54,7 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
       image = userFacebook['picture']['data']['url'];
 
       idFB = userFacebook['id'];
-      LoginFbdto fbdto = LoginFbdto(facebookid: idFB);
+ 
 
       log(idFB);
     } else {
@@ -165,13 +167,18 @@ class _RegisterPageState extends State<RegisterPage> {
                     log(jsonEncode(dto));
 
                     var register = await registerService.registers(dto);
+
                     if (register.data.massage == "Register failed") {
                       log("Register failed");
                       return;
                     }
                     log(jsonEncode(register.data));
-                
-                    
+                    username.text = "";
+                    email.text = "";
+                    password.text = "";
+                    userFullname.text = "";
+                    discription.text = "";
+                    image = "";
                   },
                   child: const Text('Register')),
             ],
