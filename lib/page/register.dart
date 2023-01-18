@@ -41,17 +41,12 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void initState() {
     super.initState();
-    // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย
-
+  
     registerService =
         RegisterService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
-    //    userFacebook = context.read<AppData>().userFacebook;
-    // 2.2 async method
-    //  loadDataMethod = addData(logins);
     userFacebook = context.read<AppData>().userFacebook;
-    
-    
+  
     _length = userFacebook['name'].length;
     if (_length > 0) {
       email.text = userFacebook['email'];

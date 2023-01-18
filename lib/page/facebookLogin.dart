@@ -43,9 +43,8 @@ class _FacebookLoginPageState extends  State<FacebookLoginPage>{
             log(accessToken.token);  
             final userData = await FacebookAuth.instance.getUserData();
             log(userData.toString());
-           
-            context.read<AppData>().userFacebook = userData;
-
+                       
+            context.read<AppData>().userFacebook = userData; 
             idFB = userData['id']; 
             
              log(idFB.toString());         
