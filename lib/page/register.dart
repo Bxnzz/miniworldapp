@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miniworldapp/model/DTO/loginDTO.dart';
+import 'package:miniworldapp/model/DTO/loginFBDTO.dart';
 import 'package:miniworldapp/model/DTO/registerDTO.dart';
 import 'package:miniworldapp/service/Register.dart';
 import 'package:provider/provider.dart';
@@ -40,23 +41,21 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void initState() {
     super.initState();
-    // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย
-
+  
     registerService =
         RegisterService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
-    //    userFacebook = context.read<AppData>().userFacebook;
-    // 2.2 async method
-    //  loadDataMethod = addData(logins);
     userFacebook = context.read<AppData>().userFacebook;
-    
-    
+  
     _length = userFacebook['name'].length;
     if (_length > 0) {
       email.text = userFacebook['email'];
       userFullname.text = userFacebook['name'];
       image = userFacebook['picture']['data']['url'];
+
       idFB = userFacebook['id'];
+     // LoginFbdto fbdto = LoginFbdto(facebookid: idFB);
+
       log(idFB);
     } else {
       email.text = "";
@@ -69,23 +68,23 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registers'),
+        title: const Text('Registers'),
       ),
       body: SingleChildScrollView(
           child: Form(
               child: Column(
         children: <Widget>[
-          Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
+          const Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
           CircleAvatar(
             backgroundImage: NetworkImage(image),
             radius: 50,
           ),
           Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: TextFormField(
                 controller: username,
                 maxLines: 1,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: 'Username', hintText: 'Enter User name'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -95,11 +94,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 },
               )),
           Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: TextFormField(
                 controller: email,
                 maxLines: 1,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: 'Email', hintText: 'Enter Email'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -109,11 +108,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 },
               )),
           Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: TextFormField(
                 controller: password,
                 maxLines: 1,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: 'Password', hintText: 'Enter your password'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -123,11 +122,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 },
               )),
           Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: TextFormField(
                 controller: userFullname,
                 maxLines: 1,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: 'Fullname-Lastname',
                     hintText: 'Enter Fullname-Lastname'),
                 validator: (value) {
@@ -138,11 +137,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 },
               )),
           Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: TextFormField(
                 controller: discription,
                 maxLines: 1,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: 'Discription', hintText: 'Enter Discription'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -174,7 +173,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 
                     
                   },
-                  child: Text('Register')),
+                  child: const Text('Register')),
             ],
           )
         ],

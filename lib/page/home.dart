@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:miniworldapp/page/chat.dart';
+
 import 'package:miniworldapp/page/facebookLogin.dart';
-import 'package:miniworldapp/page/fecebook%20share.dart';
+
 import 'package:miniworldapp/page/loginpage.dart';
 import 'package:miniworldapp/page/notification.dart';
-import 'package:miniworldapp/page/plotMap.dart';
+
 import 'package:miniworldapp/page/register.dart';
 import 'package:miniworldapp/page/showmap.dart';
 import 'package:miniworldapp/page/uploadImage,video.dart';
@@ -25,21 +24,21 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('HOMEPAGE'),
+        title: const Text('PAGE'),
       ),
       body: Column(children: [
         ElevatedButton(
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => FacebookLoginPage()));
+                  MaterialPageRoute(builder: (context) => const FacebookLoginPage()));
             },
-            child: Text('FacebookLogin')),
+            child: const Text('FacebookLogin')),
         ElevatedButton(
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LoginPage()));
+                  MaterialPageRoute(builder: (context) => const LoginPage()));
             },
-            child: Text('Login')),
+            child: const Text('Login')),
         ElevatedButton(
             onPressed: () {
               Map<String, dynamic> userData = {
@@ -47,49 +46,30 @@ class _HomePageState extends State<HomePage> {
               };
               context.read<AppData>().userFacebook = userData;
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => RegisterPage()));
+                  MaterialPageRoute(builder: (context) => const RegisterPage()));
             },
-            child: Text('RegisterPage')),
-        ElevatedButton(
-            onPressed: () {
-               Map<String, dynamic> userData = {
-                "name": "",
-              };
-              context.read<AppData>().userFacebook = userData;
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => FacebookSherePage()));
-            },
-            child: Text('FacebookShere')),
+            child: const Text('RegisterPage')),
+       
         ElevatedButton(
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => NontificationPage()));
+                  MaterialPageRoute(builder: (context) => const NontificationPage()));
             },
-            child: Text('Nontification')),
+            child: const Text('Nontification')),
+       
         ElevatedButton(
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => PhotMapPage()));
+                  MaterialPageRoute(builder: (context) => const ShowMapPage()));
             },
-            child: Text('photMap')),
+            child: const Text('ShowMap')),
         ElevatedButton(
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ShowMapPage()));
+                  MaterialPageRoute(builder: (context) => const UploadPage()));
             },
-            child: Text('ShowMap')),
-        ElevatedButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => UploadPage()));
-            },
-            child: Text('UploadPage')),
-        ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => ChatPage()));
-            },
-            child: Text('ChatPage')),
+            child: const Text('UploadPage')),
+        
       ]),
     );
   }

@@ -74,11 +74,12 @@ class _LoginPageState extends State<LoginPage> {
                     left: 15.0, right: 15.0, top: 15, bottom: 0),
                 //padding: EdgeInsets.symmetric(horizontal: 15),
                 child: TextFormField(
-                  controller: password,
                   obscureText: true,
+                  controller: password,
                   maxLines: 1,
-                  decoration: const InputDecoration(
-                      labelText: 'Password', hintText: 'Enter secure password'),               
+                  decoration: const InputDecoration(              
+                      labelText: 'Password', hintText: 'Enter secure password'),
+                                     
                   validator: (value) {
                     if (value!.trim().isEmpty) {
                       return 'Enter the password';
@@ -86,6 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                       return null;
                     }
                   },
+                  
                 ),
               ),
               Column(
