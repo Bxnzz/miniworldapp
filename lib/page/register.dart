@@ -54,7 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
       image = userFacebook['picture']['data']['url'];
 
       idFB = userFacebook['id'];
-     // LoginFbdto fbdto = LoginFbdto(facebookid: idFB);
+      LoginFbdto fbdto = LoginFbdto(facebookid: idFB);
 
       log(idFB);
     } else {

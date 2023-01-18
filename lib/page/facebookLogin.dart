@@ -23,8 +23,10 @@ class FacebookLoginPage extends StatefulWidget {
 }
 
 class _FacebookLoginPageState extends  State<FacebookLoginPage>{
- 
-  late String idFB; 
+  late String idFB;
+
+  
+   
   //late String fblog;
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,8 @@ class _FacebookLoginPageState extends  State<FacebookLoginPage>{
                        
             context.read<AppData>().userFacebook = userData; 
             idFB = userData['id']; 
+            LoginFbdto loginFb = LoginFbdto(facebookid: idFB);
+            log(loginFb.toString());
             
              log(idFB.toString());         
           }else{
