@@ -51,14 +51,13 @@ class _FacebookLoginPageState extends  State<FacebookLoginPage>{
             if (result.status == LoginStatus.success) {
            
             final AccessToken accessToken = result.accessToken!;
-            //log(accessToken.token);  
+            log(accessToken.token);  
             final userData = await FacebookAuth.instance.getUserData();
-            //log(userData.toString());
+            log(userData.toString());
                        
             context.read<AppData>().userFacebook = userData; 
             idFB = userData['id']; 
-            LoginFbdto loginFb = LoginFbdto(facebookid: idFB);
-            log(jsonEncode(loginFb));
+            LoginFbdto loginFb = LoginFbdto(facebookid: idFB);          
             var login = await loginfbService.fblogin(loginFb);
 
             log(jsonEncode(login.data.userId));

@@ -112,6 +112,7 @@ class _RegisterPageState extends State<RegisterPage> {
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: TextFormField(
+                obscureText: true,
                 controller: password,
                 maxLines: 1,
                 decoration: const InputDecoration(
@@ -140,7 +141,7 @@ class _RegisterPageState extends State<RegisterPage> {
               )),
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: TextFormField(
+              child: TextFormField(                
                 controller: discription,
                 maxLines: 1,
                 decoration: const InputDecoration(
@@ -178,7 +179,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     password.text = "";
                     userFullname.text = "";
                     discription.text = "";
-                    image = "";
+                    image = "https://riverlegacy.org/wp-content/uploads/2021/07/blank-profile-photo.jpeg";
                   },
                   child: const Text('Register')),
             ],
