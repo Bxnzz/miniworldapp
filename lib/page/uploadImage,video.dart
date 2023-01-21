@@ -5,6 +5,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:appinio_video_player/appinio_video_player.dart';
+import 'package:http/http.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 
 class UploadPage extends StatefulWidget {
   const UploadPage({super.key});
@@ -19,11 +21,13 @@ class _UploadPageState extends State<UploadPage> {
   VideoPlayerController? videoPlayerController;
   CustomVideoPlayerController? _customVideoPlayerController;
   bool isImage = true;
-
+ 
   Future uploadFile() async {
+    
     final path = 'files/${pickedFile!.name}';
     final file = File(pickedFile!.path!);
     final ref = FirebaseStorage.instance.ref().child(path);
+    log(ref.toString());
 
     setState(() {
       uploadTask = ref.putFile(file);
@@ -46,10 +50,13 @@ class _UploadPageState extends State<UploadPage> {
 
   Future selectFile() async {
     final result = await FilePicker.platform.pickFiles();
+    var stname;
     if (result == null) return;
     pickedFile = result.files.single;
+    //stname = pickedFile.toString()+;
+    log(result.files.single.toString());
     log(pickedFile!.extension.toString());
-    if (pickedFile!.extension == 'jpg' || pickedFile!.extension == 'PNG') {
+    if (pickedFile!.extension == 'jpg' || pickedFile!.extension == 'png') {
       setState(() {
         isImage = true;
       });
