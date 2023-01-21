@@ -21,10 +21,10 @@ class _UploadPageState extends State<UploadPage> {
   VideoPlayerController? videoPlayerController;
   CustomVideoPlayerController? _customVideoPlayerController;
   bool isImage = true;
-  late String deviceId;
+ 
   Future uploadFile() async {
-    deviceId = PlatformDeviceId.getDeviceId as String;
-    final path = 'files/${pickedFile!.name + deviceId.toString()}';
+    
+    final path = 'files/${pickedFile!.name}';
     final file = File(pickedFile!.path!);
     final ref = FirebaseStorage.instance.ref().child(path);
     log(ref.toString());
