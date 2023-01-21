@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:http/http.dart';
-import 'package:platform_device_id/platform_device_id.dart';
 
 class UploadPage extends StatefulWidget {
   const UploadPage({super.key});
@@ -21,9 +20,8 @@ class _UploadPageState extends State<UploadPage> {
   VideoPlayerController? videoPlayerController;
   CustomVideoPlayerController? _customVideoPlayerController;
   bool isImage = true;
- 
+
   Future uploadFile() async {
-    
     final path = 'files/${pickedFile!.name}';
     final file = File(pickedFile!.path!);
     final ref = FirebaseStorage.instance.ref().child(path);
