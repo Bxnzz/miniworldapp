@@ -228,13 +228,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 return showAlertDialog1(context);
                               } else {
                                 log(jsonEncode(register.data));
-                                username.text = "";
-                                email.text = "";
-                                password.text = "";
-                                userFullname.text = "";
-                                discription.text = "";
-                                image =
-                                    "https://riverlegacy.org/wp-content/uploads/2021/07/blank-profile-photo.jpeg";
+                              
                                 return showAlertDialog(context);
                               }
                             }
