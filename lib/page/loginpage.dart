@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:miniworldapp/model/DTO/loginDTO.dart';
 import 'package:miniworldapp/model/login.dart';
+import 'package:miniworldapp/page/Newhome.dart';
 import 'package:provider/provider.dart';
 import 'package:retrofit/dio.dart';
 
@@ -30,6 +31,13 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
 
+  // สร้างฟอร์ม key หรือ id ของฟอร์มสำหรับอ้างอิง
+  final _formKey = GlobalKey<FormState>();
+
+  // กำหนดสถานะการแสดงแบบรหัสผ่าน
+  bool _isHidden = true;
+  bool _authenticatingStatus = false;
+
   // 2. สร้าง initState เพื่อสร้าง object ของ service
   // และ async method ที่จะใช้กับ FutureBuilder
   @override
@@ -43,85 +51,120 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
+  void dispose() {
+    email.dispose(); // ยกเลิกการใช้งานที่เกี่ยวข้องทั้งหมดถ้ามี
+    password.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login Page'),
       ),
-  
       body: SingleChildScrollView(
         child: Form(
-          child: Column(
-            children: <Widget>[
-              Padding(
+          key: _formKey, // กำหนด key
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  FlutterLogo(
+                    size: 100,
+                  ),
+                  Text('Login Mini world race'),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Email',
+                      icon: Icon(Icons.email_outlined),
+                    ),
+                    controller: email, // ผูกกับ TextFormField ที่จะใช้
+                  ),
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Password',
+                      icon: Icon(Icons.vpn_key),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _isHidden =
+                                !_isHidden; // เมื่อกดก็เปลี่ยนค่าตรงกันข้าม
+                          });
+                        },
+                        icon: Icon(_isHidden // เงื่อนไขการสลับ icon
+                            ? Icons.visibility_off
+                            : Icons.visibility),
+                      ),
+                    ),
+                    controller: password, // ผูกกับ TextFormField ที่จะใช้
+                    obscureText:
+                        _isHidden, // ก่อนซ่อนหรือแสดงข้อความในรูปแบบรหัสผ่าน
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Visibility(
+                      visible: !_authenticatingStatus,
+                      child: ElevatedButton(
+                          onPressed: () async {                                                           // เปลี่ยนสถานะเป็นกำลังล็อกอิน
+                                  setState(() {
+                                    _authenticatingStatus = !_authenticatingStatus;
+                                  });
+ 
+                                  // อ้างอิงฟอร์มที่กำลังใช้งาน ตรวจสอบความถูกต้องข้อมูลในฟอร์ม
+                                  if (_formKey.currentState!.validate()) { //หากผ่าน 
+                                    FocusScope.of(context).unfocus(); // ยกเลิดโฟกัส ให้แป้นพิมพ์ซ่อนไป
+                            LoginDto dto = LoginDto(
+                                email: email.text, password: password.text);
+                            //log(jsonEncode(dto));
 
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: TextFormField(
-                  controller: email,
-                  maxLines: 1,
-                  decoration: const InputDecoration(
-                      labelText: 'E-mail', hintText: 'Enter your Email'),                      
-                  validator: (value) {                   
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your Email';
-                    }
-                    return null;
-                  }, 
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 15.0, right: 15.0, top: 15, bottom: 0),
-                //padding: EdgeInsets.symmetric(horizontal: 15),
-                child: TextFormField(
-                  obscureText: true,
-                  controller: password,
-                  maxLines: 1,
-                  decoration: const InputDecoration(              
-                      labelText: 'Password', hintText: 'Enter secure password'),
-                                     
-                  validator: (value) {
-                    if (value!.trim().isEmpty) {
-                      return 'Enter the password';
-                    } else {
-                      return null;
-                    }
-                  },
-                  
-                ),
-              ),
-              Column(
-                children: [
-                  ElevatedButton(
-                      onPressed: () async {
-                        LoginDto dto = LoginDto(
-                            email: email.text, password: password.text);
-                        log(jsonEncode(dto));
-
-                        var login = await loginService.loginser(dto);
-                     
-                          if(login.data.userId == 0){
-                            log("login fail");
-                            return;
-                          }
-                       
-                        log(jsonEncode(login.data));
-                        
-                    
-                      },
-                      child: const Text('LOGIN')),
+                            var login = await loginService.loginser(dto);
+                            if (login.data.userId != 0) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Login Successful')),
+                                      );
+                                      
+                                      setState(() {
+                                          _authenticatingStatus = !_authenticatingStatus;
+                                        });
+                              log("login success");
+                               Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (context) => const NewHome(),
+                                settings: RouteSettings( arguments: null
+                                          ),));
+                              return;                              
+                            }
+                            else  {
+                              log("login fail");
+                                 ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('login fail try agin!')),
+                                        );
+                                        setState(() {
+                                          _authenticatingStatus = !_authenticatingStatus;
+                                        });
+                              return;
+                            }
+                                  }
+                                  },
+                          child: const Text('LOGIN'))),
                 ],
-              )
-            ],
+              ),
+            ),
           ),
         ),
       ),
     );
   }
- 
 }
-
-
 
 // import 'package:flutter/material.dart';
 // //import 'package:simple_animations/simple_animations.dart';
