@@ -228,7 +228,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                 return showAlertDialog1(context);
                               } else {
                                 log(jsonEncode(register.data));
-                              
+                                username.text = "";
+                                email.text = "";
+                                password.text = "";
+                                userFullname.text = "";
+                                discription.text = "";
+                                idFB = "";
                                 return showAlertDialog(context);
                               }
                             }

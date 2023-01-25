@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -21,9 +23,9 @@ class _NontificationPageState extends State<NontificationPage> {
   void _handleSendNotification() async {
     var deviceState = await OneSignal.shared.getDeviceState();
 
-    if (deviceState == null || deviceState.userId == null) return;
+    //if (deviceState == null || deviceState.userId == null) return;
 
-    var playerId = deviceState.userId;
+    var playerId = deviceState?.userId;
 
     var imUrlString =
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNoy-7N8x4HgYJQuQC3i7SW8nj9EaWzrvhRw&usqp=CAU";
@@ -34,9 +36,8 @@ class _NontificationPageState extends State<NontificationPage> {
         playerIds: [
           'b8742e68-2547-4cca-90a0-d1561a5654cc', //a11
           '65290994-aa27-494c-9622-7ce079857885', //j7
-
           '037f084d-7ed0-466f-9f5d-012f60789829', //a9
-          //'2e024627-75d7-4e01-ae0a-5da4d3b28621' //labs13
+          '2e395e43-98f9-45fb-82d4-dfc3cd90434d', //s13
         ],
         content: "โหลๆๆ",
         heading: "Test Notification❤ :)",
@@ -46,6 +47,7 @@ class _NontificationPageState extends State<NontificationPage> {
           OSActionButton(text: "ตกลง", id: "id1"),
           OSActionButton(text: "ยกเลิก", id: "id2")
         ]);
+
     var response1 = await OneSignal.shared.postNotification(notification1);
   }
 
