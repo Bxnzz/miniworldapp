@@ -50,12 +50,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
     userFacebook = context.read<AppData>().userFacebook;
 
+    //log("tt" + userFacebook['email']);
+
     _length = userFacebook['name'].length;
+
     if (_length > 0) {
-      email.text = userFacebook['email'];
+      email.text = userFacebook['email'].toString();
       userFullname.text = userFacebook['name'];
       image = userFacebook['picture']['data']['url'];
-
       idFB = userFacebook['id'];
 
       log(idFB);
