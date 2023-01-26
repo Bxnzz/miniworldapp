@@ -55,7 +55,12 @@ class _RegisterPageState extends State<RegisterPage> {
     _length = userFacebook['name'].length;
 
     if (_length > 0) {
-      email.text = userFacebook['email'].toString();
+      if (userFacebook['email'].toString() == "null") {
+        email.text = "";
+      } else {
+        email.text = userFacebook['email'].toString();
+      }
+
       userFullname.text = userFacebook['name'];
       image = userFacebook['picture']['data']['url'];
       idFB = userFacebook['id'];
