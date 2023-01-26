@@ -35,7 +35,7 @@ class _NontificationPageState extends State<NontificationPage> {
 
         playerIds: [
           'b8742e68-2547-4cca-90a0-d1561a5654cc', //a11
-          '65290994-aa27-494c-9622-7ce079857885', //j7
+          '850c1971-dd33-4af0-bbea-71efe3ff9814', //j7
           '037f084d-7ed0-466f-9f5d-012f60789829', //a9
           '2e395e43-98f9-45fb-82d4-dfc3cd90434d', //s13
         ],
