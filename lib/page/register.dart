@@ -79,7 +79,7 @@ class _RegisterPageState extends State<RegisterPage> {
     showAlertDialog(BuildContext context) {
       // set up the button
       Widget okButton = TextButton(
-        child: Text("OK"),
+        child: const Text("OK"),
         onPressed: () {
           Navigator.of(context).pop();
         },
@@ -87,8 +87,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
       // set up the AlertDialog
       AlertDialog alert01 = AlertDialog(
-        title: Text("ลงทะเบียนสำเร็จ !!"),
-        content: Text(""),
+        title: const Text("ลงทะเบียนสำเร็จ !!"),
+        content: const Text(""),
         actions: [
           okButton,
         ],
@@ -106,7 +106,7 @@ class _RegisterPageState extends State<RegisterPage> {
     showAlertDialog1(BuildContext context1) {
       // set up the button
       Widget okButton = TextButton(
-        child: Text("OK"),
+        child: const Text("OK"),
         onPressed: () {
           Navigator.of(context1).pop();
         },
@@ -114,7 +114,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
       // set up the AlertDialog
       AlertDialog alert01 = AlertDialog(
-        title: Text("กรุณาป้อนอีเมลที่ไม่ซ้ำกับในระบบ"),
+        title: const Text("กรุณาป้อนอีเมลที่ไม่ซ้ำกับในระบบ"),
         content: Text("อีเมลนี้เคยลงทะเบียนไปแล้ว"),
         actions: [
           okButton,
