@@ -28,6 +28,8 @@ class _LoginPageState extends State<LoginPage> {
   List<LoginDto> loginDTOs = [];
   late Future<void> loadDataMethod;
   late LoginService loginService;
+
+ 
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
 
