@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
+import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/page/home.dart';
 import 'package:miniworldapp/page/loginpage.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeAll(),
+      home: const Login(),
     );
   }
 }
