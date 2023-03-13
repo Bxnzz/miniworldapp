@@ -33,10 +33,3 @@ class _LoginState extends State<Login> {
     );
   }
 }
-
-class _LogindState extends State<Login> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
