@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -9,6 +10,26 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text(
+                  "Login",
+                  style: TextStyle(fontSize: 20),
+                )
+              ],
+            ),
+            const Expanded(
+              child: TextField(),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
