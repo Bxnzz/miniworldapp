@@ -5,7 +5,7 @@ import 'package:miniworldapp/page/facebookLogin.dart';
 import 'package:miniworldapp/page/loginpage.dart';
 import 'package:miniworldapp/page/notification.dart';
 
-import 'package:miniworldapp/page/register.dart';
+//import 'package:miniworldapp/page/register.dart';
 import 'package:miniworldapp/page/showmap.dart';
 import 'package:miniworldapp/page/uploadImage,video.dart';
 import 'package:provider/provider.dart';
@@ -45,8 +45,8 @@ class _HomePageState extends State<HomePage> {
                 "name": "",
               };
               context.read<AppData>().userFacebook = userData;
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const RegisterPage()));
+              // Navigator.push(context,
+              //     MaterialPageRoute(builder: (context) => const RegisterPage()));
             },
             child: const Text('RegisterPage')),
        

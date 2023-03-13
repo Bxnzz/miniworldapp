@@ -6,13 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:miniworldapp/model/DTO/loginDTO.dart';
-import 'package:miniworldapp/model/DTO/loginFBDTO.dart';
+//import 'package:miniworldapp/model/DTO/loginFBDTO.dart';
 import 'package:miniworldapp/model/DTO/registerDTO.dart';
 import 'package:miniworldapp/service/Register.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/register.dart';
-import '../../service/loginFB.dart';
+//import '../../service/loginFB.dart';
 import '../../service/provider/appdata.dart';
 
 
@@ -33,7 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
   List<RegisterDto> registerDTOs = [];
   late Future<void> loadDataMethod;
   late RegisterService registerService;
-  late loginFBService loginfbService;
+ // late loginFBService loginfbService;
   List<Register> registers = [];
   late String image;
   String idFB = "";
@@ -49,31 +49,31 @@ class _RegisterPageState extends State<RegisterPage> {
     registerService =
         RegisterService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
-    userFacebook = context.read<AppData>().userFacebook;
+   // userFacebook = context.read<AppData>().userFacebook;
 
     //log("tt" + userFacebook['email']);
 
-    _length = userFacebook['name'].length;
+    // _length = userFacebook['name'].length;
 
-    if (_length > 0) {
-      if (userFacebook['email'] == null) {
-        email.text = "";
-      } else {
-        email.text = userFacebook['email'];
-      }
+    // if (_length > 0) {
+    //   if (userFacebook['email'] == null) {
+    //     email.text = "";
+    //   } else {
+    //     email.text = userFacebook['email'];
+    //   }
 
-      userFullname.text = userFacebook['name'];
-      image = userFacebook['picture']['data']['url'];
-      idFB = userFacebook['id'];
+  //     userFullname.text = userFacebook['name'];
+  //     image = userFacebook['picture']['data']['url'];
+  //     idFB = userFacebook['id'];
 
-      log(idFB);
-    } else {
-      email.text = "";
-      userFullname.text = "";
-      image =
-          "https://riverlegacy.org/wp-content/uploads/2021/07/blank-profile-photo.jpeg";
-    }
-  }
+  //     log(idFB);
+  //   } else {
+  //     email.text = "";
+  //     userFullname.text = "";
+  //     image =
+  //         "https://riverlegacy.org/wp-content/uploads/2021/07/blank-profile-photo.jpeg";
+  //   }
+   }
 
   @override
   Widget build(BuildContext context) {
@@ -225,7 +225,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                   userFullname: userFullname.text,
                                   userDiscription: discription.text,
                                   userFacebookId: idFB,
-                                  userImage: image);
+                                  userImage: image
+                                  );
                               log(jsonEncode(dto));
 
                               var register =
@@ -241,7 +242,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 password.text = "";
                                 userFullname.text = "";
                                 discription.text = "";
-                                idFB = "";
+                          //      idFB = "";
                                 return showAlertDialog(context);
                               }
                             }
@@ -253,4 +254,5 @@ class _RegisterPageState extends State<RegisterPage> {
               ))),
     );
   }
-}
+  }
+
