@@ -10,6 +10,10 @@ class History_create extends StatefulWidget {
 class _History_createState extends State<History_create> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return  Scaffold(
+    appBar: AppBar(
+    title: const Text('History'),
+    ),
+    );
   }
 }
