@@ -39,6 +39,7 @@ class MyApp extends StatelessWidget {
       title: 'Mini world race',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        useMaterial3: true,
       ),
       home: const Login(),
     );
