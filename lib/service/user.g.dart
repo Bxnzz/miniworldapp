@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'attend.dart';
+part of 'user.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'attend.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
 
-class _AttendService implements AttendService {
-  _AttendService(
+class _UserService implements UserService {
+  _UserService(
     this._dio, {
     this.baseUrl,
   });
@@ -19,26 +19,26 @@ class _AttendService implements AttendService {
   String? baseUrl;
 
   @override
-  Future<HttpResponse<List<LatlngDto>>> attend() async {
+  Future<HttpResponse<List<User>>> getUsers() async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<List<dynamic>>(
-        _setStreamType<HttpResponse<List<LatlngDto>>>(Options(
+    final _result = await _dio
+        .fetch<List<dynamic>>(_setStreamType<HttpResponse<List<User>>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              '/attend',
+              '/user',
               queryParameters: queryParameters,
               data: _data,
             )
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     var value = _result.data!
-        .map((dynamic i) => LatlngDto.fromJson(i as Map<String, dynamic>))
+        .map((dynamic i) => User.fromJson(i as Map<String, dynamic>))
         .toList();
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;

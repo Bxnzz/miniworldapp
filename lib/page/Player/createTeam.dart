@@ -3,12 +3,14 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:miniworldapp/model/DTO/teamDTO.dart';
-import 'package:miniworldapp/model/team.dart';
+//import 'package:miniworldapp/model/DTO/teamDTO.dart';
+//import 'package:miniworldapp/model/team.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/user.dart';
 import '../../service/provider/appdata.dart';
-import '../../service/team.dart';
+//import '../../service/team.dart';
+import '../../service/user.dart';
 
 
 class CeateTeam extends StatefulWidget {
@@ -20,11 +22,12 @@ class CeateTeam extends StatefulWidget {
 
 class _CeateTeamState extends State<CeateTeam> {
    // 1. กำหนดตัวแปร
-  List<Team> teams = [];
- // List<User> users = [];
-  List<TeamDto> teamDTOs = [];
+ // List<Team> teams = [];
+  List<User> users = [];
+  //List<TeamDto> teamDTOs = [];
   late Future<void> loadDataMethod;
-  late TeamService teamService;
+  //late TeamService teamService;
+  late UserService userService;
 
   TextEditingController nameTeam = TextEditingController();
   TextEditingController nameMember1 = TextEditingController();
@@ -39,11 +42,17 @@ class _CeateTeamState extends State<CeateTeam> {
   void initState() {
     super.initState();
     // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วยR
-    teamService =
-        TeamService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    // teamService =
+    //     TeamService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    userService =
+        UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    //      userService.getUsers().then((value) {
+    //   log(value.data.first.userFullname);
+    // });
     // 2.2 async method
-    //  loadDataMethod = addData(logins);
+    loadDataMethod = loadData();
   }
+   
   @override
   void dispose() {
     nameTeam.dispose(); // ยกเลิกการใช้งานที่เกี่ยวข้องทั้งหมดถ้ามี
@@ -55,7 +64,7 @@ class _CeateTeamState extends State<CeateTeam> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 234, 112, 255),
+      //backgroundColor: Color.fromARGB(255, 234, 112, 255),
       body: Center(
           child: Stack(
               alignment: AlignmentDirectional.topCenter,
@@ -94,12 +103,28 @@ class _CeateTeamState extends State<CeateTeam> {
                               controller: nameMember2,
                               ),
                           ),
+                          
+                        
+                          
+                          /*Expanded(
+                          child: ListView.builder(
+                              itemCount: users.length,
+                              itemBuilder: (context,index){
+                                var nameUser = users.map((e) {
+                                  e.userFullname.toString();
+                                }) ;
+                              return ListTile(
+                                title: Text(nameUser.toString()),
+                              );
+                              
+                          }),)*/
+                          
                          // Padding(padding: EdgeInsets.all(8.0),
                           // child: ElevatedButton(onPressed: () async{
                           //     TeamDto dto = TeamDto(
                           //       teamName: nameTeam.text, userId: 1, raceId: 5, teamImage: '');
                           //   log(jsonEncode(dto));
-
+                
                           //   var team = await teamService.Teams(dto);
                           //   if (teams.data.userId != 0) {
                           //     ScaffoldMessenger.of(context).showSnackBar(
@@ -131,6 +156,15 @@ class _CeateTeamState extends State<CeateTeam> {
                 )
               ])),
     );
+  }
+  
+  Future<void> loadData() async {
+    try {
+      var u = await userService.getUsers();
+      users = u.data.cast<User>();
+    } catch (err) {
+      log('Error:$err');
+    }
   }
 }
 
