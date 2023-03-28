@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:miniworldapp/page/General/register.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/login.dart';
@@ -13,6 +15,8 @@ import 'package:flutter_facebook_keyhash/flutter_facebook_keyhash.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+   Intl.defaultLocale = "th";
+  initializeDateFormatting(); 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -41,7 +45,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const Login(),
+      home: const HomeAll(),
     );
   }
 }
