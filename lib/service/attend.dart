@@ -8,7 +8,7 @@ part 'attend.g.dart';
 abstract class AttendService {
   factory AttendService(Dio dio, {String baseUrl}) = _AttendService;
 
-  @GET("/attend/getCoordi")
+  @GET("/attend")
   Future<HttpResponse<List<LatlngDto>>> attend();
 }
 
