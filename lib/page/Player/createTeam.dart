@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:miniworldapp/model/DTO/teamDTO.dart';
@@ -16,22 +19,9 @@ class CeateTeam extends StatefulWidget {
 }
 
 class _CeateTeamState extends State<CeateTeam> {
-  @override
-  Widget build(BuildContext context) {
-    return const Fromcreate();
-  }
-}
-
-class Fromcreate extends StatefulWidget {
-  const Fromcreate({super.key});
-
-  @override
-  State<Fromcreate> createState() => _FromcreateState();
-}
-
-class _FromcreateState extends State<Fromcreate> {
    // 1. กำหนดตัวแปร
   List<Team> teams = [];
+ // List<User> users = [];
   List<TeamDto> teamDTOs = [];
   late Future<void> loadDataMethod;
   late TeamService teamService;
@@ -39,6 +29,9 @@ class _FromcreateState extends State<Fromcreate> {
   TextEditingController nameTeam = TextEditingController();
   TextEditingController nameMember1 = TextEditingController();
   TextEditingController nameMember2 = TextEditingController();
+
+  
+ // var nameItems = List<String>.from(elements);
 
    // 2. สร้าง initState เพื่อสร้าง object ของ service
   // และ async method ที่จะใช้กับ FutureBuilder
@@ -62,16 +55,14 @@ class _FromcreateState extends State<Fromcreate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.purpleAccent,
+      backgroundColor: Color.fromARGB(255, 234, 112, 255),
       body: Center(
-          child: Expanded(
-        child: Stack(
-            alignment: AlignmentDirectional.topCenter,
-            clipBehavior: Clip.none,
-            children: [
-              Expanded(
-                child: Card(
-                  margin: const EdgeInsets.fromLTRB(32, 100, 32, 32),
+          child: Stack(
+              alignment: AlignmentDirectional.topCenter,
+              clipBehavior: Clip.none,
+              children: [
+                Card(
+                  margin:  EdgeInsets.fromLTRB(32, 100, 32, 32),
                   color: Colors.purple.shade50,
                   
                   child: Column(
@@ -103,28 +94,43 @@ class _FromcreateState extends State<Fromcreate> {
                               controller: nameMember2,
                               ),
                           ),
+                         // Padding(padding: EdgeInsets.all(8.0),
+                          // child: ElevatedButton(onPressed: () async{
+                          //     TeamDto dto = TeamDto(
+                          //       teamName: nameTeam.text, userId: 1, raceId: 5, teamImage: '');
+                          //   log(jsonEncode(dto));
+
+                          //   var team = await teamService.Teams(dto);
+                          //   if (teams.data.userId != 0) {
+                          //     ScaffoldMessenger.of(context).showSnackBar(
+                          //     const SnackBar(content: Text('Login Successful')),
+                          //             );
+                          //             log("login success");
+                          // },
+                          // child: Text('ลงทะเบียน'),),
+                          // )
                         
                     ],
                   ),
                 ),
-              ),
-              Positioned(
-                child: Padding(
-                  padding: const EdgeInsets.all(50),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border:
-                          Border.all(color: Colors.purple.shade50, width: 3),
-                      shape: BoxShape.rectangle,
+                Positioned(
+                  child: Padding(
+                    padding: const EdgeInsets.all(50),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border:
+                            Border.all(color: Colors.purple.shade50, width: 3),
+                        shape: BoxShape.rectangle,
+                        
+                      ),
+                      child: const Text('ลงทะเบียนเข้าร่วม'),
                     ),
-                    child: const Text('ลงทะเบียนเข้าร่วม'),
                   ),
-                ),
-              )
-            ]),
-      )),
+                )
+              ])),
     );
   }
 }
+
