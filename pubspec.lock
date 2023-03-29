@@ -65,6 +65,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  buddhist_datetime_dateformat_sns:
+    dependency: "direct main"
+    description:
+      name: buddhist_datetime_dateformat_sns
+      sha256: e90bcfdd9ea2b56feead32edcb0f031b2a7530a1a30778da37fe1b7f61ff4c53
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.7"
   build:
     dependency: transitive
     description:
@@ -689,7 +697,7 @@ packages:
     source: hosted
     version: "2.2.0"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       sha256: "910f85bce16fb5c6f614e117efa303e85a1731bb0081edf3604a2ae6e9a3cc91"
