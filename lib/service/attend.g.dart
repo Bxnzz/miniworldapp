@@ -19,14 +19,15 @@ class _AttendService implements AttendService {
   String? baseUrl;
 
   @override
-  Future<HttpResponse<List<LatlngDto>>> attend() async {
+  Future<HttpResponse<Attend>> Attends(AttendDto) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<List<dynamic>>(
-        _setStreamType<HttpResponse<List<LatlngDto>>>(Options(
-      method: 'GET',
+    _data.addAll(AttendDto.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<HttpResponse<Attend>>(Options(
+      method: 'POST',
       headers: _headers,
       extra: _extra,
     )
@@ -37,9 +38,7 @@ class _AttendService implements AttendService {
               data: _data,
             )
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    var value = _result.data!
-        .map((dynamic i) => LatlngDto.fromJson(i as Map<String, dynamic>))
-        .toList();
+    final value = Attend.fromJson(_result.data!);
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }

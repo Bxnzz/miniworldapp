@@ -1,14 +1,17 @@
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
 
-import 'package:miniworldapp/model/attend.dart';
+import '../model/DTO/attendDTO.dart';
+import '../model/attend.dart';
+
+
 
 part 'attend.g.dart'; 
 @RestApi()
 abstract class AttendService {
   factory AttendService(Dio dio, {String baseUrl}) = _AttendService;
 
-  @GET("/attend")
-  Future<HttpResponse<List<LatlngDto>>> attend();
+  @POST("/attend")
+ Future<HttpResponse<Attend>> Attends(@Body() AttendDto AttendDto);
 }
 

@@ -3,8 +3,10 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-//import 'package:miniworldapp/model/DTO/teamDTO.dart';
-//import 'package:miniworldapp/model/team.dart';
+import 'package:miniworldapp/model/DTO/attendDTO.dart';
+import 'package:miniworldapp/model/attend.dart';
+import 'package:miniworldapp/service/attend.dart';
+
 import 'package:provider/provider.dart';
 import 'package:searchfield/searchfield.dart';
 
@@ -12,7 +14,7 @@ import '../../model/DTO/teamDTO.dart';
 import '../../model/team.dart';
 import '../../model/user.dart';
 import '../../service/provider/appdata.dart';
-//import '../../service/team.dart';
+
 import '../../service/team.dart';
 import '../../service/user.dart';
 
@@ -27,17 +29,21 @@ class _CeateTeamState extends State<CeateTeam> {
   // 1. กำหนดตัวแปร
   List<Team> teams = [];
   List<User> users = [];
+  List<Attend> attends = [];
   List<TeamDto> teamDTOs = [];
   late Future<void> loadDataMethod;
   late TeamService teamService;
   late UserService userService;
+  late AttendService attendService;
 
   TextEditingController nameTeam = TextEditingController();
   TextEditingController nameMember1 = TextEditingController();
   TextEditingController nameMember2 = TextEditingController();
 
   String name = 'te';
+  String nameU = '';
   int idrace = 0;
+ var userid = 0;
   // var nameItems = List<String>.from(elements);
 
   // 2. สร้าง initState เพื่อสร้าง object ของ service
@@ -46,8 +52,12 @@ class _CeateTeamState extends State<CeateTeam> {
   void initState() {
     super.initState();
     // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วยR
+    attendService =
+        AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
     teamService =
         TeamService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
     userService = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
     userService.getUserByName(name).then((value) {
       log(value.data.first.userFullname);
@@ -103,8 +113,9 @@ class _CeateTeamState extends State<CeateTeam> {
                       
                       child: SearchField<User>(
                     suggestions: users.map((e) => SearchFieldListItem<User>(                 
-                            e.userName,
+                            nameU = e.userName,
                             item: e,
+                            
                             // Use child to show Custom Widgets in the suggestions
                             // defaults to Text widget
                             child: Padding(
@@ -114,46 +125,49 @@ class _CeateTeamState extends State<CeateTeam> {
                                   SizedBox(
                                     width: 10,
                                   ),
-                                  
-                                  Text(e.userName),
+                                
+                                  Text(nameU),
                                   
                                 ],
                               ),
                             ),
                           ),
-                        )
-                        .toList(),
-                        controller: nameMember2,
-                  ),                  
+                          
+                        ).toList(),
+                         controller: nameMember2,  
+                  ),   
+                                 
                     ),
                    Padding(padding: EdgeInsets.all(8.0),
                    child: ElevatedButton(onPressed: () async{
-                      TeamDto dto = TeamDto(raceId: idrace, teamImage: '', teamName: nameTeam.text
+                      TeamDto dto = TeamDto(raceId: idrace, teamName: nameTeam.text, teamImage: ''
                       ); 
+                     
+                  //    AttendDto Adto AttendDto(lat: , lng: , datetime: , userId: userid, teamId: );
 
                        var team = await teamService.Teams(dto);
                        log(team.data.massage);
-                            // if (team.data.massage != ) {
-                            //   ScaffoldMessenger.of(context).showSnackBar(
-                            //   const SnackBar(content: Text('team Successful')),
-                            //           );
+                            if (team.data.massage == "Create Success") {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('team Successful')),
+                                      );
                                       
                                       
-                            //   log("team success");
-                            //   //  Navigator.pushReplacement(context,
-                            //   //   MaterialPageRoute(builder: (context) => const NewHome(),
-                            //   //   settings: RouteSettings( arguments: null
-                            //   //             ),));
-                            //   return;                              
-                            // }
-                            // else  {
-                            //   log("team fail");
-                            //      ScaffoldMessenger.of(context).showSnackBar(
-                            //     SnackBar(content: Text('team fail try agin!')),
-                            //             );
+                              log("team success");
+                              //  Navigator.pushReplacement(context,
+                              //   MaterialPageRoute(builder: (context) => const NewHome(),
+                              //   settings: RouteSettings( arguments: null
+                              //             ),));
+                              return;                              
+                            }
+                            else  {
+                              log("team fail");
+                                 ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('team fail try agin!')),
+                                        );
                                         
-                            //   return;
-                            // }            
+                              return;
+                            }            
                    }, child: Text('สร้างทีม'),),
                    )
        
