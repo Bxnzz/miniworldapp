@@ -32,7 +32,8 @@ class _CeateTeamState extends State<CeateTeam> {
   TextEditingController nameTeam = TextEditingController();
   TextEditingController nameMember1 = TextEditingController();
   TextEditingController nameMember2 = TextEditingController();
-
+  
+  String name='te';
   
  // var nameItems = List<String>.from(elements);
 
@@ -46,11 +47,11 @@ class _CeateTeamState extends State<CeateTeam> {
     //     TeamService(Dio(), baseUrl: context.read<AppData>().baseurl);
     userService =
         UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
-    //      userService.getUsers().then((value) {
-    //   log(value.data.first.userFullname);
-    // });
+         userService.getUserByName(name).then((value) {
+      log(value.data.first.userFullname);
+    });
     // 2.2 async method
-    loadDataMethod = loadData();
+   loadDataMethod = loadData();
   }
    
   @override
@@ -106,18 +107,20 @@ class _CeateTeamState extends State<CeateTeam> {
                           
                         
                           
-                          /*Expanded(
+                          Expanded(
                           child: ListView.builder(
                               itemCount: users.length,
                               itemBuilder: (context,index){
-                                var nameUser = users.map((e) {
-                                  e.userFullname.toString();
+                                users.map((e) {
+                                   e.userFullname;    
                                 }) ;
+                                
                               return ListTile(
-                                title: Text(nameUser.toString()),
+                                title: Text('d'),
+                                
                               );
                               
-                          }),)*/
+                          }),)
                           
                          // Padding(padding: EdgeInsets.all(8.0),
                           // child: ElevatedButton(onPressed: () async{
@@ -160,8 +163,8 @@ class _CeateTeamState extends State<CeateTeam> {
   
   Future<void> loadData() async {
     try {
-      var u = await userService.getUsers();
-      users = u.data.cast<User>();
+      var u = await userService.getUserByName(name);
+      users = u.data;
     } catch (err) {
       log('Error:$err');
     }
