@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/page/General/register.dart';
-import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/page/home.dart';
 import 'package:miniworldapp/page/loginpage.dart';
@@ -45,7 +44,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const HomeAll(),
+      home: const Login(),
     );
   }
 }
