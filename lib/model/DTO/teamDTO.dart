@@ -14,25 +14,21 @@ class TeamDto {
         required this.teamName,
         required this.teamImage,
         required this.raceId,
-        required this.userId,
     });
 
     String teamName;
     String teamImage;
     int raceId;
-    int userId;
 
     factory TeamDto.fromJson(Map<String, dynamic> json) => TeamDto(
         teamName: json["teamName"],
         teamImage: json["teamImage"],
         raceId: json["raceID"],
-        userId: json["userID"],
     );
 
     Map<String, dynamic> toJson() => {
         "teamName": teamName,
         "teamImage": teamImage,
         "raceID": raceId,
-        "userID": userId,
     };
 }

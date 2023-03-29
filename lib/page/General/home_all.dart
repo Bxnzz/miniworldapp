@@ -129,8 +129,10 @@ class _RaceAllState extends State<RaceAll> {
                                 child: const Text('ยกเลิก'),
                               ),
                               ElevatedButton(
-                                onPressed: () =>  Navigator.push(context,
-                                 MaterialPageRoute(builder: (context) => CeateTeam())),
+                                onPressed: () {  Navigator.push(context,
+                                 MaterialPageRoute(builder: (context) => CeateTeam()));
+                                 context.read<AppData>().idrace = element.raceId; 
+                                 },
                                 child: const Text('ลงทะเบียน'),
                               ),
                             ],
