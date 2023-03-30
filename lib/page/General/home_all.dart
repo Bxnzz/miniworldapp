@@ -11,6 +11,7 @@ import '../../model/race.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
 import '../Player/createTeam.dart';
+import 'home_create.dart';
 
 class HomeAll extends StatefulWidget {
   const HomeAll({super.key});
@@ -20,6 +21,15 @@ class HomeAll extends StatefulWidget {
 }
 
 class _HomeAllState extends State<HomeAll> {
+  String Username = '';
+  @override
+  void initState() {
+    super.initState();
+
+    Username = context.read<AppData>().Username;
+    log(Username);
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -28,6 +38,7 @@ class _HomeAllState extends State<HomeAll> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('หน้าHome'),
+          actions: <Widget>[Text(Username)],
           bottom: const TabBar(
             tabs: <Widget>[
               Tab(
@@ -46,12 +57,19 @@ class _HomeAllState extends State<HomeAll> {
           children: <Widget>[
             Center(child: RaceAll()),
             Center(
-              child: Text("It's rainy here"),
+              child: Home_create(),
             ),
             Center(
               child: Text("It's sunny here"),
             ),
           ],
+        ),
+        bottomNavigationBar: SizedBox(
+          height: 50,
+          child: ElevatedButton(
+            onPressed: () {},
+            child: Text("สร้างการแข่งขัน"),
+          ),
         ),
       ),
     );
@@ -83,91 +101,13 @@ class _RaceAllState extends State<RaceAll> {
     raceService.getRaces().then((value) {
       log(value.data.first.raceName);
     });
+
     // 2.2 async method
     loadDataMethod = loadData();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder(
-          future: loadDataMethod,
-          builder: (context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return ListView(
-                children: races.map((element) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Card(
-                      clipBehavior: Clip.hardEdge,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(12.0),
-                        splashColor: Colors.blue.withAlpha(30),
-                        onTap: () => showDialog<String>(
-                          context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                            title: Text("ชื่อ: ${element.raceName}"),
-                            content: SizedBox(
-                              height: 95,
-                              child: Column(
-                                children: [
-                                  Text(
-                                      'จำนวนทีม: ${element.raceLimitteam.toString()}'),
-                                  Text(
-                                      'เปิดรับสมัคร: ${formatter.formatInBuddhistCalendarThai(element.raceTimeSt)}'),
-                                  Text(
-                                      'ปิดรับสมัคร:${formatter.formatInBuddhistCalendarThai(element.raceTimeFn)} '),
-                                  Text(
-                                      'ปิดรับสมัคร:${formatter.formatInBuddhistCalendarThai(element.eventDatetime)} '),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.pop(context, 'Cancel'),
-                                child: const Text('ยกเลิก'),
-                              ),
-                              ElevatedButton(
-                                onPressed: () =>  Navigator.push(context,
-                                 MaterialPageRoute(builder: (context) => CeateTeam())),
-                                child: const Text('ลงทะเบียน'),
-                              ),
-                            ],
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text("ชื่อ: " + element.raceName),
-                              Text("ปิดรับสมัคร: " +
-                                  formatter.formatInBuddhistCalendarThai(
-                                      element.raceTimeFn)),
-                              Text("สถานที่: " + element.raceLocation),
-                              Text("# " + element.raceId.toString()),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              );
-            } else {
-              return const CircularProgressIndicator();
-            }
-          }),
-    );
-  }
-
-  Future<void> loadData() async {
-    try {
-      var a = await raceService.getRaces();
-      races = a.data;
-    } catch (err) {
-      log('Error:$err');
-    }
+    return Container();
   }
 }

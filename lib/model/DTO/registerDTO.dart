@@ -11,7 +11,7 @@ List<RegisterDto?>? registerDtoFromJson(String str) => json.decode(str) == null
         json.decode(str)!.map((x) => RegisterDto.fromJson(x)));
 
 String registerDtoToJson(List<RegisterDto?>? data) => json.encode(
-    data == null ? [] : List<dynamic>.from(data!.map((x) => x!.toJson())));
+    data == null ? [] : List<dynamic>.from(data.map((x) => x!.toJson())));
 
 class RegisterDto {
   RegisterDto({
