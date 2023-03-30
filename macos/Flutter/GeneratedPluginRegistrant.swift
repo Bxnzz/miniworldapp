@@ -10,7 +10,7 @@ import firebase_core
 import firebase_storage
 import flutter_secure_storage_macos
 import geolocator_apple
-import path_provider_macos
+import path_provider_foundation
 import platform_device_id
 import platform_device_id_macos
 import sqflite

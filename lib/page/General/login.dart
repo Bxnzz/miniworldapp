@@ -1,5 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:provider/provider.dart';
 import 'dart:developer';
@@ -25,6 +28,7 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   bool _isHidden = true;
   bool _authenticatingStatus = false;
+
   @override
   void initState() {
     super.initState();
@@ -71,7 +75,7 @@ class _LoginState extends State<Login> {
                   TextFormField(
                     decoration: InputDecoration(
                       hintText: 'Password',
-                      icon: Icon(Icons.vpn_key),
+                      icon: const Icon(Icons.vpn_key),
                       suffixIcon: IconButton(
                         onPressed: () {
                           setState(() {
@@ -120,14 +124,19 @@ class _LoginState extends State<Login> {
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const NewHome(),
-                                      settings: RouteSettings(arguments: null),
+                                      builder: (context) => const HomeAll(),
+                                      settings:
+                                          const RouteSettings(arguments: null),
                                     ));
+                                context.read<AppData>().Username =
+                                    login.data.userName;
+                                //Get.to(() => HomeAll());
+                                // Get.to(() => HomeAll());
                                 return;
                               } else {
                                 log("login fail");
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
+                                  const SnackBar(
                                       content: Text('login fail try agin!')),
                                 );
                                 setState(() {

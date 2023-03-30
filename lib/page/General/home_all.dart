@@ -20,6 +20,15 @@ class HomeAll extends StatefulWidget {
 }
 
 class _HomeAllState extends State<HomeAll> {
+  String Username = '';
+  @override
+  void initState() {
+    super.initState();
+
+    Username = context.read<AppData>().Username;
+    log(Username);
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -28,6 +37,7 @@ class _HomeAllState extends State<HomeAll> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('หน้าHome'),
+          actions: <Widget>[Text(Username)],
           bottom: const TabBar(
             tabs: <Widget>[
               Tab(
@@ -83,6 +93,7 @@ class _RaceAllState extends State<RaceAll> {
     raceService.getRaces().then((value) {
       log(value.data.first.raceName);
     });
+
     // 2.2 async method
     loadDataMethod = loadData();
   }
@@ -129,8 +140,10 @@ class _RaceAllState extends State<RaceAll> {
                                 child: const Text('ยกเลิก'),
                               ),
                               ElevatedButton(
-                                onPressed: () =>  Navigator.push(context,
-                                 MaterialPageRoute(builder: (context) => CeateTeam())),
+                                onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CeateTeam())),
                                 child: const Text('ลงทะเบียน'),
                               ),
                             ],
