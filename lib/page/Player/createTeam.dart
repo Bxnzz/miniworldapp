@@ -112,7 +112,9 @@ class _CeateTeamState extends State<CeateTeam> {
                       padding: const EdgeInsets.fromLTRB(32, 20, 32, 32),
                       
                       child: SearchField<User>(
-                    suggestions: users.map((e) => SearchFieldListItem<User>(                 
+                        hint: 'สมาชิกคนที่ 2', 
+                    suggestions: users.map((e) => SearchFieldListItem<User>( 
+                                            
                             nameU = e.userName,
                             item: e,
                             
@@ -122,10 +124,10 @@ class _CeateTeamState extends State<CeateTeam> {
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
                                 children: [
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 10,
                                   ),
-                                
+                                 
                                   Text(nameU),
                                   
                                 ],
