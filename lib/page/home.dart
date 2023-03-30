@@ -6,7 +6,7 @@ import 'package:miniworldapp/page/loginpage.dart';
 import 'package:miniworldapp/page/notification.dart';
 
 //import 'package:miniworldapp/page/register.dart';
-import 'package:miniworldapp/page/showmap.dart';
+//import 'package:miniworldapp/page/showmap.dart';
 import 'package:miniworldapp/page/uploadImage,video.dart';
 import 'package:provider/provider.dart';
 
@@ -59,8 +59,8 @@ class _HomePageState extends State<HomePage> {
        
         ElevatedButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const ShowMapPage()));
+             // Navigator.push(context,
+                 // MaterialPageRoute(builder: (context) => const ShowMapPage()));
             },
             child: const Text('ShowMap')),
         ElevatedButton(

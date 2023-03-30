@@ -5,6 +5,8 @@
 import 'package:meta/meta.dart';
 import 'dart:convert';
 
+import 'user.dart';
+
 List<Race> raceFromJson(String str) => List<Race>.from(json.decode(str).map((x) => Race.fromJson(x)));
 
 String raceToJson(List<Race> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
@@ -73,46 +75,3 @@ class Race {
     };
 }
 
-class User {
-    User({
-        required this.userId,
-        required this.userName,
-        required this.userMail,
-        required this.userPassword,
-        required this.userFullname,
-        required this.userImage,
-        required this.userDiscription,
-        required this.userFacebookId,
-    });
-
-    int userId;
-    String userName;
-    String userMail;
-    String userPassword;
-    String userFullname;
-    String userImage;
-    String userDiscription;
-    String userFacebookId;
-
-    factory User.fromJson(Map<String, dynamic> json) => User(
-        userId: json["UserID"],
-        userName: json["UserName"],
-        userMail: json["UserMail"],
-        userPassword: json["UserPassword"],
-        userFullname: json["UserFullname"],
-        userImage: json["UserImage"],
-        userDiscription: json["UserDiscription"],
-        userFacebookId: json["UserFacebookID"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "UserID": userId,
-        "UserName": userName,
-        "UserMail": userMail,
-        "UserPassword": userPassword,
-        "UserFullname": userFullname,
-        "UserImage": userImage,
-        "UserDiscription": userDiscription,
-        "UserFacebookID": userFacebookId,
-    };
-}

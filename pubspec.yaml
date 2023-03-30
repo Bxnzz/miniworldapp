@@ -61,6 +61,7 @@ dependencies:
   platform_device_id: ^1.0.1
   buddhist_datetime_dateformat_sns: ^1.0.7
   intl: ^0.17.0
+  searchfield: ^0.7.5
   
 
 
