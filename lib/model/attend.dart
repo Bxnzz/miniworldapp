@@ -16,12 +16,8 @@ class Attend {
 
     String massage;
 
-    factory LatlngDto.fromJson(Map<String, dynamic> json) => LatlngDto(
-        atId: json["AtId"],
-        lat: json["Lat"].toDouble(),
-        lng: json["Lng"].toDouble(),
-        userId: json["UserID"],
-        datetime: json["Datetime"],
+    factory Attend.fromJson(Map<String, dynamic> json) => Attend(
+        massage: json["massage"],
     );
 
     Map<String, dynamic> toJson() => {
