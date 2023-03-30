@@ -5,6 +5,7 @@ import 'package:buddhist_datetime_dateformat_sns/buddhist_datetime_dateformat_sn
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:miniworldapp/page/Host/race_create.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/race.dart';
@@ -67,16 +68,19 @@ class _HomeAllState extends State<HomeAll> {
         bottomNavigationBar: SizedBox(
           height: 50,
           child: ElevatedButton(
-            onPressed: () {},
-            child: Text("สร้างการแข่งขัน"),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const RaceCreatePage()));
+            },
+            child: const Text("สร้างการแข่งขัน"),
           ),
         ),
       ),
     );
   }
 }
-
-
 
 class RaceAll extends StatefulWidget {
   const RaceAll({super.key});
@@ -149,10 +153,14 @@ class _RaceAllState extends State<RaceAll> {
                                 child: const Text('ยกเลิก'),
                               ),
                               ElevatedButton(
-                                onPressed: () {  Navigator.push(context,
-                                 MaterialPageRoute(builder: (context) => CeateTeam()));
-                                 context.read<AppData>().idrace = element.raceId; 
-                                 },
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => CeateTeam()));
+                                  context.read<AppData>().idrace =
+                                      element.raceId;
+                                },
                                 child: const Text('ลงทะเบียน'),
                               ),
                             ],
