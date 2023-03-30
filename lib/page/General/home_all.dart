@@ -11,6 +11,7 @@ import '../../model/race.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
 import '../Player/createTeam.dart';
+import 'home_create.dart';
 
 class HomeAll extends StatefulWidget {
   const HomeAll({super.key});
@@ -56,12 +57,19 @@ class _HomeAllState extends State<HomeAll> {
           children: <Widget>[
             Center(child: RaceAll()),
             Center(
-              child: Text("It's rainy here"),
+              child: Home_create(),
             ),
             Center(
               child: Text("It's sunny here"),
             ),
           ],
+        ),
+        bottomNavigationBar: SizedBox(
+          height: 50,
+          child: ElevatedButton(
+            onPressed: () {},
+            child: Text("สร้างการแข่งขัน"),
+          ),
         ),
       ),
     );

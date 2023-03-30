@@ -10,6 +10,12 @@ class Home_create extends StatefulWidget {
 class _Home_createState extends State<Home_create> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      child: Row(
+        children: [
+          Text("data"),
+        ],
+      ),
+    );
   }
 }
