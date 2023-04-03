@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:miniworldapp/model/DTO/attendDTO.dart';
 import 'package:miniworldapp/model/attend.dart';
+import 'package:miniworldapp/page/Player/lobby.dart';
 import 'package:miniworldapp/service/attend.dart';
 
 import 'package:provider/provider.dart';
@@ -31,6 +32,8 @@ class _CeateTeamState extends State<CeateTeam> {
   List<User> users = [];
   List<Attend> attends = [];
   List<TeamDto> teamDTOs = [];
+   
+
   late Future<void> loadDataMethod;
   late TeamService teamService;
   late UserService userService;
@@ -40,10 +43,16 @@ class _CeateTeamState extends State<CeateTeam> {
   TextEditingController nameMember1 = TextEditingController();
   TextEditingController nameMember2 = TextEditingController();
 
+  String Username = '';
   String name = 'te';
   String nameU = '';
   int idrace = 0;
  var userid = 0;
+ int idUser =0;
+   
+List<String> u = [] ;
+
+ 
   // var nameItems = List<String>.from(elements);
 
   // 2. สร้าง initState เพื่อสร้าง object ของ service
@@ -66,6 +75,11 @@ class _CeateTeamState extends State<CeateTeam> {
     log(idrace.toString());
     // 2.2 async method
     loadDataMethod = loadData();
+     Username = context.read<AppData>().Username;
+     idUser = context.read<AppData>().idUser;
+     log(idUser.toString());
+        nameMember1.text = Username;
+  
   }
 
   @override
@@ -79,6 +93,7 @@ class _CeateTeamState extends State<CeateTeam> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       //backgroundColor: Color.fromARGB(255, 234, 112, 255),
       body: SingleChildScrollView(
         child: Center(
@@ -94,24 +109,29 @@ class _CeateTeamState extends State<CeateTeam> {
                     Padding(
                         padding: const EdgeInsets.fromLTRB(32, 50, 32, 32),
                         child: TextFormField(
-                          decoration: const InputDecoration(
-                            hintText: 'ชื่อทีม',
+                          decoration:  const InputDecoration(
+                            labelText: 'ชื่อทีม'
                           ),
                           controller: nameTeam,
                         )),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(32, 20, 32, 32),
+                      padding: const EdgeInsets.fromLTRB(32, 20, 32, 32),             
                       child: TextFormField(
-                        decoration: InputDecoration(
-                          hintText: 'ชื่อสมาชิกคนที่ 1',
+                      
+                        decoration: const InputDecoration(
+                           labelText: 'สมาชิกคนที่ 1', 
+                          
                         ),
+                        
                         controller: nameMember1,
                       ),
                     ),
+                    
                     Padding(
                       padding: const EdgeInsets.fromLTRB(32, 20, 32, 32),
-                      
+                    
                       child: SearchField<User>(
+                       
                         hint: 'สมาชิกคนที่ 2', 
                     suggestions: users.map((e) => SearchFieldListItem<User>( 
                                             
@@ -140,26 +160,32 @@ class _CeateTeamState extends State<CeateTeam> {
                   ),   
                                  
                     ),
-                   Padding(padding: EdgeInsets.all(8.0),
+                   Padding(padding: const EdgeInsets.all(8.0),
                    child: ElevatedButton(onPressed: () async{
                       TeamDto dto = TeamDto(raceId: idrace, teamName: nameTeam.text, teamImage: ''
                       ); 
-                     
-                  //    AttendDto Adto AttendDto(lat: , lng: , datetime: , userId: userid, teamId: );
+                     //log(dto.toString());
 
                        var team = await teamService.Teams(dto);
-                       log(team.data.massage);
-                            if (team.data.massage == "Create Success") {
+                        //log(team.data.teamId.toString());
+                       log(idUser.toString());
+                      AttendDto attendDto = AttendDto(lat: 0.0, lng: 0.0, datetime: '2023-02-1', userId: idUser, teamId: team.data.teamId);
+                   //   AttendDto Atdto2 = AttendDto(lat: 0, lng: 0, datetime: '', userId: 2, teamId: team.data.teamId);
+                        var  attends = await attendService.Attends(attendDto);
+                                      // log(Atdto.toString());
+                      //  attends = await attendService.Attends(Atdto2);
+                          //  log(attends.data.massage);
+                      // log(team.data.teamId.toString());
+                       log(attends.data.massage);
+                            if (team.data.teamId > 0 && attends.data.massage == "Insert Success") {
                               ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('team Successful')),
-                                      );
-                                      
-                                      
+                                      );        
                               log("team success");
-                              //  Navigator.pushReplacement(context,
-                              //   MaterialPageRoute(builder: (context) => const NewHome(),
-                              //   settings: RouteSettings( arguments: null
-                              //             ),));
+                               Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (context) => const Lobby(),
+                                settings: RouteSettings( arguments: null
+                                          ),));
                               return;                              
                             }
                             else  {
