@@ -20,4 +20,7 @@ abstract class TeamService {
   
   @POST("/team")
   Future<HttpResponse<Team>> Teams(@Body() TeamDto TeamDto);
+
+   @GET("/team")
+  Future<HttpResponse<List<Team>>> getTeams();
   }
