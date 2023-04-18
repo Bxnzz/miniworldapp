@@ -13,5 +13,8 @@ abstract class AttendService {
 
   @POST("/attend")
  Future<HttpResponse<Attend>> Attends(@Body() AttendDto AttendDto);
+
+  @GET("/attend")
+  Future<HttpResponse<List<Attend>>> getAttend();
 }
 
