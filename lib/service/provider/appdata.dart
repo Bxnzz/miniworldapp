@@ -7,4 +7,5 @@ class AppData with ChangeNotifier {
   Map<String,dynamic>userFacebook ={}; 
   int idrace = 0;
   String Username = '';
+  int idUser = 0;
 }
