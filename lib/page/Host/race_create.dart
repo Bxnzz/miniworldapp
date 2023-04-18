@@ -81,41 +81,68 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
             });
             singUpST.text =
                 '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes';
-            ;
           },
-          decoration: InputDecoration(label: Text('enter date time')),
-        ),
-
-        TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'วันที่ปิดรับสมัคร',
+          decoration: InputDecoration(
               icon: Icon(Icons.dangerous_outlined),
-            ),
-            controller: singUpFN),
-
-        ElevatedButton(
-          child: Text(
-              '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes'),
-          onPressed: pickDateTime,
+              label: Text('enter date time')),
+        ),
+        TextField(
+          controller: singUpFN,
+          readOnly: true,
+          decoration: const InputDecoration(
+            hintText: 'วันที่ปิดรับสมัคร',
+            icon: Icon(Icons.dangerous_outlined),
+          ),
+          onTap: () {
+            setState(() {
+              pickDateTime();
+            });
+            singUpFN.text =
+                '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes';
+          },
+        ),
+        TextField(
+          decoration: const InputDecoration(
+            hintText: 'เวลาเริ่มการแข่งขัน',
+            icon: Icon(Icons.timer),
+          ),
+          controller: raceTimeST,
+          onTap: () {
+            setState(() {
+              pickDateTime();
+            });
+            raceTimeST.text =
+                '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes';
+          },
+        ),
+        TextField(
+          controller: raceTimeFN,
+          decoration: const InputDecoration(
+            hintText: 'เวลาสิ้นสุดการแข่งขัน',
+            icon: Icon(Icons.timer_off),
+          ),
+          onTap: () {
+            setState(() {
+              pickDateTime();
+            });
+            raceTimeFN.text =
+                '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes';
+          },
         ),
         TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'เวลาเริ่มการแข่งขัน',
-              icon: Icon(Icons.timer),
-            ),
-            controller: raceTimeST),
-        TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'เวลาสิ้นสุดการแข่งขัน',
-              icon: Icon(Icons.timer_off),
-            ),
-            controller: raceTimeFN),
-        TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'วันจัดการแข่งขัน',
-              icon: Icon(Icons.date_range_outlined),
-            ),
-            controller: eventDatetime),
+          controller: eventDatetime,
+          decoration: const InputDecoration(
+            hintText: 'วันจัดการแข่งขัน',
+            icon: Icon(Icons.date_range_outlined),
+          ),
+          onTap: () {
+            setState(() {
+              pickDateTime();
+            });
+            eventDatetime.text =
+                '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes';
+          },
+        ),
         ElevatedButton(
             onPressed: () async {
               // RaceDto dto = RaceDto(
@@ -187,6 +214,10 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
     setState(() {
       this.dateTime = dateTime;
       singUpST.text;
+      singUpFN.text;
+      raceTimeST.text;
+      raceTimeFN.text;
+      eventDatetime.text;
     });
   }
 
