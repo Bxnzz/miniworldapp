@@ -62,6 +62,10 @@ dependencies:
   buddhist_datetime_dateformat_sns: ^1.0.7
   intl: ^0.17.0
   searchfield: ^0.7.5
+  date_time_picker: ^2.1.0
+  flutter_datetime_picker: ^1.5.1
+  flutter_cupertino_datetime_picker: ^3.0.0
+  
   
 
 
