@@ -45,12 +45,12 @@ class _RaceService implements RaceService {
   }
 
   @override
-  Future<HttpResponse<Race>> Races(RaceDto) async {
+  Future<HttpResponse<Race>> Races(raceDto) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(RaceDto.toJson());
+    _data.addAll(raceDto.toJson());
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<HttpResponse<Race>>(Options(
       method: 'POST',

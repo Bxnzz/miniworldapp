@@ -12,5 +12,5 @@ abstract class RaceService {
   @GET("/race")
   Future<HttpResponse<List<Race>>> getRaces();
   @POST("/race")
-  Future<HttpResponse<Race>> Races(@Body() RaceDto RaceDto);
+  Future<HttpResponse<Race>> Races(@Body() RaceDto raceDto);
 }

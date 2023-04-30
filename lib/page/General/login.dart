@@ -130,6 +130,9 @@ class _LoginState extends State<Login> {
                                     ));
                                 context.read<AppData>().Username =
                                     login.data.userName;
+
+                                    context.read<AppData>().idUser =
+                                    login.data.userId;
                                 //Get.to(() => HomeAll());
                                 // Get.to(() => HomeAll());
                                 return;

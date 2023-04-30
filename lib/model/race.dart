@@ -5,13 +5,27 @@
 import 'package:meta/meta.dart';
 import 'dart:convert';
 
-import 'user.dart';
+import 'package:miniworldapp/model/user.dart';
 
 List<Race> raceFromJson(String str) => List<Race>.from(json.decode(str).map((x) => Race.fromJson(x)));
 
 String raceToJson(List<Race> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Race {
+    int raceId;
+    String raceName;
+    String raceLocation;
+    int raceLimitteam;
+    String raceImage;
+    DateTime signUpTimeSt;
+    DateTime signUpTimeFn;
+    DateTime raceTimeSt;
+    DateTime raceTimeFn;
+    DateTime eventDatetime;
+    int userId;
+    User user;
+    int raceStatus;
+
     Race({
         required this.raceId,
         required this.raceName,
@@ -27,20 +41,6 @@ class Race {
         required this.user,
         required this.raceStatus,
     });
-
-    int raceId;
-    String raceName;
-    String raceLocation;
-    int raceLimitteam;
-    String raceImage;
-    DateTime signUpTimeSt;
-    DateTime signUpTimeFn;
-    DateTime raceTimeSt;
-    DateTime raceTimeFn;
-    DateTime eventDatetime;
-    int userId;
-    User user;
-    int raceStatus;
 
     factory Race.fromJson(Map<String, dynamic> json) => Race(
         raceId: json["RaceID"],
@@ -74,4 +74,6 @@ class Race {
         "Race_status": raceStatus,
     };
 }
+
+
 
