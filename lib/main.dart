@@ -4,9 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/register.dart';
 import 'package:miniworldapp/page/General/login.dart';
+import 'package:miniworldapp/page/Host/race_create_pointmap.dart';
 import 'package:miniworldapp/page/Player/createTeam.dart';
 import 'package:miniworldapp/page/home.dart';
 import 'package:miniworldapp/page/loginpage.dart';
+import 'package:miniworldapp/page/showmap.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -46,7 +48,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const HomeAll(),
+      home: const RacePointMap(),
     );
   }
 }

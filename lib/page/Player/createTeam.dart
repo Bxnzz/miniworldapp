@@ -188,7 +188,7 @@ class _CeateTeamState extends State<CeateTeam> {
                             //   AttendDto Atdto2 = AttendDto(lat: 0, lng: 0, datetime: '', userId: 2, teamId: team.data.teamId);
                             //  attendDto = AttendDto(lat: 0.0, lng: 0.0, datetime: '2023-02-1', userId: idUser, teamId: team.data.teamId);
                             var attends =
-                                await attendService.Attends(attendDto);
+                                await attendService.attends(attendDto);
                             // log(Atdto.toString());
                             //  attends = await attendService.Attends(Atdto2);
                             //  log(attends.data.massage);

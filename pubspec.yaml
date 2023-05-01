@@ -65,6 +65,7 @@ dependencies:
   date_time_picker: ^2.1.0
   flutter_datetime_picker: ^1.5.1
   flutter_cupertino_datetime_picker: ^3.0.0
+  dropdown_button2: ^2.1.0
   
   
 

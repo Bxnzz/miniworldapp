@@ -19,12 +19,12 @@ class _AttendService implements AttendService {
   String? baseUrl;
 
   @override
-  Future<HttpResponse<Attend>> Attends(AttendDto) async {
+  Future<HttpResponse<Attend>> attends(attendDto) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(AttendDto.toJson());
+    _data.addAll(attendDto.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<HttpResponse<Attend>>(Options(
       method: 'POST',

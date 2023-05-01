@@ -12,6 +12,6 @@ abstract class AttendService {
   factory AttendService(Dio dio, {String baseUrl}) = _AttendService;
 
   @POST("/attend")
- Future<HttpResponse<Attend>> Attends(@Body() AttendDto AttendDto);
+ Future<HttpResponse<Attend>> attends(@Body() AttendDto attendDto);
 }
 
