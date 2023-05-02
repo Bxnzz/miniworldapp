@@ -6,6 +6,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:miniworldapp/page/Host/race_edit_mission.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/attend.dart';
@@ -100,6 +101,17 @@ class _RacePointMapState extends State<RacePointMap> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('สร้างการแข่งขัน'),
+        actions: [
+          IconButton(onPressed: (){
+            Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const DetailMission(),
+                                    settings: RouteSettings(arguments: null),
+                                  ));
+          }, 
+          icon: FaIcon(FontAwesomeIcons.flagCheckered))
+        ],
       ),
       body: raceMap(),
     );
