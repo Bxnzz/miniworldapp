@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -30,12 +31,19 @@ class _RacePointMapState extends State<RacePointMap> {
   bool _checkbox = false;
   bool _checkbox1 = false;
   bool _checkbox2 = false;
+  // int latitude = 0;
+  // int longstitude = 0;
+  // int? lat = 0 ;
+  //  int? long = 0 ;
+  String lats = '';
+  String longs = '';
   late AttendService attendService;
   List<Marker> markerss = [];
   int id = 1;
   Set<Polyline> _polylines = Set<Polyline>();
   List<LatLng> polylineCoordinates = [];
   LatLng centerMap = const LatLng(16.245916, 103.252182);
+  late GoogleMap googleMap;
 
   @override
   void initState() {
@@ -43,6 +51,48 @@ class _RacePointMapState extends State<RacePointMap> {
     super.initState();
     attendService =
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    googleMap = GoogleMap(
+      myLocationEnabled: true,
+      myLocationButtonEnabled: true,
+      // onTap: (LatLng latlng) {
+      //   Marker newmarker = Marker(
+      //     markerId: MarkerId('$id'),
+      //     position: LatLng(latlng.latitude, latlng.longitude),
+      //     infoWindow: InfoWindow(title: 'New place'),
+      //     icon: BitmapDescriptor.defaultMarkerWithHue(
+      //         BitmapDescriptor.hueRose),
+      //     onTap: () {},
+      //   );
+      //   markerss.add(newmarker);
+      //   id = id + 1;
+      //   setState(() {});
+      //   log('Our lat and long is: $latlng');
+      // },
+      mapType: MapType.hybrid,
+      initialCameraPosition: CameraPosition(
+        target: centerMap,
+        zoom: 16,
+      ),
+      onMapCreated: (GoogleMapController controller) {
+        _controller.complete(controller);
+      },
+      markers: markerss.map((e) => e).toSet(),
+      polylines: _polylines,
+      onCameraMove: (position) {
+        // latitude = position.target.latitude.toInt();
+        // lat = int.tryParse(lats.toString().split('.')[3]);
+        // longstitude = position.target.latitude.toInt();
+        // long = int.tryParse(lats.toString().split('.')[3]);
+        // log('xxxx ' +
+        //     position.target.latitude.toString() +
+        //     ' ' +
+        //     position.target.longitude.toString());
+         // Text(position.target.latitude.toString());
+         lats = lats.toString();
+         longs = longs.toString();
+           log('lat'+lats);
+      },
+    );
   }
 
   @override
@@ -58,193 +108,176 @@ class _RacePointMapState extends State<RacePointMap> {
   raceMap() {
     return Scaffold(
         body: SafeArea(
-      child: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+      child: Column(
+        children: [
+          SizedBox(
+            height: 300,
+            child: Stack(children: [
+              googleMap,
+              Positioned(
+                  top: (300 / 2) - 32,
+                  left: (MediaQuery.of(context).size.width / 2) - 16,
+                  child: Column(
+                    children: [
+                      FaIcon(
+                        FontAwesomeIcons.mapPin,
+                        size: 32,
+                        color: Colors.yellowAccent,
+                      ),
+                    // Text('Lat:'+lat+',Long:'+long),
+                    ],
+                  )),
+                  
+            ]),
+          ),
+          missionInput(),
+        ],
+      ),
+    ));
+  }
+
+  missionInput() {
+    return Expanded(
+      child: SingleChildScrollView(
         child: Column(
           children: [
-            Expanded(
-              child: GoogleMap(
-                myLocationEnabled: true,
-                myLocationButtonEnabled: true,
-                onTap: (LatLng latlng) {
-                  Marker newmarker = Marker(
-                    markerId: MarkerId('$id'),
-                    position: LatLng(latlng.latitude, latlng.longitude),
-                    infoWindow: InfoWindow(title: 'New place'),
-                    icon: BitmapDescriptor.defaultMarkerWithHue(
-                        BitmapDescriptor.hueRose),
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (context) => Padding(
-                          padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text('ชื่อภารกิจ'),
-                                    ),
-                                    SizedBox(
-                                      width: 150,
-                                      child: TextFormField(
-                                        controller: nameMission,
-                                        decoration: InputDecoration(
-                                          hintText: 'ชื่อภารกิจ',
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('คำอธิบาย'),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SizedBox(
-                                  width: 150,
-                                  child: TextFormField(
-                                    controller: DescriptionMission,
-                                    decoration: InputDecoration(
-                                      hintText: 'คำอธิบาย...',
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('กรุณาเลือกประเภทภารกิจ'),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text('รัศมีแจ้งเตือนภารกิจ'),
-                                  ),
-                                  Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: dropdownRadius())
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Checkbox(
-                                    value: _checkbox,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _checkbox = !_checkbox;
-                                      });
-                                    },
-                                  ),
-                                  Text('ข้อความ'),
-                                  Checkbox(
-                                    value: _checkbox1,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _checkbox1 = !_checkbox1;
-                                      });
-                                    },
-                                  ),
-                                  Text('สื่อ'),
-                                  Checkbox(
-                                    value: _checkbox2,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _checkbox2 = !_checkbox2;
-                                      });
-                                    },
-                                  ),
-                                  Text('ไม่มีการส่ง'),
-                                ],
-                              ),
-                              
-                              Center(
-                                child: ElevatedButton(
-                                    child: Text('สร้างภารกิจ'),
-                                    onPressed: () {}),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                  markerss.add(newmarker);
-                  id = id + 1;
-                  setState(() {});
-                  log('Our lat and long is: $latlng');
-                },
-                mapType: MapType.normal,
-                initialCameraPosition: CameraPosition(
-                  target: centerMap,
-                  zoom: 16,
+            const Text('สร้างภารกิจ'),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('ชื่อภารกิจ'),
                 ),
-                onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
-                },
-                markers: markerss.map((e) => e).toSet(),
-                polylines: _polylines,
-              ),
+                SizedBox(
+                  width: 150,
+                  child: TextFormField(
+                    controller: nameMission,
+                    decoration: InputDecoration(
+                      hintText: 'ชื่อภารกิจ',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('คำอธิบาย'),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: 150,
+                    child: TextFormField(
+                      controller: DescriptionMission,
+                      decoration: InputDecoration(
+                        hintText: 'คำอธิบาย...',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('กรุณาเลือกประเภทภารกิจ'),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('รัศมีแจ้งเตือนภารกิจ'),
+                ),
+                Padding(
+                    padding: const EdgeInsets.all(8.0), child: dropdownRadius())
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Checkbox(
+                  value: _checkbox,
+                  onChanged: (value) {
+                    setState(() {
+                      _checkbox = !_checkbox;
+                    });
+                  },
+                ),
+                Text('ข้อความ'),
+                Checkbox(
+                  value: _checkbox1,
+                  onChanged: (value) {
+                    setState(() {
+                      _checkbox1 = !_checkbox1;
+                    });
+                  },
+                ),
+                Text('สื่อ'),
+                Checkbox(
+                  value: _checkbox2,
+                  onChanged: (value) {
+                    setState(() {
+                      _checkbox2 = !_checkbox2;
+                    });
+                  },
+                ),
+                Text('ไม่มีการส่ง'),
+              ],
+            ),
+            Center(
+              child:
+                  ElevatedButton(child: Text('สร้างภารกิจ'), 
+                  onPressed: () {
+                   
+                  }),
             ),
           ],
         ),
       ),
-    ));
+    );
   }
 
   Widget dropdownRadius() {
     return SingleChildScrollView(
       child: DropdownButtonHideUnderline(
-        child: Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: DropdownButton2(
-            hint: Text(
-              'รัศมี',
-              style: TextStyle(
-                //  fontSize: 12,
-                color: Theme.of(context).hintColor,
-              ),
+        child: DropdownButton2(
+          hint: Text(
+            'รัศมี',
+            style: TextStyle(
+              //  fontSize: 12,
+              color: Theme.of(context).hintColor,
             ),
-            items: items
-                .map((item) => DropdownMenuItem<String>(
-                      value: item,
-                      child: Text(
-                        item,
-                        style: const TextStyle(
-                            //  fontSize: 14,
-                            ),
-                      ),
-                    ))
-                .toList(),
-            value: selectedValue,
-            onChanged: (value) {
-              setState(() {
-                selectedValue = value as String;
-                log(selectedValue.toString());
-              });
-            },
-            buttonStyleData: const ButtonStyleData(
-              height: 30,
-              width: 60,
-            ),
-            menuItemStyleData: const MenuItemStyleData(
-              height: 30,
-            ),
+          ),
+          items: items
+              .map((item) => DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(
+                      item,
+                      style: const TextStyle(
+                          //  fontSize: 14,
+                          ),
+                    ),
+                  ))
+              .toList(),
+          value: selectedValue,
+          onChanged: (value) {
+            setState(() {
+              selectedValue = value as String;
+              log(selectedValue.toString());
+            });
+          },
+          buttonStyleData: const ButtonStyleData(
+            height: 30,
+            width: 60,
+          ),
+          menuItemStyleData: const MenuItemStyleData(
+            height: 30,
           ),
         ),
       ),
