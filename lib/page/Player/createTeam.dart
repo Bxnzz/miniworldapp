@@ -74,6 +74,8 @@ class _CeateTeamState extends State<CeateTeam> {
     idUser = context.read<AppData>().idUser;
     log(idUser.toString());
     nameMember1.text = Username;
+    idrace = context.read<AppData>().idrace;
+    log(idrace.toString());
   }
 
   @override

@@ -201,6 +201,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                           );
                           var race = await raceservice.Races(dto);
                           race.data.raceName.toString();
+                          
                           //print(race.response.statusCode.toString());
                             if (race.response.statusCode == 200) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -211,7 +212,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const RacePointMap(),
+                                    builder: (context) =>  RacePointMap( idrace:race.data.raceId),
                                     settings: RouteSettings(arguments: null),
                                   ));
                               return;
@@ -223,6 +224,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
 
                               return;
                             }
+                            
                         },
                         child: Text("สร้าง")),
                         
