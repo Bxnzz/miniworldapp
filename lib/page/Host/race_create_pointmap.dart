@@ -6,14 +6,18 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:miniworldapp/model/DTO/missionDTO.dart';
 import 'package:miniworldapp/page/Host/race_edit_mission.dart';
+import 'package:miniworldapp/service/mission.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/mission.dart';
 import '../../service/attend.dart';
 import '../../service/provider/appdata.dart';
 
 class RacePointMap extends StatefulWidget {
-  const RacePointMap({super.key});
+  late int idrace;
+   RacePointMap({super.key,required this.idrace});
 
   @override
   State<RacePointMap> createState() => _RacePointMapState();
@@ -29,17 +33,18 @@ class _RacePointMapState extends State<RacePointMap> {
     '15',
   ];
   String? selectedValue;
+
   bool _checkbox = false;
   bool _checkbox1 = false;
   bool _checkbox2 = false;
-  // int latitude = 0;
-  // int longstitude = 0;
-  // int? lat = 0 ;
-  //  int? long = 0 ;
   String lats = '';
   String longs = '';
-  late AttendService attendService;
+  late MissionService missionService;
+  List<Mission> missions = [];
+  List<MissionDto> missionDtos = [];
+
   List<Marker> markerss = [];
+  int idrace = 0;
   int id = 1;
   Set<Polyline> _polylines = Set<Polyline>();
   List<LatLng> polylineCoordinates = [];
@@ -50,8 +55,9 @@ class _RacePointMapState extends State<RacePointMap> {
   void initState() {
     // intilize();
     super.initState();
-    attendService =
-        AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
+   log(widget.idrace.toString());
+    missionService =
+        MissionService(Dio(), baseUrl: context.read<AppData>().baseurl);
     googleMap = GoogleMap(
       myLocationEnabled: true,
       myLocationButtonEnabled: true,
@@ -88,10 +94,10 @@ class _RacePointMapState extends State<RacePointMap> {
         //     position.target.latitude.toString() +
         //     ' ' +
         //     position.target.longitude.toString());
-         // Text(position.target.latitude.toString());
-         lats = lats.toString();
-         longs = longs.toString();
-           log('lat'+lats);
+        // Text(position.target.latitude.toString());
+        lats = position.target.latitude.toString();
+        longs = position.target.longitude.toString();
+        //log('lat' + lats + longs);
       },
     );
   }
@@ -102,15 +108,16 @@ class _RacePointMapState extends State<RacePointMap> {
       appBar: AppBar(
         title: const Text('สร้างการแข่งขัน'),
         actions: [
-          IconButton(onPressed: (){
-            Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const DetailMission(),
-                                    settings: RouteSettings(arguments: null),
-                                  ));
-          }, 
-          icon: FaIcon(FontAwesomeIcons.flagCheckered))
+          IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DetailMission(),
+                      settings: RouteSettings(arguments: null),
+                    ));
+              },
+              icon: FaIcon(FontAwesomeIcons.flagCheckered))
         ],
       ),
       body: raceMap(),
@@ -136,10 +143,9 @@ class _RacePointMapState extends State<RacePointMap> {
                         size: 32,
                         color: Colors.yellowAccent,
                       ),
-                    // Text('Lat:'+lat+',Long:'+long),
+                      // Text('Lat:'+lat+',Long:'+long),
                     ],
                   )),
-                  
             ]),
           ),
           missionInput(),
@@ -243,10 +249,20 @@ class _RacePointMapState extends State<RacePointMap> {
               ],
             ),
             Center(
-              child:
-                  ElevatedButton(child: Text('สร้างภารกิจ'), 
+              child: ElevatedButton(
+                  child: Text('สร้างภารกิจ'),
                   onPressed: () {
-                   
+                    // MissionDto missionDto = MissionDto(
+                    //     misName: nameMission.text,
+                    //     misDiscrip: DescriptionMission.text,
+                    //     misDistance: int.parse(selectedValue!),
+                    //     misType: misType,
+                    //     misSeq: misSeq,
+                    //     misMediaUrl: '',
+                    //     misLat: double.parse(lats),
+                    //     misLng: double.parse(longs),
+                    //     raceId: widget.idrace);
+                    // print(double.parse('lat'+lats));
                   }),
             ),
           ],
@@ -281,7 +297,8 @@ class _RacePointMapState extends State<RacePointMap> {
           onChanged: (value) {
             setState(() {
               selectedValue = value as String;
-              log(selectedValue.toString());
+
+              //    log('radi'+selectedValue.toString());
             });
           },
           buttonStyleData: const ButtonStyleData(
