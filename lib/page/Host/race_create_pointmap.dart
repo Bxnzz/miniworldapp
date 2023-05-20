@@ -233,6 +233,7 @@ class _RacePointMapState extends State<RacePointMap> {
                   onChanged: (value) {
                     setState(() {
                       _checkbox1 = !_checkbox1;
+                      log(_checkbox1.toString());
                     });
                   },
                 ),
