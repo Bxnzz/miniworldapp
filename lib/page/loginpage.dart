@@ -29,7 +29,6 @@ class _LoginPageState extends State<LoginPage> {
   late Future<void> loadDataMethod;
   late LoginService loginService;
 
- 
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
 
@@ -117,46 +116,54 @@ class _LoginPageState extends State<LoginPage> {
                   Visibility(
                       visible: !_authenticatingStatus,
                       child: ElevatedButton(
-                          onPressed: () async {                                                           // เปลี่ยนสถานะเป็นกำลังล็อกอิน
-                                  setState(() {
-                                    _authenticatingStatus = !_authenticatingStatus;
-                                  });
- 
-                                  // อ้างอิงฟอร์มที่กำลังใช้งาน ตรวจสอบความถูกต้องข้อมูลในฟอร์ม
-                                  if (_formKey.currentState!.validate()) { //หากผ่าน 
-                                    FocusScope.of(context).unfocus(); // ยกเลิดโฟกัส ให้แป้นพิมพ์ซ่อนไป
-                            LoginDto dto = LoginDto(
-                                email: email.text, password: password.text);
-                            //log(jsonEncode(dto));
+                          onPressed: () async {
+                            // เปลี่ยนสถานะเป็นกำลังล็อกอิน
+                            setState(() {
+                              _authenticatingStatus = !_authenticatingStatus;
+                            });
 
-                            var login = await loginService.loginser(dto);
-                            if (login.data.userId != 0) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Login Successful')),
-                                      );
-                                      
-                                      setState(() {
-                                          _authenticatingStatus = !_authenticatingStatus;
-                                        });
-                              log("login success");
-                               Navigator.pushReplacement(context,
-                                MaterialPageRoute(builder: (context) => const NewHome(),
-                                settings: RouteSettings( arguments: null
-                                          ),));
-                              return;                              
+                            // อ้างอิงฟอร์มที่กำลังใช้งาน ตรวจสอบความถูกต้องข้อมูลในฟอร์ม
+                            if (_formKey.currentState!.validate()) {
+                              //หากผ่าน
+                              FocusScope.of(context)
+                                  .unfocus(); // ยกเลิดโฟกัส ให้แป้นพิมพ์ซ่อนไป
+                              LoginDto dto = LoginDto(
+                                  email: email.text, password: password.text);
+                              //log(jsonEncode(dto));
+
+                              var login = await loginService.loginser(dto);
+                              if (login.data.userId != 0) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Login Successful')),
+                                );
+
+                                setState(() {
+                                  _authenticatingStatus =
+                                      !_authenticatingStatus;
+                                });
+                                log("login success");
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const NewHome(),
+                                      settings: RouteSettings(arguments: null),
+                                    ));
+                                return;
+                              } else {
+                                log("login fail");
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('login fail try agin!')),
+                                );
+                                setState(() {
+                                  _authenticatingStatus =
+                                      !_authenticatingStatus;
+                                });
+                                return;
+                              }
                             }
-                            else  {
-                              log("login fail");
-                                 ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('login fail try agin!')),
-                                        );
-                                        setState(() {
-                                          _authenticatingStatus = !_authenticatingStatus;
-                                        });
-                              return;
-                            }
-                                  }
-                                  },
+                          },
                           child: const Text('LOGIN'))),
                 ],
               ),
