@@ -5,22 +5,43 @@
 import 'package:meta/meta.dart';
 import 'dart:convert';
 
+import 'package:miniworldapp/model/race.dart';
+
 List<Team> teamFromJson(String str) => List<Team>.from(json.decode(str).map((x) => Team.fromJson(x)));
 
 String teamToJson(List<Team> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Team {
     Team({
-        required this.massage,
+        required this.teamId,
+        required this.teamName,
+        required this.teamImage,
+        required this.raceId,
+        required this.race,
     });
 
-    String massage;
+    int teamId;
+    String teamName;
+    String teamImage;
+    int raceId;
+    Race race;
 
     factory Team.fromJson(Map<String, dynamic> json) => Team(
-        massage: json["massage"],
+        teamId: json["TeamID"],
+        teamName: json["TeamName"],
+        teamImage: json["TeamImage"],
+        raceId: json["RaceID"],
+        race: Race.fromJson(json["Race"]),
     );
 
     Map<String, dynamic> toJson() => {
-        "massage": massage,
+        "TeamID": teamId,
+        "TeamName": teamName,
+        "TeamImage": teamImage,
+        "RaceID": raceId,
+        "Race": race.toJson(),
     };
 }
+
+
+
