@@ -62,6 +62,7 @@ dependencies:
   buddhist_datetime_dateformat_sns: ^1.0.7
   intl: ^0.17.0
   searchfield: ^0.7.5
+  textfield_search: ^0.10.0
   
 
 
