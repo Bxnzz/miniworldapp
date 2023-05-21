@@ -6,11 +6,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:miniworldapp/model/login.dart';
+
 import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/page/Host/race_create.dart';
-import 'package:miniworldapp/page/Player/lobby.dart';
-import 'package:miniworldapp/page/loginpage.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../model/race.dart';
@@ -44,7 +43,7 @@ class _HomeAllState extends State<HomeAll> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('หน้าHome'),
-          actions: <Widget>[Text(Username)],
+        //  actions: <Widget>[Text(Username)],
           bottom: const TabBar(
             tabs: <Widget>[
               Tab(
@@ -90,20 +89,20 @@ class _HomeAllState extends State<HomeAll> {
               padding: EdgeInsets.zero,
               children: [
                 DrawerHeader(
+                  decoration: const BoxDecoration(),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
+                    children:  <Widget>[
                       SizedBox(
                         height: 15,
                       ),
                       Text(
-                        "name",
-                        style: TextStyle(color: Colors.grey),
+                       Username,
+                       // style: TextStyle(color: Colors.grey),
                       )
                     ],
                   ),
-                  decoration: BoxDecoration(),
                 ),
                 ListTile(
                   leading: const FaIcon(FontAwesomeIcons.house),
@@ -133,7 +132,7 @@ class _HomeAllState extends State<HomeAll> {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>  const LoginPage(),
+                          builder: (context) =>  const Login(),
                          
                         ));
                   },
