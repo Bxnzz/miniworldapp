@@ -8,6 +8,7 @@ import 'package:miniworldapp/page/Player/createTeam.dart';
 import 'package:miniworldapp/page/home.dart';
 import 'package:miniworldapp/page/loginpage.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
+import 'package:miniworldapp/theme/default.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -16,8 +17,9 @@ import 'package:flutter_facebook_keyhash/flutter_facebook_keyhash.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-   Intl.defaultLocale = "th";
-  initializeDateFormatting(); 
+  Intl.defaultLocale = "th";
+
+  initializeDateFormatting();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -31,21 +33,32 @@ Future<void> main() async {
     ChangeNotifierProvider(
       create: (context) => AppData(),
     )
-  ], child: const MyApp()));
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final DefaultTheme defaultTheme = DefaultTheme();
+  MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Mini world race',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
+      themeMode: ThemeMode.system,
+      theme: defaultTheme.flexTheme.theme.copyWith(
+          scaffoldBackgroundColor: Colors.white,
+          inputDecorationTheme:
+              defaultTheme.flexTheme.theme.inputDecorationTheme.copyWith(
+            contentPadding: const EdgeInsets.fromLTRB(6, 10, 6, 3),
+            isDense: true,
+          )),
+      darkTheme: defaultTheme.flexTheme.darkTheme.copyWith(
+          inputDecorationTheme:
+              defaultTheme.flexTheme.darkTheme.inputDecorationTheme.copyWith(
+        contentPadding: const EdgeInsets.fromLTRB(6, 10, 6, 3),
+        isDense: true,
+      )),
       home: const Login(),
     );
   }
