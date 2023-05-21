@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:miniworldapp/page/General/fontpage_register.dart';
 
 import 'package:miniworldapp/page/General/home_all.dart';
+import 'package:miniworldapp/page/General/register.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:provider/provider.dart';
 import 'dart:developer';
@@ -131,7 +133,7 @@ class _LoginState extends State<Login> {
                                 context.read<AppData>().Username =
                                     login.data.userName;
 
-                                    context.read<AppData>().idUser =
+                                context.read<AppData>().idUser =
                                     login.data.userId;
                                 //Get.to(() => HomeAll());
                                 // Get.to(() => HomeAll());
@@ -150,7 +152,17 @@ class _LoginState extends State<Login> {
                               }
                             }
                           },
-                          child: const Text('LOGIN')))
+                          child: const Text('LOGIN'))),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const FontRegisterPage(),
+                              settings: const RouteSettings(arguments: null),
+                            ));
+                      },
+                      child: Text('Register'))
                 ],
               ),
             ),
