@@ -4,8 +4,13 @@ import 'dart:developer';
 import 'package:buddhist_datetime_dateformat_sns/buddhist_datetime_dateformat_sns.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:miniworldapp/model/login.dart';
+import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/page/Host/race_create.dart';
+import 'package:miniworldapp/page/Player/lobby.dart';
+import 'package:miniworldapp/page/loginpage.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/race.dart';
@@ -75,6 +80,66 @@ class _HomeAllState extends State<HomeAll> {
                       builder: (context) => const RaceCreatePage()));
             },
             child: const Text("สร้างการแข่งขัน"),
+          ),
+        ),
+        drawer: SizedBox(
+          width: 200,
+          child: Drawer(
+            child: ListView(
+              // Important: Remove any padding from the ListView.
+              padding: EdgeInsets.zero,
+              children: [
+                DrawerHeader(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Text(
+                        "name",
+                        style: TextStyle(color: Colors.grey),
+                      )
+                    ],
+                  ),
+                  decoration: BoxDecoration(),
+                ),
+                ListTile(
+                  leading: const FaIcon(FontAwesomeIcons.house),
+                  title: const Text('หน้าหลัก'),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: FaIcon(FontAwesomeIcons.chartLine),
+                  title: const Text('สถิติการแข่งขัน'),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: const FaIcon(FontAwesomeIcons.user),
+                  title: const Text('แก้ไขโปรไฟล์'),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: FaIcon(FontAwesomeIcons.rightFromBracket),
+                  title: const Text('ออกจากระบบ'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>  const LoginPage(),
+                         
+                        ));
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

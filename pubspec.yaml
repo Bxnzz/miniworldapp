@@ -66,6 +66,7 @@ dependencies:
   flutter_datetime_picker: ^1.5.1
   flutter_cupertino_datetime_picker: ^3.0.0
   textfield_search: ^0.10.0
+  font_awesome_flutter: ^10.4.0
   
   
 
