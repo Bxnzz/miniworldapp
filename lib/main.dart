@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:miniworldapp/model/login.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/register.dart';
 import 'package:miniworldapp/page/General/login.dart';
