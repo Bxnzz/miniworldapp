@@ -34,22 +34,33 @@ Future<void> main() async {
     ChangeNotifierProvider(
       create: (context) => AppData(),
     )
-  ], child: const MyApp()));
+  ], child:  MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final DefaultTheme defaultTheme = DefaultTheme();
+   MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Mini world race',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
-      home: const HomeAll(),
+      
+      themeMode: ThemeMode.system,
+       theme: defaultTheme.flexTheme.theme.copyWith(
+                      scaffoldBackgroundColor: Colors.white,
+                      inputDecorationTheme: defaultTheme.flexTheme.theme.inputDecorationTheme.copyWith(
+                        contentPadding: const EdgeInsets.fromLTRB(6, 10, 6, 3),
+                        isDense: true,
+                      )),
+                  darkTheme: defaultTheme.flexTheme.darkTheme.copyWith(
+                      inputDecorationTheme: defaultTheme.flexTheme.darkTheme.inputDecorationTheme.copyWith(
+                    contentPadding: const EdgeInsets.fromLTRB(6, 10, 6, 3),
+                    isDense: true,
+                  )),
+    
+      home: const Login(),
     );
   }
 }

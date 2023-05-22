@@ -190,90 +190,38 @@ class _LoginState extends State<Login> {
                                           content: Text('Login Successful')),
                                     );
 
-                                    setState(() {
-                                      _authenticatingStatus =
-                                          !_authenticatingStatus;
-                                    });
-                                    log("login success");
-                                    Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => const HomeAll(),
-                                          settings: const RouteSettings(
-                                              arguments: null),
-                                        ));
-                                    context.read<AppData>().Username =
-                                        login.data.userName;
-
-                                    context.read<AppData>().idUser =
-                                        login.data.userId;
-                                    //Get.to(() => HomeAll());
-                                    // Get.to(() => HomeAll());
-                                    return;
-                                  } else {
-                                    log("login fail");
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content:
-                                              Text('login fail try agin!')),
-                                    );
-                                    setState(() {
-                                      _authenticatingStatus =
-                                          !_authenticatingStatus;
-                                    });
-                                    return;
-                                  }
-                                }
-                              },
-                              child: const Text('เข้าสู่ระบบ')),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('ไม่มีบัญชีใช่หรือไม่?'),
-                            TextButton(
-                                onPressed: () {},
-                                child: const Text('คลิกที่นี้'))
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: const Divider(),
-                        ),
-                        SizedBox(
-                          width: 240,
-                          child: ElevatedButton.icon(
-                            onPressed: () {},
-                            label: const Text('Login Facebook'),
-                            icon: FaIcon(FontAwesomeIcons.facebook),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 240,
-                          child: ElevatedButton.icon(
-                            onPressed: () {},
-                            label: const Text('Sign up Facebook'),
-                            icon: FaIcon(FontAwesomeIcons.facebook),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  //      Positioned(
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.all(50),
-                  //     child: Container(
-                  //       padding: const EdgeInsets.all(16),
-                  //       decoration: BoxDecoration(
-                  //         color: Colors.white,
-                  //         border:
-                  //             Border.all(color: Colors.purple.shade50, width: 3),
-                  //         shape: BoxShape.circle,
-                  //       ),
-                  //       child: const Text('เข้าสู่ระบบ'),
-                  //     ),
-                  //   ),
-                  // )
+                                setState(() {
+                                  _authenticatingStatus =
+                                      !_authenticatingStatus;
+                                });
+                                log("login success");
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const HomeAll(),
+                                      settings:
+                                          const RouteSettings(arguments: null),
+                                    ));
+                                context.read<AppData>().Username =
+                                    login.data.userName;
+                                //Get.to(() => HomeAll());
+                                // Get.to(() => HomeAll());
+                                return;
+                              } else {
+                                log("login fail");
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('login fail try agin!')),
+                                );
+                                setState(() {
+                                  _authenticatingStatus =
+                                      !_authenticatingStatus;
+                                });
+                                return;
+                              }
+                            }
+                          },
+                          child: const Text('LOGIN')))
                 ],
               ),
             ),
