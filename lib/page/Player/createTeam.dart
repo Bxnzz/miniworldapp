@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
@@ -10,7 +9,7 @@ import 'package:miniworldapp/page/Player/lobby.dart';
 import 'package:miniworldapp/service/attend.dart';
 
 import 'package:provider/provider.dart';
-import 'package:searchfield/searchfield.dart';
+import 'package:textfield_search/textfield_search.dart';
 
 import '../../model/DTO/teamDTO.dart';
 import '../../model/team.dart';
@@ -74,8 +73,6 @@ class _CeateTeamState extends State<CeateTeam> {
     idUser = context.read<AppData>().idUser;
     log(idUser.toString());
     nameMember1.text = Username;
-    idrace = context.read<AppData>().idrace;
-    log(idrace.toString());
   }
 
   @override
@@ -127,46 +124,59 @@ class _CeateTeamState extends State<CeateTeam> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(32, 20, 32, 32),
-                      child: SearchField<User>(
-                        hint: 'สมาชิกคนที่ 2',
-                        //  suggestionItemDecoration: BoxDecoration(
-                        //   color: Colors.amber,
-                        //   borderRadius: BorderRadius.circular(10)
-                        //  ),
-                        itemHeight: 50,
-                        maxSuggestionsInViewPort: 4,
-                        onSubmit: (value) {
-                          setState(() {
-                            _user = value;
-                          });
-                        },
-                        suggestions: users
-                            .map(
-                              (e) => SearchFieldListItem<User>(
-                                e.userName,
-                                item: e,
+                        padding: const EdgeInsets.fromLTRB(32, 20, 32, 32),
+                        child: TextFieldSearch(
+                          label: 'สมาชิกคนที่2',
+                          future: () {
+                            return loadMembers();
+                          },
+                          getSelectedValue: (item) {
+                            log((item as UserItem).value.userName);
+                            nameMember2.text = (item).value.userName;
+                          },
+                          minStringLength: 1,
+                          itemsInView: 5,
+                          controller: nameMember2,
+                        )
+                        // SearchField<User>(
+                        //   hint: 'สมาชิกคนที่ 2',
+                        //   //  suggestionItemDecoration: BoxDecoration(
+                        //   //   color: Colors.amber,
+                        //   //   borderRadius: BorderRadius.circular(10)
+                        //   //  ),
+                        //   itemHeight: 50,
+                        //   maxSuggestionsInViewPort: 4,
+                        //   onSubmit: (value) {
+                        //     setState(() {
+                        //       _user = value;
+                        //     });
+                        //   },
+                        //   suggestions: users
+                        //       .map(
+                        //         (e) => SearchFieldListItem<User>(
+                        //           e.userName,
+                        //           item: e,
 
-                                // Use child to show Custom Widgets in the suggestions
-                                // defaults to Text widget
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(e.userName),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                            .toList(),
+                        //           // Use child to show Custom Widgets in the suggestions
+                        //           // defaults to Text widget
+                        //           child: Padding(
+                        //             padding: const EdgeInsets.all(8.0),
+                        //             child: Row(
+                        //               children: [
+                        //                 const SizedBox(
+                        //                   width: 10,
+                        //                 ),
+                        //                 Text(e.userName),
+                        //               ],
+                        //             ),
+                        //           ),
+                        //         ),
+                        //       )
+                        //       .toList(),
 
-                        controller: nameMember2,
-                      ),
-                    ),
+                        //   controller: nameMember2,
+                        // ),
+                        ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
@@ -255,4 +265,19 @@ class _CeateTeamState extends State<CeateTeam> {
       log('Error:$err');
     }
   }
+
+  Future<List<UserItem>> loadMembers() async {
+    List<UserItem> userObjs = [];
+    for (var user in context.read<AppData>().users) {
+      UserItem item = UserItem(label: '${user.userName}', value: user);
+      userObjs.add(item);
+    }
+    return userObjs;
+  }
+}
+
+class UserItem {
+  late String label;
+  late User value;
+  UserItem({required this.label, required this.value});
 }
