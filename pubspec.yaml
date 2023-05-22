@@ -69,7 +69,7 @@ dependencies:
   flex_color_scheme: ^7.0.5
   google_fonts: ^4.0.4
   font_awesome_flutter: ^10.4.0
-   gap: ^3.0.0
+  gap: ^3.0.0
   
   
 
