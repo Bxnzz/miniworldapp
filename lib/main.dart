@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/register.dart';
 import 'package:miniworldapp/page/General/login.dart';
@@ -33,33 +34,22 @@ Future<void> main() async {
     ChangeNotifierProvider(
       create: (context) => AppData(),
     )
-  ], child: MyApp()));
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-  final DefaultTheme defaultTheme = DefaultTheme();
-  MyApp({super.key});
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Mini world race',
-      themeMode: ThemeMode.system,
-      theme: defaultTheme.flexTheme.theme.copyWith(
-          scaffoldBackgroundColor: Colors.white,
-          inputDecorationTheme:
-              defaultTheme.flexTheme.theme.inputDecorationTheme.copyWith(
-            contentPadding: const EdgeInsets.fromLTRB(6, 10, 6, 3),
-            isDense: true,
-          )),
-      darkTheme: defaultTheme.flexTheme.darkTheme.copyWith(
-          inputDecorationTheme:
-              defaultTheme.flexTheme.darkTheme.inputDecorationTheme.copyWith(
-        contentPadding: const EdgeInsets.fromLTRB(6, 10, 6, 3),
-        isDense: true,
-      )),
-      home: const Login(),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
+      home: const HomeAll(),
     );
   }
 }
