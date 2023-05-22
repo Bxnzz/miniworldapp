@@ -14,6 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter_facebook_keyhash/flutter_facebook_keyhash.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 // ...
 
 Future<void> main() async {
@@ -45,6 +47,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+     localizationsDelegates: GlobalMaterialLocalizations.delegates,
+                  supportedLocales: const [
+                    Locale('th', 'TH'),
+                  ],
       title: 'Mini world race',
       
       themeMode: ThemeMode.system,
