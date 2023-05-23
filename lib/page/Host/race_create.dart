@@ -8,10 +8,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/page/Host/race_create_pointmap.dart';
 import 'package:miniworldapp/service/race.dart';
+import 'package:miniworldapp/widget/textfieldDate.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/DTO/raceDTO.dart';
 import '../../service/provider/appdata.dart';
+import '../../widget/textfildTime.dart';
 
 class RaceCreatePage extends StatefulWidget {
   const RaceCreatePage({super.key});
@@ -111,102 +113,93 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                         child: textField(raceLocation, 'สถานที่แข่งขัน...', 'สถานที่'),
                       ),
                     ),
-                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      SizedBox(
-                        width: 140,
-                        child: textField(raceLimit, 'จำนวนทีม...', 'จำนวนทีม'),
-                      ),
-                      Text('ทีม')
-                    ],
+                   Padding(
+                     padding: const EdgeInsets.all(8.0),
+                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(
+                          width: 140,
+                          child: textField(raceLimit, 'จำนวนทีม...', 'จำนวนทีม'),
+                        ),
+                        Text('ทีม')
+                      ],
+                     ),
                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: singUpST,
-                        readOnly: true,
-                        onTap: () {
-                          setState(() {
-                            pickDateTime();
-                          });
-                          singUpST.text =
-                              '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes';
-                        },
-                        decoration: InputDecoration(
-                            icon: Icon(Icons.dangerous_outlined),
-                            label: Text('enter date time')),
-                      ),
+                   Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: SizedBox(
+                          width: 240,
+                          child: SizedBox(
+                            child: TextFieldDate(
+                                controller: singUpST,
+                                hintText: '00/00/0000',
+                                labelText: 'วันที่เปิดรับสมัคร'),
+                          )),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: singUpFN,
-                        readOnly: true,
-                        decoration: const InputDecoration(
-                          hintText: 'วันที่ปิดรับสมัคร',
-                          icon: Icon(Icons.dangerous_outlined),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            pickDateTime();
-                          });
-                          singUpFN.text =
-                              '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes';
-                        },
-                      ),
+                  ),
+                   Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: SizedBox(
+                          width: 240,
+                          child: SizedBox(
+                            child: TextFieldDate(
+                                controller: singUpFN,
+                                hintText: '00/00/0000',
+                                labelText: 'วันที่ปิดรับสมัคร'),
+                          )),
                     ),
+                  ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        decoration: const InputDecoration(
-                          hintText: 'เวลาเริ่มการแข่งขัน',
-                          icon: Icon(Icons.timer),
-                        ),
-                        controller: raceTimeST,
-                        onTap: () {
-                          setState(() {
-                            pickDateTime();
-                          });
-                          raceTimeST.text =
-                              '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes';
-                        },
-                      ),
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: SizedBox(
+                          width: 240,
+                          child: SizedBox(
+                            child: TextFieldDate(
+                                controller: eventDatetime,
+                                hintText: '00/00/0000',
+                                labelText: 'วันจัดการแข่งขัน'),
+                          )),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: raceTimeFN,
-                        decoration: const InputDecoration(
-                          hintText: 'เวลาสิ้นสุดการแข่งขัน',
-                          icon: Icon(Icons.timer_off),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            pickDateTime();
-                          });
-                          raceTimeFN.text =
-                              '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes';
-                        },
-                      ),
+                  ),
+                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                       children: [
+                         Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                          child: SizedBox(
+                              width: 120,
+                              child: SizedBox(
+                                child: TextFieldTime(
+                                    controller: raceTimeST,
+                                    hintText: '00:00',
+                                    labelText: 'เวลาเริ่มแข่งขัน'),
+                              )),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        controller: eventDatetime,
-                        decoration: const InputDecoration(
-                          hintText: 'วันจัดการแข่งขัน',
-                          icon: Icon(Icons.date_range_outlined),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            pickDateTime();
-                          });
-                          eventDatetime.text =
-                              '${dateTime.year}/${dateTime.month}/${dateTime.day} $hours:$minutes';
-                        },
-                      ),
+                  ),
+                                     Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: SizedBox(
+                          width: 120,
+                          child: SizedBox(
+                            child: TextFieldTime(
+                                controller: raceTimeFN,
+                                hintText: '00:00',
+                                labelText: 'เวลาจบแข่งขัน'),
+                          )),
                     ),
+                  ),
+                       ],
+                     ),
+
+                   
+                 
+                   
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
