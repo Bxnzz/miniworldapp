@@ -24,7 +24,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Intl.defaultLocale = "th";
 
- // initializeDateFormatting();
+  // initializeDateFormatting();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -38,36 +38,36 @@ Future<void> main() async {
     ChangeNotifierProvider(
       create: (context) => AppData(),
     )
-  ], child:  MyApp()));
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   final DefaultTheme defaultTheme = DefaultTheme();
-   MyApp({super.key});
+  MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-     localizationsDelegates: GlobalMaterialLocalizations.delegates,
-                  supportedLocales: const [
-                    Locale('th', 'TH'),
-                  ],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      supportedLocales: const [
+        Locale('th', 'TH'),
+      ],
       title: 'Mini world race',
-      
       themeMode: ThemeMode.system,
-       theme: defaultTheme.flexTheme.theme.copyWith(
-                      scaffoldBackgroundColor: Colors.white,
-                      inputDecorationTheme: defaultTheme.flexTheme.theme.inputDecorationTheme.copyWith(
-                        contentPadding: const EdgeInsets.fromLTRB(6, 10, 6, 3),
-                        isDense: true,
-                      )),
-                  darkTheme: defaultTheme.flexTheme.darkTheme.copyWith(
-                      inputDecorationTheme: defaultTheme.flexTheme.darkTheme.inputDecorationTheme.copyWith(
-                    contentPadding: const EdgeInsets.fromLTRB(6, 10, 6, 3),
-                    isDense: true,
-                  )),
-    
+      theme: defaultTheme.flexTheme.theme.copyWith(
+          scaffoldBackgroundColor: Colors.white,
+          inputDecorationTheme:
+              defaultTheme.flexTheme.theme.inputDecorationTheme.copyWith(
+            contentPadding: const EdgeInsets.fromLTRB(6, 10, 6, 3),
+            isDense: true,
+          )),
+      darkTheme: defaultTheme.flexTheme.darkTheme.copyWith(
+          inputDecorationTheme:
+              defaultTheme.flexTheme.darkTheme.inputDecorationTheme.copyWith(
+        contentPadding: const EdgeInsets.fromLTRB(6, 10, 6, 3),
+        isDense: true,
+      )),
       home: const Login(),
     );
   }

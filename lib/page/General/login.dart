@@ -230,9 +230,7 @@ class _LoginState extends State<Login> {
                           children: [
                             const Text('ไม่มีบัญชีใช่หรือไม่?'),
                             TextButton(
-                                onPressed: () {
-                                  
-                                },
+                                onPressed: () {},
                                 child: const Text('คลิกที่นี้'))
                           ],
                         ),
@@ -248,7 +246,7 @@ class _LoginState extends State<Login> {
                             icon: FaIcon(FontAwesomeIcons.facebook),
                           ),
                         ),
-                         SizedBox(
+                        SizedBox(
                           width: 240,
                           child: ElevatedButton.icon(
                             onPressed: () {},
