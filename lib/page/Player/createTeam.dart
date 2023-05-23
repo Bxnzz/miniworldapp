@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:miniworldapp/model/DTO/attendDTO.dart';
 import 'package:miniworldapp/model/attend.dart';
 import 'package:miniworldapp/page/Player/lobby.dart';
@@ -123,91 +124,47 @@ class _CeateTeamState extends State<CeateTeam> {
                       ),
                     ),
                     Padding(
-                        padding: const EdgeInsets.fromLTRB(32, 20, 32, 32),
-                        child: TextFieldSearch(
-                          label: 'สมาชิกคนที่2',
-                          future: () {
-                            return loadMembers();
-                          },
-                          getSelectedValue: (item) {
-                            log((item as UserItem).value.userName);
-                            nameMember2.text = (item).value.userName;
-                          },
-                          minStringLength: 1,
-                          itemsInView: 5,
-                          controller: nameMember2,
-                        )
-                        // SearchField<User>(
-                        //   hint: 'สมาชิกคนที่ 2',
-                        //   //  suggestionItemDecoration: BoxDecoration(
-                        //   //   color: Colors.amber,
-                        //   //   borderRadius: BorderRadius.circular(10)
-                        //   //  ),
-                        //   itemHeight: 50,
-                        //   maxSuggestionsInViewPort: 4,
-                        //   onSubmit: (value) {
-                        //     setState(() {
-                        //       _user = value;
-                        //     });
-                        //   },
-                        //   suggestions: users
-                        //       .map(
-                        //         (e) => SearchFieldListItem<User>(
-                        //           e.userName,
-                        //           item: e,
+                      padding: const EdgeInsets.fromLTRB(32, 20, 32, 32),
+                      
+                      child: SearchField<User>(
+                        hint: 'สมาชิกคนที่ 2', 
+                    suggestions: users.map((e) => SearchFieldListItem<User>( 
+                                            
+                            nameU = e.userName,
+                            item: e,
+                            
+                            // Use child to show Custom Widgets in the suggestions
+                            // defaults to Text widget
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                 
+                                  Text(nameU),
+                                  
+                                ],
+                              ),
+                            ),
+                          ),
+                          
+                        ).toList(),
+                         controller: nameMember2,  
+                  ),   
+                                 
+                    ),
+                   Padding(padding: EdgeInsets.all(8.0),
+                   child: ElevatedButton(onPressed: () async{
+                      TeamDto dto = TeamDto(raceId: idrace, teamName: nameTeam.text, teamImage: ''
+                      ); 
+                     
+                  //    AttendDto Adto AttendDto(lat: , lng: , datetime: , userId: userid, teamId: );
 
-                        //           // Use child to show Custom Widgets in the suggestions
-                        //           // defaults to Text widget
-                        //           child: Padding(
-                        //             padding: const EdgeInsets.all(8.0),
-                        //             child: Row(
-                        //               children: [
-                        //                 const SizedBox(
-                        //                   width: 10,
-                        //                 ),
-                        //                 Text(e.userName),
-                        //               ],
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       )
-                        //       .toList(),
-
-                        //   controller: nameMember2,
-                        // ),
-                        ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            TeamDto dto = TeamDto(
-                                raceId: idrace,
-                                teamName: nameTeam.text,
-                                teamImage: '');
-                            //log(dto.toString());
-
-                            var team = await teamService.Teams(dto);
-                            //log(team.data.teamId.toString());
-                            log(idUser.toString());
-                            AttendDto attendDto = AttendDto(
-                                lat: 0.0,
-                                lng: 0.0,
-                                datetime: '2023-02-1',
-                                userId: idUser,
-                                teamId: team.data.teamId);
-                            //   AttendDto Atdto2 = AttendDto(lat: 0, lng: 0, datetime: '', userId: 2, teamId: team.data.teamId);
-                            //  attendDto = AttendDto(lat: 0.0, lng: 0.0, datetime: '2023-02-1', userId: idUser, teamId: team.data.teamId);
-                            var attends =
-                                await attendService.Attends(attendDto);
-                            // log(Atdto.toString());
-                            //  attends = await attendService.Attends(Atdto2);
-                            //  log(attends.data.massage);
-                            // log(team.data.teamId.toString());
-
-                            log(attends.data.massage);
-                            if (team.data.teamId > 0 &&
-                                attends.data.massage == "Insert Success") {
+                       var team = await teamService.Teams(dto);
+                       log(team.data.massage);
+                            if (team.data.massage == "Create Success") {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                     content: Text('team Successful')),

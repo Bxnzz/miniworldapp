@@ -65,14 +65,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
-  buddhist_datetime_dateformat_sns:
+  buddhist_datetime_dateformat:
     dependency: "direct main"
     description:
-      name: buddhist_datetime_dateformat_sns
-      sha256: e90bcfdd9ea2b56feead32edcb0f031b2a7530a1a30778da37fe1b7f61ff4c53
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.7"
+      path: "libraries/buddhist_datetime_dateformat_sns"
+      relative: true
+    source: path
+    version: "1.0.6"
   build:
     dependency: transitive
     description:
@@ -446,14 +445,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.0"
-  flutter_cupertino_datetime_picker:
-    dependency: "direct main"
-    description:
-      name: flutter_cupertino_datetime_picker
-      sha256: "631fbd3abed4d1151888e053d2153d905663a3b33ff24bdfa64afbcf750682cb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   flutter_datetime_picker:
     dependency: "direct main"
     description:
@@ -502,6 +493,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  flutter_localizations:
+    dependency: "direct main"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -509,7 +505,7 @@ packages:
       sha256: "950e77c2bbe1692bc0874fc7fb491b96a4dc340457f4ea1641443d0a6c1ea360"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.15"
+    version: "2.0.9"
   flutter_secure_storage:
     dependency: transitive
     description:
