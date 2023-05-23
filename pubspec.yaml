@@ -71,8 +71,8 @@ dependencies:
   google_fonts: ^4.0.4
   font_awesome_flutter: ^10.4.0
   flutter_rounded_date_picker: ^3.0.3
-  flutter_localizations:
-    sdk: flutter
+  flutter_localization: ^0.1.11
+
   
   
 
