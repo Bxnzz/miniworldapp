@@ -3,8 +3,8 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+//import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/page/Host/race_create_pointmap.dart';
 import 'package:miniworldapp/service/race.dart';
