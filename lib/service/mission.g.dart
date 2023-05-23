@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'attend.dart';
+part of 'mission.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'attend.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
 
-class _AttendService implements AttendService {
-  _AttendService(
+class _MissionService implements MissionService {
+  _MissionService(
     this._dio, {
     this.baseUrl,
   });
@@ -19,26 +19,26 @@ class _AttendService implements AttendService {
   String? baseUrl;
 
   @override
-  Future<HttpResponse<Attend>> attends(attendDto) async {
+  Future<HttpResponse<Mission>> missions(missionDto) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(attendDto.toJson());
+    _data.addAll(missionDto.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<HttpResponse<Attend>>(Options(
+        _setStreamType<HttpResponse<Mission>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              '/attend',
+              '/mission',
               queryParameters: queryParameters,
               data: _data,
             )
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = Attend.fromJson(_result.data!);
+    final value = Mission.fromJson(_result.data!);
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }
