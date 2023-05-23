@@ -4,13 +4,9 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:gap/gap.dart';
-import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/login.dart';
 import 'package:provider/provider.dart';
 
@@ -38,9 +34,10 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
   late RegisterService registerService;
 
   File? pickedFile;
+  UploadTask? uploadTask;
   bool isImage = true;
 
-  late Image? img;
+  String img = '';
 
   @override
   void initState() {
@@ -177,29 +174,32 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                     ElevatedButton(
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            RegisterDto dto = RegisterDto(
-                                userName: userName.text,
-                                userMail: email.text,
-                                userPassword: password.text,
-                                userFullname: fullname.text,
-                                userDiscription: description.text,
-                                userFacebookId: idFacebook,
-                                userImage: image);
-                            log(jsonEncode(dto));
+                            setState(() {
+                              uploadFile();
+                            });
 
-                            var register = await registerService.registers(dto);
+                            // RegisterDto dto = RegisterDto(
+                            //     userName: userName.text,
+                            //     userMail: email.text,
+                            //     userPassword: password.text,
+                            //     userFullname: fullname.text,
+                            //     userDiscription: description.text,
+                            //     userFacebookId: idFacebook,
+                            //     userImage: img);
+                            // log(jsonEncode(dto));
 
-                            log(jsonEncode(register.data));
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const Login(),
-                                  settings:
-                                      const RouteSettings(arguments: null),
-                                ));
-                            if (register.data.massage == "Register failed") {
-                              log("Register failed");
-                            }
+                            // var register = await registerService.registers(dto);
+                            // log(jsonEncode(register.data));
+                            // // Navigator.pushReplacement(
+                            // //     context,
+                            // //     MaterialPageRoute(
+                            // //       builder: (context) => const Login(),
+                            // //       settings:
+                            // //           const RouteSettings(arguments: null),
+                            // //     ));
+                            // if (register.data.massage == "Register failed") {
+                            //   log("Register failed");
+                            // }
                           }
                         },
                         child: Text('ลงทะเบียน')),
@@ -242,5 +242,42 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
     } else {
       isImage = false;
     }
+  }
+
+  Future uploadFile() async {
+    final path = 'files/${pickedFile?.path.split('/').last}';
+    final file = File(pickedFile!.path);
+    final ref = FirebaseStorage.instance.ref().child(path);
+    log(ref.toString());
+
+    setState(() {
+      uploadTask = ref.putFile(file);
+    });
+    final snapshot = await uploadTask!.whenComplete(() {});
+
+    final urlDownload = await snapshot.ref.getDownloadURL();
+    log('Download Link:$urlDownload');
+    img = urlDownload;
+    RegisterDto dto = RegisterDto(
+        userName: userName.text,
+        userMail: email.text,
+        userPassword: password.text,
+        userFullname: fullname.text,
+        userDiscription: description.text,
+        userFacebookId: idFacebook,
+        userImage: urlDownload);
+    var register = await registerService.registers(dto);
+    log(jsonEncode(register.data));
+    log(jsonEncode(dto));
+
+    setState(() {
+      Image.file(File(pickedFile!.path));
+    });
+
+    ;
+  }
+
+  text(String data, A) {
+    return SizedBox();
   }
 }
