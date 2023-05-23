@@ -6,7 +6,9 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:miniworldapp/page/General/login.dart';
 import 'package:provider/provider.dart';
 
@@ -28,9 +30,12 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
   TextEditingController confirmpassword = TextEditingController();
   TextEditingController fullname = TextEditingController();
   TextEditingController description = TextEditingController();
+
+  TextEditingController testss = TextEditingController();
   String idFacebook = '';
   String image = '';
   final _formKey = GlobalKey<FormState>();
+  final avata = GlobalKey<FormState>();
   late RegisterService registerService;
 
   File? pickedFile;
@@ -61,46 +66,37 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
             child: Column(
               children: [
                 GestureDetector(
-                  onTap: () {
-                    selectFile();
-                    log('message');
-                  },
-                  child: pickedFile != null
-                      ? CircleAvatar(
-                          radius: MediaQuery.of(context).size.width * 0.20,
-                          backgroundImage: FileImage(pickedFile!))
-                      : CircleAvatar(
-                          radius: MediaQuery.of(context).size.width * 0.20,
-                          child: GestureDetector(
-                            onTap: () {
-                              selectFile();
-                              log('message');
-                            },
-                            child: Icon(
-                              Icons.add_photo_alternate,
-                              size: MediaQuery.of(context).size.width * 0.20,
+                    onTap: () {
+                      selectFile();
+                      log('message');
+                    },
+                    child: pickedFile != null
+                        ? CircleAvatar(
+                            key: avata,
+                            radius: MediaQuery.of(context).size.width * 0.15,
+                            backgroundImage: FileImage(pickedFile!))
+                        : CircleAvatar(
+                            radius: MediaQuery.of(context).size.width * 0.15,
+                            child: GestureDetector(
+                              onTap: () {
+                                selectFile();
+                                log('message');
+                              },
+                              child: Icon(
+                                Icons.add_photo_alternate,
+                                size: MediaQuery.of(context).size.width * 0.15,
+                              ),
                             ),
-                          ),
-                        ),
-                ),
+                          )),
                 Gap(20),
-                TextFormField(
-                  controller: userName,
-                  decoration: const InputDecoration(
-                    hintText: 'ชื่อในระบบ',
-                    icon: Icon(Icons.account_box_sharp),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'กรุณาใส่ชื่อในระบบ.';
-                    }
-                    return null;
-                  },
+                SizedBox(
+                  child: textField(userName, '', 'ชื่อในระบบ',
+                      'กรุณาใส่ชื่อในระบบ', Icon(Icons.account_box_sharp)),
                 ),
                 TextFormField(
                   controller: email,
                   decoration: const InputDecoration(
-                    hintText: 'อีเมลล์',
+                    labelText: 'อีเมลล์',
                     icon: Icon(Icons.email_outlined),
                   ),
                   keyboardType: TextInputType.emailAddress,
@@ -114,10 +110,14 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                     return null;
                   },
                 ),
+                Gap(15),
                 TextFormField(
+                  obscureText: true,
+                  enableSuggestions: false,
+                  autocorrect: false,
                   controller: password,
                   decoration: const InputDecoration(
-                    hintText: 'รหัสผ่าน',
+                    labelText: 'รหัสผ่าน',
                     icon: Icon(Icons.password),
                   ),
                   validator: (value) {
@@ -127,10 +127,14 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                     return null;
                   },
                 ),
+                Gap(15),
                 TextFormField(
+                  obscureText: true,
+                  enableSuggestions: false,
+                  autocorrect: false,
                   controller: confirmpassword,
                   decoration: const InputDecoration(
-                    hintText: 'ยืนยันรหัสผ่าน',
+                    labelText: 'ยืนยันรหัสผ่าน',
                     icon: Icon(Icons.password),
                   ),
                   validator: (value) {
@@ -143,37 +147,30 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                     return null;
                   },
                 ),
-                TextFormField(
-                    controller: fullname,
-                    decoration: const InputDecoration(
-                      hintText: 'ชื่อ-นามสกุล',
-                      icon: Icon(Icons.text_decrease_outlined),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'กรุณาใส่ชื่อ-นามสกุล.';
-                      }
-                      return null;
-                    }),
-                TextFormField(
-                  controller: description,
-                  decoration: const InputDecoration(
-                    hintText: 'คำอธิบาย',
-                    icon: Icon(Icons.email_outlined),
+                Gap(15),
+                SizedBox(
+                  child: textField(
+                      fullname,
+                      '',
+                      'ชื่อ-นามสกุล',
+                      'กรุณาใส่ชื่อ-นามสกุล.',
+                      Icon(Icons.text_decrease_outlined)),
+                ),
+                SizedBox(
+                  child: textField(
+                    description,
+                    '',
+                    'คำอธิบาย',
+                    'ใส่คำอธิบายตัวคุณพอสังเขป',
+                    Icon(Icons.email_outlined),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'ใส่คำอธิบายตัวคุณพอสังเขป.';
-                    }
-                    return null;
-                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
                         onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
+                          if (await _formKey.currentState!.validate()) {
                             setState(() {
                               uploadFile();
                             });
@@ -190,13 +187,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
 
                             // var register = await registerService.registers(dto);
                             // log(jsonEncode(register.data));
-                            // // Navigator.pushReplacement(
-                            // //     context,
-                            // //     MaterialPageRoute(
-                            // //       builder: (context) => const Login(),
-                            // //       settings:
-                            // //           const RouteSettings(arguments: null),
-                            // //     ));
+
                             // if (register.data.massage == "Register failed") {
                             //   log("Register failed");
                             // }
@@ -245,6 +236,38 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
   }
 
   Future uploadFile() async {
+    showAlertDialog(BuildContext context) {
+      // set up the button
+      Widget okButton = TextButton(
+        child: const Text("OK"),
+        onPressed: () {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Login(),
+                settings: const RouteSettings(arguments: null),
+              ));
+        },
+      );
+
+      // set up the AlertDialog
+      AlertDialog alert01 = AlertDialog(
+        title: const Text("ลงทะเบียนสำเร็จ !!"),
+        content: const Text(""),
+        actions: [
+          okButton,
+        ],
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert01;
+        },
+      );
+    }
+
     final path = 'files/${pickedFile?.path.split('/').last}';
     final file = File(pickedFile!.path);
     final ref = FirebaseStorage.instance.ref().child(path);
@@ -270,14 +293,46 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
     log(jsonEncode(register.data));
     log(jsonEncode(dto));
 
+    avata.currentWidget;
     setState(() {
       Image.file(File(pickedFile!.path));
     });
+    userName.clear();
+    email.clear();
+    password.clear();
+    confirmpassword.clear();
+    fullname.clear();
+    description.clear();
 
-    ;
+    return showAlertDialog(context);
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Login(),
+          settings: const RouteSettings(arguments: null),
+        ));
   }
 
-  text(String data, A) {
-    return SizedBox();
+  textField(final TextEditingController controller, String hintText,
+      String labelText, String error, Icon icon) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 15),
+      child: Column(
+        children: [
+          TextFormField(
+            controller: controller,
+            decoration: InputDecoration(
+                hintText: hintText, labelText: labelText, icon: icon),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return error;
+              }
+
+              return null;
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
