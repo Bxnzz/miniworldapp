@@ -1,12 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:miniworldapp/page/General/fontpage_register.dart';
 
 import 'package:miniworldapp/page/General/home_all.dart';
-import 'package:miniworldapp/page/General/register.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:provider/provider.dart';
 import 'dart:developer';
@@ -65,26 +62,11 @@ class _LoginState extends State<Login> {
               Colors.purpleAccent,
               Colors.blue,
             ])),
-        body: SingleChildScrollView(
-      child: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-              Colors.purpleAccent,
-              Colors.blue,
-            ])),
         child: Form(
           key: _formKey,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Center(
-              child: Stack(
-                alignment: AlignmentDirectional.topCenter,
-                clipBehavior: Clip.none,
               child: Stack(
                 alignment: AlignmentDirectional.topCenter,
                 clipBehavior: Clip.none,
@@ -188,105 +170,6 @@ class _LoginState extends State<Login> {
                                   _authenticatingStatus =
                                       !_authenticatingStatus;
                                 });
-                  //  const Padding(
-                  //    padding: EdgeInsets.only(top: 30),
-                  //    child: FlutterLogo(
-                  //      size: 50,
-                  //    ),
-                  //  ),
-                  //  const Text(
-                  //    "Login",
-                  //  ),
-                  Card(
-                    margin: EdgeInsets.fromLTRB(32, 100, 32, 32),
-                    color: Colors.white,
-                    child: Column(
-                      children: [
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        const Text(
-                          "สวัสดี!",
-                          style: TextStyle(
-                              fontSize: 28, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Text(
-                          "กรุณาเข้าสู่ระบบด้วยบัญชีของท่าน",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 15,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            width: 240,
-                            child: TextFormField(
-                                decoration: const InputDecoration(
-                                  hintText: 'กรุณาใส่อีเมล...',
-                                  label: Text('อีเมล'),
-                                  //  prefixIcon: FaIcon(FontAwesomeIcons.envelope)
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'กรุณากรอกอีเมล';
-                                  }
-                                  return null;
-                                },
-                                controller: email),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            width: 240,
-                            height: 40,
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                hintText: 'กรุณาใส่รหัสผ่าน',
-                                label: Text('รหัสผ่าน'),
-                                suffixIcon: IconButton(
-                                  // padding: EdgeInsets.all(0),
-                                  onPressed: () {
-                                    setState(() {
-                                      _isHidden =
-                                          !_isHidden; // เมื่อกดก็เปลี่ยนค่าตรงกันข้าม
-                                    });
-                                  },
-                                  icon: Icon(
-                                    _isHidden // เงื่อนไขการสลับ icon
-                                        ? Icons.visibility_off
-                                        : Icons.visibility,
-                                    size: 16,
-                                  ),
-                                ),
-                              ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'กรุณากรอกรหัสผ่าน';
-                                }
-                                return null;
-                              },
-                              controller: password,
-                              obscureText: _isHidden,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 240,
-                          child: ElevatedButton(
-                              onPressed: () async {
-                                // เปลี่ยนสถานะเป็นกำลังล็อกอิน
-                                setState(() {
-                                  _authenticatingStatus =
-                                      !_authenticatingStatus;
-                                });
 
                                 // อ้างอิงฟอร์มที่กำลังใช้งาน ตรวจสอบความถูกต้องข้อมูลในฟอร์ม
                                 if (_formKey.currentState!.validate()) {
@@ -297,22 +180,7 @@ class _LoginState extends State<Login> {
                                       email: email.text,
                                       password: password.text);
                                   //log(jsonEncode(dto));
-                                // อ้างอิงฟอร์มที่กำลังใช้งาน ตรวจสอบความถูกต้องข้อมูลในฟอร์ม
-                                if (_formKey.currentState!.validate()) {
-                                  //หากผ่าน
-                                  FocusScope.of(context)
-                                      .unfocus(); // ยกเลิดโฟกัส ให้แป้นพิมพ์ซ่อนไป
-                                  LoginDto dto = LoginDto(
-                                      email: email.text,
-                                      password: password.text);
-                                  //log(jsonEncode(dto));
 
-                                  var login = await loginService.loginser(dto);
-                                  if (login.data.userId != 0) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text('Login Successful')),
-                                    );
                                   var login = await loginService.loginser(dto);
                                   if (login.data.userId != 0) {
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -362,9 +230,7 @@ class _LoginState extends State<Login> {
                           children: [
                             const Text('ไม่มีบัญชีใช่หรือไม่?'),
                             TextButton(
-                                onPressed: () {
-                                  
-                                },
+                                onPressed: () {},
                                 child: const Text('คลิกที่นี้'))
                           ],
                         ),
@@ -380,7 +246,7 @@ class _LoginState extends State<Login> {
                             icon: FaIcon(FontAwesomeIcons.facebook),
                           ),
                         ),
-                         SizedBox(
+                        SizedBox(
                           width: 240,
                           child: ElevatedButton.icon(
                             onPressed: () {},
@@ -412,7 +278,6 @@ class _LoginState extends State<Login> {
           ),
         ),
       ),
-    ));
     ));
   }
 }
