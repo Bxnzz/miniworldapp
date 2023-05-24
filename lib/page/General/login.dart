@@ -11,6 +11,7 @@ import 'dart:developer';
 import '../../model/DTO/loginDTO.dart';
 import '../../service/login.dart';
 import '../Newhome.dart';
+import 'fontpage_register.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -230,7 +231,16 @@ class _LoginState extends State<Login> {
                           children: [
                             const Text('ไม่มีบัญชีใช่หรือไม่?'),
                             TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const FontRegisterPage(),
+                                        settings: const RouteSettings(
+                                            arguments: null),
+                                      ));
+                                },
                                 child: const Text('คลิกที่นี้'))
                           ],
                         ),
