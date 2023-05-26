@@ -44,12 +44,14 @@ class _CeateTeamState extends State<CeateTeam> {
 
   String Username = '';
   String name = 'te';
-  String? _user;
+
   int idrace = 0;
   var userid = 0;
   int idUser = 0;
   int _counter = 0;
   final _formKey = GlobalKey<FormState>();
+
+  List user = [];
   // 2. สร้าง initState เพื่อสร้าง object ของ service
   // และ async method ที่จะใช้กับ FutureBuilder
   @override
@@ -63,15 +65,15 @@ class _CeateTeamState extends State<CeateTeam> {
 
     userService = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
     userService.getUserByName(name).then((value) {
-      log(value.data.first.userFullname);
+      log("is " + value.data.first.userFullname);
     });
     idrace = context.read<AppData>().idrace;
-    log(idrace.toString());
+    log("race id is " + idrace.toString());
     // 2.2 async method
     loadDataMethod = loadData();
     Username = context.read<AppData>().Username;
     idUser = context.read<AppData>().idUser;
-    log(idUser.toString());
+    log("user is " + idUser.toString());
     nameMember1.text = Username;
   }
 
@@ -131,52 +133,13 @@ class _CeateTeamState extends State<CeateTeam> {
                             return loadMembers();
                           },
                           getSelectedValue: (item) {
-                            log((item as UserItem).value.userName);
+                            log("is a " + (item as UserItem).value.userName);
                             nameMember2.text = (item).value.userName;
                           },
                           minStringLength: 1,
                           itemsInView: 5,
                           controller: nameMember2,
-                        )
-                        // SearchField<User>(
-                        //   hint: 'สมาชิกคนที่ 2',
-                        //   //  suggestionItemDecoration: BoxDecoration(
-                        //   //   color: Colors.amber,
-                        //   //   borderRadius: BorderRadius.circular(10)
-                        //   //  ),
-                        //   itemHeight: 50,
-                        //   maxSuggestionsInViewPort: 4,
-                        //   onSubmit: (value) {
-                        //     setState(() {
-                        //       _user = value;
-                        //     });
-                        //   },
-                        //   suggestions: users
-                        //       .map(
-                        //         (e) => SearchFieldListItem<User>(
-                        //           e.userName,
-                        //           item: e,
-
-                        //           // Use child to show Custom Widgets in the suggestions
-                        //           // defaults to Text widget
-                        //           child: Padding(
-                        //             padding: const EdgeInsets.all(8.0),
-                        //             child: Row(
-                        //               children: [
-                        //                 const SizedBox(
-                        //                   width: 10,
-                        //                 ),
-                        //                 Text(e.userName),
-                        //               ],
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       )
-                        //       .toList(),
-
-                        //   controller: nameMember2,
-                        // ),
-                        ),
+                        )),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
@@ -269,8 +232,12 @@ class _CeateTeamState extends State<CeateTeam> {
   Future<List<UserItem>> loadMembers() async {
     List<UserItem> userObjs = [];
     for (var user in context.read<AppData>().users) {
-      UserItem item = UserItem(label: '${user.userName}', value: user);
+      UserItem item = UserItem(
+        label: user.userName,
+        value: user,
+      );
       userObjs.add(item);
+      log(userObjs.toString());
     }
     return userObjs;
   }
