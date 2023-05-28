@@ -34,7 +34,7 @@ class _Static_createState extends State<Static_create> {
     super.initState();
     // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
-    raceService.getRaces().then((value) {
+    raceService.races().then((value) {
       log(value.data.first.raceName);
     });
     // 2.2 async method
@@ -87,7 +87,7 @@ class _Static_createState extends State<Static_create> {
 
   Future<void> loadData() async {
     try {
-      var a = await raceService.getRaces();
+      var a = await raceService.races();
       races = a.data;
     } catch (err) {
       log('Error:$err');

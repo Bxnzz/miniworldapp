@@ -29,9 +29,11 @@ class HomeAll extends StatefulWidget {
 
 class _HomeAllState extends State<HomeAll> {
   String Username = '';
+  
   @override
   void initState() {
     super.initState();
+
 
     Username = context.read<AppData>().Username;
     log(Username);
@@ -158,6 +160,7 @@ class RaceAll extends StatefulWidget {
 class _RaceAllState extends State<RaceAll> {
   // 1. กำหนดตัวแปร
   List<Race> races = [];
+  int idUser = 0;
 
   late Future<void> loadDataMethod;
   late RaceService raceService;
@@ -170,8 +173,10 @@ class _RaceAllState extends State<RaceAll> {
     super.initState();
     // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
-    raceService.getRaces().then((value) {
+    raceService.races().then((value) {
       log(value.data.first.raceName);
+    idUser = context.read<AppData>().idUser;
+    log(idUser.toString());
     });
     // 2.2 async method
     loadDataMethod = loadData();
@@ -185,10 +190,13 @@ class _RaceAllState extends State<RaceAll> {
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return ListView(
+                
                 children: races.map((element) {
+           
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Card(
+                      
                       clipBehavior: Clip.hardEdge,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(12.0),
@@ -196,6 +204,7 @@ class _RaceAllState extends State<RaceAll> {
                         onTap: () => showDialog<String>(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
+                            
                             title: Text("ชื่อ: ${element.raceName}"),
                             content: SizedBox(
                               height: 95,
@@ -234,15 +243,26 @@ class _RaceAllState extends State<RaceAll> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text("ชื่อ: " + element.raceName),
-                              Text("ปิดรับสมัคร: " +
-                                  formatter.formatInBuddhistCalendarThai(
-                                      element.raceTimeFn)),
-                              Text("สถานที่: " + element.raceLocation),
-                              Text("# " + element.raceId.toString()),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: 
+                               [
+                              SizedBox(
+                                width: 80,
+                                height: 80,
+                                child: Image.network(element.raceImage)),
+                              Column(
+                               crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                 
+                                  Text("ชื่อ: " + element.raceName),
+                                  Text("ปิดรับสมัคร: " +
+                                      formatter.formatInBuddhistCalendarThai(
+                                          element.raceTimeFn)),
+                                  Text("สถานที่: " + element.raceLocation),
+                                  Text("# " + element.raceId.toString()),
+                                ],
+                              ),
                             ],
                           ),
                         ),
@@ -258,9 +278,10 @@ class _RaceAllState extends State<RaceAll> {
     );
   }
 
+  
   Future<void> loadData() async {
     try {
-      var a = await raceService.getRaces();
+      var a = await raceService.races();
       races = a.data;
     } catch (err) {
       log('Error:$err');

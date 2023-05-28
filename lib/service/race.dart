@@ -9,8 +9,14 @@ part 'race.g.dart';
 abstract class RaceService {
   factory RaceService(Dio dio, {String baseUrl}) = _RaceService;
 
-  @GET("/race")
-  Future<HttpResponse<List<Race>>> getRaces();
+  @GET("/race/")
+  Future<HttpResponse<List<Race>>> races();
+  
+  @GET("/race/")
+  Future<HttpResponse<List<Race>>> racesByID(
+    {@Query("userID") required int userID}
+  );
+  
   @POST("/race")
-  Future<HttpResponse<Race>> Races(@Body() RaceDto raceDto);
+  Future<HttpResponse<Race>> insertRaces(@Body() RaceDto raceDto);
 }
