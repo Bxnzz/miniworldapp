@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
-
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-//import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
+
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/page/Host/race_create_pointmap.dart';
 import 'package:miniworldapp/service/race.dart';
@@ -36,6 +38,17 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
   TextEditingController raceTimeST = TextEditingController();
   TextEditingController raceTimeFN = TextEditingController();
   TextEditingController eventDatetime = TextEditingController();
+   final keys = GlobalKey<FormState>();
+  // final _formKey1 = GlobalKey<FormState>();
+  // final _formKey2 = GlobalKey<FormState>();
+  // final _formKey3 = GlobalKey<FormState>();
+
+  File? pickedFile;
+  UploadTask? uploadTask;
+  bool isImage = true;
+  String image = '';
+
+  String img = '';
 
   DateTime dateTime = DateTime(2023, 03, 24, 5, 30);
   int idUser = 0;
@@ -47,7 +60,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
     raceservice = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
     idUser = context.read<AppData>().idUser;
-     log(idUser.toString());
+    log(idUser.toString());
   }
 
   @override
@@ -98,22 +111,25 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.only(top: 30),
-                          child: uploadImage(),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            width: 240,
-                            child: textField(raceName, 'ชื่อการแข่งขัน...',
-                                'ชื่อการแข่งขัน','กรุณากรอกชื่อการแข่งขัน'),
-                          ),
+                          child: upImg(),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: SizedBox(
                             width: 240,
                             child: textField(
-                                raceLocation, 'สถานที่แข่งขัน...', 'สถานที่','กรุณากรอกสถานที่'),
+                                raceName,
+                                'ชื่อการแข่งขัน...',
+                                'ชื่อการแข่งขัน',
+                                'กรุณากรอกชื่อการแข่งขัน'),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            width: 240,
+                            child: textField(raceLocation, 'สถานที่แข่งขัน...',
+                                'สถานที่', 'กรุณากรอกสถานที่'),
                           ),
                         ),
                         Padding(
@@ -123,8 +139,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                             children: [
                               SizedBox(
                                 width: 140,
-                                child: textField(
-                                    raceLimit, 'จำนวนทีม...', 'จำนวนทีม','กรุณากรอกจำนวนทีม'),
+                                child: textField(raceLimit, 'จำนวนทีม...',
+                                    'จำนวนทีม', 'กรุณากรอกจำนวนทีม'),
                               ),
                               Text('ทีม')
                             ],
@@ -204,11 +220,40 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                           padding: const EdgeInsets.all(8.0),
                           child: ElevatedButton(
                               onPressed: () async {
+                                //    if (keys.currentState!.validate()) {}
+                                if (raceLimit.text == "") {
+                                  // log("team fail");
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'กรุณากรอกข้อมูลให้ครบถ้วน...')),
+                                  );
+
+                                  return;
+                                }
+                                final path =
+                                    'files/${pickedFile?.path.split('/').last}';
+                                final file = File(pickedFile!.path);
+                                final ref =
+                                    FirebaseStorage.instance.ref().child(path);
+                                log(ref.toString());
+
+                                setState(() {
+                                  uploadTask = ref.putFile(file);
+                                });
+                                final snapshot =
+                                    await uploadTask!.whenComplete(() {});
+
+                                final urlDownload =
+                                    await snapshot.ref.getDownloadURL();
+                                log('Download Link:$urlDownload');
+
+                                img = urlDownload;
                                 RaceDto dto = RaceDto(
                                   raceName: raceName.text,
                                   raceLocation: raceLocation.text,
                                   raceLimitteam: int.parse(raceLimit.text),
-                                  raceImage: '',
+                                  raceImage: urlDownload,
                                   signUpTimeSt:
                                       DateTime.parse("2002-03-14T00:00:00Z"),
                                   eventDatetime:
@@ -222,10 +267,9 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                   signUpTimeFn:
                                       DateTime.parse("2002-03-14T00:00:00Z"),
                                 );
-                                var race = await raceservice.Races(dto);
+                                var race = await raceservice.insertRaces(dto);
                                 race.data.raceName.toString();
 
-                                //print(race.response.statusCode.toString());
                                 if (race.response.statusCode == 200) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -292,39 +336,87 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
       initialTime: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute));
 
   textField(final TextEditingController controller, String hintText,
-      String labelText,String error) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextFormField(
-          controller: controller,
-          decoration: InputDecoration(hintText: hintText, labelText: labelText),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return error;
-            }
-            return null;
-          },
-        ),
-      ],
+      String labelText, String error) {
+    return Form(
+      //key: keys,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          TextFormField(
+            controller: controller,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            decoration:
+                InputDecoration(hintText: hintText, labelText: labelText),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return error;
+              }
+              return null;
+            },
+          ),
+        ],
+      ),
     );
   }
 
-  Widget uploadImage() {
-    return Stack(
-      children: const <Widget>[
-        CircleAvatar(
-          radius: 35.0,
-          backgroundColor: Colors.grey,
-          child: FaIcon(FontAwesomeIcons.camera, size: 25),
-        ),
-        Positioned(
-          bottom: 3.0,
-          right: 3.0,
-          child: FaIcon(FontAwesomeIcons.circlePlus,
-              size: 25, color: Colors.purpleAccent),
-        ),
-      ],
-    );
+  Future selectFile() async {
+    final result = await FilePicker.platform.pickFiles();
+    File file;
+    PlatformFile platFile;
+    if (result == null) return;
+    platFile = result.files.single;
+    file = File(platFile.path!);
+    pickedFile = file;
+
+    log(result.files.single.toString());
+    log(platFile.extension.toString());
+    if (platFile.extension == 'jpg' || platFile.extension == 'png') {
+      setState(() {
+        isImage = true;
+      });
+    } else {
+      isImage = false;
+    }
   }
+
+  upImg(){
+    return GestureDetector(
+                    onTap: () {
+                      selectFile();
+                      log('message');
+                    },
+                    child: pickedFile != null
+                        ? CircleAvatar(
+                            key: keys,
+                            radius: 35.0,
+                            backgroundImage: FileImage(pickedFile!))
+                        : CircleAvatar(
+                            radius: 35.0,
+                            child: GestureDetector(
+                              onTap: () {
+                                selectFile();
+                                log('message');
+                              },
+                              child: FaIcon(FontAwesomeIcons.camera, size: 25)
+                            ),
+                          ));
+  }
+  // Widget uploadImage() {
+  //   return Stack(
+  //     children: const <Widget>[
+        
+  //       CircleAvatar(
+  //         radius: 35.0,
+  //         backgroundColor: Colors.grey,
+  //         child: FaIcon(FontAwesomeIcons.camera, size: 25),
+  //       ),
+  //       Positioned(
+  //         bottom: 3.0,
+  //         right: 3.0,
+  //         child: FaIcon(FontAwesomeIcons.circlePlus,
+  //             size: 25, color: Colors.purpleAccent),
+  //       ),
+  //     ],
+  //   );
+  // }
 }
