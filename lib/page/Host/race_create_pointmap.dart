@@ -255,17 +255,17 @@ class _RacePointMapState extends State<RacePointMap> {
               child: ElevatedButton(
                   child: Text('สร้างภารกิจ'),
                   onPressed: () {
-                    // MissionDto missionDto = MissionDto(
-                    //     misName: nameMission.text,
-                    //     misDiscrip: DescriptionMission.text,
-                    //     misDistance: int.parse(selectedValue!),
-                    //     misType: misType,
-                    //     misSeq: misSeq,
-                    //     misMediaUrl: '',
-                    //     misLat: double.parse(lats),
-                    //     misLng: double.parse(longs),
-                    //     raceId: widget.idrace);
-                    // print(double.parse('lat'+lats));
+                    MissionDto missionDto = MissionDto(
+                        misName: nameMission.text,
+                        misDiscrip: DescriptionMission.text,
+                        misDistance: int.parse(selectedValue!),
+                        misType: 0,
+                        misSeq: 0,
+                        misMediaUrl: '',
+                        misLat: double.parse(lats),
+                        misLng: double.parse(longs),
+                        raceId: widget.idrace);
+                    print(double.parse('lat'+lats));
                   }),
             ),
           ],
