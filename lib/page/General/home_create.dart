@@ -4,6 +4,7 @@ import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:miniworldapp/page/Host/race_edit.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/race.dart';
@@ -30,14 +31,14 @@ class _Home_createState extends State<Home_create> {
   @override
   void initState() {
     super.initState();
-    // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย 
+    // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย
     idUser = context.read<AppData>().idUser;
-      log("id:"+idUser.toString());
+    log("id:" + idUser.toString());
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
     raceService.racesByID(userID: idUser).then((value) {
       log(value.data.first.raceName);
     });
-   
+
     // 2.2 async method
     loadDataMethod = loadData();
   }
@@ -67,20 +68,33 @@ class _Home_createState extends State<Home_create> {
                         onTap: () => showDialog<String>(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
-                            title: Text("ชื่อ: ${element.raceName}"),
+                            title: Center(
+                                child: Text("ชื่อ: ${element.raceName}")),
                             content: SizedBox(
                               height: 95,
-                              child: Column(
-                                children: [
-                                  Text(
-                                      'จำนวนทีม: ${element.raceLimitteam.toString()}'),
-                                  Text(
-                                      'เปิดรับสมัคร: ${formatter.formatInBuddhistCalendarThai(element.raceTimeSt)}'),
-                                  Text(
-                                      'ปิดรับสมัคร:${formatter.formatInBuddhistCalendarThai(element.raceTimeFn)} '),
-                                  Text(
-                                      'ปิดรับสมัคร:${formatter.formatInBuddhistCalendarThai(element.eventDatetime)} '),
-                                ],
+                              child: Center(
+                                child: Column(
+                                  // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const EditRace()));
+                                          context.read<AppData>().idrace =
+                                              element.raceId;
+                                        },
+                                        child: const Text('แก้ไขการแข่งขัน')),
+                                    ElevatedButton(
+                                        onPressed: () {},
+                                        child: Text('ภารกิจ')),
+                                    ElevatedButton(
+                                        onPressed: () {},
+                                        child: Text('ล็อบบี้ผู้สร้าง')),
+                                  ],
+                                ),
                               ),
                             ),
                             actions: <Widget>[
@@ -88,17 +102,6 @@ class _Home_createState extends State<Home_create> {
                                 onPressed: () =>
                                     Navigator.pop(context, 'Cancel'),
                                 child: const Text('ยกเลิก'),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => ));
-                                  // context.read<AppData>().idrace =
-                                  //     element.raceId;
-                                },
-                                child: const Text('แก้ไขภารกิจ'),
                               ),
                             ],
                           ),

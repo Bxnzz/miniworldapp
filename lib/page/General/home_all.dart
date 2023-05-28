@@ -175,9 +175,10 @@ class _RaceAllState extends State<RaceAll> {
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
     raceService.races().then((value) {
       log(value.data.first.raceName);
+    
+    });
     idUser = context.read<AppData>().idUser;
     log(idUser.toString());
-    });
     // 2.2 async method
     loadDataMethod = loadData();
   }
@@ -282,7 +283,7 @@ class _RaceAllState extends State<RaceAll> {
   Future<void> loadData() async {
     try {
       var a = await raceService.races();
-      races = a.data;
+      races = a.data;  
     } catch (err) {
       log('Error:$err');
     }
