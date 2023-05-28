@@ -16,6 +16,10 @@ abstract class RaceService {
   Future<HttpResponse<List<Race>>> racesByID(
     {@Query("userID") required int userID}
   );
+  @GET("/race/")
+  Future<HttpResponse<List<Race>>> racesByraceID(
+    {@Query("raceID") required int raceID}
+  );
   
   @POST("/race")
   Future<HttpResponse<Race>> insertRaces(@Body() RaceDto raceDto);

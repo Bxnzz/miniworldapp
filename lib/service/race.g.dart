@@ -71,6 +71,32 @@ class _RaceService implements RaceService {
   }
 
   @override
+  Future<HttpResponse<List<Race>>> racesByraceID({required raceID}) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'raceID': raceID};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio
+        .fetch<List<dynamic>>(_setStreamType<HttpResponse<List<Race>>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/race/',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    var value = _result.data!
+        .map((dynamic i) => Race.fromJson(i as Map<String, dynamic>))
+        .toList();
+    final httpResponse = HttpResponse(value, _result);
+    return httpResponse;
+  }
+
+  @override
   Future<HttpResponse<Race>> insertRaces(raceDto) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

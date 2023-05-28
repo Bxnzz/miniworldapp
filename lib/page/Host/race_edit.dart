@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -7,25 +6,22 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import 'package:intl/intl.dart';
-import 'package:miniworldapp/page/Host/race_create_pointmap.dart';
-import 'package:miniworldapp/service/race.dart';
-import 'package:miniworldapp/widget/textfieldDate.dart';
 import 'package:provider/provider.dart';
 
-import '../../model/DTO/raceDTO.dart';
+import '../../model/race.dart';
 import '../../service/provider/appdata.dart';
+import '../../service/race.dart';
+import '../../widget/textfieldDate.dart';
 import '../../widget/textfildTime.dart';
 
-class RaceCreatePage extends StatefulWidget {
-  const RaceCreatePage({super.key});
+class EditRace extends StatefulWidget {
+  const EditRace({super.key});
 
   @override
-  State<RaceCreatePage> createState() => _RaceCreatePageState();
+  State<EditRace> createState() => _EditRaceState();
 }
 
-class _RaceCreatePageState extends State<RaceCreatePage> {
+class _EditRaceState extends State<EditRace> {
   late RaceService raceservice;
   bool shadowColor = false;
   TextEditingController raceName = TextEditingController();
@@ -38,10 +34,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
   TextEditingController raceTimeST = TextEditingController();
   TextEditingController raceTimeFN = TextEditingController();
   TextEditingController eventDatetime = TextEditingController();
-   final keys = GlobalKey<FormState>();
-  // final _formKey1 = GlobalKey<FormState>();
-  // final _formKey2 = GlobalKey<FormState>();
-  // final _formKey3 = GlobalKey<FormState>();
+  final keys = GlobalKey<FormState>();
 
   File? pickedFile;
   UploadTask? uploadTask;
@@ -52,15 +45,26 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
 
   DateTime dateTime = DateTime(2023, 03, 24, 5, 30);
   int idUser = 0;
+  int idrace = 0;
+  String UrlImg = '';
+
+  List<Race> races = [];
+  late Future<void> loadDataMethod;
+
   @override
   void initState() {
     super.initState();
     // TODO: implement initState
     singUpST.text = "";
     raceservice = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
-
+    idrace = context.read<AppData>().idrace;
+    log("idRace: $idrace");
+    raceservice.racesByraceID(raceID: idrace).then((value) {
+      log(value.data.first.raceName);
+    });
     idUser = context.read<AppData>().idUser;
     log(idUser.toString());
+    loadDataMethod = loadData();
   }
 
   @override
@@ -117,11 +121,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                           padding: const EdgeInsets.all(8.0),
                           child: SizedBox(
                             width: 240,
-                            child: textField(
-                                raceName,
-                                'ชื่อการแข่งขัน...',
-                                'ชื่อการแข่งขัน',
-                                'กรุณากรอกชื่อการแข่งขัน'),
+                            child: textField(raceName, 'ชื่อการแข่งขัน...',
+                                'ชื่อการแข่งขัน', 'กรุณากรอกชื่อการแข่งขัน'),
                           ),
                         ),
                         Padding(
@@ -249,51 +250,51 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                 log('Download Link:$urlDownload');
 
                                 img = urlDownload;
-                                RaceDto dto = RaceDto(
-                                  raceName: raceName.text,
-                                  raceLocation: raceLocation.text,
-                                  raceLimitteam: int.parse(raceLimit.text),
-                                  raceImage: urlDownload,
-                                  signUpTimeSt:
-                                      DateTime.parse("2002-03-14T00:00:00Z"),
-                                  eventDatetime:
-                                      DateTime.parse("2002-03-14T00:00:00Z"),
-                                  raceStatus: 0,
-                                  raceTimeFn:
-                                      DateTime.parse("2002-03-14T00:00:00Z"),
-                                  raceTimeSt:
-                                      DateTime.parse("2002-03-14T00:00:00Z"),
-                                  userId: idUser,
-                                  signUpTimeFn:
-                                      DateTime.parse("2002-03-14T00:00:00Z"),
-                                );
-                                var race = await raceservice.insertRaces(dto);
-                                race.data.raceName.toString();
+                                // RaceDto dto = RaceDto(
+                                //   raceName: raceName.text,
+                                //   raceLocation: raceLocation.text,
+                                //   raceLimitteam: int.parse(raceLimit.text),
+                                //   raceImage: urlDownload,
+                                //   signUpTimeSt:
+                                //       DateTime.parse("2002-03-14T00:00:00Z"),
+                                //   eventDatetime:
+                                //       DateTime.parse("2002-03-14T00:00:00Z"),
+                                //   raceStatus: 0,
+                                //   raceTimeFn:
+                                //       DateTime.parse("2002-03-14T00:00:00Z"),
+                                //   raceTimeSt:
+                                //       DateTime.parse("2002-03-14T00:00:00Z"),
+                                //   userId: idUser,
+                                //   signUpTimeFn:
+                                //       DateTime.parse("2002-03-14T00:00:00Z"),
+                                // );
+                                // var race = await raceservice.insertRaces(dto);
+                                // race.data.raceName.toString();
 
-                                if (race.response.statusCode == 200) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('race Successful')),
-                                  );
-                                  // log("race Successful");
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => RacePointMap(
-                                            idrace: race.data.raceId),
-                                        settings:
-                                            RouteSettings(arguments: null),
-                                      ));
-                                  return;
-                                } else {
-                                  // log("team fail");
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('race fail try agin!')),
-                                  );
+                                // if (race.response.statusCode == 200) {
+                                //   ScaffoldMessenger.of(context).showSnackBar(
+                                //     const SnackBar(
+                                //         content: Text('race Successful')),
+                                //   );
+                                //   // log("race Successful");
+                                //   Navigator.pushReplacement(
+                                //       context,
+                                //       MaterialPageRoute(
+                                //         builder: (context) => RacePointMap(
+                                //             idrace: race.data.raceId),
+                                //         settings:
+                                //             RouteSettings(arguments: null),
+                                //       ));
+                                return;
+                                // } else {
+                                //   // log("team fail");
+                                //   ScaffoldMessenger.of(context).showSnackBar(
+                                //     const SnackBar(
+                                //         content: Text('race fail try agin!')),
+                                //   );
 
-                                  return;
-                                }
+                                //   return;
+                                // }
                               },
                               child: const Text("ถัดไป")),
                         ),
@@ -312,7 +313,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                         shape: BoxShape.rectangle,
                         borderRadius: BorderRadius.circular(100),
                       ),
-                      child: Text('สร้างการแข่งขัน',
+                      child: Text('แก้ไขการแข่งขัน',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -379,27 +380,47 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
     }
   }
 
-  upImg(){
+  upImg() {
     return GestureDetector(
+        onTap: () {
+          selectFile();
+          log('message');
+        },
+        child: pickedFile != null
+            ? CircleAvatar(
+                key: keys,
+                radius: 35.0,
+                backgroundImage: FileImage(pickedFile!))
+            : CircleAvatar(
+                radius: 35.0,
+                backgroundImage: NetworkImage(UrlImg),
+                child: GestureDetector(
                     onTap: () {
                       selectFile();
-                      log('message');
+                      log('message');                     
                     },
-                    child: pickedFile != null
-                        ? CircleAvatar(
-                            key: keys,
-                            radius: 35.0,
-                            backgroundImage: FileImage(pickedFile!))
-                        : CircleAvatar(
-                            radius: 35.0,
-                            child: GestureDetector(
-                              onTap: () {
-                                selectFile();
-                                log('message');
-                              },
-                              child: FaIcon(FontAwesomeIcons.camera, size: 25)
-                            ),
-                          ));
+                   // child: FaIcon(FontAwesomeIcons.images),
+                    
+    )));
   }
- 
+
+  Future<void> loadData() async {
+    try {
+      var r = await raceservice.racesByraceID(raceID: idrace);
+      races = r.data;
+      log(r.data.first.raceName);
+      raceName.text = r.data.first.raceName;
+      raceLocation.text = r.data.first.raceLocation;
+      raceLimit.text = r.data.first.raceLimitteam.toString();
+      raceTimeST.text = r.data.first.raceTimeSt.toString();
+      raceTimeFN.text = r.data.first.raceTimeFn.toString();
+      singUpST.text = r.data.first.signUpTimeSt.toString();
+      singUpFN.text = r.data.first.signUpTimeFn.toString();
+      eventDatetime.text = r.data.first.eventDatetime.toString();
+      UrlImg = r.data.first.raceImage;
+      log(UrlImg);
+    } catch (err) {
+      log(err.toString());
+    }
+  }
 }
