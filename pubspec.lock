@@ -160,6 +160,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+  card_actions:
+    dependency: "direct main"
+    description:
+      name: card_actions
+      sha256: "9b6d723a34d1d78384fbe4bd743fb8492a0e585a83e363f6ee45ee82fb38fbba"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   characters:
     dependency: transitive
     description:

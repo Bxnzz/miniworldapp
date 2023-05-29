@@ -20,7 +20,13 @@ abstract class RaceService {
   Future<HttpResponse<List<Race>>> racesByraceID(
     {@Query("raceID") required int raceID}
   );
-  
-  @POST("/race")
+
+  @DELETE("/race/{raceID}")
+  Future<HttpResponse<List<Race>>> deleteRace(@Path("raceID")int raceID);
+
+  @POST("/race/")
   Future<HttpResponse<Race>> insertRaces(@Body() RaceDto raceDto);
+
+  @POST("/race/{raceID}")
+  Future<HttpResponse<Race>> updateRaces(@Path("raceID")int raceID,@Body() RaceDto raceDto);
 }

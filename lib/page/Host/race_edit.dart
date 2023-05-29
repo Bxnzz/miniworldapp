@@ -1,13 +1,16 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/DTO/raceDTO.dart';
 import '../../model/race.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
@@ -46,6 +49,7 @@ class _EditRaceState extends State<EditRace> {
   DateTime dateTime = DateTime(2023, 03, 24, 5, 30);
   int idUser = 0;
   int idrace = 0;
+  int idR = 0;
   String UrlImg = '';
 
   List<Race> races = [];
@@ -84,6 +88,38 @@ class _EditRaceState extends State<EditRace> {
           elevation: 0,
         ),
         body: buildrace());
+  }
+
+  Future<void> loadData() async {
+    try {
+      var r = await raceservice.racesByraceID(raceID: idrace);
+      races = r.data;
+      log(r.data.first.raceName);
+      idR = r.data.first.raceId;
+      log(idR.toString());
+      raceName.text = r.data.first.raceName;
+      raceLocation.text = r.data.first.raceLocation;
+      raceLimit.text = r.data.first.raceLimitteam.toString();
+      String formattedDate01 = DateFormat.Hm().format(r.data.first.raceTimeSt);
+      raceTimeST.text = formattedDate01;
+      String formattedDate02 = DateFormat.Hm().format(r.data.first.raceTimeSt);
+      raceTimeFN.text = formattedDate02;
+      var formatter = DateFormat.yMMMd();
+      var dateFormat01 =
+          formatter.formatInBuddhistCalendarThai(r.data.first.signUpTimeSt);
+      var dateFormat02 =
+          formatter.formatInBuddhistCalendarThai(r.data.first.signUpTimeFn);
+      var dateFormat03 =
+          formatter.formatInBuddhistCalendarThai(r.data.first.eventDatetime);
+      singUpST.text = dateFormat01;
+      singUpFN.text = dateFormat02;
+      eventDatetime.text = dateFormat03;
+
+      UrlImg = r.data.first.raceImage;
+      log(UrlImg);
+    } catch (err) {
+      log(err.toString());
+    }
   }
 
   Widget buildrace() {
@@ -250,26 +286,26 @@ class _EditRaceState extends State<EditRace> {
                                 log('Download Link:$urlDownload');
 
                                 img = urlDownload;
-                                // RaceDto dto = RaceDto(
-                                //   raceName: raceName.text,
-                                //   raceLocation: raceLocation.text,
-                                //   raceLimitteam: int.parse(raceLimit.text),
-                                //   raceImage: urlDownload,
-                                //   signUpTimeSt:
-                                //       DateTime.parse("2002-03-14T00:00:00Z"),
-                                //   eventDatetime:
-                                //       DateTime.parse("2002-03-14T00:00:00Z"),
-                                //   raceStatus: 0,
-                                //   raceTimeFn:
-                                //       DateTime.parse("2002-03-14T00:00:00Z"),
-                                //   raceTimeSt:
-                                //       DateTime.parse("2002-03-14T00:00:00Z"),
-                                //   userId: idUser,
-                                //   signUpTimeFn:
-                                //       DateTime.parse("2002-03-14T00:00:00Z"),
-                                // );
-                                // var race = await raceservice.insertRaces(dto);
-                                // race.data.raceName.toString();
+                                RaceDto dto = RaceDto(
+                                  raceName: raceName.text,
+                                  raceLocation: raceLocation.text,
+                                  raceLimitteam: int.parse(raceLimit.text),
+                                  raceImage: urlDownload,
+                                  signUpTimeSt:
+                                      DateTime.parse("2002-03-14T00:00:00Z"),
+                                  eventDatetime:
+                                      DateTime.parse("2002-03-14T00:00:00Z"),
+                                  raceStatus: 0,
+                                  raceTimeFn:
+                                      DateTime.parse("2002-03-14T00:00:00Z"),
+                                  raceTimeSt:
+                                      DateTime.parse("2002-03-14T00:00:00Z"),
+                                  userId: idUser,
+                                  signUpTimeFn:
+                                      DateTime.parse("2002-03-14T00:00:00Z"),
+                                );
+                                var race = await raceservice.updateRaces(idR,dto);
+                                log('raceee'+race.data.raceName);
 
                                 // if (race.response.statusCode == 200) {
                                 //   ScaffoldMessenger.of(context).showSnackBar(
@@ -395,32 +431,11 @@ class _EditRaceState extends State<EditRace> {
                 radius: 35.0,
                 backgroundImage: NetworkImage(UrlImg),
                 child: GestureDetector(
-                    onTap: () {
-                      selectFile();
-                      log('message');                     
-                    },
-                   // child: FaIcon(FontAwesomeIcons.images),
-                    
-    )));
-  }
-
-  Future<void> loadData() async {
-    try {
-      var r = await raceservice.racesByraceID(raceID: idrace);
-      races = r.data;
-      log(r.data.first.raceName);
-      raceName.text = r.data.first.raceName;
-      raceLocation.text = r.data.first.raceLocation;
-      raceLimit.text = r.data.first.raceLimitteam.toString();
-      raceTimeST.text = r.data.first.raceTimeSt.toString();
-      raceTimeFN.text = r.data.first.raceTimeFn.toString();
-      singUpST.text = r.data.first.signUpTimeSt.toString();
-      singUpFN.text = r.data.first.signUpTimeFn.toString();
-      eventDatetime.text = r.data.first.eventDatetime.toString();
-      UrlImg = r.data.first.raceImage;
-      log(UrlImg);
-    } catch (err) {
-      log(err.toString());
-    }
+                  onTap: () {
+                    selectFile();
+                    log('message');
+                  },
+                  // child: FaIcon(FontAwesomeIcons.images),
+                )));
   }
 }
