@@ -1,12 +1,14 @@
 import 'dart:developer';
 
 
+
 import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
 import 'package:card_actions/card_actions.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:miniworldapp/model/result/raceResult.dart';
 import 'package:miniworldapp/page/Host/race_edit.dart';
 import 'package:miniworldapp/widget/dialog.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +32,8 @@ class _Home_createState extends State<Home_create> {
   int IDrace = 0;
   
   var selectedItem = '';
-
+  
+  late RaceResult raceRe ;
   late Future<void> loadDataMethod;
   late RaceService raceService;
 
@@ -111,7 +114,7 @@ class _Home_createState extends State<Home_create> {
                                 //             ElevatedButton(
                                 //                 onPressed: () {},
                                 //                 child: Text('ล็อบบี้ผู้สร้าง')),
-
+                  
                                 //           ],
                                 //         ),
                                 //       ),
@@ -146,7 +149,7 @@ class _Home_createState extends State<Home_create> {
                                                       element.raceTimeFn)),
                                           Text("สถานที่: " + element.raceLocation),
                                           Text("# " + element.raceId.toString() ),
-                                         
+                                          
                                         ],
                                       ),
                                     ],
@@ -161,9 +164,10 @@ class _Home_createState extends State<Home_create> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8)),
                                     itemBuilder: (BuildContext context) {
-                                      return [
+                                      return [ 
                                         _buildPopupMenuEdit(
                                             'แก้ไข', Icons.edit, EditRace(),element.raceId),
+                                            
                                         _buildPopupMenuDelete('ลบ', Icons.delete,element.raceId)
                                       ];
                                     })),
@@ -202,7 +206,7 @@ class _Home_createState extends State<Home_create> {
           onPressed: () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => page));
-               // context.read<AppData>().idrace = idraces ;
+                context.read<AppData>().idrace = idraces ;
           },
         ),
         Text(menuTitle)
@@ -238,13 +242,25 @@ class _Home_createState extends State<Home_create> {
                             ),
                             onPressed: () async{
                              log('race $idraces');
-                             var race = await raceService.deleteRace(idraces);
-                             log(race.toString());
-                             if(race.response.statusMessage  == 1){
+                            //  try {
+                            //    
+                            //  }on DioError catch (e) {
+                            //    //throw Exception(e);
+                            //    log(e.response!.data);
+                            //  }
+                             var race = await raceService.deleteRace(idraces.toString());
+                              log(race.toString());
+                              raceRe = race.data;
+                             if(raceRe.result  == '1'){
+
                             ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                         content: Text('delete Successful')),
                                   );
+                                  setState(() {
+                                    RaceCreate();
+                                  });
+                                   Navigator.pop(context);
                                   // log("race Successful");   
                                   return;
                                 } else {

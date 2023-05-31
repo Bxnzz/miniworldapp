@@ -3,6 +3,8 @@ import 'package:miniworldapp/model/DTO/raceDTO.dart';
 import 'package:miniworldapp/model/race.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../model/result/raceResult.dart';
+
 part 'race.g.dart';
 
 @RestApi()
@@ -22,11 +24,11 @@ abstract class RaceService {
   );
 
   @DELETE("/race/{raceID}")
-  Future<HttpResponse<List<Race>>> deleteRace(@Path("raceID")int raceID);
+  Future<HttpResponse<RaceResult>> deleteRace(@Path()String raceID);
 
-  @POST("/race/")
+  @POST("/race")
   Future<HttpResponse<Race>> insertRaces(@Body() RaceDto raceDto);
 
-  @POST("/race/{raceID}")
-  Future<HttpResponse<Race>> updateRaces(@Path("raceID")int raceID,@Body() RaceDto raceDto);
+  @PUT("/race/{raceID}")
+  Future<HttpResponse<RaceResult>> updateRaces(@Body() RaceDto raceDto,@Path("raceID")String raceID);
 }

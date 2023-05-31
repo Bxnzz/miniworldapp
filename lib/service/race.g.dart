@@ -97,13 +97,13 @@ class _RaceService implements RaceService {
   }
 
   @override
-  Future<HttpResponse<List<Race>>> deleteRace(raceID) async {
+  Future<HttpResponse<RaceResult>> deleteRace(raceID) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio
-        .fetch<List<dynamic>>(_setStreamType<HttpResponse<List<Race>>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<HttpResponse<RaceResult>>(Options(
       method: 'DELETE',
       headers: _headers,
       extra: _extra,
@@ -115,9 +115,7 @@ class _RaceService implements RaceService {
               data: _data,
             )
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    var value = _result.data!
-        .map((dynamic i) => Race.fromJson(i as Map<String, dynamic>))
-        .toList();
+    final value = RaceResult.fromJson(_result.data!);
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }
@@ -137,7 +135,7 @@ class _RaceService implements RaceService {
     )
             .compose(
               _dio.options,
-              '/race/',
+              '/race',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -148,18 +146,18 @@ class _RaceService implements RaceService {
   }
 
   @override
-  Future<HttpResponse<Race>> updateRaces(
-    raceID,
+  Future<HttpResponse<RaceResult>> updateRaces(
     raceDto,
+    raceID,
   ) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(raceDto.toJson());
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<HttpResponse<Race>>(Options(
-      method: 'POST',
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<HttpResponse<RaceResult>>(Options(
+      method: 'PUT',
       headers: _headers,
       extra: _extra,
     )
@@ -170,7 +168,7 @@ class _RaceService implements RaceService {
               data: _data,
             )
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = Race.fromJson(_result.data!);
+    final value = RaceResult.fromJson(_result.data!);
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }
