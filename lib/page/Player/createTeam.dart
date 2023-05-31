@@ -125,7 +125,35 @@ class _CeateTeamState extends State<CeateTeam> {
                         color: Colors.purple.shade50,
                         child: Column(
                           children: [
-                            SelectTeampho(context),
+                            GestureDetector(
+                                onTap: () {
+                                  selectFile();
+                                },
+                                child: pickedFile != null
+                                    ? CircleAvatar(
+                                        key: avata,
+                                        radius:
+                                            MediaQuery.of(context).size.width *
+                                                0.15,
+                                        backgroundImage: FileImage(pickedFile!))
+                                    : CircleAvatar(
+                                        radius:
+                                            MediaQuery.of(context).size.width *
+                                                0.15,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            selectFile();
+                                            log('message');
+                                          },
+                                          child: Icon(
+                                            Icons.add_photo_alternate,
+                                            size: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.15,
+                                          ),
+                                        ),
+                                      )),
                             Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(32, 50, 32, 32),
@@ -241,31 +269,6 @@ class _CeateTeamState extends State<CeateTeam> {
     );
   }
 
-  GestureDetector SelectTeampho(BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          selectFile();
-        },
-        child: pickedFile != null
-            ? CircleAvatar(
-                key: avata,
-                radius: MediaQuery.of(context).size.width * 0.15,
-                backgroundImage: FileImage(pickedFile!))
-            : CircleAvatar(
-                radius: MediaQuery.of(context).size.width * 0.15,
-                child: GestureDetector(
-                  onTap: () {
-                    selectFile();
-                    log('message');
-                  },
-                  child: Icon(
-                    Icons.add_photo_alternate,
-                    size: MediaQuery.of(context).size.width * 0.15,
-                  ),
-                ),
-              ));
-  }
-
   Future<void> loadDatas() async {
     try {
       var a = await userService.getUserAll();
@@ -280,20 +283,23 @@ class _CeateTeamState extends State<CeateTeam> {
     final result = await FilePicker.platform.pickFiles();
     File file;
     PlatformFile platFile;
-    if (result == null) return;
-    platFile = result.files.single;
-    file = File(platFile.path!);
-    pickedFile = file;
 
-    log(result.files.single.toString());
-    log(platFile.extension.toString());
-    if (platFile.extension == 'jpg' || platFile.extension == 'png') {
-      setState(() {
-        isImage = true;
-      });
-    } else {
-      isImage = false;
-    }
+    setState(() {
+      if (result == null) return;
+      platFile = result.files.single;
+      file = File(platFile.path!);
+      pickedFile = file;
+
+      log(result.files.single.toString());
+      log(platFile.extension.toString());
+      if (platFile.extension == 'jpg' || platFile.extension == 'png') {
+        setState(() {
+          isImage = true;
+        });
+      } else {
+        isImage = false;
+      }
+    });
   }
 
   Future uploadFile() async {
