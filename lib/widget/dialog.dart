@@ -27,12 +27,12 @@ class _DialogRaceState extends State<DialogRace> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              SizedBox(
+              const SizedBox(
                 height: 20.0,
               ),
               SizedBox(
                 width: 50,
-                child: ElevatedButton(onPressed: () {}, child: Text('ภารกิจ'))),
+                child: ElevatedButton(onPressed: () {}, child: const Text('ภารกิจ'))),
               SizedBox(height: 24.0),
               InkWell(
                 child: Container(
