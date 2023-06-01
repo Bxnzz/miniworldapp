@@ -10,6 +10,9 @@ part 'mission.g.dart';
 abstract class MissionService {
   factory MissionService(Dio dio, {String baseUrl}) = _MissionService;
 
+  @GET("/mission")
+  Future<HttpResponse<List<Mission>>> missionAll();
+
   @POST("/mission")
   Future<HttpResponse<Mission>> missions(@Body() MissionDto missionDto);
 }
