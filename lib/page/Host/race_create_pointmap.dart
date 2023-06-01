@@ -41,6 +41,7 @@ class _RacePointMapState extends State<RacePointMap> {
   bool _checkbox2 = false;
   String lats = '';
   String longs = '';
+  int squarePlus = 0;
   late MissionService missionService;
   List<Mission> missions = [];
   List<MissionDto> missionDtos = [];
@@ -99,7 +100,7 @@ class _RacePointMapState extends State<RacePointMap> {
         // Text(position.target.latitude.toString());
         lats = position.target.latitude.toString();
         longs = position.target.longitude.toString();
-        //log('lat' + lats + longs);
+        log('lat'+position.target.latitude.toString());
       },
     );
   }
@@ -252,20 +253,46 @@ class _RacePointMapState extends State<RacePointMap> {
               ],
             ),
             Center(
-              child: ElevatedButton(
+              child: ElevatedButton (
                   child: Text('สร้างภารกิจ'),
-                  onPressed: () {
+                  onPressed: () async{
                     MissionDto missionDto = MissionDto(
                         misName: nameMission.text,
                         misDiscrip: DescriptionMission.text,
                         misDistance: int.parse(selectedValue!),
                         misType: 0,
-                        misSeq: 0,
+                        misSeq: squarePlus ++,
                         misMediaUrl: '',
                         misLat: double.parse(lats),
                         misLng: double.parse(longs),
-                        raceId: widget.idrace);
-                    print(double.parse('lat'+lats));
+                        raceId: 1);
+                        log(lats);
+                    //print(double.parse('lat'+lats));
+                    var mission = await missionService.insertMissions(missionDto);
+                       if (mission.response.statusCode == 200) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('mision Successful')),
+                                  );
+                                  // log("race Successful");
+                                  // Navigator.pushReplacement(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //       builder: (context) => RacePointMap(
+                                  //           idrace: race.data.raceId),
+                                  //       settings:
+                                  //           RouteSettings(arguments: null),
+                                  //     ));
+                                  return;
+                                } else {
+                                  // log("team fail");
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('mission fail try agin!')),
+                                  );
+
+                                  return;
+                                } 
                   }),
             ),
           ],
@@ -277,12 +304,14 @@ class _RacePointMapState extends State<RacePointMap> {
   Widget dropdownRadius() {
     return SingleChildScrollView(
       child: DropdownButtonHideUnderline(
-        child: DropdownButton2(
-          hint: Text(
-            'รัศมี',
-            style: TextStyle(
-              //  fontSize: 12,
-              color: Theme.of(context).hintColor,
+        child: DropdownButton2(            
+          hint: Center(
+            child: Text(
+              'รัศมี',
+              style: TextStyle(
+                //  fontSize: 12,
+                color: Theme.of(context).hintColor,
+              ),
             ),
           ),
           items: items
@@ -300,14 +329,26 @@ class _RacePointMapState extends State<RacePointMap> {
           onChanged: (value) {
             setState(() {
               selectedValue = value as String;
-
+              
               //    log('radi'+selectedValue.toString());
             });
           },
-          buttonStyleData: const ButtonStyleData(
+          buttonStyleData: ButtonStyleData(
             height: 30,
-            width: 60,
+            width: 70,
+           // padding: const EdgeInsets.only(left: 14, right: 14),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+             border: Border.all(color: Colors.purpleAccent)
+            )
+           
           ),
+           dropdownStyleData: DropdownStyleData(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                 
+                ),
+              ),
           menuItemStyleData: const MenuItemStyleData(
             height: 30,
           ),
@@ -315,4 +356,5 @@ class _RacePointMapState extends State<RacePointMap> {
       ),
     );
   }
+  
 }

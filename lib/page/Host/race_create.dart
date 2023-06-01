@@ -47,13 +47,11 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
   UploadTask? uploadTask;
   bool isImage = true;
   String image = '';
-  String singupS = '';
 
   String img = '';
 
   DateTime dateTime = DateTime(2023, 03, 24, 5, 30);
   int idUser = 0;
-  String dates = '';
   @override
   void initState() {
     super.initState();
@@ -63,9 +61,6 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
 
     idUser = context.read<AppData>().idUser;
     log(idUser.toString());
-   // dates = context.read<AppData>().dates;
-     log(dates.toString());
-    
   }
 
   @override
@@ -160,8 +155,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                   child: TextFieldDate(
                                       controller: singUpST,
                                       hintText: '00/00/0000',
-                                      labelText: 'วันที่เปิดรับสมัคร',
-                                      ),
+                                      labelText: 'วันที่เปิดรับสมัคร'),
                                 )),
                           ),
                         ),
@@ -253,12 +247,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                 final urlDownload =
                                     await snapshot.ref.getDownloadURL();
                                 log('Download Link:$urlDownload');
-                                
-                              //   singupS = singUpST.text;
-                              //   singupS = '${dateTime.toIso8601String()}Z';
-                              //  log(singupS);
-                                
-                           
+
                                 img = urlDownload;
                                 RaceDto dto = RaceDto(
                                   raceName: raceName.text,
@@ -412,5 +401,22 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                             ),
                           ));
   }
- 
+  // Widget uploadImage() {
+  //   return Stack(
+  //     children: const <Widget>[
+        
+  //       CircleAvatar(
+  //         radius: 35.0,
+  //         backgroundColor: Colors.grey,
+  //         child: FaIcon(FontAwesomeIcons.camera, size: 25),
+  //       ),
+  //       Positioned(
+  //         bottom: 3.0,
+  //         right: 3.0,
+  //         child: FaIcon(FontAwesomeIcons.circlePlus,
+  //             size: 25, color: Colors.purpleAccent),
+  //       ),
+  //     ],
+  //   );
+  // }
 }

@@ -1,7 +1,5 @@
 import 'dart:developer';
 
-
-
 import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
 import 'package:card_actions/card_actions.dart';
 import 'package:dio/dio.dart';
@@ -10,12 +8,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/model/result/raceResult.dart';
 import 'package:miniworldapp/page/Host/race_edit.dart';
+import 'package:miniworldapp/page/Host/race_edit_mission.dart';
 import 'package:miniworldapp/widget/dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/race.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
+import '../Host/race_create_pointmap.dart';
 
 class Home_create extends StatefulWidget {
   const Home_create({super.key});
@@ -30,10 +30,10 @@ class _Home_createState extends State<Home_create> {
   int idUser = 0;
   String raceID = '';
   int IDrace = 0;
-  
+
   var selectedItem = '';
-  
-  late RaceResult raceRe ;
+
+  late RaceResult raceRe;
   late Future<void> loadDataMethod;
   late RaceService raceService;
 
@@ -69,8 +69,8 @@ class _Home_createState extends State<Home_create> {
             if (snapshot.connectionState == ConnectionState.done) {
               return ListView(
                 children: race.map((element) {
-                //IDrace = element.raceId;
-                 
+                  //IDrace = element.raceId;
+
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -82,52 +82,50 @@ class _Home_createState extends State<Home_create> {
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(12.0),
                                 splashColor: Colors.blue.withAlpha(30),
-                                onTap: () => showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        DialogRace()),
-                                //showDialog<String>(
-                                //   context: context,
-                                //   builder: (BuildContext context) => AlertDialog(
-                                //     title: Center(
-                                //         child: Text("ชื่อ: ${element.raceName}")),
-                                //     content: SizedBox(
-                                //       height: 95,
-                                //       child: Center(
-                                //         child: Column(
-                                //           // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                //           children: [
-                                //             ElevatedButton(
-                                //                 onPressed: () {
-                                //                   Navigator.push(
-                                //                       context,
-                                //                       MaterialPageRoute(
-                                //                           builder: (context) =>
-                                //                               const EditRace()));
-                                //                   context.read<AppData>().idrace =
-                                //                       element.raceId;
-                                //                 },
-                                //                 child: const Text('แก้ไขการแข่งขัน')),
-                                //             ElevatedButton(
-                                //                 onPressed: () {},
-                                //                 child: Text('ภารกิจ')),
-                                //             ElevatedButton(
-                                //                 onPressed: () {},
-                                //                 child: Text('ล็อบบี้ผู้สร้าง')),
-                  
-                                //           ],
-                                //         ),
-                                //       ),
-                                //     ),
-                                //     actions: <Widget>[
-                                //       TextButton(
-                                //         onPressed: () =>
-                                //             Navigator.pop(context, 'Cancel'),
-                                //         child: const Text('ยกเลิก'),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
+                                onTap: () => showDialog<String>(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      AlertDialog(
+                                    title: Center(
+                                        child:
+                                            Text("ชื่อ: ${element.raceName}")),
+                                    content: SizedBox(
+                                      height: 95,
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Text(
+                                                'จำนวนทีม: ${element.raceLimitteam.toString()}'),
+                                            Text(
+                                                'เปิดรับสมัคร: ${formatter.formatInBuddhistCalendarThai(element.raceTimeSt)}'),
+                                            Text(
+                                                'ปิดรับสมัคร:${formatter.formatInBuddhistCalendarThai(element.raceTimeFn)} '),
+                                            Text(
+                                                'ปิดรับสมัคร:${formatter.formatInBuddhistCalendarThai(element.eventDatetime)} '),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    actions: <Widget>[
+                                      Center(
+                                        child: SizedBox(
+                                          width: 200,
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => DetailMission()));
+                                            },
+                                            child: const Text('ภารกิจทั้งหมด'),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Row(
@@ -137,7 +135,8 @@ class _Home_createState extends State<Home_create> {
                                       SizedBox(
                                           width: 100,
                                           height: 100,
-                                          child: Image.network(element.raceImage)),
+                                          child:
+                                              Image.network(element.raceImage)),
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -147,9 +146,10 @@ class _Home_createState extends State<Home_create> {
                                               formatter
                                                   .formatInBuddhistCalendarThai(
                                                       element.raceTimeFn)),
-                                          Text("สถานที่: " + element.raceLocation),
-                                          Text("# " + element.raceId.toString() ),
-                                          
+                                          Text("สถานที่: " +
+                                              element.raceLocation),
+                                          Text(
+                                              "# " + element.raceId.toString()),
                                         ],
                                       ),
                                     ],
@@ -164,11 +164,11 @@ class _Home_createState extends State<Home_create> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8)),
                                     itemBuilder: (BuildContext context) {
-                                      return [ 
-                                        _buildPopupMenuEdit(
-                                            'แก้ไข', Icons.edit, EditRace(),element.raceId),
-                                            
-                                        _buildPopupMenuDelete('ลบ', Icons.delete,element.raceId)
+                                      return [
+                                        _buildPopupMenuEdit('แก้ไข', Icons.edit,
+                                            EditRace(), element.raceId),
+                                        _buildPopupMenuDelete(
+                                            'ลบ', Icons.delete, element.raceId)
                                       ];
                                     })),
                           ],
@@ -189,14 +189,13 @@ class _Home_createState extends State<Home_create> {
     try {
       var a = await raceService.racesByID(userID: idUser);
       race = a.data;
-      
     } catch (err) {
       log('Error:$err');
     }
   }
 
   PopupMenuItem _buildPopupMenuEdit(
-      String menuTitle, IconData iconData, Widget page,int idraces) {
+      String menuTitle, IconData iconData, Widget page, int idraces) {
     return PopupMenuItem(
         child: Row(
       children: [
@@ -206,7 +205,7 @@ class _Home_createState extends State<Home_create> {
           onPressed: () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => page));
-                context.read<AppData>().idrace = idraces ;
+            context.read<AppData>().idrace = idraces;
           },
         ),
         Text(menuTitle)
@@ -214,7 +213,8 @@ class _Home_createState extends State<Home_create> {
     ));
   }
 
-  PopupMenuItem _buildPopupMenuDelete(String menuTitle, IconData iconData,int idraces) {
+  PopupMenuItem _buildPopupMenuDelete(
+      String menuTitle, IconData iconData, int idraces) {
     return PopupMenuItem(
         child: Row(
       children: [
@@ -231,50 +231,51 @@ class _Home_createState extends State<Home_create> {
                 actions: <Widget>[
                   TextButton(
                     onPressed: () => Navigator.pop(context, 'Cancel'),
-                    child: const Text('ยกเลิก',style:TextStyle(color: Colors.black)),
+                    child: const Text('ยกเลิก',
+                        style: TextStyle(color: Colors.black)),
                   ),
                   SizedBox(
                       width: 120,
-                      child:
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.redAccent
-                            ),
-                            onPressed: () async{
-                             log('race $idraces');
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.redAccent),
+                          onPressed: () async {
+                            log('race $idraces');
                             //  try {
-                            //    
+                            //
                             //  }on DioError catch (e) {
                             //    //throw Exception(e);
                             //    log(e.response!.data);
                             //  }
-                             var race = await raceService.deleteRace(idraces.toString());
-                              log(race.toString());
-                              raceRe = race.data;
-                             if(raceRe.result  == '1'){
+                            var race = await raceService
+                                .deleteRace(idraces.toString());
+                            log(race.toString());
+                            raceRe = race.data;
+                            if (raceRe.result == '1') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('delete Successful')),
+                              );
+                              setState(() {
+                                RaceCreate();
+                              });
+                              Navigator.pop(context);
+                              // log("race Successful");
+                              return;
+                            } else {
+                              // log("team fail");
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('delete fail try agin!')),
+                              );
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('delete Successful')),
-                                  );
-                                  setState(() {
-                                    RaceCreate();
-                                  });
-                                   Navigator.pop(context);
-                                  // log("race Successful");   
-                                  return;
-                                } else {
-                                  // log("team fail");
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('delete fail try agin!')),
-                                  );
-
-                                  return;
-                                }
-                            },
-                           child: const Text('ลบ',style: TextStyle(color:Colors.white),)
-                           ))
+                              return;
+                            }
+                          },
+                          child: const Text(
+                            'ลบ',
+                            style: TextStyle(color: Colors.white),
+                          )))
                 ],
               ),
             );

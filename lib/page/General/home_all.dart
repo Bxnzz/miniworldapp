@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-
-
 import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +9,10 @@ import 'package:intl/intl.dart';
 
 import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/page/Host/race_create.dart';
+import 'package:miniworldapp/page/Host/race_create_pointmap.dart';
 
 import 'package:provider/provider.dart';
+import 'package:simple_speed_dial/simple_speed_dial.dart';
 
 import '../../model/race.dart';
 import '../../service/provider/appdata.dart';
@@ -29,11 +29,11 @@ class HomeAll extends StatefulWidget {
 
 class _HomeAllState extends State<HomeAll> {
   String Username = '';
-  
+  String _text = '';
+
   @override
   void initState() {
     super.initState();
-
 
     Username = context.read<AppData>().Username;
     log(Username);
@@ -45,9 +45,63 @@ class _HomeAllState extends State<HomeAll> {
       initialIndex: 1,
       length: 3,
       child: Scaffold(
+        floatingActionButton: SpeedDial(
+        child: const Icon(Icons.add),
+        speedDialChildren: <SpeedDialChild>[
+          SpeedDialChild(
+            child: const FaIcon(FontAwesomeIcons.squarePlus),
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.pink,
+            label: 'สร้างการแข่งขัน',
+            onPressed: () {
+               Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const RaceCreatePage()));
+              setState(() {
+                _text = 'สร้างการแข่งขัน';
+              });
+            },
+          ),
+          SpeedDialChild(
+            child: const FaIcon(FontAwesomeIcons.eye),
+            foregroundColor: Colors.black,
+            backgroundColor: Colors.yellow,
+            label: 'เข้าชมการแข่งขัน',
+            
+            onPressed: () {
+              setState(() {
+                _text = '"เข้าชมการแข่งขัน"';
+                
+              });
+            },
+          ),
+         SpeedDialChild(
+            child: const FaIcon(FontAwesomeIcons.flagCheckered),
+            foregroundColor: Colors.black,
+            backgroundColor: Colors.blue,
+            label: 'เพิ่มภารกิจ',
+            
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>  RacePointMap(idrace: 0,)));
+              setState(() {
+                _text = '"เพิ่มภารกิจ"';
+                
+              });
+            },
+          ),
+        ],
+        closedForegroundColor: Colors.black,
+        openForegroundColor: Colors.white,
+        closedBackgroundColor: Colors.white,
+        openBackgroundColor: Colors.black,
+      ),
         appBar: AppBar(
           title: const Text('หน้าHome'),
-        //  actions: <Widget>[Text(Username)],
+          //  actions: <Widget>[Text(Username)],
           bottom: const TabBar(
             tabs: <Widget>[
               Tab(
@@ -73,18 +127,7 @@ class _HomeAllState extends State<HomeAll> {
             ),
           ],
         ),
-        bottomNavigationBar: SizedBox(
-          height: 50,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const RaceCreatePage()));
-            },
-            child: const Text("สร้างการแข่งขัน"),
-          ),
-        ),
+       
         drawer: SizedBox(
           width: 200,
           child: Drawer(
@@ -97,13 +140,13 @@ class _HomeAllState extends State<HomeAll> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children:  <Widget>[
+                    children: <Widget>[
                       SizedBox(
                         height: 15,
                       ),
                       Text(
-                       Username,
-                       // style: TextStyle(color: Colors.grey),
+                        Username,
+                        // style: TextStyle(color: Colors.grey),
                       )
                     ],
                   ),
@@ -136,8 +179,7 @@ class _HomeAllState extends State<HomeAll> {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>  const Login(),
-                         
+                          builder: (context) => const Login(),
                         ));
                   },
                 ),
@@ -175,7 +217,6 @@ class _RaceAllState extends State<RaceAll> {
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
     raceService.races().then((value) {
       log(value.data.first.raceName);
-    
     });
     idUser = context.read<AppData>().idUser;
     log(idUser.toString());
@@ -191,13 +232,10 @@ class _RaceAllState extends State<RaceAll> {
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return ListView(
-                
                 children: races.map((element) {
-           
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Card(
-                      
                       clipBehavior: Clip.hardEdge,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(12.0),
@@ -205,7 +243,6 @@ class _RaceAllState extends State<RaceAll> {
                         onTap: () => showDialog<String>(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
-                            
                             title: Text("ชื่อ: ${element.raceName}"),
                             content: SizedBox(
                               height: 95,
@@ -246,16 +283,14 @@ class _RaceAllState extends State<RaceAll> {
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: 
-                               [
+                            children: [
                               SizedBox(
-                                width: 80,
-                                height: 80,
-                                child: Image.network(element.raceImage)),
+                                  width: 80,
+                                  height: 80,
+                                  child: Image.network(element.raceImage)),
                               Column(
-                               crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                 
                                   Text("ชื่อ: " + element.raceName),
                                   Text("ปิดรับสมัคร: " +
                                       formatter.formatInBuddhistCalendarThai(
@@ -279,11 +314,10 @@ class _RaceAllState extends State<RaceAll> {
     );
   }
 
-  
   Future<void> loadData() async {
     try {
       var a = await raceService.races();
-      races = a.data;  
+      races = a.data;
     } catch (err) {
       log('Error:$err');
     }
