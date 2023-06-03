@@ -52,6 +52,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
 
   DateTime dateTime = DateTime(2023, 03, 24, 5, 30);
   int idUser = 0;
+  int idrace = 0;
   @override
   void initState() {
     super.initState();
@@ -280,10 +281,12 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => RacePointMap(
-                                            idrace: race.data.raceId),
+                                            ),
                                         settings:
                                             RouteSettings(arguments: null),
                                       ));
+                                           context.read<AppData>().idrace =
+                                        race.data.raceId;
                                   return;
                                 } else {
                                   // log("team fail");

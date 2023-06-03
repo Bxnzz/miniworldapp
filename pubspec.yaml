@@ -78,6 +78,7 @@ dependencies:
   card_actions: ^0.0.1
   simple_speed_dial: ^0.1.7
   implicitly_animated_reorderable_list_2: ^0.5.1
+  flutter_slidable: ^3.0.0
   
   
 

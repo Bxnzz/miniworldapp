@@ -86,7 +86,7 @@ class _HomeAllState extends State<HomeAll> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>  RacePointMap(idrace: 0,)));
+                      builder: (context) =>  RacePointMap()));
               setState(() {
                 _text = '"เพิ่มภารกิจ"';
                 

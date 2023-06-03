@@ -7,8 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/model/result/raceResult.dart';
+import 'package:miniworldapp/page/Host/detil_mission.dart';
+
 import 'package:miniworldapp/page/Host/race_edit.dart';
-import 'package:miniworldapp/page/Host/race_edit_mission.dart';
+
+
 import 'package:miniworldapp/widget/dialog.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +19,7 @@ import '../../model/race.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
 import '../Host/race_create_pointmap.dart';
+
 
 class Home_create extends StatefulWidget {
   const Home_create({super.key});
@@ -29,7 +33,7 @@ class _Home_createState extends State<Home_create> {
   List<Race> race = [];
   int idUser = 0;
   String raceID = '';
-  int IDrace = 0;
+
 
   var selectedItem = '';
 
@@ -45,6 +49,8 @@ class _Home_createState extends State<Home_create> {
     // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย
     idUser = context.read<AppData>().idUser;
     log("id:" + idUser.toString());
+
+
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
     raceService.racesByID(userID: idUser).then((value) {
       log(value.data.first.raceName);
@@ -117,7 +123,9 @@ class _Home_createState extends State<Home_create> {
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (context) => DetailMission()));
+                                                      builder: (context) => const DetailMission()));
+                                                       context.read<AppData>().idrace =
+                                        element.raceId;
                                             },
                                             child: const Text('ภารกิจทั้งหมด'),
                                           ),
@@ -222,6 +230,7 @@ class _Home_createState extends State<Home_create> {
           color: Colors.black,
           icon: Icon(iconData),
           onPressed: () {
+            Navigator.pop(context);
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
@@ -257,7 +266,7 @@ class _Home_createState extends State<Home_create> {
                                     content: Text('delete Successful')),
                               );
                               setState(() {
-                                RaceCreate();
+                                
                               });
                               Navigator.pop(context);
                               // log("race Successful");
