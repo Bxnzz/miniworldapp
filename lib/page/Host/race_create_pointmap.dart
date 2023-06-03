@@ -4,12 +4,15 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:miniworldapp/model/DTO/missionDTO.dart';
-import 'package:miniworldapp/page/Host/race_edit_mission.dart';
+import 'package:miniworldapp/page/Host/detil_mission.dart';
+
+
+
+
 import 'package:miniworldapp/service/mission.dart';
 import 'package:provider/provider.dart';
 
@@ -18,8 +21,7 @@ import '../../service/attend.dart';
 import '../../service/provider/appdata.dart';
 
 class RacePointMap extends StatefulWidget {
-  late int idrace;
-   RacePointMap({super.key,required this.idrace});
+  RacePointMap({super.key});
 
   @override
   State<RacePointMap> createState() => _RacePointMapState();
@@ -41,7 +43,7 @@ class _RacePointMapState extends State<RacePointMap> {
   bool _checkbox2 = false;
   String lats = '';
   String longs = '';
-  int squarePlus = 0;
+  var square = 0;
   late MissionService missionService;
   List<Mission> missions = [];
   List<MissionDto> missionDtos = [];
@@ -49,6 +51,7 @@ class _RacePointMapState extends State<RacePointMap> {
   List<Marker> markerss = [];
   int idrace = 0;
   int id = 1;
+  int sq = 0;
   Set<Polyline> _polylines = Set<Polyline>();
   List<LatLng> polylineCoordinates = [];
   LatLng centerMap = const LatLng(16.245916, 103.252182);
@@ -58,7 +61,9 @@ class _RacePointMapState extends State<RacePointMap> {
   void initState() {
     // intilize();
     super.initState();
-   log(widget.idrace.toString());
+    idrace = context.read<AppData>().idrace;
+    log('id'+idrace.toString());
+
     missionService =
         MissionService(Dio(), baseUrl: context.read<AppData>().baseurl);
     googleMap = GoogleMap(
@@ -100,7 +105,7 @@ class _RacePointMapState extends State<RacePointMap> {
         // Text(position.target.latitude.toString());
         lats = position.target.latitude.toString();
         longs = position.target.longitude.toString();
-        log('lat'+position.target.latitude.toString());
+        log('lat' + position.target.latitude.toString());
       },
     );
   }
@@ -109,9 +114,11 @@ class _RacePointMapState extends State<RacePointMap> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+      
         title: const Text('สร้างการแข่งขัน'),
         actions: [
           IconButton(
+            
               onPressed: () {
                 Navigator.pushReplacement(
                     context,
@@ -253,46 +260,62 @@ class _RacePointMapState extends State<RacePointMap> {
               ],
             ),
             Center(
-              child: ElevatedButton (
+              child: ElevatedButton(
                   child: Text('สร้างภารกิจ'),
-                  onPressed: () async{
+                  onPressed: () async {
+                  
+                   
+                // setState(() {
+                //   if(square == 2){
+                //      square = 0;  
+                //   } 
+                //     });
+                //   log('num '+square.toString());
+                    // if(squarePlus < 0){
+                    //   squarePlus ==  squarePlus++;
+                    //   log('num '+squarePlus.toString());
+                    // } 
+                     if(lats ==''&&longs ==''){
+                       ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('กรุณาหาจุดภารกิจ...')),
+                      );
+                     }
                     MissionDto missionDto = MissionDto(
                         misName: nameMission.text,
                         misDiscrip: DescriptionMission.text,
                         misDistance: int.parse(selectedValue!),
                         misType: 0,
-                        misSeq: squarePlus ++,
+                        misSeq: 0,
                         misMediaUrl: '',
                         misLat: double.parse(lats),
                         misLng: double.parse(longs),
-                        raceId: 1);
-                        log(lats);
+                        raceId: idrace);
+                    log(lats);
                     //print(double.parse('lat'+lats));
-                    var mission = await missionService.insertMissions(missionDto);
-                       if (mission.response.statusCode == 200) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('mision Successful')),
-                                  );
-                                  // log("race Successful");
-                                  // Navigator.pushReplacement(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //       builder: (context) => RacePointMap(
-                                  //           idrace: race.data.raceId),
-                                  //       settings:
-                                  //           RouteSettings(arguments: null),
-                                  //     ));
-                                  return;
-                                } else {
-                                  // log("team fail");
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('mission fail try agin!')),
-                                  );
+                    var mission =
+                        await missionService.insertMissions(missionDto);
+                    if (mission.response.statusCode == 200) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('mision Successful')),
+                      );
+                      log("race Successful");
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DetailMission(),
+                            settings:
+                                const RouteSettings(arguments: null),
+                          ));
+                      return;
+                    } else {
+                      // log("team fail");
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('mission fail try agin!')),
+                      );
 
-                                  return;
-                                } 
+                     return;
+                    }
+                    
                   }),
             ),
           ],
@@ -304,7 +327,7 @@ class _RacePointMapState extends State<RacePointMap> {
   Widget dropdownRadius() {
     return SingleChildScrollView(
       child: DropdownButtonHideUnderline(
-        child: DropdownButton2(            
+        child: DropdownButton2(
           hint: Center(
             child: Text(
               'รัศมี',
@@ -329,26 +352,22 @@ class _RacePointMapState extends State<RacePointMap> {
           onChanged: (value) {
             setState(() {
               selectedValue = value as String;
-              
+
               //    log('radi'+selectedValue.toString());
             });
           },
           buttonStyleData: ButtonStyleData(
-            height: 30,
-            width: 70,
-           // padding: const EdgeInsets.only(left: 14, right: 14),
+              height: 30,
+              width: 70,
+              // padding: const EdgeInsets.only(left: 14, right: 14),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: Colors.purpleAccent))),
+          dropdownStyleData: DropdownStyleData(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14),
-             border: Border.all(color: Colors.purpleAccent)
-            )
-           
+            ),
           ),
-           dropdownStyleData: DropdownStyleData(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                 
-                ),
-              ),
           menuItemStyleData: const MenuItemStyleData(
             height: 30,
           ),
@@ -356,5 +375,4 @@ class _RacePointMapState extends State<RacePointMap> {
       ),
     );
   }
-  
 }
