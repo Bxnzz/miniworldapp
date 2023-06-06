@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-
-
 import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +17,7 @@ import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
 import '../Player/createTeam.dart';
 import 'home_create.dart';
+import 'home_join.dart';
 
 class HomeAll extends StatefulWidget {
   const HomeAll({super.key});
@@ -29,11 +28,10 @@ class HomeAll extends StatefulWidget {
 
 class _HomeAllState extends State<HomeAll> {
   String Username = '';
-  
+
   @override
   void initState() {
     super.initState();
-
 
     Username = context.read<AppData>().Username;
     log(Username);
@@ -47,7 +45,7 @@ class _HomeAllState extends State<HomeAll> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('หน้าHome'),
-        //  actions: <Widget>[Text(Username)],
+          //  actions: <Widget>[Text(Username)],
           bottom: const TabBar(
             tabs: <Widget>[
               Tab(
@@ -69,7 +67,7 @@ class _HomeAllState extends State<HomeAll> {
               child: Home_create(),
             ),
             Center(
-              child: Text("It's sunny here"),
+              child: Home_join(),
             ),
           ],
         ),
@@ -97,13 +95,13 @@ class _HomeAllState extends State<HomeAll> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children:  <Widget>[
+                    children: <Widget>[
                       SizedBox(
                         height: 15,
                       ),
                       Text(
-                       Username,
-                       // style: TextStyle(color: Colors.grey),
+                        Username,
+                        // style: TextStyle(color: Colors.grey),
                       )
                     ],
                   ),
@@ -136,8 +134,7 @@ class _HomeAllState extends State<HomeAll> {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>  const Login(),
-                         
+                          builder: (context) => const Login(),
                         ));
                   },
                 ),
@@ -175,7 +172,6 @@ class _RaceAllState extends State<RaceAll> {
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
     raceService.races().then((value) {
       log(value.data.first.raceName);
-    
     });
     idUser = context.read<AppData>().idUser;
     log(idUser.toString());
@@ -191,13 +187,10 @@ class _RaceAllState extends State<RaceAll> {
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return ListView(
-                
                 children: races.map((element) {
-           
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Card(
-                      
                       clipBehavior: Clip.hardEdge,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(12.0),
@@ -205,7 +198,6 @@ class _RaceAllState extends State<RaceAll> {
                         onTap: () => showDialog<String>(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
-                            
                             title: Text("ชื่อ: ${element.raceName}"),
                             content: SizedBox(
                               height: 95,
@@ -246,16 +238,14 @@ class _RaceAllState extends State<RaceAll> {
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: 
-                               [
+                            children: [
                               SizedBox(
-                                width: 80,
-                                height: 80,
-                                child: Image.network(element.raceImage)),
+                                  width: 80,
+                                  height: 80,
+                                  child: Image.network(element.raceImage)),
                               Column(
-                               crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                 
                                   Text("ชื่อ: " + element.raceName),
                                   Text("ปิดรับสมัคร: " +
                                       formatter.formatInBuddhistCalendarThai(
@@ -279,11 +269,10 @@ class _RaceAllState extends State<RaceAll> {
     );
   }
 
-  
   Future<void> loadData() async {
     try {
       var a = await raceService.races();
-      races = a.data;  
+      races = a.data;
     } catch (err) {
       log('Error:$err');
     }
