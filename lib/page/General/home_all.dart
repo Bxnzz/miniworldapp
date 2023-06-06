@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 
 import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/page/Host/race_create.dart';
-import 'package:miniworldapp/page/Host/race_create_pointmap.dart';
+import 'package:miniworldapp/page/Host/mission_create.dart';
 
 import 'package:provider/provider.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
@@ -86,7 +86,7 @@ class _HomeAllState extends State<HomeAll> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>  RacePointMap()));
+                      builder: (context) =>  Missioncreate()));
               setState(() {
                 _text = '"เพิ่มภารกิจ"';
                 

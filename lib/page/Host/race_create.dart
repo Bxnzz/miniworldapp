@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:intl/intl.dart';
-import 'package:miniworldapp/page/Host/race_create_pointmap.dart';
+import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/service/race.dart';
 import 'package:miniworldapp/widget/textfieldDate.dart';
 import 'package:provider/provider.dart';
@@ -280,7 +280,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                   Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => RacePointMap(
+                                        builder: (context) => Missioncreate(
                                             ),
                                         settings:
                                             RouteSettings(arguments: null),

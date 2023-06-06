@@ -71,6 +71,32 @@ class _MissionService implements MissionService {
   }
 
   @override
+  Future<HttpResponse<List<Mission>>> missionBymisID({required misID}) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'misID': misID};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<List<dynamic>>(
+        _setStreamType<HttpResponse<List<Mission>>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/mission/',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    var value = _result.data!
+        .map((dynamic i) => Mission.fromJson(i as Map<String, dynamic>))
+        .toList();
+    final httpResponse = HttpResponse(value, _result);
+    return httpResponse;
+  }
+
+  @override
   Future<HttpResponse<Mission>> insertMissions(missionDto) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -120,7 +146,7 @@ class _MissionService implements MissionService {
   }
 
   @override
-  Future<HttpResponse<RaceResult>> updateRaces(
+  Future<HttpResponse<RaceResult>> updateMis(
     missionDto,
     misID,
   ) async {

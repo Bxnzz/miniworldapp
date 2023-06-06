@@ -8,7 +8,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:implicitly_animated_reorderable_list_2/implicitly_animated_reorderable_list_2.dart';
 import 'package:implicitly_animated_reorderable_list_2/transitions.dart';
 import 'package:miniworldapp/model/result/raceResult.dart';
-import 'package:miniworldapp/page/Host/race_create_pointmap.dart';
+import 'package:miniworldapp/page/Host/mission_create.dart';
+import 'package:miniworldapp/page/Host/race_edit_mission.dart';
 
 import 'package:provider/provider.dart';
 
@@ -44,7 +45,17 @@ class _DetailMissionState extends State<DetailMission>
   bool inReorder = false;
 
   ScrollController scrollController = ScrollController();
+   
+   void onReorderFinished(List<Mission> newItems) {
+    scrollController.jumpTo(scrollController.offset);
+    setState(() {
+      inReorder = false;
 
+      missions
+        ..clear()
+        ..addAll(newItems);
+    });
+  }
  
   @override
   void initState() {
@@ -164,8 +175,8 @@ class _DetailMissionState extends State<DetailMission>
       areItemsTheSame: (oldItem, newItem) => oldItem == newItem,
       onReorderStarted: (item, index) => setState(() => inReorder = true),
       onReorderFinished: (movedMission, from, to, newItems) {
-        // Update the underlying data when the item has been reordered!
-      //  onReorderFinished(newItems);
+       // Update the underlying data when the item has been reordered!
+       onReorderFinished(newItems);
       },
       itemBuilder: (context, itemAnimation, mis, index) {
         return buildReorderable(mis, (tile) {
@@ -262,7 +273,9 @@ class _DetailMissionState extends State<DetailMission>
           label: 'แก้ไข',
           backgroundColor: Colors.blueAccent,
           onPressed: (BuildContext context) {
-           // setState(() => missions.remove(mis));
+            Navigator.push(
+            context, MaterialPageRoute(builder: (context) => EditMission()));
+            context.read<AppData>().idMis = mis.misId;
           },
           icon: Icons.edit,
         ),
@@ -292,7 +305,7 @@ class _DetailMissionState extends State<DetailMission>
             child: Center(
               child: Text(
                 '${missions.indexOf(mis) + 1}',
-                style: textTheme.bodyText2?.copyWith(
+                style: textTheme.bodyLarge?.copyWith(
                   color: Colors.purple,
                   fontSize: 16,
                 ),
@@ -321,7 +334,7 @@ class _DetailMissionState extends State<DetailMission>
           final result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>  RacePointMap(),
+              builder: (context) =>  Missioncreate(),
             ),
           );
     

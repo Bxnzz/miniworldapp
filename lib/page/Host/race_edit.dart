@@ -301,7 +301,7 @@ class _EditRaceState extends State<EditRace> {
                                       raceName: raceName.text,
                                       raceLocation: raceLocation.text,
                                       raceLimitteam: int.parse(raceLimit.text),
-                                      raceImage: '',
+                                      raceImage: urlDownload,
                                       signUpTimeSt:
                                           DateTime.parse("2002-03-14T00:00:00Z"),
                                       eventDatetime:
@@ -345,7 +345,7 @@ class _EditRaceState extends State<EditRace> {
                                       return;
                                      }
                                   },
-                                  child: const Text("ถัดไป")),
+                                  child: const Text("แก้ไข")),
                             ),
                           ],
                         ),

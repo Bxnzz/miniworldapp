@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 import '../../model/race.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
-import '../Host/race_create_pointmap.dart';
+import '../Host/mission_create.dart';
 
 
 class Home_create extends StatefulWidget {
@@ -42,6 +42,7 @@ class _Home_createState extends State<Home_create> {
   late RaceService raceService;
 
   var formatter = DateFormat.yMEd();
+  var formatter2 = DateFormat.Hms();
   // var dateInBuddhistCalendarFormat = formatter.formatInBuddhistCalendarThai(now);
   @override
   void initState() {
@@ -105,9 +106,9 @@ class _Home_createState extends State<Home_create> {
                                             Text(
                                                 'จำนวนทีม: ${element.raceLimitteam.toString()}'),
                                             Text(
-                                                'เปิดรับสมัคร: ${formatter.formatInBuddhistCalendarThai(element.raceTimeSt)}'),
+                                                'เปิดรับสมัคร: ${formatter2.formatInBuddhistCalendarThai(element.raceTimeSt)}'),
                                             Text(
-                                                'ปิดรับสมัคร:${formatter.formatInBuddhistCalendarThai(element.raceTimeFn)} '),
+                                                'ปิดรับสมัคร:${formatter2.formatInBuddhistCalendarThai(element.raceTimeFn)} '),
                                             Text(
                                                 'ปิดรับสมัคร:${formatter.formatInBuddhistCalendarThai(element.eventDatetime)} '),
                                           ],
@@ -124,8 +125,7 @@ class _Home_createState extends State<Home_create> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) => const DetailMission()));
-                                                       context.read<AppData>().idrace =
-                                        element.raceId;
+                                                       context.read<AppData>().idrace = element.raceId;
                                             },
                                             child: const Text('ภารกิจทั้งหมด'),
                                           ),
