@@ -193,10 +193,11 @@ class _DetailMissionState extends State<DetailMission>
           return FadeTransition(
             opacity: itemAnimation,
             child: tile,
+            
           );
         });
       },
-      footer: _buildFooter(context, theme.textTheme),
+      footer: _buildFooter(context, theme.textTheme,missions),
     );
   }
 
@@ -325,51 +326,60 @@ class _DetailMissionState extends State<DetailMission>
     );
   }
 
-  Widget _buildFooter(BuildContext context, TextTheme textTheme) {
-    return Card(
-      
-      child: Box(
-        color: Color.fromARGB(255, 233, 117, 253),
-        onTap: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>  Missioncreate(),
-            ),
-          );
-    
-          if (result != null && !missions.contains(result)) {
-            setState(() {
-              missions.add(result);
-            });
+  Widget _buildFooter(BuildContext context, TextTheme textTheme,List<Mission> mis) {
+    return FutureBuilder(
+      future: loadDataMethod,
+      builder: (context,snapshot) {
+         if (snapshot.connectionState != ConnectionState.done) {
+            return Container();
           }
-        },
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              leading: const SizedBox(
-                height: 36,
-                width: 36,
-                child: Center(
-                  child: Icon(
-                    Icons.add,
-                    color: Colors.purple,
+        return Card(
+          child: Box(
+            color: Color.fromARGB(255, 233, 117, 253),
+            onTap: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>  Missioncreate(),
+                ),
+              );
+                 context.read<AppData>().sqnum = missions.last.misSeq;
+                 log('last' + missions.last.misSeq.toString());
+              if (result != null && !missions.contains(result)) {
+                setState(() {
+                  missions.add(result);
+                  
+                });
+              }
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ListTile(
+                  leading: const SizedBox(
+                    height: 36,
+                    width: 36,
+                    child: Center(
+                      child: Icon(
+                        Icons.add,
+                        color: Colors.purple,
+                      ),
+                    ),
+                  ),
+                  title: Text(
+                    'เพิ่มภารกิจ',
+                    style: textTheme.bodyLarge?.copyWith(
+                      fontSize: 16,
+                      color: Colors.white
+                    ),
                   ),
                 ),
-              ),
-              title: Text(
-                'เพิ่มภารกิจ',
-                style: textTheme.bodyLarge?.copyWith(
-                  fontSize: 16,
-                  color: Colors.white
-                ),
-              ),
+                const Divider(height: 0),
+              ],
             ),
-            const Divider(height: 0),
-          ],
-        ),
-      ),
+          ),
+        );
+      }
     );
   }
 

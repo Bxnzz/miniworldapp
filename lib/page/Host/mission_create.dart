@@ -72,6 +72,9 @@ class _MissioncreateState extends State<Missioncreate> {
   void initState() {
     // intilize();
     super.initState();
+    sqnum = context.read<AppData>().sqnum;
+    log('lastja ' + sqnum.toString());
+
     idrace = context.read<AppData>().idrace;
     log('id' + idrace.toString());
 
@@ -305,20 +308,25 @@ class _MissioncreateState extends State<Missioncreate> {
                   child: const Text('สร้างภารกิจ'),
                   onPressed: () async {
                     // setState(() {
-                    //   if(square == 2){
-                    //      square = 0;
-                    //   }
+                      // if(sqnum == 2){
+                      //    sqnum = 0;
+                      // }
                     //     });
                    //    log('num '+square.toString());
-                    if(sqnum == sqnum){
+                   if(sqnum == 0){
+                     sqnum = sqnum + 1;
+                   }
+                   if(sqnum == sqnum){
                      sqnum++;
                     } 
                     log('num '+sqnum.toString());
-                    // if (lats == '' && longs == '') {
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //     const SnackBar(content: Text('กรุณาหาจุดภารกิจ...')),
-                    //   );
-                    // }
+
+                    if (lats == '' && longs == '') {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('กรุณาหาจุดภารกิจ...')),
+                      );
+                    }
+
                     cb = cb1 + cb2 + cb3;
                     log('ch ' + cb);
                     mType = int.parse(cb);
