@@ -333,7 +333,8 @@ class _CeateTeamState extends State<CeateTeam> {
           lng: 0.0,
           datetime: '2023-02-1',
           userId: idUser,
-          teamId: team.data.teamId);
+          teamId: team.data.teamId,
+          status: 1);
 
       var attends = await attendService.attends(attendDto);
       AttendDto attendDto2 = AttendDto(
@@ -341,7 +342,8 @@ class _CeateTeamState extends State<CeateTeam> {
           lng: 0.0,
           datetime: '2023-02-1',
           userId: idUser2,
-          teamId: team.data.teamId);
+          teamId: team.data.teamId,
+          status: 1);
       var attends2 = await attendService.attends(attendDto2);
 
       log(attends.data.massage);
