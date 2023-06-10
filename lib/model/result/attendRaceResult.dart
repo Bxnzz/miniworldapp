@@ -6,7 +6,6 @@ import 'package:meta/meta.dart';
 import 'dart:convert';
 
 import '../team.dart';
-import '../user.dart';
 
 AttendRace attendRaceFromJson(String str) =>
     AttendRace.fromJson(json.decode(str));
@@ -19,9 +18,10 @@ class AttendRace {
   int lng;
   DateTime datetime;
   int userId;
-  User user;
+  AttendRaceUser user;
   int teamId;
   Team team;
+  int status;
 
   AttendRace({
     required this.atId,
@@ -32,28 +32,8 @@ class AttendRace {
     required this.user,
     required this.teamId,
     required this.team,
+    required this.status,
   });
-
-  AttendRace copyWith({
-    int? atId,
-    int? lat,
-    int? lng,
-    DateTime? datetime,
-    int? userId,
-    User? user,
-    int? teamId,
-    Team? team,
-  }) =>
-      AttendRace(
-        atId: atId ?? this.atId,
-        lat: lat ?? this.lat,
-        lng: lng ?? this.lng,
-        datetime: datetime ?? this.datetime,
-        userId: userId ?? this.userId,
-        user: user ?? this.user,
-        teamId: teamId ?? this.teamId,
-        team: team ?? this.team,
-      );
 
   factory AttendRace.fromJson(Map<String, dynamic> json) => AttendRace(
         atId: json["AtId"],
@@ -61,9 +41,10 @@ class AttendRace {
         lng: json["Lng"],
         datetime: DateTime.parse(json["Datetime"]),
         userId: json["UserID"],
-        user: User.fromJson(json["User"]),
+        user: AttendRaceUser.fromJson(json["User"]),
         teamId: json["TeamID"],
         team: Team.fromJson(json["Team"]),
+        status: json["Status"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -75,6 +56,7 @@ class AttendRace {
         "User": user.toJson(),
         "TeamID": teamId,
         "Team": team.toJson(),
+        "Status": status,
       };
 }
 
@@ -90,7 +72,7 @@ class Race {
   DateTime raceTimeFn;
   DateTime eventDatetime;
   int userId;
-  User user;
+  RaceUser user;
   int raceStatus;
 
   Race({
@@ -109,37 +91,6 @@ class Race {
     required this.raceStatus,
   });
 
-  Race copyWith({
-    int? raceId,
-    String? raceName,
-    String? raceLocation,
-    int? raceLimitteam,
-    String? raceImage,
-    DateTime? signUpTimeSt,
-    DateTime? signUpTimeFn,
-    DateTime? raceTimeSt,
-    DateTime? raceTimeFn,
-    DateTime? eventDatetime,
-    int? userId,
-    User? user,
-    int? raceStatus,
-  }) =>
-      Race(
-        raceId: raceId ?? this.raceId,
-        raceName: raceName ?? this.raceName,
-        raceLocation: raceLocation ?? this.raceLocation,
-        raceLimitteam: raceLimitteam ?? this.raceLimitteam,
-        raceImage: raceImage ?? this.raceImage,
-        signUpTimeSt: signUpTimeSt ?? this.signUpTimeSt,
-        signUpTimeFn: signUpTimeFn ?? this.signUpTimeFn,
-        raceTimeSt: raceTimeSt ?? this.raceTimeSt,
-        raceTimeFn: raceTimeFn ?? this.raceTimeFn,
-        eventDatetime: eventDatetime ?? this.eventDatetime,
-        userId: userId ?? this.userId,
-        user: user ?? this.user,
-        raceStatus: raceStatus ?? this.raceStatus,
-      );
-
   factory Race.fromJson(Map<String, dynamic> json) => Race(
         raceId: json["RaceID"],
         raceName: json["RaceName"],
@@ -152,7 +103,7 @@ class Race {
         raceTimeFn: DateTime.parse(json["RaceTimeFN"]),
         eventDatetime: DateTime.parse(json["EventDatetime"]),
         userId: json["UserID"],
-        user: User.fromJson(json["User"]),
+        user: RaceUser.fromJson(json["User"]),
         raceStatus: json["Race_status"],
       );
 
@@ -170,5 +121,93 @@ class Race {
         "UserID": userId,
         "User": user.toJson(),
         "Race_status": raceStatus,
+      };
+}
+
+class RaceUser {
+  int userId;
+  String userName;
+  String userMail;
+  String userPassword;
+  String userFullname;
+  String userImage;
+  String userDiscription;
+  String userFacebookId;
+
+  RaceUser({
+    required this.userId,
+    required this.userName,
+    required this.userMail,
+    required this.userPassword,
+    required this.userFullname,
+    required this.userImage,
+    required this.userDiscription,
+    required this.userFacebookId,
+  });
+
+  factory RaceUser.fromJson(Map<String, dynamic> json) => RaceUser(
+        userId: json["UserID"],
+        userName: json["UserName"],
+        userMail: json["UserMail"],
+        userPassword: json["UserPassword"],
+        userFullname: json["UserFullname"],
+        userImage: json["UserImage"],
+        userDiscription: json["UserDiscription"],
+        userFacebookId: json["UserFacebookID"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "UserID": userId,
+        "UserName": userName,
+        "UserMail": userMail,
+        "UserPassword": userPassword,
+        "UserFullname": userFullname,
+        "UserImage": userImage,
+        "UserDiscription": userDiscription,
+        "UserFacebookID": userFacebookId,
+      };
+}
+
+class AttendRaceUser {
+  int userId;
+  String userName;
+  String userMail;
+  String userPassword;
+  String userFullname;
+  String userImage;
+  String userDiscription;
+  String userFacebookId;
+
+  AttendRaceUser({
+    required this.userId,
+    required this.userName,
+    required this.userMail,
+    required this.userPassword,
+    required this.userFullname,
+    required this.userImage,
+    required this.userDiscription,
+    required this.userFacebookId,
+  });
+
+  factory AttendRaceUser.fromJson(Map<String, dynamic> json) => AttendRaceUser(
+        userId: json["UserID"],
+        userName: json["UserName"],
+        userMail: json["UserMail"],
+        userPassword: json["UserPassword"],
+        userFullname: json["UserFullname"],
+        userImage: json["UserImage"],
+        userDiscription: json["UserDiscription"],
+        userFacebookId: json["UserFacebookID"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "UserID": userId,
+        "UserName": userName,
+        "UserMail": userMail,
+        "UserPassword": userPassword,
+        "UserFullname": userFullname,
+        "UserImage": userImage,
+        "UserDiscription": userDiscription,
+        "UserFacebookID": userFacebookId,
       };
 }

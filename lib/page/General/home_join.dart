@@ -114,7 +114,7 @@ class _Home_joinState extends State<Home_join> {
           return AlertDialog(
             title: const Text('รายละเอียด'),
             content: SizedBox(
-              height: 160,
+              height: 180,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -127,11 +127,15 @@ class _Home_joinState extends State<Home_join> {
                   Text(
                       'สิ้นสุด   ${'${f.format(e.team.race.raceTimeFn)}  ${formatter.formatInBuddhistCalendarThai(e.team.race.raceTimeFn)}'}'),
                   Text('สถานที่ ${e.team.race.raceLocation}'),
+                  Text('ชื่อทีม ${e.team.teamName}'),
                   const Gap(25),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.deepPurpleAccent),
                       onPressed: () {
+                        context.read<AppData>().idrace = e.team.raceId;
+                        context.read<AppData>().idAt = e.atId;
+                        context.read<AppData>().idTeam = e.teamId;
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

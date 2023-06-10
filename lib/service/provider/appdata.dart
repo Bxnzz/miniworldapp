@@ -15,4 +15,6 @@ class AppData with ChangeNotifier {
   String Username = '';
   int idUser = 0;
   int idTeam = 0;
+  int idAt = 0;
+  int status = 0;
 }
