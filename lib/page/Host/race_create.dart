@@ -53,6 +53,9 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
   DateTime dateTime = DateTime(2023, 03, 24, 5, 30);
   int idUser = 0;
   int idrace = 0;
+  TextEditingController TexttimeST = TextEditingController();
+  TextEditingController TexttimeFN = TextEditingController();
+  TextEditingController TexttimeDate = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -106,7 +109,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                   children: [
                 Card(
                   margin: EdgeInsets.fromLTRB(32, 95, 32, 32),
-                  color: Colors.white,
+               //   color: Theme.of(context).primaryColor,
                   child: SingleChildScrollView(
                     child: Column(
                       children: <Widget>[
@@ -156,7 +159,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                   child: TextFieldDate(
                                       controller: singUpST,
                                       hintText: '00/00/0000',
-                                      labelText: 'วันที่เปิดรับสมัคร'),
+                                      labelText: 'วันที่เปิดรับสมัคร',
+                                      dates: TexttimeST),
                                 )),
                           ),
                         ),
@@ -169,7 +173,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                   child: TextFieldDate(
                                       controller: singUpFN,
                                       hintText: '00/00/0000',
-                                      labelText: 'วันที่ปิดรับสมัคร'),
+                                      labelText: 'วันที่ปิดรับสมัคร',
+                                      dates: TexttimeFN),
                                 )),
                           ),
                         ),
@@ -182,7 +187,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                   child: TextFieldDate(
                                       controller: eventDatetime,
                                       hintText: '00/00/0000',
-                                      labelText: 'วันจัดการแข่งขัน'),
+                                      labelText: 'วันจัดการแข่งขัน',
+                                      dates: TexttimeDate),
                                 )),
                           ),
                         ),

@@ -14,6 +14,7 @@ class TextFieldDate extends StatefulWidget {
   TextEditingController controller;
   String hintText;
   String labelText;
+  TextEditingController dates;
   
  
   TextFieldDate(
@@ -21,6 +22,7 @@ class TextFieldDate extends StatefulWidget {
       required this.controller,
       required this.hintText,
       required this.labelText, 
+      required this.dates,  
      });
 
   @override
@@ -29,7 +31,7 @@ class TextFieldDate extends StatefulWidget {
 
 class _TextFieldDateState extends State<TextFieldDate> {
   late DateTime dateTime;
-  late String dates;
+  //late String dates;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -65,9 +67,9 @@ class _TextFieldDateState extends State<TextFieldDate> {
                           formatter.formatInBuddhistCalendarThai(dateTime);
                       widget.controller.text = dateInBuddhistCalendarFormat;
                       
-                     dates = '${dateTime.toIso8601String()}Z';
+                     widget.dates.text = '${dateTime.toIso8601String()}Z';
                    // context.read<AppData>().dates = dates ;
-                    //  log(widget.controller.text);
+                    //  log(dates);
                     },
                   );
                 },

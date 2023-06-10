@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:implicitly_animated_reorderable_list_2/implicitly_animated_reorderable_list_2.dart';
 import 'package:implicitly_animated_reorderable_list_2/transitions.dart';
 import 'package:miniworldapp/model/result/raceResult.dart';
@@ -39,6 +40,7 @@ class _DetailMissionState extends State<DetailMission>
   late RaceResult misRe;
   int idrace = 0;
   List<Mission> missions = [];
+  final seq = <int>[];
   late Future<void> loadDataMethod;
   late MissionService missionService;
 
@@ -50,10 +52,14 @@ class _DetailMissionState extends State<DetailMission>
     scrollController.jumpTo(scrollController.offset);
     setState(() {
       inReorder = false;
-
-      missions
+      
+      // for(;;){
+          missions
         ..clear()
         ..addAll(newItems);
+     // }
+    
+        
     });
   }
  
@@ -70,8 +76,10 @@ class _DetailMissionState extends State<DetailMission>
     missionService =
         MissionService(Dio(), baseUrl: context.read<AppData>().baseurl);
     missionService.missionByraceID(raceID: idrace).then((value) {
-      log(value.data.first.misName);
+  //    log(value.data.first.misName);
+
     });
+    
 
     // 2.2 async method
     loadDataMethod = loadData();
@@ -113,6 +121,8 @@ class _DetailMissionState extends State<DetailMission>
 
                children: [
                 const Divider(height: 0),
+                Padding(padding: EdgeInsets.only(bottom: 8)),
+               // _buildHeadline(),
                  _buildVerticalLanguageList(),
                ],
 
@@ -137,14 +147,17 @@ class _DetailMissionState extends State<DetailMission>
       return Reorderable(
         key: ValueKey(mis),
         builder: (context, dragAnimation, inDrag) {
-          final tile = Card(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const Divider(height: 0),
-                _buildTile(mis),
-                const Divider(height: 0),
-              ],
+          final tile = Padding(
+            padding: const EdgeInsets.only(left: 8,right: 8,bottom: 8),
+            child: Card(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const Divider(height: 0),
+                  _buildTile(mis),
+                  const Divider(height: 0),
+                ],
+              ),
             ),
           );
 
@@ -204,7 +217,7 @@ class _DetailMissionState extends State<DetailMission>
   Widget _buildTile(Mission mis) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-
+    final number = <int>[mis.misSeq];
     return Slidable(
       endActionPane: ActionPane(motion: BehindMotion(), children: [
         SlidableAction(
@@ -305,7 +318,8 @@ class _DetailMissionState extends State<DetailMission>
             height: 36,
             child: Center(
               child: Text(
-                '${missions.indexOf(mis) + 1}',
+                //int sortn = mis.misSeq,  
+                '${mis.misSeq}',
                 style: textTheme.bodyLarge?.copyWith(
                   color: Colors.purple,
                   fontSize: 16,
@@ -326,6 +340,53 @@ class _DetailMissionState extends State<DetailMission>
     );
   }
 
+    Widget _buildHeadline() {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
+    Widget buildDivider() => Container(
+          height: 2,
+          color: Colors.grey.shade300,
+        );
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        const SizedBox(height: 16),
+      //  buildDivider(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(
+                'ลำดับ',
+                style: textTheme.bodyText1?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                'ชื่อภารกิจ',
+                style: textTheme.bodyText1?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                'เลื่อน',
+                style: textTheme.bodyText1?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            ],
+          ),
+        ),
+      //  buildDivider(),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
   Widget _buildFooter(BuildContext context, TextTheme textTheme,List<Mission> mis) {
     return FutureBuilder(
       future: loadDataMethod,
@@ -333,52 +394,56 @@ class _DetailMissionState extends State<DetailMission>
          if (snapshot.connectionState != ConnectionState.done) {
             return Container();
           }
-        return Card(
-          child: Box(
-            color: Color.fromARGB(255, 233, 117, 253),
-            onTap: () async {
-              final result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>  Missioncreate(),
-                ),
-              );
-                 context.read<AppData>().sqnum = missions.last.misSeq;
-                 log('last' + missions.last.misSeq.toString());
-              if (result != null && !missions.contains(result)) {
-                setState(() {
-                  missions.add(result);
-                  
-                });
-              }
-            },
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                ListTile(
-                  leading: const SizedBox(
-                    height: 36,
-                    width: 36,
-                    child: Center(
-                      child: Icon(
-                        Icons.add,
-                        color: Colors.purple,
+        return Padding(
+          padding: const EdgeInsets.only(left: 8,right: 8),
+          child: Card(
+            child: Box(
+              color: Color.fromARGB(255, 233, 117, 253),
+              onTap: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>  Missioncreate(),
+                  ),
+                );
+                   context.read<AppData>().sqnum = missions.last.misSeq;
+                   log('last' + missions.last.misSeq.toString());
+                if (result != null && !missions.contains(result)) {
+                  setState(() {
+                    missions.add(result);
+                    
+                  });
+                }
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ListTile(
+                    leading: const SizedBox(
+                      height: 36,
+                      width: 36,
+                      child: Center(
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.purple,
+                        ),
+                      ),
+                    ),
+                    title: Text(
+                      'เพิ่มภารกิจ',
+                      style: textTheme.bodyLarge?.copyWith(
+                        fontSize: 16,
+                        color: Colors.white
                       ),
                     ),
                   ),
-                  title: Text(
-                    'เพิ่มภารกิจ',
-                    style: textTheme.bodyLarge?.copyWith(
-                      fontSize: 16,
-                      color: Colors.white
-                    ),
-                  ),
-                ),
-                const Divider(height: 0),
-              ],
+                  const Divider(height: 0),
+                ],
+              ),
             ),
           ),
         );
+        
       }
     );
   }
