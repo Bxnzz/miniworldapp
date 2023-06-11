@@ -19,7 +19,7 @@ class _MissionService implements MissionService {
   String? baseUrl;
 
   @override
-  Future<HttpResponse<List<Mission>>> mission() async {
+  Future<HttpResponse<List<Mission>>> missionAll() async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -45,9 +45,9 @@ class _MissionService implements MissionService {
   }
 
   @override
-  Future<HttpResponse<List<Mission>>> missionByraceID({required raceID}) async {
+  Future<HttpResponse<List<Mission>>> missionBymisID({required misID}) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'raceID': raceID};
+    final queryParameters = <String, dynamic>{r'misID': misID};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<List<dynamic>>(
@@ -71,9 +71,9 @@ class _MissionService implements MissionService {
   }
 
   @override
-  Future<HttpResponse<List<Mission>>> missionBymisID({required misID}) async {
+  Future<HttpResponse<List<Mission>>> missionByraceID({required raceID}) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'misID': misID};
+    final queryParameters = <String, dynamic>{r'raceID': raceID};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<List<dynamic>>(
@@ -184,11 +184,5 @@ class _MissionService implements MissionService {
       }
     }
     return requestOptions;
-  }
-  
-  @override
-  Future<HttpResponse<List<Mission>>> missionAll() {
-    // TODO: implement missionAll
-    throw UnimplementedError();
   }
 }

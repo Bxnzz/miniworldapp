@@ -14,12 +14,20 @@ abstract class MissionService {
   @GET("/mission")
   Future<HttpResponse<List<Mission>>> missionAll();
 
+  @GET("/mission/")
+  Future<HttpResponse<List<Mission>>> missionBymisID(
+      {@Query("misID") required int misID});
+  @GET("/mission/")
+  Future<HttpResponse<List<Mission>>> missionByraceID(
+      {@Query("raceID") required int raceID});
+
   @POST("/mission")
   Future<HttpResponse<Mission>> insertMissions(@Body() MissionDto missionDto);
 
   @DELETE("/mission/{misID}")
-  Future<HttpResponse<RaceResult>> deleteMissons(@Path()String misID);
+  Future<HttpResponse<RaceResult>> deleteMissons(@Path() String misID);
 
   @PUT("/mission/{misID}")
-  Future<HttpResponse<RaceResult>> updateMis(@Body() MissionDto missionDto,@Path("misID")String misID);
+  Future<HttpResponse<RaceResult>> updateMis(
+      @Body() MissionDto missionDto, @Path("misID") String misID);
 }
