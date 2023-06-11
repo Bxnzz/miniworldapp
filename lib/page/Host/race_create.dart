@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:intl/intl.dart';
-import 'package:miniworldapp/page/Host/race_create_pointmap.dart';
+import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/service/race.dart';
 import 'package:miniworldapp/widget/textfieldDate.dart';
 import 'package:provider/provider.dart';
@@ -47,13 +47,15 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
   UploadTask? uploadTask;
   bool isImage = true;
   String image = '';
-  String singupS = '';
 
   String img = '';
 
   DateTime dateTime = DateTime(2023, 03, 24, 5, 30);
   int idUser = 0;
-  String dates = '';
+  int idrace = 0;
+  TextEditingController TexttimeST = TextEditingController();
+  TextEditingController TexttimeFN = TextEditingController();
+  TextEditingController TexttimeDate = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -63,9 +65,6 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
 
     idUser = context.read<AppData>().idUser;
     log(idUser.toString());
-   // dates = context.read<AppData>().dates;
-     log(dates.toString());
-    
   }
 
   @override
@@ -110,7 +109,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                   children: [
                 Card(
                   margin: EdgeInsets.fromLTRB(32, 95, 32, 32),
-                  color: Colors.white,
+               //   color: Theme.of(context).primaryColor,
                   child: SingleChildScrollView(
                     child: Column(
                       children: <Widget>[
@@ -161,7 +160,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                       controller: singUpST,
                                       hintText: '00/00/0000',
                                       labelText: 'วันที่เปิดรับสมัคร',
-                                      ),
+                                      dates: TexttimeST),
                                 )),
                           ),
                         ),
@@ -174,7 +173,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                   child: TextFieldDate(
                                       controller: singUpFN,
                                       hintText: '00/00/0000',
-                                      labelText: 'วันที่ปิดรับสมัคร'),
+                                      labelText: 'วันที่ปิดรับสมัคร',
+                                      dates: TexttimeFN),
                                 )),
                           ),
                         ),
@@ -187,7 +187,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                   child: TextFieldDate(
                                       controller: eventDatetime,
                                       hintText: '00/00/0000',
-                                      labelText: 'วันจัดการแข่งขัน'),
+                                      labelText: 'วันจัดการแข่งขัน',
+                                      dates: TexttimeDate),
                                 )),
                           ),
                         ),
@@ -253,12 +254,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                 final urlDownload =
                                     await snapshot.ref.getDownloadURL();
                                 log('Download Link:$urlDownload');
-                                
-                              //   singupS = singUpST.text;
-                              //   singupS = '${dateTime.toIso8601String()}Z';
-                              //  log(singupS);
-                                
-                           
+
                                 img = urlDownload;
                                 RaceDto dto = RaceDto(
                                   raceName: raceName.text,
@@ -290,11 +286,13 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                   Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => RacePointMap(
-                                            idrace: race.data.raceId),
+                                        builder: (context) => Missioncreate(
+                                            ),
                                         settings:
                                             RouteSettings(arguments: null),
                                       ));
+                                           context.read<AppData>().idrace =
+                                        race.data.raceId;
                                   return;
                                 } else {
                                   // log("team fail");
@@ -412,5 +410,22 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                             ),
                           ));
   }
- 
+  // Widget uploadImage() {
+  //   return Stack(
+  //     children: const <Widget>[
+        
+  //       CircleAvatar(
+  //         radius: 35.0,
+  //         backgroundColor: Colors.grey,
+  //         child: FaIcon(FontAwesomeIcons.camera, size: 25),
+  //       ),
+  //       Positioned(
+  //         bottom: 3.0,
+  //         right: 3.0,
+  //         child: FaIcon(FontAwesomeIcons.circlePlus,
+  //             size: 25, color: Colors.purpleAccent),
+  //       ),
+  //     ],
+  //   );
+  // }
 }

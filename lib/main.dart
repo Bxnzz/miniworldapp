@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/register.dart';
 import 'package:miniworldapp/page/General/login.dart';
-import 'package:miniworldapp/page/Host/race_create_pointmap.dart';
+import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/page/Player/createTeam.dart';
 import 'package:miniworldapp/page/home.dart';
 import 'package:miniworldapp/page/loginpage.dart';

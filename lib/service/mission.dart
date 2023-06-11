@@ -3,6 +3,7 @@ import 'package:retrofit/retrofit.dart';
 
 import '../model/DTO/missionDTO.dart';
 import '../model/mission.dart';
+import '../model/result/raceResult.dart';
 
 part 'mission.g.dart';
 
@@ -14,5 +15,11 @@ abstract class MissionService {
   Future<HttpResponse<List<Mission>>> missionAll();
 
   @POST("/mission")
-  Future<HttpResponse<Mission>> missions(@Body() MissionDto missionDto);
+  Future<HttpResponse<Mission>> insertMissions(@Body() MissionDto missionDto);
+
+  @DELETE("/mission/{misID}")
+  Future<HttpResponse<RaceResult>> deleteMissons(@Path()String misID);
+
+  @PUT("/mission/{misID}")
+  Future<HttpResponse<RaceResult>> updateMis(@Body() MissionDto missionDto,@Path("misID")String misID);
 }

@@ -1,16 +1,20 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:animations/animations.dart';
 import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:miniworldapp/page/General/detil_race.dart';
 
 import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/page/Host/race_create.dart';
+import 'package:miniworldapp/page/Host/mission_create.dart';
 
 import 'package:provider/provider.dart';
+import 'package:simple_speed_dial/simple_speed_dial.dart';
 
 import '../../model/race.dart';
 import '../../service/provider/appdata.dart';
@@ -27,7 +31,9 @@ class HomeAll extends StatefulWidget {
 }
 
 class _HomeAllState extends State<HomeAll> {
+ final transitionType = ContainerTransitionType.fade;
   String Username = '';
+  String _text = '';
 
   @override
   void initState() {
@@ -43,9 +49,58 @@ class _HomeAllState extends State<HomeAll> {
       initialIndex: 1,
       length: 3,
       child: Scaffold(
+        backgroundColor: Color.fromARGB(255, 248, 210, 255),
+        floatingActionButton: SpeedDial(
+          child: const Icon(Icons.add),
+          speedDialChildren: <SpeedDialChild>[
+            SpeedDialChild(
+              child: const FaIcon(FontAwesomeIcons.squarePlus),
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.pink,
+              label: 'สร้างการแข่งขัน',
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RaceCreatePage()));
+                setState(() {
+                  _text = 'สร้างการแข่งขัน';
+                });
+              },
+            ),
+            SpeedDialChild(
+              child: const FaIcon(FontAwesomeIcons.eye),
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.blue,
+              label: 'เข้าชมการแข่งขัน',
+              onPressed: () {
+                setState(() {
+                  _text = '"เข้าชมการแข่งขัน"';
+                });
+              },
+            ),
+            // SpeedDialChild(
+            //   child: const FaIcon(FontAwesomeIcons.flagCheckered),
+            //   foregroundColor: Colors.black,
+            //   backgroundColor: Colors.blue,
+            //   label: 'เพิ่มภารกิจ',
+            //   onPressed: () {
+            //     Navigator.push(context,
+            //         MaterialPageRoute(builder: (context) => Missioncreate()));
+            //     setState(() {
+            //       _text = '"เพิ่มภารกิจ"';
+            //     });
+            //   },
+            // ),
+          ],
+          closedForegroundColor: Colors.black,
+          openForegroundColor: Colors.white,
+          closedBackgroundColor: Colors.white,
+          openBackgroundColor: Colors.black,
+        ),
         appBar: AppBar(
           title: const Text('หน้าHome'),
-          //  actions: <Widget>[Text(Username)],
+        //  actions: <Widget>[Text(Username)],
           bottom: const TabBar(
             tabs: <Widget>[
               Tab(
@@ -58,9 +113,10 @@ class _HomeAllState extends State<HomeAll> {
                 child: Text('ที่เข้าร่วม'),
               ),
             ],
-          ),
+                   ),
         ),
-        body: const TabBarView(
+        body:  
+          TabBarView(
           children: <Widget>[
             Center(child: RaceAll()),
             Center(
@@ -70,18 +126,6 @@ class _HomeAllState extends State<HomeAll> {
               child: Home_join(),
             ),
           ],
-        ),
-        bottomNavigationBar: SizedBox(
-          height: 50,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const RaceCreatePage()));
-            },
-            child: const Text("สร้างการแข่งขัน"),
-          ),
         ),
         drawer: SizedBox(
           width: 200,
@@ -142,6 +186,8 @@ class _HomeAllState extends State<HomeAll> {
             ),
           ),
         ),
+        
+    
       ),
     );
   }
@@ -181,92 +227,129 @@ class _RaceAllState extends State<RaceAll> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder(
-          future: loadDataMethod,
-          builder: (context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return ListView(
-                children: races.map((element) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Card(
-                      clipBehavior: Clip.hardEdge,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(12.0),
-                        splashColor: Colors.blue.withAlpha(30),
-                        onTap: () => showDialog<String>(
-                          context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                            title: Text("ชื่อ: ${element.raceName}"),
-                            content: SizedBox(
-                              height: 95,
-                              child: Column(
-                                children: [
-                                  Text(
-                                      'จำนวนทีม: ${element.raceLimitteam.toString()}'),
-                                  Text(
-                                      'เปิดรับสมัคร: ${formatter.formatInBuddhistCalendarThai(element.raceTimeSt)}'),
-                                  Text(
-                                      'ปิดรับสมัคร:${formatter.formatInBuddhistCalendarThai(element.raceTimeFn)} '),
-                                  Text(
-                                      'ปิดรับสมัคร:${formatter.formatInBuddhistCalendarThai(element.eventDatetime)} '),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.pop(context, 'Cancel'),
-                                child: const Text('ยกเลิก'),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => CeateTeam()));
-                                  context.read<AppData>().idrace =
-                                      element.raceId;
-                                },
-                                child: const Text('ลงทะเบียน'),
-                              ),
-                            ],
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              SizedBox(
-                                  width: 80,
-                                  height: 80,
-                                  child: Image.network(element.raceImage)),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("ชื่อ: " + element.raceName),
-                                  Text("ปิดรับสมัคร: " +
-                                      formatter.formatInBuddhistCalendarThai(
-                                          element.raceTimeFn)),
-                                  Text("สถานที่: " + element.raceLocation),
-                                  Text("# " + element.raceId.toString()),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              );
-            } else {
-              return const CircularProgressIndicator();
-            }
-          }),
-    );
+    return  Scaffold(
+       // backgroundColor: Colors.purpleAccent,
+       
+        body: FutureBuilder(
+     future: loadDataMethod,
+     builder: (context, AsyncSnapshot snapshot) {
+      
+       if (snapshot.connectionState == ConnectionState.done) {
+        
+         return ListView(
+           padding: EdgeInsets.only(top: 10),
+           children: races.map((element) {
+             final theme = Theme.of(context);
+             final textTheme = theme.textTheme;
+             return Padding(
+               padding:
+                   const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+               child: Card(
+              //  shadowColor: ,
+                 color: Colors.white,
+                 clipBehavior: Clip.hardEdge,
+                 
+                  child: InkWell(
+                   borderRadius: BorderRadius.circular(12.0),
+                   splashColor: Colors.blue.withAlpha(30),
+                   onTap: () {
+                      Navigator.push(
+                                 context,
+                                 MaterialPageRoute(
+                                     builder: (context) => DetailRace()));
+                                      context.read<AppData>().idrace =
+                                 element.raceId;
+                   },
+
+                   child: Column(
+                     crossAxisAlignment: CrossAxisAlignment.start,
+                     children: <Widget>[
+                       Image.network(element.raceImage,
+                           height: 100,
+                           width: double.infinity,
+                           fit: BoxFit.cover),
+                       Container(
+                           padding:
+                               const EdgeInsets.fromLTRB(15, 15, 15, 0),
+                           child: Column(
+                             crossAxisAlignment: CrossAxisAlignment.start,
+                             children: <Widget>[
+                               Row(
+                                 mainAxisAlignment:
+                                     MainAxisAlignment.spaceBetween,
+                                 children: [
+                                   Text(
+                                     "ชื่อ: " + element.raceName,
+                                     style:
+                                         textTheme.displayMedium?.copyWith(
+                                       fontWeight: FontWeight.bold,
+                                       color: Colors.purple,
+                                       fontSize: 16,
+                                     ),
+                                   ),
+                                   Text(
+                                     "# ${element.raceId}",
+                                     style:
+                                         textTheme.displayMedium?.copyWith(
+                                       color: Colors.purple,
+                                       fontSize: 16,
+                                     ),
+                                   ),
+                                 ],
+                               ),
+                               Container(height: 8),
+                               // Text("ปิดรับสมัคร: " +
+                               //     formatter.formatInBuddhistCalendarThai(
+                               //         element.raceTimeFn)),
+                               Text(
+                                 "สถานที่: " + element.raceLocation,
+                                 style: textTheme.bodyLarge?.copyWith(
+                                   color:
+                                       Color.fromARGB(255, 122, 122, 122),
+                                   fontSize: 14,
+                                 ),
+                               ),
+                               SizedBox(height: 25,)
+                              //  Row(
+                              //    mainAxisAlignment: MainAxisAlignment.end,
+                              //    children: [
+                              //      ElevatedButton(
+                              //        style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
+                              //          onPressed: () {
+                              //               Navigator.push(
+                              //    context,
+                              //    MaterialPageRoute(
+                              //        builder: (context) => DetailRace()));
+                              //         context.read<AppData>().idrace =
+                              //    element.raceId;
+                              //          },
+                              //          child:  Text('รายละเอียด',style: TextStyle(color: Colors.white),)),
+                              //    ],
+                              //  ),
+                                  
+                               // Text("# " + element.raceId.toString()),
+                             ],
+                           )),
+                     ],
+                   ),
+                 ),
+               ),
+             );
+           }).toList(),
+         );
+       } else {
+         return const CircularProgressIndicator();
+
+       }
+       
+     }),
+     
+      );
+      
+  }
+
+  Paddingtop() {
+    return Padding(padding: EdgeInsets.only(bottom: 8));
   }
 
   Future<void> loadData() async {
