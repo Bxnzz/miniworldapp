@@ -125,12 +125,15 @@ class _DetailHostState extends State<DetailHost> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.8),
-                                borderRadius: BorderRadius.circular(100)),
-                            child: FaIcon(FontAwesomeIcons.arrowLeft),
+                          IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: FaIcon(
+                              FontAwesomeIcons.circleChevronLeft,
+                              color: Colors.yellow,
+                              size: 35,
+                            ),
                           ),
                           // Container(
                           //   padding: EdgeInsets.all(8),
@@ -300,17 +303,22 @@ class _DetailHostState extends State<DetailHost> {
                           ),
                           const Divider(),
                           Center(
+                            child: SizedBox(
+                              width: 200,
+                             
                               child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const DetailMission()));
-                                    context.read<AppData>().idrace =
-                                        idrace;
-                                  },
-                                  child: Text('ภารกิจทั้งหมด')))
+                                 
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const DetailMission()));
+                                      context.read<AppData>().idrace = idrace;
+                                    },
+                                    child: Text('ภารกิจทั้งหมด')),
+                            ),
+                          )
                         ]),
                       ))
                 ],

@@ -36,7 +36,6 @@ class _DetailRaceState extends State<DetailRace> {
   String singUpFN = '';
   String eventDatetime = '';
 
-
   late Future<void> loadDataMethod;
   late RaceService raceService;
 
@@ -94,8 +93,8 @@ class _DetailRaceState extends State<DetailRace> {
 
   @override
   Widget build(BuildContext context) {
-  final theme = Theme.of(context);
-  final textTheme = theme.textTheme;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     size = MediaQuery.of(context).size;
     height = size.height;
     width = size.width;
@@ -125,12 +124,16 @@ class _DetailRaceState extends State<DetailRace> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.8),
-                                borderRadius: BorderRadius.circular(100)),
-                            child: FaIcon(FontAwesomeIcons.arrowLeft),
+                          IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: FaIcon(
+                              FontAwesomeIcons.circleChevronLeft,
+                              color: Colors.yellow,
+                              size: 35,
+                              
+                            ),
                           ),
                           // Container(
                           //   padding: EdgeInsets.all(8),
@@ -151,7 +154,7 @@ class _DetailRaceState extends State<DetailRace> {
                         padding: EdgeInsets.only(
                             left: height / 42.2,
                             right: height / 42.2,
-                           //  bottom: 600,
+                            //  bottom: 600,
                             top: 0),
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.only(
@@ -159,7 +162,7 @@ class _DetailRaceState extends State<DetailRace> {
                               topRight: Radius.circular(35)),
                           color: Colors.white,
                         ),
-                        child: Column( children: [
+                        child: Column(children: [
                           Padding(
                             padding: const EdgeInsets.only(top: 6),
                             child: Center(
@@ -167,113 +170,151 @@ class _DetailRaceState extends State<DetailRace> {
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
                                 Rname,
-                                style: 
-                                  textTheme.bodyText1?.copyWith(
-                                    fontWeight: FontWeight.bold,
+                                style: textTheme.bodyText1?.copyWith(
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             )),
                           ),
                           const Divider(),
                           Padding(
-                              padding: const EdgeInsets.only(right: 8,bottom: 4),
+                            padding: const EdgeInsets.only(right: 8, bottom: 4),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                              const FaIcon(FontAwesomeIcons.locationDot,size: 18,color: Colors.grey,),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 17),
-                                child: Text(Rlocation),
-                              )
-                            ],),
+                                const FaIcon(
+                                  FontAwesomeIcons.locationDot,
+                                  size: 18,
+                                  color: Colors.grey,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 17),
+                                  child: Text(Rlocation),
+                                )
+                              ],
+                            ),
                           ),
                           const Divider(),
                           Padding(
-                              padding: const EdgeInsets.only(right: 8,bottom: 4),
+                            padding: const EdgeInsets.only(right: 8, bottom: 4),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                              const FaIcon(FontAwesomeIcons.peopleGroup,size: 18,color: Colors.grey,),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8),
-                                child: Text('$team ทีม'),
-                              )
-                            ],),
+                                const FaIcon(
+                                  FontAwesomeIcons.peopleGroup,
+                                  size: 18,
+                                  color: Colors.grey,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8),
+                                  child: Text('$team ทีม'),
+                                )
+                              ],
+                            ),
                           ),
                           const Divider(),
                           Padding(
-                              padding: const EdgeInsets.only(right: 8,bottom: 4),
+                            padding: const EdgeInsets.only(right: 8, bottom: 4),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                              const FaIcon(FontAwesomeIcons.solidCalendarPlus,size: 18,color: Colors.grey,),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 13),
-                                child: Text(singUpST),
-                              )
-                            ],),
+                                const FaIcon(
+                                  FontAwesomeIcons.solidCalendarPlus,
+                                  size: 18,
+                                  color: Colors.grey,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 13),
+                                  child: Text(singUpST),
+                                )
+                              ],
+                            ),
                           ),
                           const Divider(),
                           Padding(
-                              padding: const EdgeInsets.only(right: 8,bottom: 4),
+                            padding: const EdgeInsets.only(right: 8, bottom: 4),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                              const FaIcon(FontAwesomeIcons.solidCalendarXmark,size: 18,color: Colors.grey,),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 13),
-                                child: Text(singUpFN),
-                              )
-                            ],),
+                                const FaIcon(
+                                  FontAwesomeIcons.solidCalendarXmark,
+                                  size: 18,
+                                  color: Colors.grey,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 13),
+                                  child: Text(singUpFN),
+                                )
+                              ],
+                            ),
                           ),
                           const Divider(),
                           Padding(
-                              padding: const EdgeInsets.only(right: 8,bottom: 4),
+                            padding: const EdgeInsets.only(right: 8, bottom: 4),
                             child: Row(
                               children: [
-                              const FaIcon(FontAwesomeIcons.solidClock,size: 18,color: Colors.grey,),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 13),
-                                child: Text(raceTimeST),
-                              )
-                            ],),
+                                const FaIcon(
+                                  FontAwesomeIcons.solidClock,
+                                  size: 18,
+                                  color: Colors.grey,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 13),
+                                  child: Text(raceTimeST),
+                                )
+                              ],
+                            ),
                           ),
-                           const Divider(),
+                          const Divider(),
                           Padding(
-                              padding: const EdgeInsets.only(right: 8,bottom: 4),
+                            padding: const EdgeInsets.only(right: 8, bottom: 4),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                              FaIcon(FontAwesomeIcons.solidCircleXmark,size: 18,color: Colors.grey,),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 13),
-                                child: Text(raceTimeFN),
-                              )
-                            ],),
+                                FaIcon(
+                                  FontAwesomeIcons.solidCircleXmark,
+                                  size: 18,
+                                  color: Colors.grey,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 13),
+                                  child: Text(raceTimeFN),
+                                )
+                              ],
+                            ),
                           ),
-                            const Divider(),
+                          const Divider(),
                           Padding(
-                              padding: const EdgeInsets.only(right: 8,bottom: 4),
+                            padding: const EdgeInsets.only(right: 8, bottom: 4),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                              FaIcon(FontAwesomeIcons.solidCalendarCheck,size: 18,color: Colors.grey,),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 13),
-                                child: Text(eventDatetime),
-                              ),
-                            
-                            ],),
+                                FaIcon(
+                                  FontAwesomeIcons.solidCalendarCheck,
+                                  size: 18,
+                                  color: Colors.grey,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 13),
+                                  child: Text(eventDatetime),
+                                ),
+                              ],
+                            ),
                           ),
-                           const Divider(),
-                              Center(child: ElevatedButton(onPressed: (){
-                                Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => CeateTeam()));
-                                  context.read<AppData>().idrace =
-                                     idrace;
-                              }, child: Text('ลงทะเบียน')))
+                          const Divider(),
+                          Center(
+                              child: SizedBox(
+                                width: 200,
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => CeateTeam()));
+                                      context.read<AppData>().idrace = idrace;
+                                    },
+                                    child: Text('ลงทะเบียน')),
+                              ))
                         ]),
                       ))
                 ],

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui';
 
@@ -14,6 +15,7 @@ import 'package:miniworldapp/page/Host/race_edit_mission.dart';
 
 import 'package:provider/provider.dart';
 
+import '../../model/DTO/missionDTO.dart';
 import '../../model/mission.dart';
 import '../../service/mission.dart';
 import '../../service/provider/appdata.dart';
@@ -29,8 +31,7 @@ class DetailMission extends StatefulWidget {
   _DetailMissionState createState() => _DetailMissionState();
 }
 
-class _DetailMissionState extends State<DetailMission>
-     {
+class _DetailMissionState extends State<DetailMission> {
   // final List<Language> selectedLanguages = [
   //   english,
   //   german,
@@ -40,33 +41,20 @@ class _DetailMissionState extends State<DetailMission>
   late RaceResult misRe;
   int idrace = 0;
   List<Mission> missions = [];
+
   final seq = <int>[];
   late Future<void> loadDataMethod;
+  late RaceResult misResults;
   late MissionService missionService;
 
   bool inReorder = false;
 
   ScrollController scrollController = ScrollController();
-   
-   void onReorderFinished(List<Mission> newItems) {
-    scrollController.jumpTo(scrollController.offset);
-    setState(() {
-      inReorder = false;
-      
-      // for(;;){
-          missions
-        ..clear()
-        ..addAll(newItems);
-     // }
-    
-        
-    });
-  }
- 
+
   @override
   void initState() {
     super.initState();
-    
+
     idrace = context.read<AppData>().idrace;
     log('id' + idrace.toString());
     // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย
@@ -76,15 +64,97 @@ class _DetailMissionState extends State<DetailMission>
     missionService =
         MissionService(Dio(), baseUrl: context.read<AppData>().baseurl);
     missionService.missionByraceID(raceID: idrace).then((value) {
-  //    log(value.data.first.misName);
-
+      //    log(value.data.first.misName);
     });
-    
 
     // 2.2 async method
     loadDataMethod = loadData();
   }
- Future<void> loadData() async {
+
+
+  void onReorderFinished(List<Mission> newItems) {
+    scrollController.jumpTo(scrollController.offset);
+    setState(() {
+      inReorder = false;
+
+      missions
+        ..clear()
+        ..addAll(newItems);
+        remission(missions);
+      // for (var i = 0; i < missions.length; i++) {
+      //   MissionDto missionDto = MissionDto(
+      //       misName: missions[i].misName,
+      //       misDiscrip: missions[i].misDiscrip,
+      //       misDistance: missions[i].misDistance,
+      //       misType: missions[i].misType,
+      //       misSeq: i+1,
+      //       misMediaUrl: '',
+      //       misLat: missions[i].misLat,
+      //       misLng: missions[i].misLng,
+      //       raceId: missions[i].raceId);
+      //       log(jsonEncode(missionDto));
+        
+      //   log('item ' + missions[i].misName.toString());
+      //    var mission = await missionService.updateMis(
+      //                 missionDto, missions[i].misId.toString());
+      //             misResults = mission.data;
+      //             if (misResults.result == "1") {
+      //               ScaffoldMessenger.of(context).showSnackBar(
+      //                 const SnackBar(content: Text('update Successful')),
+      //               );
+      //               log("mission Successful");
+
+      //               return;
+      //             } else {
+      //               // log("team fail");
+      //               ScaffoldMessenger.of(context).showSnackBar(
+      //                 const SnackBar(content: Text('mission fail try agin!')),
+      //               );
+
+      //               return;
+      //             }
+     // }
+    });  
+  }
+  Future<void> remission(List<Mission> missions) async {
+
+    for (var i = 0; i < missions.length; i++) {
+        MissionDto missionDto = MissionDto(
+            misName: missions[i].misName,
+            misDiscrip: missions[i].misDiscrip,
+            misDistance: missions[i].misDistance,
+            misType: missions[i].misType,
+            misSeq: i+1,
+            misMediaUrl: '',
+            misLat: missions[i].misLat,
+            misLng: missions[i].misLng,
+            raceId: missions[i].raceId);
+           // log(jsonEncode(missionDto));
+        
+        log('item ' + missions[i].misId.toString()+':'+i.toString());
+         var mission = await missionService.updateMis(
+                      missionDto, missions[i].misId.toString());
+                  misResults = mission.data;
+                  log(misResults.result);
+                  // if (misResults.result == "1") {
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     const SnackBar(content: Text('update Successful')),
+                  //   );
+                  //   log("mission Successful");
+
+                  //   return;
+                  // } else {
+                  //   // log("team fail");
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     const SnackBar(content: Text('mission fail try agin!')),
+                  //   );
+
+                  //   return;
+                  // }
+    }
+  }
+  
+  Future<void> loadData() async {
     try {
       var a = await missionService.missionByraceID(raceID: idrace);
       missions = a.data;
@@ -92,7 +162,8 @@ class _DetailMissionState extends State<DetailMission>
       log('Error:$err');
     }
   }
-  
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,33 +176,35 @@ class _DetailMissionState extends State<DetailMission>
         //     ),
         //    // onPressed: () => Navigator.of(context).pop(),
         //   ),
-        title: const Center(child: Text('ภารกิจ' ,style: TextStyle(color: Colors.white),)),
-        
+        title: const Center(
+            child: Text(
+          'ภารกิจ',
+          style: TextStyle(color: Colors.white),
+        )),
+
         backgroundColor: Color.fromARGB(255, 238, 145, 255),
       ),
       body: FutureBuilder(
         future: loadDataMethod,
-        builder: (BuildContext context, AsyncSnapshot snapshot) { 
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return ListView(
-          controller: scrollController,
-          // Prevent the ListView from scrolling when an item is
-          // currently being dragged.
-          padding: const EdgeInsets.only(bottom: 24),
+              controller: scrollController,
+              // Prevent the ListView from scrolling when an item is
+              // currently being dragged.
+              padding: const EdgeInsets.only(bottom: 24),
 
-               children: [
+              children: [
                 const Divider(height: 0),
                 Padding(padding: EdgeInsets.only(bottom: 8)),
-               // _buildHeadline(),
-                 _buildVerticalLanguageList(),
-               ],
-
-          
-        );
-          }else {
-              return const CircularProgressIndicator();
-            }
-         }, 
+                // _buildHeadline(),
+                _buildVerticalLanguageList(),
+              ],
+            );
+          } else {
+            return const CircularProgressIndicator();
+          }
+        },
       ),
     );
   }
@@ -148,7 +221,7 @@ class _DetailMissionState extends State<DetailMission>
         key: ValueKey(mis),
         builder: (context, dragAnimation, inDrag) {
           final tile = Padding(
-            padding: const EdgeInsets.only(left: 8,right: 8,bottom: 8),
+            padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
             child: Card(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -188,8 +261,8 @@ class _DetailMissionState extends State<DetailMission>
       areItemsTheSame: (oldItem, newItem) => oldItem == newItem,
       onReorderStarted: (item, index) => setState(() => inReorder = true),
       onReorderFinished: (movedMission, from, to, newItems) {
-       // Update the underlying data when the item has been reordered!
-       onReorderFinished(newItems);
+        // Update the underlying data when the item has been reordered!
+        onReorderFinished(newItems);
       },
       itemBuilder: (context, itemAnimation, mis, index) {
         return buildReorderable(mis, (tile) {
@@ -206,11 +279,10 @@ class _DetailMissionState extends State<DetailMission>
           return FadeTransition(
             opacity: itemAnimation,
             child: tile,
-            
           );
         });
       },
-      footer: _buildFooter(context, theme.textTheme,missions),
+      footer: _buildFooter(context, theme.textTheme, missions),
     );
   }
 
@@ -224,7 +296,7 @@ class _DetailMissionState extends State<DetailMission>
           label: 'ลบ',
           backgroundColor: Colors.redAccent,
           onPressed: (BuildContext context) {
-           showDialog(
+            showDialog(
               context: context,
               builder: (context) => AlertDialog(
                 backgroundColor: Color.fromARGB(255, 255, 255, 255),
@@ -242,8 +314,8 @@ class _DetailMissionState extends State<DetailMission>
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.redAccent),
                           onPressed: () async {
-                            log('misID' +mis.misId.toString());
-                         
+                            log('misID' + mis.misId.toString());
+
                             var missionsD = await missionService
                                 .deleteMissons(mis.misId.toString());
                             log(missionsD.toString());
@@ -253,13 +325,11 @@ class _DetailMissionState extends State<DetailMission>
                                 const SnackBar(
                                     content: Text('delete Successful')),
                               );
-                               missions.removeWhere((element){
-                                          return element.misId == mis.misId;
-                                    }); //go through the loop and match content to delete from list
-                                     
-                              setState(() {
-                                
-                              });
+                              missions.removeWhere((element) {
+                                return element.misId == mis.misId;
+                              }); //go through the loop and match content to delete from list
+
+                              setState(() {});
                               Navigator.pop(context);
                               // log("race Successful");
                               return;
@@ -287,8 +357,8 @@ class _DetailMissionState extends State<DetailMission>
           label: 'แก้ไข',
           backgroundColor: Colors.blueAccent,
           onPressed: (BuildContext context) {
-            Navigator.push(
-            context, MaterialPageRoute(builder: (context) => EditMission()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => EditMission()));
             context.read<AppData>().idMis = mis.misId;
           },
           icon: Icons.edit,
@@ -318,8 +388,8 @@ class _DetailMissionState extends State<DetailMission>
             height: 36,
             child: Center(
               child: Text(
-                //int sortn = mis.misSeq,  
-                '${mis.misSeq}',
+                //int sortn = mis.misSeq,
+                '${missions.indexOf(mis) + 1}',
                 style: textTheme.bodyLarge?.copyWith(
                   color: Colors.purple,
                   fontSize: 16,
@@ -340,7 +410,7 @@ class _DetailMissionState extends State<DetailMission>
     );
   }
 
-    Widget _buildHeadline() {
+  Widget _buildHeadline() {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
@@ -354,7 +424,7 @@ class _DetailMissionState extends State<DetailMission>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         const SizedBox(height: 16),
-      //  buildDivider(),
+        //  buildDivider(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Row(
@@ -381,71 +451,67 @@ class _DetailMissionState extends State<DetailMission>
             ],
           ),
         ),
-      //  buildDivider(),
+        //  buildDivider(),
         const SizedBox(height: 16),
       ],
     );
   }
 
-  Widget _buildFooter(BuildContext context, TextTheme textTheme,List<Mission> mis) {
+  Widget _buildFooter(
+      BuildContext context, TextTheme textTheme, List<Mission> mis) {
     return FutureBuilder(
-      future: loadDataMethod,
-      builder: (context,snapshot) {
-         if (snapshot.connectionState != ConnectionState.done) {
+        future: loadDataMethod,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
             return Container();
           }
-        return Padding(
-          padding: const EdgeInsets.only(left: 8,right: 8),
-          child: Card(
-            child: Box(
-              color: Color.fromARGB(255, 233, 117, 253),
-              onTap: () async {
-                final result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>  Missioncreate(),
-                  ),
-                );
-                   context.read<AppData>().sqnum = missions.last.misSeq;
-                   log('last' + missions.last.misSeq.toString());
-                if (result != null && !missions.contains(result)) {
-                  setState(() {
-                    missions.add(result);
-                    
-                  });
-                }
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  ListTile(
-                    leading: const SizedBox(
-                      height: 36,
-                      width: 36,
-                      child: Center(
-                        child: Icon(
-                          Icons.add,
-                          color: Colors.purple,
+          return Padding(
+            padding: const EdgeInsets.only(left: 8, right: 8),
+            child: Card(
+              child: Box(
+                color: Color.fromARGB(255, 233, 117, 253),
+                onTap: () async {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Missioncreate(),
+                    ),
+                  );
+                  context.read<AppData>().sqnum = missions.last.misSeq;
+                  log('last' + missions.last.misSeq.toString());
+                  if (result != null && !missions.contains(result)) {
+                    setState(() {
+                      missions.add(result);
+                    });
+                  }
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    ListTile(
+                      leading: const SizedBox(
+                        height: 36,
+                        width: 36,
+                        child: Center(
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.purple,
+                          ),
                         ),
                       ),
-                    ),
-                    title: Text(
-                      'เพิ่มภารกิจ',
-                      style: textTheme.bodyLarge?.copyWith(
-                        fontSize: 16,
-                        color: Colors.white
+                      title: Text(
+                        'เพิ่มภารกิจ',
+                        style: textTheme.bodyLarge
+                            ?.copyWith(fontSize: 16, color: Colors.white),
                       ),
                     ),
-                  ),
-                  const Divider(height: 0),
-                ],
+                    const Divider(height: 0),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-        
-      }
-    );
+          );
+        });
   }
 
   @override
@@ -453,6 +519,4 @@ class _DetailMissionState extends State<DetailMission>
     scrollController.dispose();
     super.dispose();
   }
-  
- 
 }
