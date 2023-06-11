@@ -75,7 +75,7 @@ class _LobbyState extends State<Lobby> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('ล็อบบี้'),
+        title: const Text('ล็อบบี้'),
       ),
       body: FutureBuilder(
           future: loadDataMethod,
@@ -109,7 +109,7 @@ class _LobbyState extends State<Lobby> {
                 children: [
                   Expanded(
                     child: ListView(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       physics: const BouncingScrollPhysics(),
                       children: attendShow.map((e) {
                         return Padding(
@@ -121,20 +121,21 @@ class _LobbyState extends State<Lobby> {
                               splashColor: Colors.blue.withAlpha(30),
                               child: ExpansionTile(
                                   title: idAttend == e.values.first.first.atId
-                                      ? Row(
+                                      ?
+                                      //ทีมที่เข้าร่วม
+                                      Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceAround,
                                           children: [
                                             Text(e.values.first.first.team
                                                 .teamName),
-                                            status == 2 &&
-                                                    attends.first.status == 2
-                                                ? Text(
+                                            e.values.first.first.status == 2
+                                                ? const Text(
                                                     "(พร้อม)",
                                                     style: TextStyle(
                                                         color: Colors.green),
                                                   )
-                                                : Text(
+                                                : const Text(
                                                     "(ยังไม่พร้อม)",
                                                     style: TextStyle(
                                                         color: Colors.red),
@@ -147,11 +148,17 @@ class _LobbyState extends State<Lobby> {
                                           children: [
                                             Text(e.values.first.first.team
                                                 .teamName),
-                                            Text(
-                                              "(ยังไม่พร้อม)",
-                                              style:
-                                                  TextStyle(color: Colors.red),
-                                            ),
+                                            e.values.first.first.status == 2
+                                                ? const Text(
+                                                    "(พร้อม)",
+                                                    style: TextStyle(
+                                                        color: Colors.green),
+                                                  )
+                                                : const Text(
+                                                    "(ยังไม่พร้อม)",
+                                                    style: TextStyle(
+                                                        color: Colors.red),
+                                                  ),
                                           ],
                                         ),
                                   children: e.values.first
@@ -177,15 +184,16 @@ class _LobbyState extends State<Lobby> {
                       child: ElevatedButton(
                         onPressed: () async {
                           setState(() {
+                            status = attends.first.status;
                             attendShow = [];
 
-                            log("status is $status");
                             pressAttention = !pressAttention;
                             if (status == 1) {
                               status = 2;
                               attends.first.status = 2;
                             } else {
                               status = 1;
+                              attends.first.status = 1;
                             }
 
                             //result = b.data;
@@ -196,16 +204,17 @@ class _LobbyState extends State<Lobby> {
                               await attendService.attendByAtID(atDto, idAttend);
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: status == 2 && attends.first.status == status
-                              ? Colors.red
-                              : Colors.green, // Background color
+                          primary:
+                              attendShow.first.values.first.first.status == 2
+                                  ? Colors.red
+                                  : Colors.green, // Background color
                         ),
-                        child: status == 2 && attends.first.status == status
-                            ? Text(
+                        child: attendShow.first.values.first.first.status == 2
+                            ? const Text(
                                 style: TextStyle(
                                     fontSize: 20, color: Colors.white),
                                 "ยกเลิก")
-                            : Text(
+                            : const Text(
                                 style: TextStyle(
                                     fontSize: 20, color: Colors.white),
                                 "พร้อม"),
