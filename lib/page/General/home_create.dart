@@ -163,23 +163,113 @@ class _Home_createState extends State<Home_create> {
                                 top: 0,
                                 right: 0,
                                 child: Container(
-                                  
-                                 // padding: EdgeInsets.all(8),
+                                  // padding: EdgeInsets.all(8),
                                   // decoration: BoxDecoration(
-                                    
+
                                   //     color: Colors.white.withOpacity(0.5),
                                   //     borderRadius: BorderRadius.circular(100)),
                                   child: PopupMenuButton(
-                                   
+                                      onSelected: (result) {
+                                        if (result == 0) {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      EditRace()));
+                                          context.read<AppData>().idrace =
+                                              element.raceId;
+                                        }
+                                        if (result == 1) {
+                                        //  Navigator.pop(context);
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              backgroundColor: Color.fromARGB(
+                                                  255, 255, 255, 255),
+                                              title: Center(
+                                                  child: Text('ลบการแข่งขัน?')),
+                                              content: Text(
+                                                  'คุณต้องการจะลบการแข่งขันนี้หรือไม่?'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          context, 'Cancel'),
+                                                  child: const Text('ยกเลิก',
+                                                      style: TextStyle(
+                                                          color: Colors.black)),
+                                                ),
+                                                SizedBox(
+                                                    width: 120,
+                                                    child: ElevatedButton(
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .redAccent),
+                                                        onPressed: () async {
+                                                          log('race' +
+                                                              element.raceId
+                                                                  .toString());
+                                                          //  try {
+                                                          //
+                                                          //  }on DioError catch (e) {
+                                                          //    //throw Exception(e);
+                                                          //    log(e.response!.data);
+                                                          //  }
+                                                          var race = await raceService
+                                                              .deleteRace(element
+                                                                  .raceId
+                                                                  .toString());
+                                                          log(race.toString());
+                                                          raceRe = race.data;
+                                                          if (raceRe.result ==
+                                                              '1') {
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                              const SnackBar(
+                                                                  content: Text(
+                                                                      'delete Successful')),
+                                                            );
+                                                            setState(() {});
+                                                            Navigator.pop(
+                                                                context);
+                                                            // log("race Successful");
+                                                            return;
+                                                          } else {
+                                                            // log("team fail");
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                              const SnackBar(
+                                                                  content: Text(
+                                                                      'delete fail try agin!')),
+                                                            );
+
+                                                            return;
+                                                          }
+                                                        },
+                                                        child: const Text(
+                                                          'ลบ',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white),
+                                                        )))
+                                              ],
+                                            ),
+                                          );
+                                        }
+                                      },
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(8)),
                                       itemBuilder: (BuildContext context) {
                                         return [
-                                          _buildPopupMenuEdit('แก้ไข',
-                                              Icons.edit, element.raceId),
-                                          _buildPopupMenuDelete('ลบ',
-                                              Icons.delete, element.raceId)
+                                          _buildPopupMenuEdit(
+                                              'แก้ไข', Icons.edit, 0),
+                                          _buildPopupMenuDelete(
+                                              'ลบ', Icons.delete, 1),
                                         ];
                                       }),
                                 )),
@@ -207,13 +297,14 @@ class _Home_createState extends State<Home_create> {
   }
 
   PopupMenuItem _buildPopupMenuEdit(
-      String menuTitle, IconData iconData, int idraces) {
+      String menuTitle, IconData iconData, int value) {
     return PopupMenuItem(
         onTap: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => EditRace()));
-          context.read<AppData>().idrace = idraces;
+          // Navigator.push(
+          //     context, MaterialPageRoute(builder: (context) => EditRace()));
+          // context.read<AppData>().idrace = idraces;
         },
+        value: value,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [Icon(iconData), Text(menuTitle)],
@@ -221,75 +312,12 @@ class _Home_createState extends State<Home_create> {
   }
 
   PopupMenuItem _buildPopupMenuDelete(
-      String menuTitle, IconData iconData, int idraces) {
+      String menuTitle, IconData iconData, int value) {
     return PopupMenuItem(
-        onTap: () {},
+        value: value,
         child: Row(
-          children: [
-            IconButton(
-              color: Colors.black,
-              icon: Icon(iconData),
-              onPressed: () {
-                Navigator.pop(context);
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                    title: Center(child: Text('ลบการแข่งขัน?')),
-                    content: Text('คุณต้องการจะลบการแข่งขันนี้หรือไม่?'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, 'Cancel'),
-                        child: const Text('ยกเลิก',
-                            style: TextStyle(color: Colors.black)),
-                      ),
-                      SizedBox(
-                          width: 120,
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.redAccent),
-                              onPressed: () async {
-                                log('race $idraces');
-                                //  try {
-                                //
-                                //  }on DioError catch (e) {
-                                //    //throw Exception(e);
-                                //    log(e.response!.data);
-                                //  }
-                                var race = await raceService
-                                    .deleteRace(idraces.toString());
-                                log(race.toString());
-                                raceRe = race.data;
-                                if (raceRe.result == '1') {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('delete Successful')),
-                                  );
-                                  setState(() {});
-                                  Navigator.pop(context);
-                                  // log("race Successful");
-                                  return;
-                                } else {
-                                  // log("team fail");
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('delete fail try agin!')),
-                                  );
-
-                                  return;
-                                }
-                              },
-                              child: const Text(
-                                'ลบ',
-                                style: TextStyle(color: Colors.white),
-                              )))
-                    ],
-                  ),
-                );
-              },
-            ),
-            Text(menuTitle)
-          ],
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [Icon(iconData), Text(menuTitle)],
         ));
   }
 }
