@@ -428,8 +428,8 @@ class _MissioncreateState extends State<Missioncreate> {
   }
 
   Future<void> loadData() async {
-    //startLoading(context);
-    try {
+     startLoading(context);
+    try { 
       postion = await determinePosition();
       currentLatLng = LatLng(postion.latitude, postion.longitude);
       isLoaded = true;
@@ -438,10 +438,10 @@ class _MissioncreateState extends State<Missioncreate> {
        isLoaded = false;
       log('Error:$err');
     }
-    // finally {
-    //   stopLoading();
-    // }
-
+    finally {
+      stopLoading();
+    }
+    
   }
 
    Future<Position> determinePosition() async {

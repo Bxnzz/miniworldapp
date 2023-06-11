@@ -18,7 +18,7 @@ Widget loadingIndicator(BuildContext context) => Container(
               child: LoadingIndicator(
                 indicatorType: Indicator.ballRotateChase,
                 colors: [Theme.of(context).colorScheme.onPrimaryContainer],
-                strokeWidth: 5,
+                strokeWidth: 28,
               ),
             ),
             Padding(
