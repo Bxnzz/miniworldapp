@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:ffi';
 
 import 'package:dio/dio.dart';
 import 'package:expandable/expandable.dart';
@@ -72,11 +71,9 @@ class _LobbyState extends State<Lobby> {
     double height = MediaQuery.of(context).size.height.sign;
     var padding = MediaQuery.of(context).viewPadding;
     double height1 = height - padding.top - padding.bottom;
-
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('ล็อบบี้'),
-      ),
       body: FutureBuilder(
           future: loadDataMethod,
           builder: (context, AsyncSnapshot snapshot) {
@@ -107,70 +104,111 @@ class _LobbyState extends State<Lobby> {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 15, left: 10),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          icon: FaIcon(
+                            FontAwesomeIcons.circleChevronLeft,
+                            color: Colors.yellow,
+                            size: 35,
+                          ),
+                        ),
+                        Text(
+                          "ล็อบบี้",
+                          style: textTheme.displayMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                            fontSize: 20,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                   Expanded(
                     child: ListView(
-                      padding: const EdgeInsets.all(8.0),
+                      //padding: const EdgeInsets.all(8.0),
                       physics: const BouncingScrollPhysics(),
                       children: attendShow.map((e) {
                         return Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(
+                              top: 8, bottom: 8, right: 15, left: 15),
                           child: Card(
                             clipBehavior: Clip.hardEdge,
                             child: InkWell(
                               borderRadius: BorderRadius.circular(12.0),
                               splashColor: Colors.blue.withAlpha(30),
-                              child: ExpansionTile(
-                                  title: idAttend == e.values.first.first.atId
-                                      ?
-                                      //ทีมที่เข้าร่วม
-                                      Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Text(e.values.first.first.team
-                                                .teamName),
-                                            e.values.first.first.status == 2
-                                                ? const Text(
-                                                    "(พร้อม)",
-                                                    style: TextStyle(
-                                                        color: Colors.green),
-                                                  )
-                                                : const Text(
-                                                    "(ยังไม่พร้อม)",
-                                                    style: TextStyle(
-                                                        color: Colors.red),
-                                                  )
-                                          ],
-                                        )
-                                      : Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Text(e.values.first.first.team
-                                                .teamName),
-                                            e.values.first.first.status == 2
-                                                ? const Text(
-                                                    "(พร้อม)",
-                                                    style: TextStyle(
-                                                        color: Colors.green),
-                                                  )
-                                                : const Text(
-                                                    "(ยังไม่พร้อม)",
-                                                    style: TextStyle(
-                                                        color: Colors.red),
-                                                  ),
-                                          ],
-                                        ),
-                                  children: e.values.first
-                                      .map((user) => ListTile(
-                                            title: Row(
-                                              children: [
-                                                Text(user.user.userName
-                                                    .toString()),
-                                              ],
-                                            ),
-                                          ))
-                                      .toList()),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 25),
+                                child: ExpansionTile(
+                                    title: idAttend == e.values.first.first.atId
+                                        ?
+                                        //ทีมที่เข้าร่วม
+                                        Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(e.values.first.first.team
+                                                  .teamName),
+                                              e.values.first.first.status == 2
+                                                  ? Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 35),
+                                                      child: const Text(
+                                                        "(พร้อม)",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.green),
+                                                      ),
+                                                    )
+                                                  : const Text(
+                                                      "(ยังไม่พร้อม)",
+                                                      style: TextStyle(
+                                                          color: Colors.red),
+                                                    )
+                                            ],
+                                          )
+                                        : Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(e.values.first.first.team
+                                                  .teamName),
+                                              e.values.first.first.status == 2
+                                                  ? Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 35),
+                                                      child: const Text(
+                                                        "(พร้อม)",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.green),
+                                                      ),
+                                                    )
+                                                  : const Text(
+                                                      "(ยังไม่พร้อม)",
+                                                      style: TextStyle(
+                                                          color: Colors.red),
+                                                    ),
+                                            ],
+                                          ),
+                                    children: e.values.first
+                                        .map((user) => ListTile(
+                                              title: Row(
+                                                children: [
+                                                  Text(user.user.userName
+                                                      .toString()),
+                                                ],
+                                              ),
+                                            ))
+                                        .toList()),
+                              ),
                             ),
                           ),
                         );
