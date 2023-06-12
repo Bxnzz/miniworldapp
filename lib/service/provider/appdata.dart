@@ -16,7 +16,8 @@ class AppData with ChangeNotifier {
   int idUser = 0;
   int idMis = 0;
   int sqnum = 0;
+  int idAt = 0;
+  int idTeam = 0;
 
-  
   //late List<Race> races;
 }
