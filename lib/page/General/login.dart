@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -5,6 +7,7 @@ import 'package:get/get.dart';
 
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'dart:developer';
 
@@ -15,6 +18,7 @@ import 'fontpage_register.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
+ 
 
   @override
   State<Login> createState() => _LoginState();
@@ -30,6 +34,8 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   bool _isHidden = true;
   bool _authenticatingStatus = false;
+  
+  
 
   @override
   void initState() {
@@ -39,6 +45,12 @@ class _LoginState extends State<Login> {
         LoginService(Dio(), baseUrl: context.read<AppData>().baseurl);
     // 2.2 async method
     //  loadDataMethod = addData(logins);
+    WidgetsFlutterBinding.ensureInitialized();
+  OneSignal.shared.setLogLevel(OSLogLevel.info,OSLogLevel.none);
+  OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");
+  OneSignal.shared.promptUserForPushNotificationPermission().then((accepted){
+    log("Accepted permission: $accepted");
+  });
   }
 
   @override
@@ -49,7 +61,9 @@ class _LoginState extends State<Login> {
   }
 
   @override
+  
   Widget build(BuildContext context) {
+    
     return Scaffold(
         body: SingleChildScrollView(
       child: Container(
