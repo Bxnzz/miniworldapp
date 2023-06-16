@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 
 import 'package:retrofit/retrofit.dart';
 
+import '../model/DTO/userDTO.dart';
+import '../model/result/raceResult.dart';
 import '../model/user.dart';
 
 part 'user.g.dart';
@@ -16,4 +18,7 @@ abstract class UserService {
 
   @GET("/user")
   Future<HttpResponse<List<User>>> getUserAll();
+
+  @PUT("/user/{userID}")
+  Future<HttpResponse<RaceResult>> updateUsers(@Body() UserDto userDto,@Path("userID")String userID);
 }

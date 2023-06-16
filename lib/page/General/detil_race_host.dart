@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:miniworldapp/page/Host/check_mission_list.dart';
 
 import 'package:provider/provider.dart';
 
@@ -317,6 +318,24 @@ class _DetailHostState extends State<DetailHost> {
                                       context.read<AppData>().idrace = idrace;
                                     },
                                     child: Text('ภารกิจทั้งหมด')),
+                            ),
+                          ),
+                          const Divider(),
+                          Center(
+                            child: SizedBox(
+                              width: 200,
+                             
+                              child: ElevatedButton(
+                                 
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                   CheckMission()));
+                                      context.read<AppData>().idrace = idrace;
+                                    },
+                                    child: Text('ตรวจสอบหลักฐาน')),
                             ),
                           )
                         ]),

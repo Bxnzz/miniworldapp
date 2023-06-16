@@ -4,9 +4,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:miniworldapp/model/DTO/userDTO.dart';
+import 'package:miniworldapp/model/result/raceResult.dart';
 
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
+import 'package:miniworldapp/service/user.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'dart:developer';
@@ -18,24 +21,25 @@ import 'fontpage_register.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
- 
 
   @override
   State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
+ late RaceResult userResult;
   List<Login> logins = [];
   List<LoginDto> loginDTOs = [];
   late Future<void> loadDataMethod;
   late LoginService loginService;
+   late UserService userService;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isHidden = true;
   bool _authenticatingStatus = false;
-  
-  
+  String _externalUserId = "";
+  String _debugLabelString = "";
 
   @override
   void initState() {
@@ -43,14 +47,25 @@ class _LoginState extends State<Login> {
     // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วยR
     loginService =
         LoginService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    userService =
+        UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
     // 2.2 async method
     //  loadDataMethod = addData(logins);
     WidgetsFlutterBinding.ensureInitialized();
-  OneSignal.shared.setLogLevel(OSLogLevel.info,OSLogLevel.none);
-  OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");
-  OneSignal.shared.promptUserForPushNotificationPermission().then((accepted){
-    log("Accepted permission: $accepted");
-  });
+    OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
+    OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");
+    OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+      log("Accepted permission: $accepted}");
+    });
+    final status = OneSignal.shared.getDeviceState().then((value) {
+      if(value != null){
+        _externalUserId = value.userId!;
+         log('oneID '+_externalUserId);
+      }else{
+        log('NO');
+      }
+      
+    });
   }
 
   @override
@@ -61,9 +76,7 @@ class _LoginState extends State<Login> {
   }
 
   @override
-  
   Widget build(BuildContext context) {
-    
     return Scaffold(
         body: SingleChildScrollView(
       child: Container(
@@ -181,6 +194,7 @@ class _LoginState extends State<Login> {
                           child: ElevatedButton(
                               onPressed: () async {
                                 // เปลี่ยนสถานะเป็นกำลังล็อกอิน
+                              
                                 setState(() {
                                   _authenticatingStatus =
                                       !_authenticatingStatus;
@@ -194,14 +208,32 @@ class _LoginState extends State<Login> {
                                   LoginDto dto = LoginDto(
                                       email: email.text,
                                       password: password.text);
+                                  
                                   //log(jsonEncode(dto));
 
                                   var login = await loginService.loginser(dto);
+                                  
+                                 
+                                  UserDto userDto = UserDto(
+                                    userName: login.data.userName ,
+                                  userDiscription: login.data.userDiscription,
+                                  userFullname: login.data.userFullname,
+                                  userImage: login.data.userImage,
+                                  onesingnalId: _externalUserId,
+                                  userMail: login.data.userMail,
+                                  );
+                                var updateOnesignal = await userService.updateUsers(userDto, login.data.userId.toString());
+                               // log(jsonEncode(updateOnesignal));
+                                 userResult = updateOnesignal.data;
+                                //  log(userResult.toString());
+                                    
+
                                   if (login.data.userId != 0) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text('Login Successful')),
-                                    );
+                                  
+                                    // ScaffoldMessenger.of(context).showSnackBar(
+                                    //   const SnackBar(
+                                    //       content: Text('Login Successful')),
+                                    // );
 
                                     setState(() {
                                       _authenticatingStatus =
@@ -225,11 +257,11 @@ class _LoginState extends State<Login> {
                                     return;
                                   } else {
                                     log("login fail");
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content:
-                                              Text('login fail try agin!')),
-                                    );
+                                    // ScaffoldMessenger.of(context).showSnackBar(
+                                    //   const SnackBar(
+                                    //       content:
+                                    //           Text('login fail try agin!')),
+                                    // );
                                     setState(() {
                                       _authenticatingStatus =
                                           !_authenticatingStatus;

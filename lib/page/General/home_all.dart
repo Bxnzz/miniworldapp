@@ -21,6 +21,7 @@ import '../../model/race.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
 import '../Player/createTeam.dart';
+import '../notification.dart';
 import 'home_create.dart';
 import 'home_join.dart';
 
@@ -81,19 +82,19 @@ class _HomeAllState extends State<HomeAll> {
               },
             ),
           
-            // SpeedDialChild(
-            //   child: const FaIcon(FontAwesomeIcons.flagCheckered),
-            //   foregroundColor: Colors.black,
-            //   backgroundColor: Colors.blue,
-            //   label: 'เพิ่มภารกิจ',
-            //   onPressed: () {
-            //     Navigator.push(context,
-            //         MaterialPageRoute(builder: (context) => Missioncreate()));
-            //     setState(() {
-            //       _text = '"เพิ่มภารกิจ"';
-            //     });
-            //   },
-            // ),
+            SpeedDialChild(
+              child: const FaIcon(FontAwesomeIcons.flagCheckered),
+              foregroundColor: Colors.black,
+              backgroundColor: Colors.blue,
+              label: 'เพิ่มภารกิจ',
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => NontificationPage()));
+                setState(() {
+                  _text = '"เพิ่มภารกิจ"';
+                });
+              },
+            ),
           ],
           closedForegroundColor: Colors.black,
           openForegroundColor: Colors.white,
