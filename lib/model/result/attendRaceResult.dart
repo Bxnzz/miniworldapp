@@ -2,6 +2,9 @@
 //
 //     final attendRace = attendRaceFromJson(jsonString);
 
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'dart:convert';
 
@@ -35,17 +38,19 @@ class AttendRace {
     required this.status,
   });
 
-  factory AttendRace.fromJson(Map<String, dynamic> json) => AttendRace(
-        atId: json["AtId"],
-        lat: json["Lat"],
-        lng: json["Lng"],
-        datetime: DateTime.parse(json["Datetime"]),
-        userId: json["UserID"],
-        user: AttendRaceUser.fromJson(json["User"]),
-        teamId: json["TeamID"],
-        team: Team.fromJson(json["Team"]),
-        status: json["Status"],
-      );
+  factory AttendRace.fromJson(Map<String, dynamic> json) {
+    return AttendRace(
+      atId: json["AtId"],
+      lat: json["Lat"],
+      lng: json["Lng"],
+      datetime: DateTime.parse(json["Datetime"]),
+      userId: json["UserID"],
+      user: AttendRaceUser.fromJson(json["User"]),
+      teamId: json["TeamID"],
+      team: Team.fromJson(json["Team"]),
+      status: json["Status"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "AtId": atId,
