@@ -18,31 +18,35 @@ class _PlayerRaceStartState extends State<PlayerRaceStart> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 15, left: 10),
-        child: Row(
-          children: [
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  Navigator.of(context).pop(context);
-                });
-              },
-              icon: FaIcon(
-                FontAwesomeIcons.circleChevronLeft,
-                color: Colors.yellow,
-                size: 35,
-              ),
-            ),
-            Text(
-              "ภารกิจ",
-              style: textTheme.displayMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.purple,
-                fontSize: 20,
-              ),
-            ),
-          ],
-        ),
+        child: Topbar(context, textTheme),
       ),
+    );
+  }
+
+  Row Topbar(BuildContext context, TextTheme textTheme) {
+    return Row(
+      children: [
+        IconButton(
+          onPressed: () {
+            setState(() {
+              Navigator.of(context).pop(context);
+            });
+          },
+          icon: FaIcon(
+            FontAwesomeIcons.circleChevronLeft,
+            color: Colors.yellow,
+            size: 35,
+          ),
+        ),
+        Text(
+          "ภารกิจ",
+          style: textTheme.displayMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Colors.purple,
+            fontSize: 20,
+          ),
+        ),
+      ],
     );
   }
 }
