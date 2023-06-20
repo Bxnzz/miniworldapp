@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:miniworldapp/model/team.dart';
 import 'package:miniworldapp/model/user.dart';
@@ -19,6 +21,6 @@ class AppData with ChangeNotifier {
   int idTeam = 0;
   int idAt = 0;
   int status = 0;
+  Timer updateLocationTimer = Timer(Duration(seconds: 10), () { });
   
- 
 }

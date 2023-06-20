@@ -6,6 +6,7 @@ import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/page/General/detil_race.dart';
 
@@ -83,15 +84,15 @@ class _HomeAllState extends State<HomeAll> {
             ),
           
             SpeedDialChild(
-              child: const FaIcon(FontAwesomeIcons.flagCheckered),
+              child: const FaIcon(FontAwesomeIcons.bell),
               foregroundColor: Colors.black,
-              backgroundColor: Colors.blue,
-              label: 'เพิ่มภารกิจ',
+              backgroundColor: Colors.amber,
+              label: 'Noti',
               onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => NontificationPage()));
                 setState(() {
-                  _text = '"เพิ่มภารกิจ"';
+                  _text = '"Noti"';
                 });
               },
             ),
@@ -268,8 +269,8 @@ class _RaceAllState extends State<RaceAll> {
                      crossAxisAlignment: CrossAxisAlignment.start,
                      children: <Widget>[
                        Image.network(element.raceImage,
-                           height: 100,
-                           width: double.infinity,
+                           width: Get.width, 
+                           height: Get.width*0.5625,
                            fit: BoxFit.cover),
                        Container(
                            padding:

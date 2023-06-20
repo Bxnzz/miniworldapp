@@ -5,6 +5,7 @@ import 'package:card_actions/card_actions.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/model/result/raceResult.dart';
 import 'package:miniworldapp/page/General/detil_race_host.dart';
@@ -102,8 +103,8 @@ class _Home_createState extends State<Home_create> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Image.network(element.raceImage,
-                                        height: 100,
-                                        width: double.infinity,
+                                        width: Get.width,
+                                        height: Get.width * 0.5625,
                                         fit: BoxFit.cover),
                                     Container(
                                         padding: const EdgeInsets.fromLTRB(
@@ -180,7 +181,7 @@ class _Home_createState extends State<Home_create> {
                                               element.raceId;
                                         }
                                         if (result == 1) {
-                                        //  Navigator.pop(context);
+                                          //  Navigator.pop(context);
                                           showDialog(
                                             context: context,
                                             builder: (context) => AlertDialog(

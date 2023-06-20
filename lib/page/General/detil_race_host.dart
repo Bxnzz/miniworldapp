@@ -14,6 +14,7 @@ import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
 import '../Host/detil_mission.dart';
 import '../Player/createTeam.dart';
+import '../showmap.dart';
 
 class DetailHost extends StatefulWidget {
   const DetailHost({super.key});
@@ -332,10 +333,12 @@ class _DetailHostState extends State<DetailHost> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                   CheckMission()));
+                                              const ShowMapPage()));
+                                      //              CheckMission()));
                                       context.read<AppData>().idrace = idrace;
+
                                     },
-                                    child: Text('ตรวจสอบหลักฐาน')),
+                                    child: Text('ตำแหน่งผู้เล่น')),
                             ),
                           )
                         ]),
