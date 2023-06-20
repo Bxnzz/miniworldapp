@@ -72,7 +72,8 @@ class _Home_createState extends State<Home_create> {
           future: loadDataMethod,
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              return ListView(
+              return GridView.count(
+                crossAxisCount: 2,
                 padding: EdgeInsets.only(top: 10),
                 children: race.map((element) {
                   //IDrace = element.raceId;
@@ -80,204 +81,193 @@ class _Home_createState extends State<Home_create> {
                   final textTheme = theme.textTheme;
                   return Padding(
                     padding:
-                        const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                    child: Column(
-                      children: [
-                        Stack(
-                          children: [
-                            Card(
-                              color: Colors.white,
-                              clipBehavior: Clip.hardEdge,
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(12.0),
-                                splashColor: Colors.blue.withAlpha(30),
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => DetailHost()));
-                                  context.read<AppData>().idrace =
-                                      element.raceId;
-                                },
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Image.network(element.raceImage,
-                                        width: Get.width,
-                                        height: Get.width * 0.5625,
-                                        fit: BoxFit.cover),
-                                    Container(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            15, 15, 15, 0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "ชื่อ: " + element.raceName,
-                                                  style: textTheme.displayMedium
-                                                      ?.copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.purple,
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "# ${element.raceId}",
-                                                  style: textTheme.displayMedium
-                                                      ?.copyWith(
-                                                    color: Colors.purple,
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Container(height: 8),
-                                            // Text("ปิดรับสมัคร: " +
-                                            //     formatter.formatInBuddhistCalendarThai(
-                                            //         element.raceTimeFn)),
-                                            Text(
-                                              "สถานที่: " +
-                                                  element.raceLocation,
-                                              style:
-                                                  textTheme.bodyLarge?.copyWith(
-                                                color: Color.fromARGB(
-                                                    255, 122, 122, 122),
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 25,
-                                            )
-                                          ],
-                                        )),
-                                  ],
-                                ),
-                              ),
+                        const EdgeInsets.only(left: 2.5, right: 2.5, bottom: 5),
+                    //child: Stack(
+                    //  children: [
+                      child:  Card(
+                          color: Colors.white,
+                          clipBehavior: Clip.hardEdge,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12.0),
+                            splashColor: Colors.blue.withAlpha(30),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DetailHost()));
+                              context.read<AppData>().idrace =
+                                  element.raceId;
+                            },
+                            child: GridTile(
+                              // crossAxisAlignment: CrossAxisAlignment.start,
+
+                              child: Image.network(element.raceImage,
+                                  // width: Get.width,
+                                  // height: Get.width * 0.5625,
+                                  fit: BoxFit.cover),
+                              footer: Container(
+                                  color: Get.theme.colorScheme.onBackground
+                                      .withOpacity(0.5),
+                                  padding: const EdgeInsets.fromLTRB(
+                                      10, 5, 10, 0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(element.raceName,
+                                              style: Get
+                                                  .textTheme.bodyMedium!
+                                                  .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Get
+                                                          .theme
+                                                          .colorScheme
+                                                          .onPrimary)),
+                                          Text("# ${element.raceId}",
+                                              style: Get
+                                                  .textTheme.bodySmall!
+                                                  .copyWith(
+                                                      color: Get
+                                                          .theme
+                                                          .colorScheme
+                                                          .onPrimary)),
+                                        ],
+                                      ),
+                                      Container(height: 5),
+                                      // Text("ปิดรับสมัคร: " +
+                                      //     formatter.formatInBuddhistCalendarThai(
+                                      //         element.raceTimeFn)),
+                                      Text("สถานที่: " + element.raceLocation,
+                                  style: Get.textTheme.bodySmall!.copyWith(
+                                      color: Get.theme.colorScheme.onPrimary
+                                          .withOpacity(0.8))),
+                                      Container(height: 5),
+                                    ],
+                                  )),
                             ),
-                            Positioned(
-                                top: 0,
-                                right: 0,
-                                child: Container(
-                                  // padding: EdgeInsets.all(8),
-                                  // decoration: BoxDecoration(
-
-                                  //     color: Colors.white.withOpacity(0.5),
-                                  //     borderRadius: BorderRadius.circular(100)),
-                                  child: PopupMenuButton(
-                                      onSelected: (result) {
-                                        if (result == 0) {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      EditRace()));
-                                          context.read<AppData>().idrace =
-                                              element.raceId;
-                                        }
-                                        if (result == 1) {
-                                          //  Navigator.pop(context);
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) => AlertDialog(
-                                              backgroundColor: Color.fromARGB(
-                                                  255, 255, 255, 255),
-                                              title: Center(
-                                                  child: Text('ลบการแข่งขัน?')),
-                                              content: Text(
-                                                  'คุณต้องการจะลบการแข่งขันนี้หรือไม่?'),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(
-                                                          context, 'Cancel'),
-                                                  child: const Text('ยกเลิก',
-                                                      style: TextStyle(
-                                                          color: Colors.black)),
-                                                ),
-                                                SizedBox(
-                                                    width: 120,
-                                                    child: ElevatedButton(
-                                                        style: ElevatedButton
-                                                            .styleFrom(
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .redAccent),
-                                                        onPressed: () async {
-                                                          log('race' +
-                                                              element.raceId
-                                                                  .toString());
-                                                          //  try {
-                                                          //
-                                                          //  }on DioError catch (e) {
-                                                          //    //throw Exception(e);
-                                                          //    log(e.response!.data);
-                                                          //  }
-                                                          var race = await raceService
-                                                              .deleteRace(element
-                                                                  .raceId
-                                                                  .toString());
-                                                          log(race.toString());
-                                                          raceRe = race.data;
-                                                          if (raceRe.result ==
-                                                              '1') {
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              const SnackBar(
-                                                                  content: Text(
-                                                                      'delete Successful')),
-                                                            );
-                                                            setState(() {});
-                                                            Navigator.pop(
-                                                                context);
-                                                            // log("race Successful");
-                                                            return;
-                                                          } else {
-                                                            // log("team fail");
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              const SnackBar(
-                                                                  content: Text(
-                                                                      'delete fail try agin!')),
-                                                            );
-
-                                                            return;
-                                                          }
-                                                        },
-                                                        child: const Text(
-                                                          'ลบ',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white),
-                                                        )))
-                                              ],
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                      itemBuilder: (BuildContext context) {
-                                        return [
-                                          _buildPopupMenuEdit(
-                                              'แก้ไข', Icons.edit, 0),
-                                          _buildPopupMenuDelete(
-                                              'ลบ', Icons.delete, 1),
-                                        ];
-                                      }),
-                                )),
-                          ],
+                          ),
                         ),
-                      ],
-                    ),
+                        // Positioned(
+                        //     top: 0,
+                        //     right: 0,
+                        //     child: Container(
+                        //       // padding: EdgeInsets.all(8),
+                        //       // decoration: BoxDecoration(
+
+                        //       //     color: Colors.white.withOpacity(0.5),
+                        //       //     borderRadius: BorderRadius.circular(100)),
+                        //       child: PopupMenuButton(
+                        //           onSelected: (result) {
+                        //             if (result == 0) {
+                        //               Navigator.push(
+                        //                   context,
+                        //                   MaterialPageRoute(
+                        //                       builder: (context) =>
+                        //                           EditRace()));
+                        //               context.read<AppData>().idrace =
+                        //                   element.raceId;
+                        //             }
+                        //             if (result == 1) {
+                        //               //  Navigator.pop(context);
+                        //               showDialog(
+                        //                 context: context,
+                        //                 builder: (context) => AlertDialog(
+                        //                   backgroundColor: Color.fromARGB(
+                        //                       255, 255, 255, 255),
+                        //                   title: Center(
+                        //                       child: Text('ลบการแข่งขัน?')),
+                        //                   content: Text(
+                        //                       'คุณต้องการจะลบการแข่งขันนี้หรือไม่?'),
+                        //                   actions: <Widget>[
+                        //                     TextButton(
+                        //                       onPressed: () =>
+                        //                           Navigator.pop(
+                        //                               context, 'Cancel'),
+                        //                       child: const Text('ยกเลิก',
+                        //                           style: TextStyle(
+                        //                               color: Colors.black)),
+                        //                     ),
+                        //                     SizedBox(
+                        //                         width: 120,
+                        //                         child: ElevatedButton(
+                        //                             style: ElevatedButton
+                        //                                 .styleFrom(
+                        //                                     backgroundColor:
+                        //                                         Colors
+                        //                                             .redAccent),
+                        //                             onPressed: () async {
+                        //                               log('race' +
+                        //                                   element.raceId
+                        //                                       .toString());
+                        //                               //  try {
+                        //                               //
+                        //                               //  }on DioError catch (e) {
+                        //                               //    //throw Exception(e);
+                        //                               //    log(e.response!.data);
+                        //                               //  }
+                        //                               var race = await raceService
+                        //                                   .deleteRace(element
+                        //                                       .raceId
+                        //                                       .toString());
+                        //                               log(race.toString());
+                        //                               raceRe = race.data;
+                        //                               if (raceRe.result ==
+                        //                                   '1') {
+                        //                                 ScaffoldMessenger
+                        //                                         .of(context)
+                        //                                     .showSnackBar(
+                        //                                   const SnackBar(
+                        //                                       content: Text(
+                        //                                           'delete Successful')),
+                        //                                 );
+                        //                                 setState(() {});
+                        //                                 Navigator.pop(
+                        //                                     context);
+                        //                                 // log("race Successful");
+                        //                                 return;
+                        //                               } else {
+                        //                                 // log("team fail");
+                        //                                 ScaffoldMessenger
+                        //                                         .of(context)
+                        //                                     .showSnackBar(
+                        //                                   const SnackBar(
+                        //                                       content: Text(
+                        //                                           'delete fail try agin!')),
+                        //                                 );
+
+                        //                                 return;
+                        //                               }
+                        //                             },
+                        //                             child: const Text(
+                        //                               'ลบ',
+                        //                               style: TextStyle(
+                        //                                   color:
+                        //                                       Colors.white),
+                        //                             )))
+                        //                   ],
+                        //                 ),
+                        //               );
+                        //             }
+                        //           },
+                        //           shape: RoundedRectangleBorder(
+                        //               borderRadius:
+                        //                   BorderRadius.circular(8)),
+                        //           itemBuilder: (BuildContext context) {
+                        //             return [
+                        //               _buildPopupMenuEdit(
+                        //                   'แก้ไข', Icons.edit, 0),
+                        //               _buildPopupMenuDelete(
+                        //                   'ลบ', Icons.delete, 1),
+                        //             ];
+                        //           }),
+                        //     )),
+                     // ],
+                  // ),
                   );
                 }).toList(),
               );

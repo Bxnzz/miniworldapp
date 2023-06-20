@@ -4,6 +4,7 @@ import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/page/Host/check_mission_list.dart';
 
@@ -172,9 +173,9 @@ class _DetailHostState extends State<DetailHost> {
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
                                 Rname,
-                                style: textTheme.bodyText1?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: Get.textTheme.bodyLarge!.copyWith(
+                                  color: Get.theme.colorScheme.primary
+                                )
                               ),
                             )),
                           ),
@@ -308,7 +309,7 @@ class _DetailHostState extends State<DetailHost> {
                             child: SizedBox(
                               width: 200,
                              
-                              child: ElevatedButton(
+                              child: FilledButton(
                                  
                                     onPressed: () {
                                       Navigator.push(

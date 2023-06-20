@@ -276,7 +276,7 @@ class _EditRaceState extends State<EditRace> {
                               padding: const EdgeInsets.all(8.0),
                               child: ElevatedButton(
                                   onPressed: () async {
-                                       if (keys.currentState!.validate()) {}
+                                     //  if (keys.currentState!.validate()) {}
                                     if (raceLimit.text == "") {
                                       // log("team fail");
                                       ScaffoldMessenger.of(context).showSnackBar(

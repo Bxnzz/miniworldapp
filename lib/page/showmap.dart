@@ -117,15 +117,7 @@ class ShowMapPageState extends State<ShowMapPage> {
             return DefaultTabController(
               initialIndex: 1,
               length: 3,
-              child: Scaffold(
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: () {
-                     
-                    },
-                    child: Icon(Icons.navigation),
-                  ),
-                  floatingActionButtonLocation:
-                      FloatingActionButtonLocation.centerDocked,
+              child: Scaffold( 
                   appBar: AppBar(title: const Text("Map"), actions: <Widget>[]),
                   body: GoogleMap(
                     markers: markers,
