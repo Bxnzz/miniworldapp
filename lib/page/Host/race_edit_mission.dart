@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
@@ -306,6 +307,7 @@ class _EditMissionState extends State<EditMission> {
                       _checkbox = !_checkbox;
                       if (_checkbox == true) {
                         cb1 = '1';
+                        log('cc '+cb1);
                       } else {
                         cb1 = '';
                         return;
@@ -320,9 +322,10 @@ class _EditMissionState extends State<EditMission> {
                   setState(() {
                     _checkbox1 = !_checkbox1;
                      if (_checkbox1 == true) {
-                        cb1 = '2';
+                        cb2 = '2';
+                         log('cc '+cb2);
                       } else {
-                        cb1 = '';
+                        cb2 = '';
                         return;
                       }
                     log(_checkbox1.toString());
@@ -336,9 +339,10 @@ class _EditMissionState extends State<EditMission> {
                   setState(() {
                     _checkbox2 = !_checkbox2;
                      if (_checkbox2 == true) {
-                        cb1 = '3';
+                        cb3 = '3';
+                         log('cc '+cb3);
                       } else {
-                        cb1 = '';
+                        cb3 = '';
                         return;
                       }
                   });
@@ -349,13 +353,13 @@ class _EditMissionState extends State<EditMission> {
           ),
           Center(
             child: ElevatedButton(
-                child: Text('สร้างภารกิจ'),
+                child: Text('แก้ไขภารกิจ'),
                 onPressed: () async {
                
                     cb = cb1 + cb2 + cb3;
                     log('ch ' + cb);
                     mTypeCast = int.parse(cb);
-                    log('ty: ' + mType.toString()); 
+                    log('ty: ' + mTypeCast.toString()); 
 
                   if (lats == '' && longs == '') {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -372,8 +376,8 @@ class _EditMissionState extends State<EditMission> {
                       misLat: double.parse(lats),
                       misLng: double.parse(longs),
                       raceId: idrace);
-                  log('lattt ' + lats);
-                  // print(double.parse('lat'+lats));
+                 // log(jsonEncode(missionDto));
+                  print(double.parse('lat'+lats));
                   var mission = await missionService.updateMis(
                       missionDto, misID.toString());
                   misResults = mission.data;

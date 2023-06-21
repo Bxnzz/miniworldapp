@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:miniworldapp/model/team.dart';
 import 'package:miniworldapp/model/user.dart';
@@ -16,8 +18,9 @@ class AppData with ChangeNotifier {
   int idUser = 0;
   int idMis = 0;
   int sqnum = 0;
-  int idAt = 0;
   int idTeam = 0;
-
-  //late List<Race> races;
+  int idAt = 0;
+  int status = 0;
+  Timer updateLocationTimer = Timer(Duration(seconds: 10), () { });
+  
 }

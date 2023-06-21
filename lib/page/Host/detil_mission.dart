@@ -20,7 +20,7 @@ import '../../model/mission.dart';
 import '../../service/mission.dart';
 import '../../service/provider/appdata.dart';
 import '../../widget/box.dart';
-
+import '../../widget/loadData.dart';
 
 class DetailMission extends StatefulWidget {
   const DetailMission({
@@ -46,6 +46,13 @@ class _DetailMissionState extends State<DetailMission> {
   late Future<void> loadDataMethod;
   late RaceResult misResults;
   late MissionService missionService;
+  String type1 = '';
+  String type2 = '';
+  String type3 = '';
+  String mType = '';
+  String types = '';
+
+  bool isLoaded = false;
 
   bool inReorder = false;
 
@@ -71,98 +78,121 @@ class _DetailMissionState extends State<DetailMission> {
     loadDataMethod = loadData();
   }
 
-
   void onReorderFinished(List<Mission> newItems) {
     scrollController.jumpTo(scrollController.offset);
     setState(() {
       inReorder = false;
 
-      missions
-        ..clear()
-        ..addAll(newItems);
-        remission(missions);
-      // for (var i = 0; i < missions.length; i++) {
-      //   MissionDto missionDto = MissionDto(
-      //       misName: missions[i].misName,
-      //       misDiscrip: missions[i].misDiscrip,
-      //       misDistance: missions[i].misDistance,
-      //       misType: missions[i].misType,
-      //       misSeq: i+1,
-      //       misMediaUrl: '',
-      //       misLat: missions[i].misLat,
-      //       misLng: missions[i].misLng,
-      //       raceId: missions[i].raceId);
-      //       log(jsonEncode(missionDto));
-        
-      //   log('item ' + missions[i].misName.toString());
-      //    var mission = await missionService.updateMis(
-      //                 missionDto, missions[i].misId.toString());
-      //             misResults = mission.data;
-      //             if (misResults.result == "1") {
-      //               ScaffoldMessenger.of(context).showSnackBar(
-      //                 const SnackBar(content: Text('update Successful')),
-      //               );
-      //               log("mission Successful");
-
-      //               return;
-      //             } else {
-      //               // log("team fail");
-      //               ScaffoldMessenger.of(context).showSnackBar(
-      //                 const SnackBar(content: Text('mission fail try agin!')),
-      //               );
-
-      //               return;
-      //             }
-     // }
-    });  
+      // missions
+      //   ..clear()
+      //   ..addAll(newItems);
+      remission(newItems);
+    });
   }
-  Future<void> remission(List<Mission> missions) async {
 
-    for (var i = 0; i < missions.length; i++) {
-        MissionDto missionDto = MissionDto(
-            misName: missions[i].misName,
-            misDiscrip: missions[i].misDiscrip,
-            misDistance: missions[i].misDistance,
-            misType: missions[i].misType,
-            misSeq: i+1,
-            misMediaUrl: '',
-            misLat: missions[i].misLat,
-            misLng: missions[i].misLng,
-            raceId: missions[i].raceId);
-           // log(jsonEncode(missionDto));
-        
-        log('item ' + missions[i].misId.toString()+':'+i.toString());
-         var mission = await missionService.updateMis(
-                      missionDto, missions[i].misId.toString());
-                  misResults = mission.data;
-                  log(misResults.result);
-                  // if (misResults.result == "1") {
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     const SnackBar(content: Text('update Successful')),
-                  //   );
-                  //   log("mission Successful");
+  Future<void> remission(List<Mission> newItems) async {
+    int idx = -1;
+    int newoder = 0;
 
-                  //   return;
-                  // } else {
-                  //   // log("team fail");
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     const SnackBar(content: Text('mission fail try agin!')),
-                  //   );
-
-                  //   return;
-                  // }
+    //loop หาว่าลำดับใดถูกเปลี่ยน
+    for (var i = 0; i < newItems.length - 1; i++) {
+      //  for(var j = 0;j < missions.length;j++){
+      if (newItems[i].misId == missions[i].misId) {
+        continue;
+      } else {
+        idx = i;
+        break;
+      }
     }
+
+    //idx = -1 idx sq ไม่เปลี่ยน
+    if (idx == -1) {
+      return;
+    }
+    //idx = 3 newoder = 4
+    newoder = idx + 1;
+    log('new ' + newoder.toString() + ' ' + idx.toString());
+    //loop ที่เปลี่ยน
+    for (var i = idx; i < newItems.length; i++) {
+      //update newItems ตัวที่ i ให้เป็น newoder
+      MissionDto missionDto = MissionDto(
+          misName: newItems[i].misName,
+          misDiscrip: newItems[i].misDiscrip,
+          misDistance: newItems[i].misDistance,
+          misType: newItems[i].misType,
+          misSeq: newoder,
+          misMediaUrl: '',
+          misLat: newItems[i].misLat,
+          misLng: newItems[i].misLng,
+          raceId: newItems[i].raceId);
+      log(jsonEncode(missionDto));
+      // log('item ' + missions[i].misId.toString()+':'+i.toString());
+      var mission = await missionService.updateMis(
+          missionDto, newItems[i].misId.toString());
+      misResults = mission.data;
+      newoder = newoder + 1;
+      log(misResults.result);
+
+      // if (misResults.result == "1") {
+      //   // ScaffoldMessenger.of(context).showSnackBar(
+      //   //   const SnackBar(content: Text('update Successful')),
+      //   // );
+      //   // log("mission Successful");
+
+      // } else {
+      //   // log("team fail");
+      //   // ScaffoldMessenger.of(context).showSnackBar(
+      //   //   const SnackBar(content: Text('mission fail try agin!')),
+      //   // );
+
+      //   return;
+      // }
+    }
+    setState(() {
+      startLoading(context);
+      loadDataMethod = loadData();
+    });
+    stopLoading();
   }
-  
+
   Future<void> loadData() async {
+    startLoading(context);
     try {
       var a = await missionService.missionByraceID(raceID: idrace);
       missions = a.data;
+      mType = a.data.first.misType.toString();
+      // var splitT = mType.split('');
+      // // log('sp'+splitT.toString());
+      //  List<String> substrings = splitT.toString().split(",");
+      // // //substrings = splitT.toString().substring("[");
+      //  log('sub ' + splitT.contains('0').toString());
+      // // if(substrings[0] == '1'){
+      // //   _checkbox == true;
+      // // }
+      // if (splitT.contains('1') == true) {
+      //     type1 = 'ข้อความ';
+      //   log(type1);
+      // }
+      // if (splitT.contains('2') == true) {
+
+      //     type2 = 'สื่อ';
+      //    log(type1);
+      // }
+      // if (splitT.contains('3') == true) {
+
+      //     type3 = 'ไม่มีการส่ง';
+      //   log(type1);
+      // } else {
+      //   return;
+      // }
+      isLoaded = true;
     } catch (err) {
+      isLoaded = false;
       log('Error:$err');
+    } finally {
+      stopLoading();
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +212,7 @@ class _DetailMissionState extends State<DetailMission> {
           style: TextStyle(color: Colors.white),
         )),
 
-        backgroundColor: Color.fromARGB(255, 238, 145, 255),
+        backgroundColor: const Color.fromARGB(255, 238, 145, 255),
       ),
       body: FutureBuilder(
         future: loadDataMethod,
@@ -196,7 +226,7 @@ class _DetailMissionState extends State<DetailMission> {
 
               children: [
                 const Divider(height: 0),
-                Padding(padding: EdgeInsets.only(bottom: 8)),
+                const Padding(padding: EdgeInsets.only(bottom: 8)),
                 // _buildHeadline(),
                 _buildVerticalLanguageList(),
               ],
@@ -290,18 +320,20 @@ class _DetailMissionState extends State<DetailMission> {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final number = <int>[mis.misSeq];
+
     return Slidable(
-      endActionPane: ActionPane(motion: BehindMotion(), children: [
+      endActionPane: ActionPane(motion: const BehindMotion(), children: [
         SlidableAction(
+          flex: 3,
           label: 'ลบ',
           backgroundColor: Colors.redAccent,
           onPressed: (BuildContext context) {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                title: Center(child: Text('ลบภารกิจ?')),
-                content: Text('คุณต้องการจะลบภารกิจนี้หรือไม่?'),
+                backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                title: const Center(child: Text('ลบภารกิจ?')),
+                content: const Text('คุณต้องการจะลบภารกิจนี้หรือไม่?'),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () => Navigator.pop(context, 'Cancel'),
@@ -354,14 +386,165 @@ class _DetailMissionState extends State<DetailMission> {
           icon: Icons.delete,
         ),
         SlidableAction(
+          flex: 4,
           label: 'แก้ไข',
-          backgroundColor: Colors.blueAccent,
+          backgroundColor: Colors.amberAccent,
           onPressed: (BuildContext context) {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => EditMission()));
+                MaterialPageRoute(builder: (context) => const EditMission()));
             context.read<AppData>().idMis = mis.misId;
           },
           icon: Icons.edit,
+        ),
+        SlidableAction(
+          flex: 3,
+          label: 'ดู',
+          backgroundColor: Colors.blueAccent,
+          onPressed: (BuildContext context) {
+            setState(() {
+              mType = mis.misType.toString();
+              var splitT = mType.split('');
+              //   //   log(splitT.toString());
+              List<String> substrings = splitT.toString().split(",");
+              //   //   //substrings = splitT.toString().substring("[");
+              log('sub' + splitT.toString());
+              //   // if(substrings[0] == '1'){
+              //   //   _checkbox == true;
+              //   // }
+              if (splitT.contains('1') == true) {
+                
+                  type1 = 'ข้อความ';
+                  log(type1);
+               
+              }
+              if (splitT.contains('2') == true) {
+                
+                  type1 = 'สื่อ';
+                  log(type1);
+              
+                ;
+              }
+              if (splitT.contains('3') == true) {
+             
+                  type1 = 'ไม่มีการส่ง';
+                  log(type1);
+             
+              } else {
+                return;
+              }
+
+            });
+             String tt = type1;
+             log('tt'+tt);
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                backgroundColor: Colors.white,
+                title: Center(
+                    child: Text(
+                  'รายละเอียดภารกิจ',
+                  style: textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
+                content: SizedBox(
+                  height: 150,
+                  child: Column(
+                    children: [
+                      Center(
+                          child: Text(
+                        mis.misName,
+                        style: textTheme.bodyText1?.copyWith(),
+                      )),
+                      const Divider(),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8, bottom: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const FaIcon(
+                              FontAwesomeIcons.fileLines,
+                              size: 18,
+                              color: Colors.grey,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 13),
+                              child: Text(mis.misDiscrip),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider(),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8, bottom: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const FaIcon(
+                              FontAwesomeIcons.listCheck,
+                              size: 18,
+                              color: Colors.grey,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 13),
+                              //     child: Text(itemstr),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'Cancel'),
+                    child: const Text('ยกเลิก',
+                        style: TextStyle(color: Colors.black)),
+                  ),
+                  SizedBox(
+                      width: 120,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.redAccent),
+                          onPressed: () async {
+                            log('misID' + mis.misId.toString());
+
+                            var missionsD = await missionService
+                                .deleteMissons(mis.misId.toString());
+                            log(missionsD.toString());
+                            misRe = missionsD.data;
+                            if (misRe.result == '1') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('delete Successful')),
+                              );
+                              missions.removeWhere((element) {
+                                return element.misId == mis.misId;
+                              }); //go through the loop and match content to delete from list
+
+                              setState(() {});
+                              Navigator.pop(context);
+                              // log("race Successful");
+                              return;
+                            } else {
+                              // log("team fail");
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('delete fail try agin!')),
+                              );
+
+                              return;
+                            }
+                          },
+                          child: const Text(
+                            'ลบ',
+                            style: TextStyle(color: Colors.white),
+                          )))
+                ],
+              ),
+            );
+          },
+          icon: Icons.remove_red_eye,
         ),
       ]),
       child: Container(
@@ -469,7 +652,7 @@ class _DetailMissionState extends State<DetailMission> {
             padding: const EdgeInsets.only(left: 8, right: 8),
             child: Card(
               child: Box(
-                color: Color.fromARGB(255, 233, 117, 253),
+                color: const Color.fromARGB(255, 233, 117, 253),
                 onTap: () async {
                   final result = await Navigator.push(
                     context,

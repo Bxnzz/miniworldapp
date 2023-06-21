@@ -276,7 +276,7 @@ class _EditRaceState extends State<EditRace> {
                               padding: const EdgeInsets.all(8.0),
                               child: ElevatedButton(
                                   onPressed: () async {
-                                       if (keys.currentState!.validate()) {}
+                                     //  if (keys.currentState!.validate()) {}
                                     if (raceLimit.text == "") {
                                       // log("team fail");
                                       ScaffoldMessenger.of(context).showSnackBar(
@@ -309,53 +309,53 @@ class _EditRaceState extends State<EditRace> {
                                     log('date '+TexttimeST.text);
                                     log('date '+TexttimeFN.text);
                                     log('date '+TexttimeDate.text);
-                                  //   RaceDto dto = RaceDto(
-                                  //     raceName: raceName.text,
-                                  //     raceLocation: raceLocation.text,
-                                  //     raceLimitteam: int.parse(raceLimit.text),
-                                  //     raceImage: urlDownload,
-                                  //     signUpTimeSt:
-                                  //         DateTime.parse("2002-03-14T00:00:00Z"),
-                                  //     eventDatetime:
-                                  //         DateTime.parse("2002-03-14T00:00:00Z"),
-                                  //     raceStatus: 0,
-                                  //     raceTimeFn:
-                                  //         DateTime.parse("2002-03-14T00:00:00Z"),
-                                  //     raceTimeSt:
-                                  //         DateTime.parse("2002-03-14T00:00:00Z"),
-                                  //     userId: idUser,
-                                  //     signUpTimeFn:
-                                  //         DateTime.parse("2002-03-14T00:00:00Z"),
-                                  //   );
-                                  //  var race = await raceservice.updateRaces(dto,idR);
-                                  // // log('raceee'+race.data.raceName);
-                                  //  raceResults =race.data;
-                                  //   if (raceResults.result == "1") {
-                                  //     ScaffoldMessenger.of(context).showSnackBar(
-                                  //       const SnackBar(
-                                  //           content: Text('race Successful')),                                    
-                                  //     );
+                                    RaceDto dto = RaceDto(
+                                      raceName: raceName.text,
+                                      raceLocation: raceLocation.text,
+                                      raceLimitteam: int.parse(raceLimit.text),
+                                      raceImage: urlDownload,
+                                      signUpTimeSt:
+                                          DateTime.parse("2002-03-14T00:00:00Z"),
+                                      eventDatetime:
+                                          DateTime.parse("2002-03-14T00:00:00Z"),
+                                      raceStatus: 0,
+                                      raceTimeFn:
+                                          DateTime.parse("2002-03-14T00:00:00Z"),
+                                      raceTimeSt:
+                                          DateTime.parse("2002-03-14T00:00:00Z"),
+                                      userId: idUser,
+                                      signUpTimeFn:
+                                          DateTime.parse("2002-03-14T00:00:00Z"),
+                                    );
+                                   var race = await raceservice.updateRaces(dto,idR);
+                                  // log('raceee'+race.data.raceName);
+                                   raceResults =race.data;
+                                    if (raceResults.result == "1") {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text('race Successful')),                                    
+                                      );
                                       
-                                  //     log("race Successful");
+                                      log("race Successful");
                                       
-                                  //     // Navigator.pushReplacement(
-                                  //     //     context,
-                                  //     //     MaterialPageRoute(
-                                  //     //       builder: (context) => RacePointMap(
-                                  //     //           idrace: race.data.raceId),
-                                  //     //       settings:
-                                  //     //           RouteSettings(arguments: null),
-                                  //     //     ));
-                                  //   return;
-                                  //   } else {
-                                  //     // log("team fail");
-                                  //     ScaffoldMessenger.of(context).showSnackBar(
-                                  //       const SnackBar(
-                                  //           content: Text('race fail try agin!')),
-                                  //     );
+                                      // Navigator.pushReplacement(
+                                      //     context,
+                                      //     MaterialPageRoute(
+                                      //       builder: (context) => RacePointMap(
+                                      //           idrace: race.data.raceId),
+                                      //       settings:
+                                      //           RouteSettings(arguments: null),
+                                      //     ));
+                                    return;
+                                    } else {
+                                      // log("team fail");
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text('race fail try agin!')),
+                                      );
 
-                                  //     return;
-                                  //    }
+                                      return;
+                                     }
                                   },
                                   child: const Text("แก้ไข")),
                             ),

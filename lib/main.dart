@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
@@ -19,8 +21,9 @@ import 'package:flutter_facebook_keyhash/flutter_facebook_keyhash.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 // ...
-
+final DefaultTheme defaultTheme = DefaultTheme();
 Future<void> main() async {
+  
   WidgetsFlutterBinding.ensureInitialized();
   Intl.defaultLocale = "th";
 
@@ -28,7 +31,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+    
   //Generate Key on device a build app
   // String? key = await FlutterFacebookKeyhash.getFaceBookKeyHash ??
   //     'Unknown platform version';
@@ -42,19 +45,23 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  final DefaultTheme defaultTheme = DefaultTheme();
+
   MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+         // here
+      navigatorObservers: [FlutterSmartDialog.observer],
+      // here
+      builder: FlutterSmartDialog.init(),
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: const [
         Locale('th', 'TH'),
       ],
       title: 'Mini world race',
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       theme: defaultTheme.flexTheme.theme.copyWith(
           scaffoldBackgroundColor: Colors.white,
           inputDecorationTheme:

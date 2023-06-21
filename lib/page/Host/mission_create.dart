@@ -122,8 +122,8 @@ class _MissioncreateState extends State<Missioncreate> {
                   height: 300,
                   child: Stack(children: [
                     GoogleMap(
-                      myLocationEnabled: true,
-                      myLocationButtonEnabled: true,
+                      myLocationEnabled: false,
+                      myLocationButtonEnabled: false,
                       // onTap: (LatLng latlng) {
                       //   Marker newmarker = Marker(
                       //     markerId: MarkerId('$id'),
@@ -168,12 +168,8 @@ class _MissioncreateState extends State<Missioncreate> {
                         top: (300 / 2) - 32,
                         left: (MediaQuery.of(context).size.width / 2) - 16,
                         child: Column(
-                          children: const [
-                            FaIcon(
-                              FontAwesomeIcons.locationDot,
-                              size: 32,
-                              color: Colors.yellowAccent,
-                            ),
+                          children: [
+                           Image.asset("assets/image/target.png"),
                             // Text('Lat:'+lat+',Long:'+long),
                           ],
                         )),
@@ -428,8 +424,8 @@ class _MissioncreateState extends State<Missioncreate> {
   }
 
   Future<void> loadData() async {
-    //startLoading(context);
-    try {
+     startLoading(context);
+    try { 
       postion = await determinePosition();
       currentLatLng = LatLng(postion.latitude, postion.longitude);
       isLoaded = true;
@@ -438,10 +434,10 @@ class _MissioncreateState extends State<Missioncreate> {
        isLoaded = false;
       log('Error:$err');
     }
-    // finally {
-    //   stopLoading();
-    // }
-
+    finally {
+      stopLoading();
+    }
+    
   }
 
    Future<Position> determinePosition() async {

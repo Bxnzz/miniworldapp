@@ -4,15 +4,20 @@ import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:miniworldapp/page/Host/check_mission_list.dart';
 
 import 'package:provider/provider.dart';
 
 import '../../model/race.dart';
+import '../../model/result/raceResult.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
 import '../Host/detil_mission.dart';
+import '../Host/race_edit.dart';
 import '../Player/createTeam.dart';
+import '../showmap.dart';
 
 class DetailHost extends StatefulWidget {
   const DetailHost({super.key});
@@ -39,6 +44,7 @@ class _DetailHostState extends State<DetailHost> {
 
   late Future<void> loadDataMethod;
   late RaceService raceService;
+  late RaceResult raceRe;
 
   var formatter = DateFormat.yMEd();
   // var dateInBuddhistCalendarFormat = formatter.formatInBuddhistCalendarThai(now);
@@ -135,14 +141,111 @@ class _DetailHostState extends State<DetailHost> {
                               size: 35,
                             ),
                           ),
-                          // Container(
-                          //   padding: EdgeInsets.all(8),
-                          //   decoration: BoxDecoration(
-                          //     color: Colors.white,
-                          // borderRadius: BorderRadius.circular(100)
-                          //   ),
-                          //   child: FaIcon(FontAwesomeIcons.arrowLeft),
-                          // )
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            child: PopupMenuButton(
+                                icon: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        color: Colors.white),
+                                    child: const FaIcon(
+                                        FontAwesomeIcons.elementor,
+                                        size: 38,
+                                        color: Colors.pinkAccent)),
+                                onSelected: (result) {
+                                  if (result == 0) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => EditRace()));
+                                    context.read<AppData>().idrace = idrace;
+                                  }
+                                  if (result == 1) {
+                                    //  Navigator.pop(context);
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        backgroundColor:
+                                            Color.fromARGB(255, 255, 255, 255),
+                                        title: Center(
+                                            child: Text('ลบการแข่งขัน?')),
+                                        content: Text(
+                                            'คุณต้องการจะลบการแข่งขันนี้หรือไม่?'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(
+                                                context, 'Cancel'),
+                                            child: const Text('ยกเลิก',
+                                                style: TextStyle(
+                                                    color: Colors.black)),
+                                          ),
+                                          SizedBox(
+                                              width: 120,
+                                              child: ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                          backgroundColor:
+                                                              Colors.redAccent),
+                                                  onPressed: () async {
+                                                    log('race' +
+                                                        idrace.toString());
+                                                    //  try {
+                                                    //
+                                                    //  }on DioError catch (e) {
+                                                    //    //throw Exception(e);
+                                                    //    log(e.response!.data);
+                                                    //  }
+                                                    var race = await raceService
+                                                        .deleteRace(
+                                                            idrace.toString());
+                                                    log(race.toString());
+                                                    raceRe = race.data;
+                                                    if (raceRe.result == '1') {
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        const SnackBar(
+                                                            content: Text(
+                                                                'delete Successful')),
+                                                      );
+                                                      setState(() {});
+                                                      Navigator.pop(context);
+                                                      // log("race Successful");
+                                                      return;
+                                                    } else {
+                                                      // log("team fail");
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        const SnackBar(
+                                                            content: Text(
+                                                                'delete fail try agin!')),
+                                                      );
+
+                                                      return;
+                                                    }
+                                                  },
+                                                  child: const Text(
+                                                    'ลบ',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  )))
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                },
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                itemBuilder: (BuildContext context) {
+                                  return [
+                                    _buildPopupMenuEdit('แก้ไข', Icons.edit, 0),
+                                    _buildPopupMenuDelete(
+                                        'ลบ', Icons.delete, 1),
+                                  ];
+                                }),
+                          ),
                         ]),
                   ),
                   Positioned(
@@ -158,7 +261,7 @@ class _DetailHostState extends State<DetailHost> {
                             top: 0),
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(35),
+                              topLeft: Radius.circular(40),
                               topRight: Radius.circular(35)),
                           color: Colors.white,
                         ),
@@ -168,12 +271,9 @@ class _DetailHostState extends State<DetailHost> {
                             child: Center(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                Rname,
-                                style: textTheme.bodyText1?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              child: Text(Rname,
+                                  style: Get.textTheme.bodyLarge!.copyWith(
+                                      color: Get.theme.colorScheme.primary,fontWeight: FontWeight.bold)),
                             )),
                           ),
                           const Divider(),
@@ -305,18 +405,33 @@ class _DetailHostState extends State<DetailHost> {
                           Center(
                             child: SizedBox(
                               width: 200,
-                             
+                              child: FilledButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const DetailMission()));
+                                    context.read<AppData>().idrace = idrace;
+                                  },
+                                  child: Text('ภารกิจทั้งหมด')),
+                            ),
+                          ),
+                          const Divider(),
+                          Center(
+                            child: SizedBox(
+                              width: 200,
                               child: ElevatedButton(
-                                 
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const DetailMission()));
-                                      context.read<AppData>().idrace = idrace;
-                                    },
-                                    child: Text('ภารกิจทั้งหมด')),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const ShowMapPage()));
+                                    //              CheckMission()));
+                                    context.read<AppData>().idrace = idrace;
+                                  },
+                                  child: Text('ตำแหน่งผู้เล่น')),
                             ),
                           )
                         ]),
@@ -328,5 +443,67 @@ class _DetailHostState extends State<DetailHost> {
             }
           }),
     );
+  }
+
+  PopupMenuItem _buildPopupMenuEdit(
+      String menuTitle, IconData iconData, int value) {
+    return PopupMenuItem(
+        onTap: () {
+          // Navigator.push(
+          //     context, MaterialPageRoute(builder: (context) => EditRace()));
+          // context.read<AppData>().idrace = idraces;
+        },
+        value: value,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 15),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    iconData,
+                    color: Get.theme.colorScheme.primary,
+                  ),
+                  Text(
+                    menuTitle,
+                    style: (Get.textTheme.bodySmall!.copyWith(
+                        color: Get.theme.colorScheme.primary,
+                        fontWeight: FontWeight.bold)),
+                  )
+                ],
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 10, bottom: 5),
+                child: Divider(),
+              )
+            ],
+          ),
+        ));
+  }
+
+  PopupMenuItem _buildPopupMenuDelete(
+      String menuTitle, IconData iconData, int value) {
+    return PopupMenuItem(
+        value: value,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Icon(
+                  iconData,
+                  color: Get.theme.colorScheme.primary,
+                ),
+                Text(
+                  menuTitle,
+                  style: (Get.textTheme.bodySmall!.copyWith(
+                      color: Get.theme.colorScheme.primary,
+                      fontWeight: FontWeight.bold)),
+                )
+              ],
+            ),
+          ],
+        ));
   }
 }
