@@ -14,6 +14,7 @@ import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/page/Host/race_create.dart';
 import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/page/Host/start_list_mission.dart';
+import 'package:miniworldapp/page/uploadImage,video.dart';
 
 import 'package:provider/provider.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
@@ -88,13 +89,13 @@ class _HomeAllState extends State<HomeAll> {
               backgroundColor: Colors.amber,
               label: 'Noti',
               onPressed: () {
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => NontificationPage()));
-                // setState(() {
-                //   _text = '"Noti"';
-                // });
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => UploadPage()));
+                setState(() {
+                  _text = '"Noti"';
+                });
               },
             ),
           ],
