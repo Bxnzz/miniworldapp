@@ -9,7 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';
 import 'package:miniworldapp/page/Player/lobby.dart';
-import 'package:miniworldapp/page/Player/player_race_start.dart';
+import 'package:miniworldapp/page/Player/player_race_start_menu.dart';
 import 'package:miniworldapp/service/attend.dart';
 import 'package:provider/provider.dart';
 
@@ -299,7 +299,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                    const PlayerRaceStart(),
+                                                    const PlayerRaceStartMenu(),
                                               ));
                                         })
                                       : setState(() {

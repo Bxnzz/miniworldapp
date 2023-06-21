@@ -17,8 +17,8 @@ String attendRaceToJson(AttendRace data) => json.encode(data.toJson());
 
 class AttendRace {
   int atId;
-  int lat;
-  int lng;
+  double lat;
+  double lng;
   DateTime datetime;
   int userId;
   AttendRaceUser user;
