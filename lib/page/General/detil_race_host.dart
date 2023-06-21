@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:miniworldapp/page/Host/check_mission_list.dart';
+import 'package:miniworldapp/page/Host/host_race_start.dart';
+import 'package:miniworldapp/page/Player/lobby.dart';
 
 import 'package:provider/provider.dart';
 
@@ -32,6 +33,8 @@ class _DetailHostState extends State<DetailHost> {
   List<Race> races = [];
   int idUser = 0;
   int idrace = 0;
+  int idAttend = 0;
+  int idTeam = 0;
   String UrlImg = '';
   String Rname = '';
   String team = '';
@@ -41,6 +44,7 @@ class _DetailHostState extends State<DetailHost> {
   String singUpST = '';
   String singUpFN = '';
   String eventDatetime = '';
+  int raceStatus = 0;
 
   late Future<void> loadDataMethod;
   late RaceService raceService;
@@ -53,14 +57,19 @@ class _DetailHostState extends State<DetailHost> {
   void initState() {
     super.initState();
     idrace = context.read<AppData>().idrace;
+    idAttend = context.read<AppData>().idAt;
+    idTeam = context.read<AppData>().idTeam;
+    idUser = context.read<AppData>().idUser;
+    raceStatus = context.read<AppData>().raceStatus;
     log(idrace.toString());
     // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
     raceService.racesByraceID(raceID: idrace).then((value) {
       log(value.data.first.raceName);
     });
-    idUser = context.read<AppData>().idUser;
+
     log(idUser.toString());
+    log("raceStatus is $raceStatus");
 
     // 2.2 async method
     loadDataMethod = loadData();
@@ -88,8 +97,8 @@ class _DetailHostState extends State<DetailHost> {
       singUpST = dateFormat01;
       singUpFN = dateFormat02;
       eventDatetime = dateFormat03;
-
-      a.data.first.raceName;
+      raceStatus = a.data.first.raceStatus;
+      log("race Statusssss = $raceStatus");
       UrlImg = a.data.first.raceImage;
 
       log(UrlImg);
@@ -273,7 +282,8 @@ class _DetailHostState extends State<DetailHost> {
                               padding: const EdgeInsets.all(8.0),
                               child: Text(Rname,
                                   style: Get.textTheme.bodyLarge!.copyWith(
-                                      color: Get.theme.colorScheme.primary,fontWeight: FontWeight.bold)),
+                                      color: Get.theme.colorScheme.primary,
+                                      fontWeight: FontWeight.bold)),
                             )),
                           ),
                           const Divider(),
@@ -405,7 +415,7 @@ class _DetailHostState extends State<DetailHost> {
                           Center(
                             child: SizedBox(
                               width: 200,
-                              child: FilledButton(
+                              child: ElevatedButton(
                                   onPressed: () {
                                     Navigator.push(
                                         context,
@@ -417,29 +427,57 @@ class _DetailHostState extends State<DetailHost> {
                                   child: Text('ภารกิจทั้งหมด')),
                             ),
                           ),
-                          const Divider(),
                           Center(
-                            child: SizedBox(
-                              width: 200,
-                              child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const ShowMapPage()));
-                                    //              CheckMission()));
-                                    context.read<AppData>().idrace = idrace;
-                                  },
-                                  child: Text('ตำแหน่งผู้เล่น')),
-                            ),
-                          )
+                              child: races.first.raceStatus == 1
+                                  ? SizedBox(
+                                      width: 200,
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const Lobby(),
+                                                ));
+                                            context.read<AppData>().idrace =
+                                                idrace;
+                                            context.read<AppData>().idUser =
+                                                idUser;
+                                            context.read<AppData>().idAt =
+                                                idAttend;
+                                            context.read<AppData>().idTeam =
+                                                idTeam;
+                                          },
+                                          child: Text('เข้าล็อบบี้')),
+                                    )
+                                  : SizedBox(
+                                      width: 200,
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const HostRaceStart(),
+                                                ));
+                                            context.read<AppData>().idrace =
+                                                idrace;
+                                            context.read<AppData>().idUser =
+                                                idUser;
+                                            context.read<AppData>().idAt =
+                                                idAttend;
+                                            context.read<AppData>().idTeam =
+                                                idTeam;
+                                          },
+                                          child:
+                                              Text('การแข่งขันกำลังดำเนินการ')),
+                                    ))
                         ]),
                       ))
                 ],
               );
             } else {
-              return const CircularProgressIndicator();
+              return Center(child: const CircularProgressIndicator());
             }
           }),
     );

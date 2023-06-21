@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';
 import 'package:miniworldapp/page/Player/lobby.dart';
+import 'package:miniworldapp/page/Player/player_race_start_menu.dart';
 import 'package:miniworldapp/service/attend.dart';
 import 'package:provider/provider.dart';
 
@@ -28,8 +29,10 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
   List<AttendRace> attends = [];
   late int idUser;
   late int idrace;
-  late int idat;
+  late int status;
   late int teamid;
+  late int idAttend;
+  late int raceStatus;
   String UrlImg = '';
   String Rname = '';
   String team = '';
@@ -51,10 +54,21 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
     // TODO: implement initState
     super.initState();
     idUser = context.read<AppData>().idUser;
+    idrace = context.read<AppData>().idrace;
+    idAttend = context.read<AppData>().idAt;
+    teamid = context.read<AppData>().idTeam;
+    status = context.read<AppData>().status;
+    raceStatus = context.read<AppData>().raceStatus;
+
     attendService =
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
     log("id User is :$idUser");
+    log("race id is $idrace");
+    log("id Attend is $idAttend");
+    log("id team is $teamid");
+    log("status  is $status");
+
     loadDataMethod = loadData();
   }
 
@@ -267,14 +281,47 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                             width: 200,
                             child: ElevatedButton(
                                 onPressed: () {
-                                  context.read<AppData>().idrace = idrace;
-                                  context.read<AppData>().idAt = idat;
-                                  context.read<AppData>().idTeam = teamid;
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const Lobby(),
-                                      ));
+                                  status == 2 && raceStatus == 2
+                                      ? setState(() {
+                                          context.read<AppData>().idAt =
+                                              idAttend;
+                                          context.read<AppData>().idUser =
+                                              idUser;
+                                          context.read<AppData>().idrace =
+                                              idrace;
+                                          context.read<AppData>().idAt =
+                                              idAttend;
+                                          context.read<AppData>().idTeam =
+                                              teamid;
+                                          context.read<AppData>().status =
+                                              status;
+                                          Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const PlayerRaceStartMenu(),
+                                              ));
+                                        })
+                                      : setState(() {
+                                          context.read<AppData>().idAt =
+                                              idAttend;
+                                          context.read<AppData>().idUser =
+                                              idUser;
+                                          context.read<AppData>().idrace =
+                                              idrace;
+                                          context.read<AppData>().idAt =
+                                              idAttend;
+                                          context.read<AppData>().idTeam =
+                                              teamid;
+                                          context.read<AppData>().status =
+                                              status;
+                                          Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const Lobby(),
+                                              ));
+                                        });
                                 },
                                 child: Text('เข้าการแข่งขัน')),
                           ),
@@ -297,9 +344,9 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
       var a = await attendService.attendByUserID(userID: idUser);
       attends = a.data;
       idrace = a.data.first.team.raceId;
-      idat = a.data.first.atId;
+      idAttend = a.data.first.atId;
       teamid = a.data.first.teamId;
-
+      status = a.data.first.status;
       Rname = a.data.first.team.race.raceName;
       log(Rname);
       Rlocation = a.data.first.team.race.raceLocation;
@@ -324,8 +371,9 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
 
       a.data.first.team.race.raceName;
       UrlImg = a.data.first.team.race.raceImage;
-
+      raceStatus = a.data.first.team.race.raceStatus;
       log(UrlImg);
+      log("Rase statys = $raceStatus");
     } catch (err) {
       log('Error:$err');
     }
