@@ -25,7 +25,7 @@ class HomeJoinDetail extends StatefulWidget {
 
 class _HomeJoinDetailState extends State<HomeJoinDetail> {
   var size, height, width;
-  List<Race> races = [];
+  // List<Race> races = [];
   List<AttendRace> attends = [];
   late int idUser;
   late int idrace;
