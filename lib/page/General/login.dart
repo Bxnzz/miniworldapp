@@ -194,7 +194,12 @@ class _LoginState extends State<Login> {
                           child: ElevatedButton(
                               onPressed: () async {
                                 // เปลี่ยนสถานะเป็นกำลังล็อกอิน
-                              
+                              if(_externalUserId.isEmpty){
+                                 Get.defaultDialog(title: 'ไม่สามารถlogin');
+                                 return;
+                              }else{
+                                 Get.defaultDialog(title: _externalUserId); 
+                              }
                                 setState(() {
                                   _authenticatingStatus =
                                       !_authenticatingStatus;
