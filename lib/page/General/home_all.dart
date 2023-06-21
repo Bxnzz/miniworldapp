@@ -107,7 +107,20 @@ class _HomeAllState extends State<HomeAll> {
           automaticallyImplyLeading: false,
 
           elevation: 0,
-          backgroundColor: Theme.of(context).colorScheme.primary,
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    begin: FractionalOffset(0.0, 0.0),
+                    end: FractionalOffset(1.0, 0.0),
+                    stops: [0.0, 1.0],
+                    tileMode: TileMode.clamp,
+                    colors: [
+                      Colors.purpleAccent,
+                      Color.fromARGB(255, 144, 64, 255),
+                     
+                    ])),
+          ),
+          // backgroundColor: Theme.of(context).colorScheme.primary,
           title: Builder(
             builder: (context) => IconButton(
               icon: FaIcon(FontAwesomeIcons.alignLeft,
@@ -122,7 +135,7 @@ class _HomeAllState extends State<HomeAll> {
             labelColor: Get.theme.colorScheme.primary,
             unselectedLabelColor: Get.theme.colorScheme.onPrimary,
             indicatorSize: TabBarIndicatorSize.tab,
-            indicator: BoxDecoration(
+            indicator: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(10),
                     topRight: Radius.circular(10)),
@@ -364,8 +377,7 @@ class _RaceAllState extends State<RaceAll> {
     } catch (err) {
       isLoaded = false;
       log('Error:$err');
-       
-    }finally {
+    } finally {
       stopLoading();
     }
   }
