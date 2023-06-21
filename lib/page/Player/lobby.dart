@@ -17,6 +17,8 @@ import 'package:miniworldapp/page/Host/host_race_start.dart';
 import 'package:miniworldapp/service/team.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/missionComp.dart';
+import '../../model/race.dart';
 import '../../model/result/attendRaceResult.dart';
 import '../../service/attend.dart';
 import '../../service/provider/appdata.dart';

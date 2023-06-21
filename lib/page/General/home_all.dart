@@ -88,13 +88,13 @@ class _HomeAllState extends State<HomeAll> {
               backgroundColor: Colors.amber,
               label: 'Noti',
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => NontificationPage()));
-                setState(() {
-                  _text = '"Noti"';
-                });
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => NontificationPage()));
+                // setState(() {
+                //   _text = '"Noti"';
+                // });
               },
             ),
           ],
