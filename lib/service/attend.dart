@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:miniworldapp/model/DTO/attendStatusDTO.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';

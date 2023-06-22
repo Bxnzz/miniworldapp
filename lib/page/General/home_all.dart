@@ -358,8 +358,10 @@ class _RaceAllState extends State<RaceAll> {
                   );
                 }).toList(),
               );
-            } else {
-              return const CircularProgressIndicator();
+            }
+             else {
+              return Container();
+              // const CircularProgressIndicator();
             }
           }),
     );
