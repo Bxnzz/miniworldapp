@@ -192,13 +192,16 @@ class _LoginState extends State<Login> {
                         SizedBox(
                           width: 240,
                           child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Get.theme.colorScheme.primary,
+                              ),
                               onPressed: () async {
                                 // เปลี่ยนสถานะเป็นกำลังล็อกอิน
                               if(_externalUserId.isEmpty){
                                  Get.defaultDialog(title: 'ไม่สามารถlogin');
                                  return;
                               }else{
-                                 Get.defaultDialog(title: _externalUserId); 
+                               //  Get.defaultDialog(title: ''); 
                               }
                                 setState(() {
                                   _authenticatingStatus =
@@ -275,7 +278,9 @@ class _LoginState extends State<Login> {
                                   }
                                 }
                               },
-                              child: const Text('เข้าสู่ระบบ')),
+                              child:  Text('เข้าสู่ระบบ',style: Get.textTheme.bodyLarge!.copyWith(
+                                      color: Get.theme.colorScheme.onPrimary,
+                                      fontWeight: FontWeight.bold),)),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,

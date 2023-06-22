@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:appinio_video_player/appinio_video_player.dart';
+import 'package:circular_menu/circular_menu.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -48,78 +49,23 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
   String type = '';
   String urlImage = '';
   String urlVideo = '';
+  double mlat = 0.0;
+  double mlng = 0.0;
+  int mID = 0;
+  int teamID = 0;
+  String dateTime = '';
+  String teamName = '';
+  String _colorName = 'No';
+  Color _color = Colors.black;
 
   PlatformFile? pickedFile;
+
   UploadTask? uploadTask;
   VideoPlayerController? videoPlayerController;
   CustomVideoPlayerController? _customVideoPlayerController;
   bool isImage = false;
 
   late Future<void> loadDataMethod;
-
-  Future uploadFile() async {
-    startLoading(context);
-    final path = 'files/${pickedFile!.name}';
-
-    final file = File(pickedFile!.path!);
-    final ref = FirebaseStorage.instance.ref().child(path);
-    log(ref.toString());
-
-    setState(() {
-      uploadTask = ref.putFile(file);
-    });
-    final snapshot = await uploadTask!.whenComplete(() {});
-
-    final urlDownload = await snapshot.ref.getDownloadURL();
-
-    log('Download Link:$urlDownload');
-
-    if (isImage == true) {
-      //update image
-      MissionCompDto mdto = MissionCompDto(
-          mcDatetime: DateTime.parse("2002-03-14T00:00:00Z"),
-          mcLat: 16.5,
-          mcLng: 15.5,
-          mcMasseage: '',
-          mcPhoto: urlDownload,
-          mcStatus: 2,
-          mcText: '',
-          mcVideo: '',
-          misId:  6,
-          teamId: 103);
-      var missionComp = await missionCompService.insertMissionComps(mdto);
-      missionComp.data.misId.toString();
-      log('img '+missionComp.data.misId.toString());
-    } else {
-      //update video
-       MissionCompDto mdto = MissionCompDto(
-          mcDatetime: DateTime.parse("2002-03-14T00:00:00Z"),
-          mcLat: 16.5,
-          mcLng: 15.5,
-          mcMasseage: '',
-          mcPhoto: '',
-          mcStatus: 2,
-          mcText: '',
-          mcVideo: urlDownload,
-          misId:  6,
-          teamId: 103);
-      var missionComp = await missionCompService.insertMissionComps(mdto);
-      missionComp.data.misId.toString();
-      log('video '+missionComp.data.misId.toString());
-    }
-    stopLoading();
-
-    // videoPlayerController = VideoPlayerController.file(File(pickedFile!.path!))
-    //   ..initialize().then((_) {
-    //     log(videoPlayerController.toString());
-    //     _customVideoPlayerController = CustomVideoPlayerController(
-    //       context: context,
-    //       videoPlayerController: videoPlayerController!,
-    //     );
-    //     Image.file(File(pickedFile!.path!));
-    //     setState(() {});
-    //   });
-  }
 
   Future selectFile() async {
     final result = await FilePicker.platform.pickFiles();
@@ -179,6 +125,12 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
       misDiscrip = a.data.first.mission.misDiscrip;
       misStatus = a.data.first.mcStatus.toString();
       misType = a.data.first.mission.misType.toString();
+      mlat = a.data.first.mission.misLat;
+      mlng = a.data.first.mission.misLng;
+      teamID = a.data.first.team.teamId;
+      teamName = a.data.first.team.teamName;
+
+      mID = a.data.first.mission.misId;
 
       var splitT = misType.split('');
       // log(splitT.toString());
@@ -209,39 +161,101 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
     }
   }
 
-  void _handleSendNotification() async {
+  Future uploadFile() async {
+    startLoading(context);
     var deviceState = await OneSignal.shared.getDeviceState();
+    final now = DateTime.now();
+    dateTime = '${now.toIso8601String()}Z';
+    // log(dateTime);
+    //final berlinWallFell = DateTime.utc(now);
 
+    final path = 'files/${pickedFile!.name}';
+
+    final file = File(pickedFile!.path!);
+
+    final ref = FirebaseStorage.instance.ref().child(path);
+    log(ref.toString());
+
+    setState(() {
+      uploadTask = ref.putFile(file);
+    });
+    final snapshot = await uploadTask!.whenComplete(() {});
+
+    final urlDownload = await snapshot.ref.getDownloadURL();
+
+    log('Download Link:$urlDownload');
+    log('mid ' + mlat.toString());
+
+    if (isImage == true) {
+      //update image
+      MissionCompDto mdto = MissionCompDto(
+          mcDatetime: DateTime.parse(dateTime),
+          mcLat: mlat,
+          mcLng: mlng,
+          mcMasseage: '',
+          mcPhoto: urlDownload,
+          mcStatus: 0,
+          mcText: '',
+          mcVideo: '',
+          misId: mID,
+          teamId: teamID);
+      var missionComp = await missionCompService.insertMissionComps(mdto);
+      missionComp.data.misId.toString();
+      log('img ' + missionComp.data.misId.toString());
+    } else {
+      //update video
+      MissionCompDto mdto = MissionCompDto(
+          mcDatetime: DateTime.parse(dateTime),
+          mcLat: mlat,
+          mcLng: mlng,
+          mcMasseage: '',
+          mcPhoto: '',
+          mcStatus: 0,
+          mcText: '',
+          mcVideo: urlDownload,
+          misId: mID,
+          teamId: teamID);
+      var missionComp = await missionCompService.insertMissionComps(mdto);
+      missionComp.data.misId.toString();
+      log('video ' + missionComp.data.misId.toString());
+    }
     if (deviceState == null || deviceState.userId == null) return;
 
     var playerId = deviceState.userId!;
 
-    var imUrlString =
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNoy-7N8x4HgYJQuQC3i7SW8nj9EaWzrvhRw&usqp=CAU";
+    // var imUrlString =
+    //     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNoy-7N8x4HgYJQuQC3i7SW8nj9EaWzrvhRw&usqp=CAU";
 
     var notification1 = OSCreateNotification(
         //playerID
 
         playerIds: [
           onesingnalId,
-          //'572cf68a-afae-4763-8c2d-6f882966e795'
-          // 'b8742e68-2547-4cca-90a0-d1561a5654cc', //a11
-          // '850c1971-dd33-4af0-bbea-71efe3ff9814', //j7
-          // '037f084d-7ed0-466f-9f5d-012f60789829', //a9
-          // '2e395e43-98f9-45fb-82d4-dfc3cd90434d', //s13
         ],
-        content: "โหลๆๆ",
-        heading: "Test Notification❤ :)",
-        iosAttachments: {"id1": imUrlString},
-        bigPicture: imUrlString,
+        content: 'ส่งจากทีม: $teamName',
+        heading: "หลักฐานภารกิจ: $misName",
+        //  iosAttachments: {"id1",urlImage},
+        // bigPicture: imUrlString,
         buttons: [
           OSActionButton(text: "ตกลง", id: "id1"),
           OSActionButton(text: "ยกเลิก", id: "id2")
         ]);
-
     var response1 = await OneSignal.shared.postNotification(notification1);
+    stopLoading();
+
+    // videoPlayerController = VideoPlayerController.file(File(pickedFile!.path!))
+    //   ..initialize().then((_) {
+    //     log(videoPlayerController.toString());
+    //     _customVideoPlayerController = CustomVideoPlayerController(
+    //       context: context,
+    //       videoPlayerController: videoPlayerController!,
+    //     );
+    //     Image.file(File(pickedFile!.path!));
+    //     setState(() {});
+    //   });
   }
 
+  GlobalKey<CircularMenuState> key = GlobalKey<CircularMenuState>();
   @override
   Widget build(BuildContext context) {
     OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");
@@ -262,7 +276,6 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
               padding: const EdgeInsets.only(bottom: 10, left: 15, right: 15),
               child: Card(
                 child: InkWell(
-                  onTap: () {},
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -335,25 +348,57 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
                               ),
                             ),
                           ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(right: 35, bottom: 8),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.orangeAccent,
-                                shape: CircleBorder(), //<-- SEE HERE
-                                padding: EdgeInsets.all(20),
-                              ),
-                              onPressed: () {
-                                selectFile();
-                              },
-                              child: FaIcon(
-                                //<-- SEE HERE
-                                FontAwesomeIcons.plus,
-                                color: Colors.white,
-                                size: 35,
-                              ),
+                          CircularMenu(
+                            alignment: Alignment.bottomCenter,
+                            radius: 60,
+                            toggleButtonSize: 35,
+                            startingAngleInRadian: 0.75 * 2.5,
+                            endingAngleInRadian: 1.5 * 3.14,
+                            backgroundWidget: Row(
+                              children: [
+                                MaterialButton(
+                                  onPressed: () {
+                                    key.currentState!.forwardAnimation();
+                                  },
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(35)),
+                                  padding: const EdgeInsets.all(35),
+                                ),
+                                MaterialButton(
+                                  onPressed: () {
+                                    key.currentState!.reverseAnimation();
+                                  },
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15)),
+                                  padding: const EdgeInsets.all(15),
+                                ),
+                              ],
                             ),
+                            key: key,
+                            items: [
+                              CircularMenuItem(
+                                icon: FontAwesomeIcons.camera,
+                                onTap: () {
+                                  log('กด');
+                                },
+                                color: Colors.green,
+                                iconColor: Colors.white,
+                              ),
+                              CircularMenuItem(
+                                icon: Icons.image,
+                                onTap: () {
+                                  selectFile();
+                                },
+                                color: Colors.orange,
+                                iconColor: Colors.white,
+                              ),
+                              CircularMenuItem(
+                                icon: Icons.text_fields,
+                                onTap: () {},
+                                color: Colors.deepPurple,
+                                iconColor: Colors.white,
+                              ),
+                            ],
                           )
                         ],
                       ),
@@ -384,7 +429,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
                           : Container(),
                       // buildProgress(),
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
+                        padding: const EdgeInsets.only(top: 45, bottom: 20),
                         child: SizedBox(
                           width: 200,
                           child: ElevatedButton(
@@ -392,8 +437,13 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
                                 backgroundColor: Get.theme.colorScheme.primary,
                               ),
                               onPressed: () {
-                                _handleSendNotification();
-                                uploadFile();
+                                //  _handleSendNotification();
+                                if (pickedFile == null) {
+                                  Get.defaultDialog(title: 'กรุณาเลือกหลักฐาน');
+                                }else{
+                                  uploadFile();
+                                }
+                                
                               },
                               child: Text('ส่งหลักฐาน',
                                   style: Get.textTheme.bodyLarge!.copyWith(
