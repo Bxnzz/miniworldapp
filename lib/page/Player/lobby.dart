@@ -21,6 +21,7 @@ import '../../model/result/attendRaceResult.dart';
 import '../../service/attend.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
+import '../../model/race.dart';
 
 class Lobby extends StatefulWidget {
   const Lobby({super.key});
