@@ -131,9 +131,7 @@ class _EditMissionState extends State<EditMission> {
       List<String> substrings = splitT.toString().split(",");
       //substrings = splitT.toString().substring("[");
       log('sub ' + splitT.contains('0').toString());
-      // if(substrings[0] == '1'){
-      //   _checkbox == true;
-      // }
+     
       if (splitT.contains('1') == true) {
         setState(() {
           _checkbox = true;

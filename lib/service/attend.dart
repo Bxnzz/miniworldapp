@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:miniworldapp/model/DTO/attendStatusDTO.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';
 import 'package:retrofit/retrofit.dart';
@@ -28,5 +26,7 @@ abstract class AttendService {
   @PUT("/attend/{AtID}")
   //@DioResponseType(ResponseType.plain)
   Future<HttpResponse<int>> attendByAtID(
-      @Body() AttendStatusDto attendStatusDto, @Path("AtID") int atID);
+      //@DioResponseType(ResponseType.plain)
+      Future<HttpResponse<int>> attendByAtID(
+          @Body() AttendStatusDto attendStatusDto, @Path("AtID") int atID));
 }

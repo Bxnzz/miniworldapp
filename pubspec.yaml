@@ -84,6 +84,8 @@ dependencies:
   animations: ^2.0.7
   expandable: ^5.0.1
   quickalert: ^1.0.1
+
+  circular_menu: ^2.0.1
   
   
 

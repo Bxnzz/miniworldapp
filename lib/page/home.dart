@@ -50,12 +50,12 @@ class _HomePageState extends State<HomePage> {
             },
             child: const Text('RegisterPage')),
        
-        ElevatedButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const NontificationPage()));
-            },
-            child: const Text('Nontification')),
+        // ElevatedButton(
+        //     onPressed: () {
+        //       Navigator.push(context,
+        //           MaterialPageRoute(builder: (context) => const NontificationPage()));
+        //     },
+        //     child: const Text('Nontification')),
        
         ElevatedButton(
             onPressed: () {

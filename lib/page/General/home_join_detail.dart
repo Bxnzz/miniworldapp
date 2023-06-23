@@ -13,6 +13,7 @@ import 'package:miniworldapp/page/Player/player_race_start_menu.dart';
 import 'package:miniworldapp/service/attend.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/race.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
 
