@@ -24,9 +24,6 @@ abstract class AttendService {
       {@Query("raceID") required int raceID});
 
   @PUT("/attend/{AtID}")
-  //@DioResponseType(ResponseType.plain)
-  Future<HttpResponse<int>> attendByAtID(
-      //@DioResponseType(ResponseType.plain)
-      Future<HttpResponse<int>> attendByAtID(
-          @Body() AttendStatusDto attendStatusDto, @Path("AtID") int atID));
+  Future<HttpResponse<AttendStatusDto>> attendByAtID(
+      @Body() AttendStatusDto attendStatusDto, @Path("AtID") int atID);
 }

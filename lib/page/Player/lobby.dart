@@ -12,18 +12,17 @@ import 'package:miniworldapp/model/DTO/attendStatusDTO.dart';
 import 'package:miniworldapp/model/DTO/raceDTO.dart';
 import 'package:miniworldapp/model/DTO/raceStatusDTO.dart';
 import 'package:miniworldapp/model/attend.dart';
-import 'package:miniworldapp/model/team.dart';
+
 import 'package:miniworldapp/page/Host/host_race_start.dart';
 import 'package:miniworldapp/service/team.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/missionComp.dart';
-import '../../model/race.dart';
+
 import '../../model/result/attendRaceResult.dart';
 import '../../service/attend.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
-import '../../model/race.dart';
 
 class Lobby extends StatefulWidget {
   const Lobby({super.key});
@@ -251,7 +250,7 @@ class _LobbyState extends State<Lobby> {
                   AttendStatusDto atDto = AttendStatusDto(status: status);
                   debugPrint(attendStatusDtoToJson(atDto));
                   log("id Att ${idAttend}");
-                  var b = await attendService.attendByAtID(atDto, idAttend);
+                  //  var b = await attendService.attendByAtID(atDto, idAttend);
                   attendShow = [];
                   log("message");
                   setState(() {
@@ -271,6 +270,7 @@ class _LobbyState extends State<Lobby> {
                   status = 1;
                   AttendStatusDto atDto = AttendStatusDto(status: status);
                   var b = await attendService.attendByAtID(atDto, idAttend);
+
                   attendShow = [];
                   setState(() {
                     loadDataMethod = loadData();
