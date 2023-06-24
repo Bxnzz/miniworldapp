@@ -23,6 +23,7 @@ import '../../model/race.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
 import '../../widget/loadData.dart';
+import '../Host/check_mission_Noti.dart';
 import '../Player/createTeam.dart';
 import '../notification.dart';
 import 'home_create.dart';
@@ -92,7 +93,7 @@ class _HomeAllState extends State<HomeAll> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => UploadPage()));
+                        builder: (context) => CheckMisNoti()));
                 setState(() {
                   _text = '"Noti"';
                 });

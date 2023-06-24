@@ -57,6 +57,8 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
   String teamName = '';
   String _colorName = 'No';
   Color _color = Colors.black;
+  int mcID = 0;
+  Map<String, dynamic> mc = {};
 
   PlatformFile? pickedFile;
 
@@ -88,6 +90,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
           VideoPlayerController.file(File(pickedFile!.path!))
             ..initialize().then((_) {
               log(videoPlayerController.toString());
+              //SizedBox(child: ,)
               _customVideoPlayerController = CustomVideoPlayerController(
                 context: context,
                 videoPlayerController: videoPlayerController!,
@@ -201,6 +204,8 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
           teamId: teamID);
       var missionComp = await missionCompService.insertMissionComps(mdto);
       missionComp.data.misId.toString();
+       mcID = missionComp.data.misId;
+      mc = {'mcid': mcID};
       log('img ' + missionComp.data.misId.toString());
     } else {
       //update video
@@ -216,8 +221,9 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
           misId: mID,
           teamId: teamID);
       var missionComp = await missionCompService.insertMissionComps(mdto);
-      missionComp.data.misId.toString();
-      log('video ' + missionComp.data.misId.toString());
+      mcID = missionComp.data.misId;
+      mc = {'mcid': mcID};
+      log('mcid ' + missionComp.data.misId.toString());
     }
     if (deviceState == null || deviceState.userId == null) return;
 
@@ -227,8 +233,8 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
     //     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNoy-7N8x4HgYJQuQC3i7SW8nj9EaWzrvhRw&usqp=CAU";
 
     var notification1 = OSCreateNotification(
+        additionalData: mc,
         //playerID
-
         playerIds: [
           onesingnalId,
         ],
@@ -240,9 +246,9 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
           OSActionButton(text: "ตกลง", id: "id1"),
           OSActionButton(text: "ยกเลิก", id: "id2")
         ]);
-    var response1 = await OneSignal.shared.postNotification(notification1);
+   // var response1 = await OneSignal.shared.postNotification(notification1);
     stopLoading();
-
+    Get.defaultDialog(title: mc.toString());
     // videoPlayerController = VideoPlayerController.file(File(pickedFile!.path!))
     //   ..initialize().then((_) {
     //     log(videoPlayerController.toString());
@@ -348,83 +354,96 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
                               ),
                             ),
                           ),
-                          CircularMenu(
-                            alignment: Alignment.bottomCenter,
-                            radius: 60,
-                            toggleButtonSize: 35,
-                            startingAngleInRadian: 0.75 * 2.5,
-                            endingAngleInRadian: 1.5 * 3.14,
-                            backgroundWidget: Row(
-                              children: [
-                                MaterialButton(
-                                  onPressed: () {
-                                    key.currentState!.forwardAnimation();
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(35)),
-                                  padding: const EdgeInsets.all(35),
-                                ),
-                                MaterialButton(
-                                  onPressed: () {
-                                    key.currentState!.reverseAnimation();
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15)),
-                                  padding: const EdgeInsets.all(15),
-                                ),
-                              ],
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(right: 35, bottom: 8),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orangeAccent,
+                                shape: CircleBorder(), //<-- SEE HERE
+                                padding: EdgeInsets.all(20),
+                              ),
+                              onPressed: () {
+                                selectFile();
+                              },
+                              child: FaIcon(
+                                //<-- SEE HERE
+                                FontAwesomeIcons.plus,
+                                color: Colors.white,
+                                size: 35,
+                              ),
                             ),
-                            key: key,
-                            items: [
-                              CircularMenuItem(
-                                icon: FontAwesomeIcons.camera,
-                                onTap: () {
-                                  log('กด');
-                                },
-                                color: Colors.green,
-                                iconColor: Colors.white,
-                              ),
-                              CircularMenuItem(
-                                icon: Icons.image,
-                                onTap: () {
-                                  selectFile();
-                                },
-                                color: Colors.orange,
-                                iconColor: Colors.white,
-                              ),
-                              CircularMenuItem(
-                                icon: Icons.text_fields,
-                                onTap: () {},
-                                color: Colors.deepPurple,
-                                iconColor: Colors.white,
-                              ),
-                            ],
                           )
                         ],
                       ),
+                      // CircularMenu(
+                      //   alignment: Alignment.bottomCenter,
+                      //   radius: 60,
+                      //   toggleButtonSize: 35,
+                      //   startingAngleInRadian: 0.75 * 2.5,
+                      //   endingAngleInRadian: 1.5 * 3.14,
+                      //   backgroundWidget: Row(
+                      //     children: [
+                      //       MaterialButton(
+                      //         onPressed: () {
+                      //           key.currentState!.forwardAnimation();
+                      //         },
+                      //         shape: RoundedRectangleBorder(
+                      //             borderRadius: BorderRadius.circular(35)),
+                      //         padding: const EdgeInsets.all(35),
+                      //       ),
+                      //       MaterialButton(
+                      //         onPressed: () {
+                      //           key.currentState!.reverseAnimation();
+                      //         },
+                      //         shape: RoundedRectangleBorder(
+                      //             borderRadius: BorderRadius.circular(15)),
+                      //         padding: const EdgeInsets.all(15),
+                      //       ),
+                      //     ],
+                      //   ),
+                      //   key: key,
+                      //   items: [
+                      //     CircularMenuItem(
+                      //       icon: FontAwesomeIcons.camera,
+                      //       onTap: () {
+                      //         log('กด');
+                      //       },
+                      //       color: Colors.green,
+                      //       iconColor: Colors.white,
+                      //     ),
+                      //     CircularMenuItem(
+                      //       icon: Icons.image,
+                      //       onTap: () {
+                      //         selectFile();
+                      //       },
+                      //       color: Colors.orange,
+                      //       iconColor: Colors.white,
+                      //     ),
+                      //     CircularMenuItem(
+                      //       icon: Icons.text_fields,
+                      //       onTap: () {
+                      //         log('message');
+                      //       },
+                      //       color: Colors.deepPurple,
+                      //       iconColor: Colors.white,
+                      //     ),
+                      //   ],
+                      // ),
                       pickedFile != null
                           ? Expanded(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    isImage == true
-                                        ? Image.file(
-                                            File(pickedFile!.path!),
-                                            width: Get.width * 0.3,
-                                          )
-                                        : (_customVideoPlayerController != null)
-                                            ? CustomVideoPlayer(
-                                                customVideoPlayerController:
-                                                    _customVideoPlayerController!)
-                                            : Container(
-                                                child:
-                                                    Text("กรุณาเลือกไฟล์อื่น"),
-                                              ),
-                                    //Text(pickedFile!.name),
-                                  ],
-                                ),
-                              ),
+                              child: isImage == true
+                                  ? Image.file(
+                                      File(pickedFile!.path!),
+                                      width: Get.width * 0.3,
+                                    )
+                                  : (_customVideoPlayerController != null)
+                                      ? CustomVideoPlayer(
+                                          customVideoPlayerController:
+                                              _customVideoPlayerController!)
+                                      : Container(
+                                          child: Text("กรุณาเลือกไฟล์อื่น"),
+                                        ),
                             )
                           : Container(),
                       // buildProgress(),
@@ -440,10 +459,9 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
                                 //  _handleSendNotification();
                                 if (pickedFile == null) {
                                   Get.defaultDialog(title: 'กรุณาเลือกหลักฐาน');
-                                }else{
+                                } else {
                                   uploadFile();
                                 }
-                                
                               },
                               child: Text('ส่งหลักฐาน',
                                   style: Get.textTheme.bodyLarge!.copyWith(
