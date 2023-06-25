@@ -34,11 +34,8 @@ class _NontificationPageState extends State<NontificationPage> {
         //playerID
 
         playerIds: [   
-        playerId
-          // 'b8742e68-2547-4cca-90a0-d1561a5654cc', //a11
-          // '850c1971-dd33-4af0-bbea-71efe3ff9814', //j7
-          // '037f084d-7ed0-466f-9f5d-012f60789829', //a9
-          // '2e395e43-98f9-45fb-82d4-dfc3cd90434d', //s13
+        //playerId,
+        '9556bafc-c68e-4ef2-a469-2a4b61d09168',
         ],
         content: "โหลๆๆ",
         heading: "Test Notification❤ :)",

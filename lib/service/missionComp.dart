@@ -17,6 +17,10 @@ abstract class MissionCompService {
   Future<HttpResponse<List<MissionComplete>>> missionCompByTeamId(
       {@Query("teamID") required int teamID});
 
+  @GET("/missionComp/")
+  Future<HttpResponse<List<MissionComplete>>> missionCompBymcId(
+      {@Query("mcID") required int mcID});
+
   @POST("/missionComp")
   Future<HttpResponse<MissionComplete>> insertMissionComps(@Body() MissionCompDto missionCompDto);
 

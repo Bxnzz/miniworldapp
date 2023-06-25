@@ -57,7 +57,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
   String teamName = '';
   String _colorName = 'No';
   Color _color = Colors.black;
-  int mcID = 0;
+  String mcID = '';
   Map<String, dynamic> mc = {};
 
   PlatformFile? pickedFile;
@@ -204,9 +204,9 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
           teamId: teamID);
       var missionComp = await missionCompService.insertMissionComps(mdto);
       missionComp.data.misId.toString();
-       mcID = missionComp.data.misId;
-      mc = {'mcid': mcID};
-      log('img ' + missionComp.data.misId.toString());
+      mcID = missionComp.data.misId.toString();
+      mc = {'mcid':mcID};
+      log('img ${missionComp.data.misId}');
     } else {
       //update video
       MissionCompDto mdto = MissionCompDto(
@@ -221,22 +221,22 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
           misId: mID,
           teamId: teamID);
       var missionComp = await missionCompService.insertMissionComps(mdto);
-      mcID = missionComp.data.misId;
-      mc = {'mcid': mcID};
-      log('mcid ' + missionComp.data.misId.toString());
+      mcID = missionComp.data.misId.toString();
+
+      mc = {'mcid':'${mcID}'};
+      log('mcc'+ mc.toString() );
+      log('one ' + onesingnalId);
     }
     if (deviceState == null || deviceState.userId == null) return;
 
     var playerId = deviceState.userId!;
 
-    // var imUrlString =
-    //     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNoy-7N8x4HgYJQuQC3i7SW8nj9EaWzrvhRw&usqp=CAU";
-
     var notification1 = OSCreateNotification(
-        additionalData: mc,
         //playerID
+        additionalData: mc,
         playerIds: [
           onesingnalId,
+          //'9556bafc-c68e-4ef2-a469-2a4b61d09168',
         ],
         content: 'ส่งจากทีม: $teamName',
         heading: "หลักฐานภารกิจ: $misName",
@@ -246,7 +246,8 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
           OSActionButton(text: "ตกลง", id: "id1"),
           OSActionButton(text: "ยกเลิก", id: "id2")
         ]);
-   // var response1 = await OneSignal.shared.postNotification(notification1);
+
+    var response1 = await OneSignal.shared.postNotification(notification1);
     stopLoading();
     Get.defaultDialog(title: mc.toString());
     // videoPlayerController = VideoPlayerController.file(File(pickedFile!.path!))

@@ -40,6 +40,8 @@ class _LoginState extends State<Login> {
   bool _authenticatingStatus = false;
   String _externalUserId = "";
   String _debugLabelString = "";
+  String McID = '';
+  int idMc = 0;
 
   @override
   void initState() {
@@ -50,6 +52,7 @@ class _LoginState extends State<Login> {
     userService = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
     // 2.2 async method
     //  loadDataMethod = addData(logins);
+    WidgetsFlutterBinding.ensureInitialized();
     OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
     OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");
 
@@ -68,9 +71,8 @@ class _LoginState extends State<Login> {
 
     OneSignal.shared
         .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      log('re ${result.notification.additionalData}');
-      // McID = result.notification.additionalData
-      //     .toString();
+      McID = result.notification.additionalData.toString();
+      log('re ${McID}');
     });
   }
 
@@ -202,6 +204,19 @@ class _LoginState extends State<Login> {
                                 backgroundColor: Get.theme.colorScheme.primary,
                               ),
                               onPressed: () async {
+                                // เปลี่ยนสถานะเป็นกำลังล็อกอิน
+                                 if(McID != ''){
+                                  var splitT = McID.substring(7,8);
+                                  log('sp' + splitT.toString());
+                                  idMc = int.parse(splitT);
+                                }
+                                if (_externalUserId.isEmpty) {
+                                  Get.defaultDialog(title: 'ไม่สามารถlogin');
+                                  return;
+                                } else {
+                                  //  Get.defaultDialog(title: '');
+                                } 
+                             
                                 setState(() {
                                   _authenticatingStatus =
                                       !_authenticatingStatus;
@@ -237,15 +252,6 @@ class _LoginState extends State<Login> {
                                     userResult = updateOnesignal.data;
                                     //  log(userResult.toString());
 
-                                    // เปลี่ยนสถานะเป็นกำลังล็อกอิน
-                                    // if (_externalUserId.isEmpty) {
-                                    //   Get.defaultDialog(
-                                    //       title: 'ไม่สามารถlogin');
-                                    //   return;
-                                    // } else {
-                                    //   //  Get.defaultDialog(title: '');
-                                    // }
-
                                     // ScaffoldMessenger.of(context).showSnackBar(
                                     //   const SnackBar(
                                     //       content: Text('Login Successful')),
@@ -268,6 +274,9 @@ class _LoginState extends State<Login> {
 
                                     context.read<AppData>().idUser =
                                         login.data.userId;
+
+                                    context.read<AppData>().mcID =
+                                        idMc;
                                     //Get.to(() => HomeAll());
                                     // Get.to(() => HomeAll());
                                     return;
