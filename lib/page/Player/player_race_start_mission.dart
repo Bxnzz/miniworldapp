@@ -203,9 +203,9 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
           misId: mID,
           teamId: teamID);
       var missionComp = await missionCompService.insertMissionComps(mdto);
-      missionComp.data.misId.toString();
-      mcID = missionComp.data.misId.toString();
-      mc = {'mcid':mcID};
+      missionComp.data;
+      mcID = missionComp.data.mcId.toString();
+      mc = {'mcid':'s${mcID}e'};
       log('img ${missionComp.data.misId}');
     } else {
       //update video
@@ -221,9 +221,9 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
           misId: mID,
           teamId: teamID);
       var missionComp = await missionCompService.insertMissionComps(mdto);
-      mcID = missionComp.data.misId.toString();
+      mcID = missionComp.data.mcId.toString();
 
-      mc = {'mcid':'${mcID}'};
+      mc = {'mcid':'s'+'${mcID}'+'e'};
       log('mcc'+ mc.toString() );
       log('one ' + onesingnalId);
     }
@@ -483,33 +483,4 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
     );
   }
 
-  Widget buildProgress() => StreamBuilder<TaskSnapshot>(
-      stream: uploadTask?.snapshotEvents,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final data = snapshot.data!;
-          double progress = data.bytesTransferred / data.totalBytes;
-          return SizedBox(
-            height: 50,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                LinearProgressIndicator(
-                  value: progress,
-                  backgroundColor: Colors.grey,
-                  color: Colors.green,
-                ),
-                Center(
-                  child: Text(
-                    '${(100 * progress).roundToDouble()}%',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                )
-              ],
-            ),
-          );
-        } else {
-          return const SizedBox(height: 50);
-        }
-      });
 }

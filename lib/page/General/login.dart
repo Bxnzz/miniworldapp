@@ -42,6 +42,8 @@ class _LoginState extends State<Login> {
   String _debugLabelString = "";
   String McID = '';
   int idMc = 0;
+  String start = "s";
+  String end = "e";
 
   @override
   void initState() {
@@ -205,8 +207,10 @@ class _LoginState extends State<Login> {
                               ),
                               onPressed: () async {
                                 // เปลี่ยนสถานะเป็นกำลังล็อกอิน
-                                 if(McID != ''){
-                                  var splitT = McID.substring(7,8);
+                                if (McID != '') {
+                                  final startIndex = McID.indexOf(start);
+                                  final endIndex = McID.indexOf(end, startIndex + start.length);
+                                  var splitT = McID.substring(startIndex + start.length, endIndex);
                                   log('sp' + splitT.toString());
                                   idMc = int.parse(splitT);
                                 }
@@ -215,8 +219,8 @@ class _LoginState extends State<Login> {
                                   return;
                                 } else {
                                   //  Get.defaultDialog(title: '');
-                                } 
-                             
+                                }
+
                                 setState(() {
                                   _authenticatingStatus =
                                       !_authenticatingStatus;
@@ -275,8 +279,7 @@ class _LoginState extends State<Login> {
                                     context.read<AppData>().idUser =
                                         login.data.userId;
 
-                                    context.read<AppData>().mcID =
-                                        idMc;
+                                    context.read<AppData>().mcID = idMc;
                                     //Get.to(() => HomeAll());
                                     // Get.to(() => HomeAll());
                                     return;
