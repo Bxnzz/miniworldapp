@@ -77,13 +77,13 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
     //stname = pickedFile.toString()+;
     log(result.files.single.toString());
     log(pickedFile!.extension.toString());
-    //upload Image
+    //selectFile Image
     if (pickedFile!.extension == 'jpg' || pickedFile!.extension == 'png') {
       setState(() {
         isImage = true;
       });
     }
-    //upload video
+    //selectFile video
     else {
       isImage = false;
       videoPlayerController =

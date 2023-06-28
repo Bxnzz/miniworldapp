@@ -25,6 +25,10 @@ abstract class AttendService {
   Future<HttpResponse<List<AttendRace>>> attendByRaceID(
       {@Query("raceID") required int raceID});
 
+   @GET("/attend/")
+  Future<HttpResponse<List<AttendRace>>> attendByTeamID(
+      {@Query("teamID") required int teamID});
+
   @PUT("/attend/{AtID}")
   //@DioResponseType(ResponseType.plain)
   Future<HttpResponse<int>> attendByAtID(

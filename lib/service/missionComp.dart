@@ -4,6 +4,9 @@ import 'package:miniworldapp/model/DTO/missionDTO.dart';
 import 'package:miniworldapp/model/missionComp.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../model/Status/missionCompStatus.dart';
+import '../model/result/raceResult.dart';
+
 part 'missionComp.g.dart';
 
 @RestApi()
@@ -24,4 +27,8 @@ abstract class MissionCompService {
   @POST("/missionComp")
   Future<HttpResponse<MissionComplete>> insertMissionComps(@Body() MissionCompDto missionCompDto);
 
+  @PUT("/missionComp/{mcID}")
+  Future<HttpResponse<RaceResult>> updateStatusMisCom(
+  @Body() MissionCompStatus missionComStatus, @Path("mcID") String mcID);
 }
+

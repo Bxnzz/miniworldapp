@@ -15,6 +15,7 @@ import 'package:miniworldapp/model/DTO/missionCompDTO.dart';
 import 'package:miniworldapp/model/missionComp.dart' as misComp;
 import 'package:miniworldapp/model/mission.dart';
 import 'package:flutter/rendering.dart';
+import 'package:miniworldapp/model/result/attendRaceResult.dart';
 
 import 'package:miniworldapp/service/mission.dart';
 import 'package:miniworldapp/service/missionComp.dart';
@@ -23,7 +24,13 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/mission.dart';
+import '../../service/attend.dart';
 import '../../service/provider/appdata.dart';
+
+class Notpass {
+  String masseage;
+  Notpass({required this.masseage});
+}
 
 class CheckMisNoti extends StatefulWidget {
   const CheckMisNoti({super.key});
@@ -34,11 +41,14 @@ class CheckMisNoti extends StatefulWidget {
 
 class _CheckMisNotiState extends State<CheckMisNoti> {
   late MissionCompService missionCompService;
+  late AttendService attendService;
   late MissionService missionService;
   late List<misComp.MissionComplete> missionComp;
+  late List<AttendRace> attend;
   late List<Mission> mission;
   late int IDmc;
   late int CompmissionId;
+   String dateTime = '';
   int idrace = 0;
   String onesingnalId = '';
 
@@ -48,6 +58,23 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
   String mcText = '';
   String mcName = '';
   String mcDiscrip = '';
+  String playerID = '';
+  String hostName = '';
+
+  int _counter = 0;
+  List<Notpass> message = [
+    Notpass(masseage: 'ประเภทหลักฐานไม่ถูกต้อง'),
+    Notpass(masseage: 'กรุณาใส่ข้อความให้ถูกต้อง'),
+    Notpass(masseage: 'กรุณาถ่ายรูปใหม่'),
+    Notpass(masseage: 'กรุณาส่งวิดิโอใหม่'),
+    Notpass(masseage: 'ภาพไม่ชัดเจน'),
+  ];
+  int _selected = 0;
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
 
   int teamID = 0;
 
@@ -107,15 +134,19 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
         MissionCompService(Dio(), baseUrl: context.read<AppData>().baseurl);
     missionService =
         MissionService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    attendService =
+        AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
     loadDataMethod = loadData();
   }
 
   Future<void> loadData() async {
+    startLoading(context);
     try {
       var a = await missionCompService.missionCompBymcId(mcID: IDmc);
       //var m = await missionService.missionAll();
       var mis = await missionService.missionByraceID(raceID: idrace);
 
+      missionComp = a.data;
       missionComp = a.data;
 
       mission = mis.data;
@@ -125,6 +156,15 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
       mcName = a.data.first.mission.misName;
       mcDiscrip = a.data.first.mission.misDiscrip;
       teamName = a.data.first.team.teamName;
+      teamID = a.data.first.team.teamId;
+      hostName = mis.data.first.race.user.userName;
+      log('tt ' + teamID.toString());
+
+      var at = await attendService.attendByTeamID(teamID: teamID);
+      attend = at.data;
+      playerID = at.data.first.user.onesingnalId;
+      log('att ' + playerID);
+
       // onesingnalId = mis.data.first.race.user.onesingnalId;
       // misName = a.data.first.mission.misName;
       // misDiscrip = a.data.first.mission.misDiscrip;
@@ -135,86 +175,56 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
       // teamID = a.data.first.team.teamId;
       // teamName = a.data.first.team.teamName;
 
-      // CompmissionId = a.data;
-      //log('one $onesingnalId');
+   
+      videoPlayerController = VideoPlayerController.network(urlVideo)
+        ..initialize().then((value) => setState(() {}));
+      _customVideoPlayerController = CustomVideoPlayerController(
+        context: context,
+        videoPlayerController: videoPlayerController!,
+      );
 
       log('type ' + type);
       log(IDmc.toString());
       log('t' + mcName);
+      stopLoading();
     } catch (err) {
       log('Error:$err');
     }
   }
+   
+void _handleSendNotification() async {
+    var deviceState = await OneSignal.shared.getDeviceState();
 
-  // Future uploadFile() async {
-  //   startLoading(context);
-  //   var deviceState = await OneSignal.shared.getDeviceState();
-  //   // log(dateTime);
-  //   //final berlinWallFell = DateTime.utc(now);
+   if (deviceState == null || deviceState.userId == null) return;
 
-  //   final path = 'files/${pickedFile!.name}';
+    var playerId = deviceState.userId!;
 
-  //   final file = File(pickedFile!.path!);
+    var notification1 = OSCreateNotification(
+        //playerID
+        additionalData: mc,
+        playerIds: [
+          playerID,
+          //'9556bafc-c68e-4ef2-a469-2a4b61d09168',
+        ],
+        content: 'ส่งจากผู้สร้างการแข่งขัน: $hostName',
+        heading: "หลักฐานภารกิจ: ผ่าน",
+        //  iosAttachments: {"id1",urlImage},
+        // bigPicture: imUrlString,
+        buttons: [
+          OSActionButton(text: "ตกลง", id: "id1"),
+          OSActionButton(text: "ยกเลิก", id: "id2")
+        ]);
 
-  //   final ref = FirebaseStorage.instance.ref().child(path);
-  //   log(ref.toString());
-
-  //   setState(() {
-  //     uploadTask = ref.putFile(file);
-  //   });
-  //   final snapshot = await uploadTask!.whenComplete(() {});
-
-  //   final urlDownload = await snapshot.ref.getDownloadURL();
-
-  //   log('Download Link:$urlDownload');
-
-  //   if (isImage == true) {
-  //     //update image
-
-  //   } else {
-  //     //update video
-
-  //   }
-  //   if (deviceState == null || deviceState.userId == null) return;
-
-  //   var playerId = deviceState.userId!;
-
-  //   var notification1 = OSCreateNotification(
-  //       //playerID
-  //       additionalData: mc,
-  //       playerIds: [
-  //         onesingnalId,
-  //         //'9556bafc-c68e-4ef2-a469-2a4b61d09168',
-  //       ],
-  //       content: 'ส่งจากทีม: $teamName',
-  //       heading: "หลักฐานภารกิจ:",
-  //       //  iosAttachments: {"id1",urlImage},
-  //       // bigPicture: imUrlString,
-  //       buttons: [
-  //         OSActionButton(text: "ตกลง", id: "id1"),
-  //         OSActionButton(text: "ยกเลิก", id: "id2")
-  //       ]);
-
-  //   var response1 = await OneSignal.shared.postNotification(notification1);
-  //   stopLoading();
-  //   Get.defaultDialog(title: mc.toString());
-  //   // videoPlayerController = VideoPlayerController.file(File(pickedFile!.path!))
-  //   //   ..initialize().then((_) {
-  //   //     log(videoPlayerController.toString());
-  //   //     _customVideoPlayerController = CustomVideoPlayerController(
-  //   //       context: context,
-  //   //       videoPlayerController: videoPlayerController!,
-  //   //     );
-  //   //     Image.file(File(pickedFile!.path!));
-  //   //     setState(() {});
-  //   //   });
-  // }
+    var response1 = await OneSignal.shared.postNotification(notification1);
+  }
 
   GlobalKey<CircularMenuState> key = GlobalKey<CircularMenuState>();
   @override
   Widget build(BuildContext context) {
     OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");
-
+    
+    final now = DateTime.now();
+    dateTime = '${now.toIso8601String()}Z';
     return Scaffold(
       appBar: AppBar(title: Text('ตรวจสอบหลักฐาน')),
       body: FutureBuilder(
@@ -282,23 +292,57 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
                               child: Text(mcDiscrip),
                             )),
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 35, top: 15),
+                            child: Text('หลักฐานที่ส่ง :',
+                                style: Get.textTheme.bodyMedium!.copyWith(
+                                    color: Get.theme.colorScheme.onBackground,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ],
+                      ),
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 15, bottom: 35),
-                          child: Container(
-                            width: Get.width * 0.7,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Get.theme.colorScheme.onPrimary),
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                image: NetworkImage(urlImage),
-                                fit: BoxFit.cover,
-                              ),
-                              shape: BoxShape.rectangle,
-                            ),
-                          ),
-                        ),
+                            padding: const EdgeInsets.only(top: 15, bottom: 35),
+                            child: urlImage != ''
+                                ? Container(
+                                    width: Get.width * 0.7,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color:
+                                              Get.theme.colorScheme.onPrimary),
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                        image: NetworkImage(urlImage),
+                                        fit: BoxFit.cover,
+                                      ),
+                                      shape: BoxShape.rectangle,
+                                    ),
+                                  )
+                                : (_customVideoPlayerController != null)
+                                    ? CustomVideoPlayer(
+                                        customVideoPlayerController:
+                                            _customVideoPlayerController!)
+                                    : mcText != null
+                                        ? Container(
+                                            width: Get.width,
+                                            height: 80,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 3,
+                                                    color: Get.theme.colorScheme
+                                                        .primary),
+                                                borderRadius:
+                                                    BorderRadius.circular(40),
+                                                color: Colors.white),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(15),
+                                              child: Text(mcText),
+                                            ))
+                                        : Container()),
                       ),
 
                       // pickedFile != null
@@ -329,12 +373,14 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.green,
                                   ),
-                                  onPressed: () {
-                                    //  _handleSendNotification();
-                                    if (pickedFile == null) {
-                                      Get.defaultDialog(
-                                          title: 'กรุณาเลือกหลักฐาน');
-                                    } else {}
+                                  onPressed: () async {
+                                    _handleSendNotification();
+                                    log(playerID.toString());
+                                   
+                                    // if (pickedFile == null) {
+                                    //   Get.defaultDialog(
+                                    //       title: 'กรุณาเลือกหลักฐาน');
+                                    // } else {}
                                   },
                                   child: Text('ผ่าน',
                                       style: Get.textTheme.bodyLarge!.copyWith(
@@ -352,13 +398,86 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
                                     backgroundColor:
                                         Get.theme.colorScheme.error,
                                   ),
-                                  onPressed: () {
-                                    //  _handleSendNotification();
-                                    if (pickedFile == null) {
-                                      Get.defaultDialog(
-                                          title: 'กรุณาเลือกหลักฐาน');
-                                    } else {}
-                                  },
+                                  onPressed: () => showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          AlertDialog(
+                                            title: Text('ไม่ผ่านเพราะ....'),
+                                            shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(20))),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, 'Cancel'),
+                                                child: const Text('Cancel'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, 'OK'),
+                                                child: const Text('OK'),
+                                              ),
+                                            ],
+                                            content: SingleChildScrollView(
+                                              child: Container(
+                                                width: double.maxFinite,
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: <Widget>[
+                                                    Divider(),
+                                                    ConstrainedBox(
+                                                      constraints:
+                                                          BoxConstraints(
+                                                        maxHeight:
+                                                            MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height *
+                                                                0.4,
+                                                      ),
+                                                      child: ListView.builder(
+                                                          shrinkWrap: true,
+                                                          itemCount:
+                                                              message.length,
+                                                          itemBuilder:
+                                                              (BuildContext
+                                                                      context,
+                                                                  int index) {
+                                                            return RadioListTile(
+                                                                title: Text(message[
+                                                                        index]
+                                                                    .masseage),
+                                                                value: index,
+                                                                groupValue:
+                                                                    _selected,
+                                                                onChanged:
+                                                                    (value) {
+                                                                  setState(() {
+                                                                    _selected =
+                                                                        index;
+                                                                  });
+                                                                });
+                                                          }),
+                                                    ),
+                                                    Divider(),
+                                                    TextField(
+                                                      autofocus: false,
+                                                      maxLines: 1,
+                                                      style: TextStyle(
+                                                          fontSize: 18),
+                                                      decoration:
+                                                          new InputDecoration(
+                                                        border:
+                                                            InputBorder.none,
+                                                        hintText: "อื่นๆ....",
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          )),
                                   child: Text('ไม่ผ่าน',
                                       style: Get.textTheme.bodyLarge!.copyWith(
                                           color:
@@ -380,34 +499,4 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
       ),
     );
   }
-
-  // Widget buildProgress() => StreamBuilder<TaskSnapshot>(
-  //     stream: uploadTask?.snapshotEvents,
-  //     builder: (context, snapshot) {
-  //       if (snapshot.hasData) {
-  //         final data = snapshot.data!;
-  //         double progress = data.bytesTransferred / data.totalBytes;
-  //         return SizedBox(
-  //           height: 50,
-  //           child: Stack(
-  //             fit: StackFit.expand,
-  //             children: [
-  //               LinearProgressIndicator(
-  //                 value: progress,
-  //                 backgroundColor: Colors.grey,
-  //                 color: Colors.green,
-  //               ),
-  //               Center(
-  //                 child: Text(
-  //                   '${(100 * progress).roundToDouble()}%',
-  //                   style: const TextStyle(color: Colors.white),
-  //                 ),
-  //               )
-  //             ],
-  //           ),
-  //         );
-  //       } else {
-  //         return const SizedBox(height: 50);
-  //       }
-  //     });
 }
