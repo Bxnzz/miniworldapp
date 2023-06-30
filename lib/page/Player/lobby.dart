@@ -246,13 +246,13 @@ class _LobbyState extends State<Lobby> {
             width: 120,
             child: ElevatedButton(
                 onPressed: () async {
-                  status = 2;
-                  AttendStatusDto atDto = AttendStatusDto(status: status);
+                  AttendStatusDto atDto = AttendStatusDto(status: 2);
                   debugPrint(attendStatusDtoToJson(atDto));
                   log("id Att ${idAttend}");
                   //  var b = await attendService.attendByAtID(atDto, idAttend);
                   attendShow = [];
                   log("message");
+                  loadDataMethod = loadData();
                   setState(() {
                     context.read<AppData>().status = status;
                     loadDataMethod = loadData();
@@ -267,11 +267,11 @@ class _LobbyState extends State<Lobby> {
             width: 120,
             child: ElevatedButton(
                 onPressed: () async {
-                  status = 1;
-                  AttendStatusDto atDto = AttendStatusDto(status: status);
+                  AttendStatusDto atDto = AttendStatusDto(status: 1);
                   var b = await attendService.attendByAtID(atDto, idAttend);
 
                   attendShow = [];
+                  loadDataMethod = loadData();
                   setState(() {
                     loadDataMethod = loadData();
                     context.read<AppData>().status = status;
@@ -291,7 +291,7 @@ class _LobbyState extends State<Lobby> {
       // var r = await raceService.racesByID(userID: idUser);
 
       var a = await attendService.attendByRaceID(raceID: idRace);
-      log("ssdsd" + a.data.first.atId.toString());
+
       attends = a.data;
       status = a.data.first.status;
       userCreate = a.data.first.team.race.userId;

@@ -10,12 +10,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:miniworldapp/model/missionComp.dart' as misComp;
+import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/home_join_detail.dart';
 import 'package:miniworldapp/page/Player/player_race_start_menu.dart';
 import 'package:miniworldapp/page/Player/player_race_start_mission.dart';
 import 'package:miniworldapp/service/mission.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/DTO/missionCompDTO.dart';
 import '../../model/mission.dart';
 import '../../service/missionComp.dart';
 import '../../service/provider/appdata.dart';
@@ -34,12 +36,22 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
   late int teamID;
   late int raceID;
   late int misID;
-  late int misDistance;
+  late int misDistance = 0;
+
   late double lngDevice, latDevice;
   late double lat = 0;
   late double lng = 0;
+  late double latplot = 0;
+  late double lngplot = 0;
   late double dis;
-  List<Marker> markerss = [];
+  late String misName;
+  late String misDescrip;
+  late String misType = '';
+  late String type = '';
+  String dateTime = "";
+  bool lastmisComp = false;
+
+  late List<Marker> markerss = [];
   late List<Mission> mission;
   late List<misComp.MissionComplete> missionComp;
 
@@ -64,6 +76,9 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
     missionService =
         MissionService(Dio(), baseUrl: context.read<AppData>().baseurl);
     loadDataMethod = LoadData();
+    log("team id = $teamID");
+    log("$lat $lng");
+    //showAlertDialog();
     super.initState();
   }
 
@@ -114,7 +129,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
       //refresh UI
     });
 
-    LocationSettings locationSettings = LocationSettings(
+    LocationSettings locationSettings = const LocationSettings(
       accuracy: LocationAccuracy.high, //accuracy of the location data
       distanceFilter: 100, //minimum distance (measured in meters) a
       //device must move horizontally before an update event is generated;
@@ -145,11 +160,19 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
       // mission = m.data;
       mission = mis.data;
       missionComp = a.data;
-      lat = a.data.first.mcLat;
-      lng = a.data.first.mcLng;
+
       misID = mis.data.first.misId;
+      misName = mis.data.first.misName;
+      misDescrip = mis.data.first.misDiscrip;
+      misType = mis.data.first.misType.toString();
       misDistance = mis.data.first.misDistance;
-      log(" Latti ==== $latDevice long === $lngDevice");
+      // for (int i = 0; i < mission.length; i++) {
+      //   if (i + 1 > mission.length - 1) {
+      //     lastmisComp = true;
+      //     log("lastmisComp" + lastmisComp.toString());
+      //   }
+      // }
+      log("lastmisComp" + lastmisComp.toString());
     } catch (err) {
       log('Error:$err');
     }
@@ -157,9 +180,6 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
 
   @override
   Widget build(BuildContext context) {
-    String lats = '';
-    String longs = '';
-
     return Scaffold(
       body: FutureBuilder(
         future: loadDataMethod,
@@ -170,79 +190,70 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                 if (missionComp[j].misId == mission[i].misId &&
                     missionComp[j].mcStatus == 2) {
                   log("pass ${mission[i].misId}");
+
                   if (i + 1 > mission.length - 1) {
                     log("next ${mission[i].misId}");
+                    lastmisComp = true;
+                    // showAlertDialog();
+
+                    log(lastmisComp.toString());
                   } else {
                     log("next ${mission[i + 1].misId}");
                     log("lat lng${mission[i + 1].misLat}${mission[i + 1].misLng}");
 
                     lat = mission[i + 1].misLat;
                     lng = mission[i + 1].misLng;
+
+                    log("lat $lat");
+                    log("lng $lng");
                     misID = mission[i + 1].misId;
+                    misName = mission[i + 1].misName;
                     misDistance = mission[i + 1].misDistance;
+                    misDescrip = mission[i + 1].misDiscrip;
+                    misType = mission[i + 1].misType.toString();
+                    if (misType.contains('1')) {
+                      type = 'ข้อความ';
+                    } else if (misType.contains('2')) {
+                      type = 'สื่อ';
+                    } else if (misType.contains('3')) {
+                      type = 'ไม่มีการส่ง';
+                    }
                     log("mis id = ${misID}");
                     log("distance = ${misDistance}");
+                    // if (i == mission.length) {
+                    //   log("message");
+                    // }
+                  }
+                } else {
+                  log("not match;");
+                  if (lat == 0 && lng == 0) {
+                    lat = mission[0].misLat;
+                    lng = mission[0].misLng;
                   }
                 }
               }
             }
-
-            return Column(
+            return Stack(
               children: [
-                Text('แผนที่'),
-                GMap(lats, longs, context),
-                Center(
-                  child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          dis = Geolocator.distanceBetween(
-                              latDevice, lngDevice, lat, lng);
-                        });
-                        dis <= misDistance
-                            ? showDialog<String>(
-                                context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                  title: const Text('เจอแล้ว !!!'),
-                                  content: Text(
-                                    "อยู่ในบริเวณภารกิจแล้ว",
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  actions: <Widget>[
-                                    Center(
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          misID = context.read<AppData>().idMis;
-
-                                          Get.to(() => PlayerRaceStartMenu());
-                                        },
-                                        child: const Text('ดูรายละเอียด'),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : showDialog<String>(
-                                context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                  title: const Text('ห่างจากภารกิจ'),
-                                  content: Text(
-                                    dis.toStringAsFixed(1) + "เมตร",
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  actions: <Widget>[
-                                    Center(
-                                      child: ElevatedButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, 'OK'),
-                                        child: const Text('OK'),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                      },
-                      child: FaIcon(FontAwesomeIcons.question)),
-                )
+                Column(children: [
+                  Text('แผนที่'),
+                  GMap(context),
+                ]),
+                lastmisComp == false
+                    ? Center(
+                        child: misType == '3'
+                            //mission type = 3
+                            ? btnMisType3(context)
+                            //mission type 1
+                            : btnMisType1_2(context))
+                    : Positioned(
+                        top: (Get.height / 2) - 125,
+                        left: 20,
+                        right: 20,
+                        child: AlertDialog(
+                          title: Text("ยินดีด้วย !!!"),
+                          content: Text("ทีมคุณผ่านภารกิจทั้งหมดแล้ว"),
+                        ))
               ],
             );
           } else {
@@ -253,7 +264,145 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
     );
   }
 
-  Expanded GMap(String lats, String longs, BuildContext context) {
+  ElevatedButton btnMisType1_2(BuildContext context) {
+    return ElevatedButton(
+        onPressed: () {
+          dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
+          dis <= misDistance
+              ? showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: Center(child: const Text('เจอแล้ว !!!')),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("#$misID"),
+                        Text(
+                          "ชื่อภารกิจ : $misName",
+                          textAlign: TextAlign.center,
+                        ),
+                        Text("รายละเอียด : $misDescrip"),
+                        Text("ประเภทภารกิจ : " + type)
+                      ],
+                    ),
+                    actions: <Widget>[
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            misID = context.read<AppData>().idMis;
+                          },
+                          child: const Text('ดูรายละเอียด'),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: const Text('ห่างจากภารกิจ'),
+                    content: Text(
+                      dis.toStringAsFixed(1) + "เมตร",
+                      textAlign: TextAlign.center,
+                    ),
+                    actions: <Widget>[
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.pop(context, 'OK'),
+                          child: const Text('OK'),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+        },
+        child: FaIcon(FontAwesomeIcons.question));
+  }
+
+  ElevatedButton btnMisType3(BuildContext context) {
+    return ElevatedButton(
+        onPressed: () {
+          setState(() {
+            dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
+          });
+          //distance of mission
+          dis <= misDistance
+              ? showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: Center(child: const Text('เจอแล้ว ไปต่อได้!!!')),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("#$misID"),
+                        Text(
+                          "ชื่อภารกิจ : $misName",
+                          textAlign: TextAlign.center,
+                        ),
+                        Text("รายละเอียด : $misDescrip"),
+                        Text("ประเภทภารกิจ : $type")
+                      ],
+                    ),
+                    actions: <Widget>[
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            final now = DateTime.now();
+                            dateTime = '${now.toIso8601String()}Z';
+                            MissionCompDto mdto = MissionCompDto(
+                                mcDatetime: DateTime.parse(dateTime),
+                                mcLat: latDevice,
+                                mcLng: lngDevice,
+                                mcMasseage: '',
+                                mcPhoto: '',
+                                mcStatus: 2,
+                                mcText: '',
+                                mcVideo: '',
+                                misId: misID,
+                                teamId: teamID);
+                            var missionComp = await missionCompService
+                                .insertMissionComps(mdto);
+
+                            setState(() {
+                              dis = Geolocator.distanceBetween(
+                                  latDevice, lngDevice, lat, lng);
+                              loadDataMethod = LoadData();
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: const Text('สำเร็จ'),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: const Text('ห่างจากภารกิจ '),
+                    content: Text(
+                      dis.toStringAsFixed(1) + "เมตร",
+                      textAlign: TextAlign.center,
+                    ),
+                    actions: <Widget>[
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('OK'),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+        },
+        child: FaIcon(FontAwesomeIcons.question));
+  }
+
+  Expanded GMap(BuildContext context) {
     return Expanded(
       child: SizedBox(
         height: Get.height * 0.9,
@@ -266,14 +415,15 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                 target: LatLng(lat, lng),
                 zoom: 16,
               ),
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
+              // onMapCreated: (GoogleMapController controller) {
+              //   _controller.complete(controller);
+              // },
               markers: markerss.map((e) => e).toSet(),
               polylines: _polylines,
+
               onCameraMove: (position) {
-                lats = position.target.latitude.toString();
-                longs = position.target.longitude.toString();
+                // lat = position.target.latitude;
+                // lng = position.target.longitude;
                 log('lat' + position.target.latitude.toString());
                 log('lng' + position.target.longitude.toString());
               },
