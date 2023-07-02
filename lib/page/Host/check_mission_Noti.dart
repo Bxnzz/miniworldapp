@@ -23,6 +23,7 @@ import 'package:miniworldapp/widget/loadData.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/Status/missionCompStatus.dart';
 import '../../model/mission.dart';
 import '../../service/attend.dart';
 import '../../service/provider/appdata.dart';
@@ -48,7 +49,7 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
   late List<Mission> mission;
   late int IDmc;
   late int CompmissionId;
-   String dateTime = '';
+  String dateTime = '';
   int idrace = 0;
   String onesingnalId = '';
 
@@ -77,7 +78,7 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
   }
 
   int teamID = 0;
-
+  int misID = 0;
   String teamName = '';
 
   String mcID = '';
@@ -157,6 +158,7 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
       mcDiscrip = a.data.first.mission.misDiscrip;
       teamName = a.data.first.team.teamName;
       teamID = a.data.first.team.teamId;
+      misID = a.data.first.mission.misId;
       hostName = mis.data.first.race.user.userName;
       log('tt ' + teamID.toString());
 
@@ -175,7 +177,6 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
       // teamID = a.data.first.team.teamId;
       // teamName = a.data.first.team.teamName;
 
-   
       videoPlayerController = VideoPlayerController.network(urlVideo)
         ..initialize().then((value) => setState(() {}));
       _customVideoPlayerController = CustomVideoPlayerController(
@@ -191,11 +192,11 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
       log('Error:$err');
     }
   }
-   
-void _handleSendNotification() async {
+
+  void _handleSendNotification() async {
     var deviceState = await OneSignal.shared.getDeviceState();
 
-   if (deviceState == null || deviceState.userId == null) return;
+    if (deviceState == null || deviceState.userId == null) return;
 
     var playerId = deviceState.userId!;
 
@@ -222,7 +223,7 @@ void _handleSendNotification() async {
   @override
   Widget build(BuildContext context) {
     OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");
-    
+
     final now = DateTime.now();
     dateTime = '${now.toIso8601String()}Z';
     return Scaffold(
@@ -376,7 +377,18 @@ void _handleSendNotification() async {
                                   onPressed: () async {
                                     _handleSendNotification();
                                     log(playerID.toString());
-                                   
+                                    MissionCompStatus missionComDto =
+                                        MissionCompStatus(
+                                            mcMasseage: 'ผ่าน',
+                                            mcStatus: 1,
+                                            misId: misID,
+                                            teamId: teamID);
+                                    //log(lats);
+                                    //print(double.parse('lat'+lats));
+                                    var missionComp = await missionCompService
+                                        .updateStatusMisCom(
+                                            missionComDto, IDmc.toString());
+
                                     // if (pickedFile == null) {
                                     //   Get.defaultDialog(
                                     //       title: 'กรุณาเลือกหลักฐาน');
@@ -407,15 +419,22 @@ void _handleSendNotification() async {
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(20))),
                                             actions: <Widget>[
-                                              TextButton(
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Get.theme
+                                                      .colorScheme.error,
+                                                ),
                                                 onPressed: () => Navigator.pop(
-                                                    context, 'Cancel'),
-                                                child: const Text('Cancel'),
+                                                    context, 'ยกเลิก'),
+                                                child: const Text('ยกเลิก'),
                                               ),
-                                              TextButton(
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.green,
+                                                ),
                                                 onPressed: () => Navigator.pop(
-                                                    context, 'OK'),
-                                                child: const Text('OK'),
+                                                    context, 'ส่ง'),
+                                                child: const Text('ส่ง'),
                                               ),
                                             ],
                                             content: SingleChildScrollView(
