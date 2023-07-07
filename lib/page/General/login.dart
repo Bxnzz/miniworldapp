@@ -16,6 +16,7 @@ import 'dart:developer';
 
 import '../../model/DTO/loginDTO.dart';
 import '../../service/login.dart';
+import '../Host/check_mission_Noti.dart';
 import '../Newhome.dart';
 import 'fontpage_register.dart';
 
@@ -49,32 +50,60 @@ class _LoginState extends State<Login> {
   void initState() {
     super.initState();
     // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วยR
+    OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
+    OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");
     loginService =
         LoginService(Dio(), baseUrl: context.read<AppData>().baseurl);
     userService = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
     // 2.2 async method
     //  loadDataMethod = addData(logins);
-    WidgetsFlutterBinding.ensureInitialized();
-    OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
-    OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");
-
-    OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
-      log("Accepted permission: $accepted}");
-
-      final status = OneSignal.shared.getDeviceState().then((value) {
-        if (value != null) {
-          _externalUserId = value.userId!;
-          log('oneID ' + _externalUserId);
-        } else {
-          log('NO');
-        }
-      });
-    });
-
     OneSignal.shared
         .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      McID = result.notification.additionalData.toString();
-      log('re ${McID}');
+      var additionalData = result.notification.additionalData;
+      //  log('xxxxxxxxx ${additionalData.toString()}');
+      //  log('yyyyyy ${additionalData!['notitype'].toString()}');
+      if (additionalData!['notitype'] == 'mission') {
+        log('zzz');
+        log(additionalData['mcid']);
+        Get.to(() => CheckMisNoti());
+      } else if (additionalData['notitype'].toString() == 'endgame') {
+        Get.defaultDialog(title: 'MCCCCCCC');
+      } else if (additionalData['notitype'].toString() == 'mc') {
+        Get.defaultDialog(title: 'MCCCCCCC');
+      } else {
+        log('YYYY');
+      }
+    });
+
+    OneSignal.shared.setNotificationWillShowInForegroundHandler(
+        (OSNotificationReceivedEvent event) {
+      print('FOREGROUND HANDLER CALLED WITH: ${event}');
+
+      /// Display Notification, send null to not display
+      event.complete(null);
+
+      this.setState(() {
+        var _debugLabelString =
+            "Notification: \n${event.notification.additionalData!['notitype']}";
+        log(_debugLabelString);
+      });
+      if (event.notification.additionalData!['notitype'] == 'mission') {
+        Get.defaultDialog(title: 'mcid');
+      }
+    });
+    final status = OneSignal.shared.getDeviceState().then((value) {
+      if (value != null) {
+        _externalUserId = value.userId!;
+        log('oneID ' + _externalUserId);
+      } else {
+        log('NO');
+      }
+    });
+  }
+
+  void _online() async {
+    OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+      log("Accepted permission: $accepted}");
     });
   }
 
@@ -119,7 +148,7 @@ class _LoginState extends State<Login> {
                   //    "Login",
                   //  ),
                   Card(
-                    margin: EdgeInsets.fromLTRB(32, 100, 32, 32),
+                    margin: EdgeInsets.fromLTRB(32, 100, 32, 50),
                     color: Colors.white,
                     child: Column(
                       children: [
@@ -207,13 +236,14 @@ class _LoginState extends State<Login> {
                               ),
                               onPressed: () async {
                                 // เปลี่ยนสถานะเป็นกำลังล็อกอิน
-                                if (McID != '') {
-                                  final startIndex = McID.indexOf(start);
-                                  final endIndex = McID.indexOf(end, startIndex + start.length);
-                                  var splitT = McID.substring(startIndex + start.length, endIndex);
-                                  log('sp' + splitT.toString());
-                                  idMc = int.parse(splitT);
-                                }
+                                // if (McID != '') {
+                                //   final startIndex = McID.indexOf(start);
+                                //   final endIndex = McID.indexOf(end, startIndex + start.length);
+                                //   var splitT = McID.substring(startIndex + start.length, endIndex);
+                                //   log('sp' + splitT.toString());
+                                //   idMc = int.parse(splitT);
+                                // }
+                                _online();
                                 if (_externalUserId.isEmpty) {
                                   Get.defaultDialog(title: 'ไม่สามารถlogin');
                                   return;
@@ -335,14 +365,6 @@ class _LoginState extends State<Login> {
                             icon: FaIcon(FontAwesomeIcons.facebook),
                           ),
                         ),
-                        SizedBox(
-                          width: 240,
-                          child: ElevatedButton.icon(
-                            onPressed: () {},
-                            label: const Text('Sign up Facebook'),
-                            icon: FaIcon(FontAwesomeIcons.facebook),
-                          ),
-                        )
                       ],
                     ),
                   ),

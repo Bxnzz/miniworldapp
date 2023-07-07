@@ -52,7 +52,7 @@ dependencies:
   flutterfire_cli: ^0.2.7
   firebase_core: ^2.4.1
   
-  firebase_storage: ^11.0.10
+  firebase_storage: ^11.2.4
   file_picker: ^5.0.1
   appinio_video_player: ^1.2.0
   onesignal_flutter: ^3.5.0

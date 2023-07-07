@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+
 import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:circular_menu/circular_menu.dart';
 import 'package:dio/dio.dart';
@@ -205,7 +206,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
       var missionComp = await missionCompService.insertMissionComps(mdto);
       missionComp.data;
       mcID = missionComp.data.mcId.toString();
-      mc = {'mcid':'s${mcID}e'};
+      mc = {'notitype':'mission','mcid':'${mcID}'};
       log('img ${missionComp.data.misId}');
     } else {
       //update video
@@ -223,7 +224,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
       var missionComp = await missionCompService.insertMissionComps(mdto);
       mcID = missionComp.data.mcId.toString();
 
-      mc = {'mcid':'s'+'${mcID}'+'e'};
+     mc = {'notitype':'mission','mcid':'${mcID}'};
       log('mcc'+ mc.toString() );
       log('one ' + onesingnalId);
     }
@@ -236,6 +237,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
         additionalData: mc,
         playerIds: [
           onesingnalId,
+        
           //'9556bafc-c68e-4ef2-a469-2a4b61d09168',
         ],
         content: 'ส่งจากทีม: $teamName',
@@ -362,7 +364,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.orangeAccent,
                                 shape: CircleBorder(), //<-- SEE HERE
-                                padding: EdgeInsets.all(20),
+                                padding: EdgeInsets.all(15),
                               ),
                               onPressed: () {
                                 selectFile();

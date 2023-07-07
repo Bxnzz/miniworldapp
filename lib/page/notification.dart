@@ -17,10 +17,13 @@ class _NontificationPageState extends State<NontificationPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
+   // OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
   }
 
   void _handleSendNotification() async {
+   OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
+    OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");
+
     var deviceState = await OneSignal.shared.getDeviceState();
 
     if (deviceState == null || deviceState.userId == null) return;
