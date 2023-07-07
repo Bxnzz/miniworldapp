@@ -27,12 +27,12 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
- late RaceResult userResult;
+  late RaceResult userResult;
   List<Login> logins = [];
   List<LoginDto> loginDTOs = [];
   late Future<void> loadDataMethod;
   late LoginService loginService;
-   late UserService userService;
+  late UserService userService;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -47,8 +47,7 @@ class _LoginState extends State<Login> {
     // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วยR
     loginService =
         LoginService(Dio(), baseUrl: context.read<AppData>().baseurl);
-    userService =
-        UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    userService = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
     // 2.2 async method
     //  loadDataMethod = addData(logins);
     WidgetsFlutterBinding.ensureInitialized();
@@ -58,13 +57,12 @@ class _LoginState extends State<Login> {
       log("Accepted permission: $accepted}");
     });
     final status = OneSignal.shared.getDeviceState().then((value) {
-      if(value != null){
+      if (value != null) {
         _externalUserId = value.userId!;
-         log('oneID '+_externalUserId);
-      }else{
+        log('oneID ' + _externalUserId);
+      } else {
         log('NO');
       }
-      
     });
   }
 
@@ -192,17 +190,17 @@ class _LoginState extends State<Login> {
                         SizedBox(
                           width: 240,
                           child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
+                              style: ElevatedButton.styleFrom(
                                 backgroundColor: Get.theme.colorScheme.primary,
                               ),
                               onPressed: () async {
                                 // เปลี่ยนสถานะเป็นกำลังล็อกอิน
-                              if(_externalUserId.isEmpty){
-                                 Get.defaultDialog(title: 'ไม่สามารถlogin');
-                                 return;
-                              }else{
-                               //  Get.defaultDialog(title: ''); 
-                              }
+                                // if(_externalUserId.isEmpty){
+                                //    Get.defaultDialog(title: 'ไม่สามารถlogin');
+                                //    return;
+                                // }else{
+                                //  //  Get.defaultDialog(title: '');
+                                // }
                                 setState(() {
                                   _authenticatingStatus =
                                       !_authenticatingStatus;
@@ -216,28 +214,27 @@ class _LoginState extends State<Login> {
                                   LoginDto dto = LoginDto(
                                       email: email.text,
                                       password: password.text);
-                                  
+
                                   //log(jsonEncode(dto));
 
                                   var login = await loginService.loginser(dto);
-                                  
-                                 
+
                                   UserDto userDto = UserDto(
-                                    userName: login.data.userName ,
-                                  userDiscription: login.data.userDiscription,
-                                  userFullname: login.data.userFullname,
-                                  userImage: login.data.userImage,
-                                  onesingnalId: _externalUserId,
-                                  userMail: login.data.userMail,
+                                    userName: login.data.userName,
+                                    userDiscription: login.data.userDiscription,
+                                    userFullname: login.data.userFullname,
+                                    userImage: login.data.userImage,
+                                    onesingnalId: _externalUserId,
+                                    userMail: login.data.userMail,
                                   );
-                                var updateOnesignal = await userService.updateUsers(userDto, login.data.userId.toString());
-                               // log(jsonEncode(updateOnesignal));
-                                 userResult = updateOnesignal.data;
-                                //  log(userResult.toString());
-                                    
+                                  var updateOnesignal =
+                                      await userService.updateUsers(userDto,
+                                          login.data.userId.toString());
+                                  // log(jsonEncode(updateOnesignal));
+                                  userResult = updateOnesignal.data;
+                                  //  log(userResult.toString());
 
                                   if (login.data.userId != 0) {
-                                  
                                     // ScaffoldMessenger.of(context).showSnackBar(
                                     //   const SnackBar(
                                     //       content: Text('Login Successful')),
@@ -278,9 +275,12 @@ class _LoginState extends State<Login> {
                                   }
                                 }
                               },
-                              child:  Text('เข้าสู่ระบบ',style: Get.textTheme.bodyLarge!.copyWith(
-                                      color: Get.theme.colorScheme.onPrimary,
-                                      fontWeight: FontWeight.bold),)),
+                              child: Text(
+                                'เข้าสู่ระบบ',
+                                style: Get.textTheme.bodyLarge!.copyWith(
+                                    color: Get.theme.colorScheme.onPrimary,
+                                    fontWeight: FontWeight.bold),
+                              )),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
