@@ -15,6 +15,7 @@ import 'package:miniworldapp/page/General/home_join_detail.dart';
 import 'package:miniworldapp/page/Player/player_race_start_menu.dart';
 import 'package:miniworldapp/page/Player/player_race_start_mission.dart';
 import 'package:miniworldapp/service/mission.dart';
+import 'package:miniworldapp/widget/loadData.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/DTO/missionCompDTO.dart';
@@ -151,6 +152,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
   }
 
   Future<void> LoadData() async {
+    startLoading(context);
     try {
       var a = await missionCompService.missionCompByTeamId(teamID: teamID);
 
@@ -175,6 +177,8 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
       log("lastmisComp" + lastmisComp.toString());
     } catch (err) {
       log('Error:$err');
+    } finally {
+      stopLoading();
     }
   }
 
@@ -238,15 +242,16 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                 Column(children: [
                   Text('แผนที่'),
                   GMap(context),
+                  lastmisComp == false
+                      ? misType == '3'
+                          //mission type = 3
+                          ? btnMisType3(context)
+                          //mission type 1
+                          : btnMisType1_2(context)
+                      : Container()
                 ]),
-                lastmisComp == false
-                    ? Center(
-                        child: misType == '3'
-                            //mission type = 3
-                            ? btnMisType3(context)
-                            //mission type 1
-                            : btnMisType1_2(context))
-                    : Positioned(
+                lastmisComp == true
+                    ? Positioned(
                         top: (Get.height / 2) - 125,
                         left: 20,
                         right: 20,
@@ -254,10 +259,11 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                           title: Text("ยินดีด้วย !!!"),
                           content: Text("ทีมคุณผ่านภารกิจทั้งหมดแล้ว"),
                         ))
+                    : Container()
               ],
             );
           } else {
-            return CircularProgressIndicator();
+            return Container();
           }
         },
       ),
@@ -390,6 +396,11 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
+                            setState(() {
+                              dis = Geolocator.distanceBetween(
+                                  latDevice, lngDevice, lat, lng);
+                              loadDataMethod = LoadData();
+                            });
                             Navigator.pop(context);
                           },
                           child: const Text('OK'),

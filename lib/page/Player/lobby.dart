@@ -50,7 +50,7 @@ class _LobbyState extends State<Lobby> {
   late int idUser;
   late int idTeam;
   int idRace = 0;
-  late int idAttend;
+  int idAttend = 0;
   late int userCreate;
   var result;
   late int status = 1;
@@ -239,6 +239,7 @@ class _LobbyState extends State<Lobby> {
                       children: [
                         attends.isEmpty
                             ? Text("ยังไม่มีทีมเข้าร่วม")
+                            //Name team (Host)
                             : Text(e.values.first.first.team.teamName),
                         e.values.first.first.status == 2
                             ? Padding(
@@ -282,10 +283,10 @@ class _LobbyState extends State<Lobby> {
 
                   log("message");
                   //loadDataMethod = loadData();
-
-                  context.read<AppData>().status = status;
-                  // status = 2;
-                  loadDataMethod = loadData();
+                  setState(() {
+                    loadDataMethod = loadData();
+                    context.read<AppData>().status = status;
+                  });
                 },
                 style: ElevatedButton.styleFrom(primary: Colors.green),
                 child: const Text(
@@ -303,9 +304,10 @@ class _LobbyState extends State<Lobby> {
                   var b = await attendService.attendByAtID(atDto, idAttend);
 
                   //loadDataMethod = loadData();
-
-                  loadDataMethod = loadData();
-                  context.read<AppData>().status = status;
+                  setState(() {
+                    loadDataMethod = loadData();
+                    context.read<AppData>().status = status;
+                  });
                 },
                 style: ElevatedButton.styleFrom(primary: Colors.red),
                 child: const Text(
@@ -326,6 +328,7 @@ class _LobbyState extends State<Lobby> {
       status = a.data.first.status;
       userCreate = a.data.first.team.race.userId;
       raceName = attends.first.team.race.raceName;
+
       log('userCreate' + userCreate.toString());
 
       log(attendShow.toList().toString());
