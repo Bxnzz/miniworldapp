@@ -34,8 +34,8 @@ class Notpass {
 }
 
 class CheckMisNoti extends StatefulWidget {
-  const CheckMisNoti({super.key});
-
+  CheckMisNoti({super.key, required this.IDmc});
+  late int IDmc;
   @override
   State<CheckMisNoti> createState() => _CheckMisNotiState();
 }
@@ -47,7 +47,7 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
   late List<misComp.MissionComplete> missionComp;
   late List<AttendRace> attend;
   late List<Mission> mission;
-  late int IDmc;
+
   late int CompmissionId;
   String dateTime = '';
   int idrace = 0;
@@ -60,6 +60,7 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
   String mcName = '';
   String mcDiscrip = '';
   String playerID = '';
+  List<String> playerIds = [];
   String hostName = '';
 
   int _counter = 0;
@@ -69,6 +70,7 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
     Notpass(masseage: 'กรุณาถ่ายรูปใหม่'),
     Notpass(masseage: 'กรุณาส่งวิดิโอใหม่'),
     Notpass(masseage: 'ภาพไม่ชัดเจน'),
+    Notpass(masseage: 'อื่น...')
   ];
   int _selected = 0;
   void _incrementCounter() {
@@ -83,6 +85,7 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
 
   String mcID = '';
   Map<String, dynamic> mc = {};
+  Map<String, dynamic> masseageMission = {};
 
   PlatformFile? pickedFile;
 
@@ -128,9 +131,10 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
   void initState() {
     super.initState();
     OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
-    IDmc = context.read<AppData>().mcID;
+    // IDmc = context.read<AppData>().mcID;
     idrace = context.read<AppData>().idrace;
-    log('id' + IDmc.toString());
+
+    //  log('id' + IDmc.toString());
     missionCompService =
         MissionCompService(Dio(), baseUrl: context.read<AppData>().baseurl);
     missionService =
@@ -143,7 +147,8 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
   Future<void> loadData() async {
     startLoading(context);
     try {
-      var a = await missionCompService.missionCompBymcId(mcID: IDmc);
+      // log('idddd'+IDmc.toString());
+      var a = await missionCompService.missionCompBymcId(mcID: widget.IDmc);
       //var m = await missionService.missionAll();
       var mis = await missionService.missionByraceID(raceID: idrace);
 
@@ -164,8 +169,11 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
 
       var at = await attendService.attendByTeamID(teamID: teamID);
       attend = at.data;
-      playerID = at.data.first.user.onesingnalId;
-      log('att ' + playerID);
+      playerIds.clear() ;
+      for (var element in at.data) {
+        playerIds.add(element.user.onesingnalId);
+      }
+      log('att ' + playerIds.toString());
 
       // onesingnalId = mis.data.first.race.user.onesingnalId;
       // misName = a.data.first.mission.misName;
@@ -185,7 +193,7 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
       );
 
       log('type ' + type);
-      log(IDmc.toString());
+      log(widget.IDmc.toString());
       log('t' + mcName);
       stopLoading();
     } catch (err) {
@@ -193,20 +201,25 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
     }
   }
 
-  void _handleSendNotification() async {
-    var deviceState = await OneSignal.shared.getDeviceState();
+  void _CheckMisPass() async {
+    //var deviceState = await OneSignal.shared.getDeviceState();
 
-    if (deviceState == null || deviceState.userId == null) return;
+    MissionCompStatus missionComDto = MissionCompStatus(
+        mcMasseage: 'ผ่าน', mcStatus: 1, misId: misID, teamId: teamID);
+    //log(lats);
+    //print(double.parse('lat'+lats));
+    mc = {'notitype':'checkMis','mcid':mcID};
+    var missionComp = await missionCompService.updateStatusMisCom(
+        missionComDto, widget.IDmc.toString());
 
-    var playerId = deviceState.userId!;
+    // if (deviceState == null || deviceState.userId == null) return;
+
+    // var playerId = deviceState.userId!;
 
     var notification1 = OSCreateNotification(
         //playerID
         additionalData: mc,
-        playerIds: [
-          playerID,
-          //'9556bafc-c68e-4ef2-a469-2a4b61d09168',
-        ],
+        playerIds: playerIds,
         content: 'ส่งจากผู้สร้างการแข่งขัน: $hostName',
         heading: "หลักฐานภารกิจ: ผ่าน",
         //  iosAttachments: {"id1",urlImage},
@@ -222,8 +235,6 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
   GlobalKey<CircularMenuState> key = GlobalKey<CircularMenuState>();
   @override
   Widget build(BuildContext context) {
-    OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");
-
     final now = DateTime.now();
     dateTime = '${now.toIso8601String()}Z';
     return Scaffold(
@@ -375,19 +386,8 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
                                     backgroundColor: Colors.green,
                                   ),
                                   onPressed: () async {
-                                    _handleSendNotification();
+                                    _CheckMisPass();
                                     log(playerID.toString());
-                                    MissionCompStatus missionComDto =
-                                        MissionCompStatus(
-                                            mcMasseage: 'ผ่าน',
-                                            mcStatus: 1,
-                                            misId: misID,
-                                            teamId: teamID);
-                                    //log(lats);
-                                    //print(double.parse('lat'+lats));
-                                    var missionComp = await missionCompService
-                                        .updateStatusMisCom(
-                                            missionComDto, IDmc.toString());
 
                                     // if (pickedFile == null) {
                                     //   Get.defaultDialog(
@@ -421,80 +421,98 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
                                             actions: <Widget>[
                                               ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Get.theme
-                                                      .colorScheme.error,
-                                                ),
-                                                onPressed: () => Navigator.pop(
-                                                    context, 'ยกเลิก'),
-                                                child: const Text('ยกเลิก'),
-                                              ),
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
                                                   backgroundColor: Colors.green,
                                                 ),
                                                 onPressed: () => Navigator.pop(
                                                     context, 'ส่ง'),
-                                                child: const Text('ส่ง'),
+                                                child: Text('ส่ง',
+                                                    style: TextStyle(
+                                                        color: Get
+                                                            .theme
+                                                            .colorScheme
+                                                            .onPrimary)),
+                                              ),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Get
+                                                      .theme.colorScheme.error,
+                                                ),
+                                                onPressed: () => Navigator.pop(
+                                                  context,
+                                                  'ยกเลิก',
+                                                ),
+                                                child: Text('ยกเลิก',
+                                                    style: TextStyle(
+                                                        color: Get
+                                                            .theme
+                                                            .colorScheme
+                                                            .onPrimary)),
                                               ),
                                             ],
                                             content: SingleChildScrollView(
-                                              child: Container(
-                                                width: double.maxFinite,
-                                                child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    Divider(),
-                                                    ConstrainedBox(
-                                                      constraints:
-                                                          BoxConstraints(
-                                                        maxHeight:
-                                                            MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .height *
-                                                                0.4,
-                                                      ),
-                                                      child: ListView.builder(
-                                                          shrinkWrap: true,
-                                                          itemCount:
-                                                              message.length,
-                                                          itemBuilder:
-                                                              (BuildContext
-                                                                      context,
-                                                                  int index) {
-                                                            return RadioListTile(
-                                                                title: Text(message[
-                                                                        index]
-                                                                    .masseage),
-                                                                value: index,
-                                                                groupValue:
-                                                                    _selected,
-                                                                onChanged:
-                                                                    (value) {
-                                                                  setState(() {
-                                                                    _selected =
-                                                                        index;
+                                              child: StatefulBuilder(builder:
+                                                  (context, setdialog) {
+                                                return Container(
+                                                  width: double.maxFinite,
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      Divider(),
+                                                      ConstrainedBox(
+                                                        constraints:
+                                                            BoxConstraints(
+                                                          maxHeight:
+                                                              MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .height *
+                                                                  0.4,
+                                                        ),
+                                                        child: ListView.builder(
+                                                            shrinkWrap: true,
+                                                            itemCount:
+                                                                message.length,
+                                                            itemBuilder:
+                                                                (BuildContext
+                                                                        context,
+                                                                    int index) {
+                                                              return RadioListTile(
+                                                                  title: Text(message[
+                                                                          index]
+                                                                      .masseage),
+                                                                  value: index,
+                                                                  groupValue:
+                                                                      _selected,
+                                                                  onChanged:
+                                                                      (value) {
+                                                                    setdialog(
+                                                                        () {
+                                                                      _selected =
+                                                                          index;
+                                                                      log(_selected
+                                                                          .toString());
+                                                                    });
                                                                   });
-                                                                });
-                                                          }),
-                                                    ),
-                                                    Divider(),
-                                                    TextField(
-                                                      autofocus: false,
-                                                      maxLines: 1,
-                                                      style: TextStyle(
-                                                          fontSize: 18),
-                                                      decoration:
-                                                          new InputDecoration(
-                                                        border:
-                                                            InputBorder.none,
-                                                        hintText: "อื่นๆ....",
+                                                            }),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
+                                                      Divider(),
+                                                      TextField(
+                                                        autofocus: false,
+                                                        maxLines: 1,
+                                                        style: TextStyle(
+                                                            fontSize: 18),
+                                                        decoration:
+                                                            new InputDecoration(
+                                                          border:
+                                                              InputBorder.none,
+                                                          hintText: "อื่นๆ....",
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }),
                                             ),
                                           )),
                                   child: Text('ไม่ผ่าน',

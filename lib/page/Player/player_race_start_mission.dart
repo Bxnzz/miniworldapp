@@ -206,7 +206,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
       var missionComp = await missionCompService.insertMissionComps(mdto);
       missionComp.data;
       mcID = missionComp.data.mcId.toString();
-      mc = {'notitype':'mission','mcid':'${mcID}'};
+      mc = {'notitype':'mission','mcid':mcID,'mission':misName};
       log('img ${missionComp.data.misId}');
     } else {
       //update video
@@ -224,9 +224,9 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
       var missionComp = await missionCompService.insertMissionComps(mdto);
       mcID = missionComp.data.mcId.toString();
 
-     mc = {'notitype':'mission','mcid':'${mcID}'};
-      log('mcc'+ mc.toString() );
-      log('one ' + onesingnalId);
+     mc = {'notitype':'mission','mcid':mcID,'mission':misName};
+      log('mcc$mc' );
+      log('one $onesingnalId');
     }
     if (deviceState == null || deviceState.userId == null) return;
 
