@@ -6,8 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';
+import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/Player/lobby.dart';
 import 'package:miniworldapp/page/Player/player_race_start_menu.dart';
 import 'package:miniworldapp/service/attend.dart';
@@ -81,42 +84,47 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
     size = MediaQuery.of(context).size;
     height = size.height;
     width = size.width;
-    return Scaffold(
-      body: FutureBuilder(
-        future: loadDataMethod,
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return Stack(
-              children: [
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  child: SizedBox(
-                    width: double.maxFinite,
-                    height: 250,
-                    child: Image.network(
-                      UrlImg,
-                      fit: BoxFit.cover,
+    return WillPopScope(
+      onWillPop: () async {
+        Get.to(() => const HomeAll());
+        return true;
+      },
+      child: Scaffold(
+        body: FutureBuilder(
+          future: loadDataMethod,
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return Stack(
+                children: [
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    child: SizedBox(
+                      width: double.maxFinite,
+                      height: 250,
+                      child: Image.network(
+                        UrlImg,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-                Positioned(
-                  top: 15,
-                  left: 10,
-                  right: 5,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          icon: FaIcon(
-                            FontAwesomeIcons.circleChevronLeft,
-                            color: Colors.yellow,
-                            size: 35,
+                  Positioned(
+                    top: 15,
+                    left: 10,
+                    right: 5,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              Get.to(() => HomeAll());
+                            },
+                            icon: FaIcon(
+                              FontAwesomeIcons.circleChevronLeft,
+                              color: Colors.yellow,
+                              size: 35,
+                            ),
                           ),
-                        ),
 
                         // )
                       ]),
@@ -336,6 +344,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
             return Container();
           }
         },
+      ),
       ),
     );
   }

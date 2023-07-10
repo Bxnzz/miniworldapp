@@ -138,194 +138,162 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: FutureBuilder(
-            future: _online(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
-                return Container();
-              }
-              return SingleChildScrollView(
-                child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                        Colors.purpleAccent,
-                        Colors.blue,
-                      ])),
-                  child: Form(
-                    key: _formKey,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: Stack(
-                          alignment: AlignmentDirectional.topCenter,
-                          clipBehavior: Clip.none,
-                          children: [
-                            //  const Padding(
-                            //    padding: EdgeInsets.only(top: 30),
-                            //    child: FlutterLogo(
-                            //      size: 50,
-                            //    ),
-                            //  ),
-                            //  const Text(
-                            //    "Login",
-                            //  ),
-                            Card(
-                              margin: EdgeInsets.fromLTRB(32, 100, 32, 50),
-                              color: Colors.white,
-                              child: Column(
-                                children: [
-                                  const SizedBox(
-                                    height: 30,
+        body: SingleChildScrollView(
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+              Colors.purpleAccent,
+              Colors.blue,
+            ])),
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Stack(
+                alignment: AlignmentDirectional.topCenter,
+                clipBehavior: Clip.none,
+                children: [
+                  //  const Padding(
+                  //    padding: EdgeInsets.only(top: 30),
+                  //    child: FlutterLogo(
+                  //      size: 50,
+                  //    ),
+                  //  ),
+                  //  const Text(
+                  //    "Login",
+                  //  ),
+                  Card(
+                    margin: EdgeInsets.fromLTRB(32, 100, 32, 32),
+                    color: Colors.white,
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        const Text(
+                          "สวัสดี!",
+                          style: TextStyle(
+                              fontSize: 28, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text(
+                          "กรุณาเข้าสู่ระบบด้วยบัญชีของท่าน",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 15,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            width: 240,
+                            child: TextFormField(
+                                decoration: const InputDecoration(
+                                  hintText: 'กรุณาใส่อีเมล...',
+                                  label: Text('อีเมล'),
+                                  //  prefixIcon: FaIcon(FontAwesomeIcons.envelope)
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'กรุณากรอกอีเมล';
+                                  }
+                                  return null;
+                                },
+                                controller: email),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            width: 240,
+                            height: 40,
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'กรุณาใส่รหัสผ่าน',
+                                label: Text('รหัสผ่าน'),
+                                suffixIcon: IconButton(
+                                  // padding: EdgeInsets.all(0),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isHidden =
+                                          !_isHidden; // เมื่อกดก็เปลี่ยนค่าตรงกันข้าม
+                                    });
+                                  },
+                                  icon: Icon(
+                                    _isHidden // เงื่อนไขการสลับ icon
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                    size: 16,
                                   ),
-                                  const Text(
-                                    "สวัสดี!",
-                                    style: TextStyle(
-                                        fontSize: 28,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  const Text(
-                                    "กรุณาเข้าสู่ระบบด้วยบัญชีของท่าน",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 30,
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: SizedBox(
-                                      width: 240,
-                                      child: TextFormField(
-                                          decoration: const InputDecoration(
-                                            hintText: 'กรุณาใส่อีเมล...',
-                                            label: Text('อีเมล'),
-                                            //  prefixIcon: FaIcon(FontAwesomeIcons.envelope)
-                                          ),
-                                          validator: (value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return 'กรุณากรอกอีเมล';
-                                            }
-                                            return null;
-                                          },
-                                          controller: email),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SizedBox(
-                                      width: 240,
-                                      height: 40,
-                                      child: TextFormField(
-                                        decoration: InputDecoration(
-                                          hintText: 'กรุณาใส่รหัสผ่าน',
-                                          label: Text('รหัสผ่าน'),
-                                          suffixIcon: IconButton(
-                                            // padding: EdgeInsets.all(0),
-                                            onPressed: () {
-                                              setState(() {
-                                                _isHidden =
-                                                    !_isHidden; // เมื่อกดก็เปลี่ยนค่าตรงกันข้าม
-                                              });
-                                            },
-                                            icon: Icon(
-                                              _isHidden // เงื่อนไขการสลับ icon
-                                                  ? Icons.visibility_off
-                                                  : Icons.visibility,
-                                              size: 16,
-                                            ),
-                                          ),
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'กรุณากรอกรหัสผ่าน';
-                                          }
-                                          return null;
-                                        },
-                                        controller: password,
-                                        obscureText: _isHidden,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 240,
-                                    child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              Get.theme.colorScheme.primary,
-                                        ),
-                                        onPressed: () async {
-                                          // เปลี่ยนสถานะเป็นกำลังล็อกอิน
-                                          // if (McID != '') {
-                                          //   final startIndex = McID.indexOf(start);
-                                          //   final endIndex = McID.indexOf(end, startIndex + start.length);
-                                          //   var splitT = McID.substring(startIndex + start.length, endIndex);
-                                          //   log('sp' + splitT.toString());
-                                          //   idMc = int.parse(splitT);
-                                          // }
-                                          _online();
-                                          if (_externalUserId.isEmpty) {
-                                            Get.defaultDialog(
-                                                title: 'ไม่สามารถlogin');
-                                            return;
-                                          } else {
-                                            //  Get.defaultDialog(title: '');
-                                          }
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'กรุณากรอกรหัสผ่าน';
+                                }
+                                return null;
+                              },
+                              controller: password,
+                              obscureText: _isHidden,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 240,
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                // เปลี่ยนสถานะเป็นกำลังล็อกอิน
+                              
+                                setState(() {
+                                  _authenticatingStatus =
+                                      !_authenticatingStatus;
+                                });
 
-                                          setState(() {
-                                            _authenticatingStatus =
-                                                !_authenticatingStatus;
-                                          });
+                                // อ้างอิงฟอร์มที่กำลังใช้งาน ตรวจสอบความถูกต้องข้อมูลในฟอร์ม
+                                if (_formKey.currentState!.validate()) {
+                                  //หากผ่าน
+                                  FocusScope.of(context)
+                                      .unfocus(); // ยกเลิดโฟกัส ให้แป้นพิมพ์ซ่อนไป
+                                  LoginDto dto = LoginDto(
+                                      email: email.text,
+                                      password: password.text);
+                                  
+                                  //log(jsonEncode(dto));
 
-                                          // อ้างอิงฟอร์มที่กำลังใช้งาน ตรวจสอบความถูกต้องข้อมูลในฟอร์ม
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            //หากผ่าน
-                                            FocusScope.of(context)
-                                                .unfocus(); // ยกเลิดโฟกัส ให้แป้นพิมพ์ซ่อนไป
-                                            LoginDto dto = LoginDto(
-                                                email: email.text,
-                                                password: password.text);
+                                  var login = await loginService.loginser(dto);
+                                  
+                                 
+                                  UserDto userDto = UserDto(
+                                    userName: login.data.userName ,
+                                  userDiscription: login.data.userDiscription,
+                                  userFullname: login.data.userFullname,
+                                  userImage: login.data.userImage,
+                                  onesingnalId: _externalUserId,
+                                  userMail: login.data.userMail,
+                                  );
+                                var updateOnesignal = await userService.updateUsers(userDto, login.data.userId.toString());
+                               // log(jsonEncode(updateOnesignal));
+                                 userResult = updateOnesignal.data;
+                                //  log(userResult.toString());
+                                    
 
-                                            //log(jsonEncode(dto));
-
-                                            var login = await loginService
-                                                .loginser(dto);
-
-                                            if (login.data.userId != 0) {
-                                              UserDto userDto = UserDto(
-                                                userName: login.data.userName,
-                                                userDiscription:
-                                                    login.data.userDiscription,
-                                                userFullname:
-                                                    login.data.userFullname,
-                                                userImage: login.data.userImage,
-                                                onesingnalId: _externalUserId,
-                                                userMail: login.data.userMail,
-                                              );
-                                              var updateOnesignal =
-                                                  await userService.updateUsers(
-                                                      userDto,
-                                                      login.data.userId
-                                                          .toString());
-                                              // log(jsonEncode(updateOnesignal));
-                                              userResult = updateOnesignal.data;
-                                              //  log(userResult.toString());
-
-                                              // ScaffoldMessenger.of(context).showSnackBar(
-                                              //   const SnackBar(
-                                              //       content: Text('Login Successful')),
-                                              // );
+                                  if (login.data.userId != 0) {
+                                  
+                                    // ScaffoldMessenger.of(context).showSnackBar(
+                                    //   const SnackBar(
+                                    //       content: Text('Login Successful')),
+                                    // );
 
                                               setState(() {
                                                 _authenticatingStatus =
@@ -344,92 +312,90 @@ class _LoginState extends State<Login> {
                                               context.read<AppData>().Username =
                                                   login.data.userName;
 
-                                              context.read<AppData>().idUser =
-                                                  login.data.userId;
-
-                                              //context.read<AppData>().mcID = idMc;
-                                              //Get.to(() => HomeAll());
-                                              // Get.to(() => HomeAll());
-                                              return;
-                                            } else {
-                                              log("login fail");
-                                              // ScaffoldMessenger.of(context).showSnackBar(
-                                              //   const SnackBar(
-                                              //       content:
-                                              //           Text('login fail try agin!')),
-                                              // );
-                                              setState(() {
-                                                _authenticatingStatus =
-                                                    !_authenticatingStatus;
-                                              });
-                                              return;
-                                            }
-                                          }
-                                        },
-                                        child: Text(
-                                          'เข้าสู่ระบบ',
-                                          style: Get.textTheme.bodyLarge!
-                                              .copyWith(
-                                                  color: Get.theme.colorScheme
-                                                      .onPrimary,
-                                                  fontWeight: FontWeight.bold),
-                                        )),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text('ไม่มีบัญชีใช่หรือไม่?'),
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const FontRegisterPage(),
-                                                  settings: const RouteSettings(
-                                                      arguments: null),
-                                                ));
-                                          },
-                                          child: const Text('คลิกที่นี้'))
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: const Divider(),
-                                  ),
-                                  SizedBox(
-                                    width: 240,
-                                    child: ElevatedButton.icon(
-                                      onPressed: () {},
-                                      label: const Text('Login Facebook'),
-                                      icon: FaIcon(FontAwesomeIcons.facebook),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            //      Positioned(
-                            //   child: Padding(
-                            //     padding: const EdgeInsets.all(50),
-                            //     child: Container(
-                            //       padding: const EdgeInsets.all(16),
-                            //       decoration: BoxDecoration(
-                            //         color: Colors.white,
-                            //         border:
-                            //             Border.all(color: Colors.purple.shade50, width: 3),
-                            //         shape: BoxShape.circle,
-                            //       ),
-                            //       child: const Text('เข้าสู่ระบบ'),
-                            //     ),
-                            //   ),
-                            // )
+                                    context.read<AppData>().idUser =
+                                        login.data.userId;
+                                    //Get.to(() => HomeAll());
+                                    // Get.to(() => HomeAll());
+                                    return;
+                                  } else {
+                                    log("login fail");
+                                    // ScaffoldMessenger.of(context).showSnackBar(
+                                    //   const SnackBar(
+                                    //       content:
+                                    //           Text('login fail try agin!')),
+                                    // );
+                                    setState(() {
+                                      _authenticatingStatus =
+                                          !_authenticatingStatus;
+                                    });
+                                    return;
+                                  }
+                                }
+                              },
+                              child: const Text('เข้าสู่ระบบ')),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('ไม่มีบัญชีใช่หรือไม่?'),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const FontRegisterPage(),
+                                        settings: const RouteSettings(
+                                            arguments: null),
+                                      ));
+                                },
+                                child: const Text('คลิกที่นี้'))
                           ],
                         ),
-                      ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: const Divider(),
+                        ),
+                        SizedBox(
+                          width: 240,
+                          child: ElevatedButton.icon(
+                            onPressed: () {},
+                            label: const Text('Login Facebook'),
+                            icon: FaIcon(FontAwesomeIcons.facebook),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 240,
+                          child: ElevatedButton.icon(
+                            onPressed: () {},
+                            label: const Text('Sign up Facebook'),
+                            icon: FaIcon(FontAwesomeIcons.facebook),
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                ),
-              );
-            }));
+                  //      Positioned(
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.all(50),
+                  //     child: Container(
+                  //       padding: const EdgeInsets.all(16),
+                  //       decoration: BoxDecoration(
+                  //         color: Colors.white,
+                  //         border:
+                  //             Border.all(color: Colors.purple.shade50, width: 3),
+                  //         shape: BoxShape.circle,
+                  //       ),
+                  //       child: const Text('เข้าสู่ระบบ'),
+                  //     ),
+                  //   ),
+                  // )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    ));
   }
 }

@@ -6,24 +6,30 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:miniworldapp/model/DTO/attendDTO.dart';
 import 'package:miniworldapp/model/DTO/attendStatusDTO.dart';
 import 'package:miniworldapp/model/DTO/raceDTO.dart';
 import 'package:miniworldapp/model/DTO/raceStatusDTO.dart';
 import 'package:miniworldapp/model/attend.dart';
-import 'package:miniworldapp/model/team.dart';
+
 import 'package:miniworldapp/page/Host/host_race_start.dart';
+import 'package:miniworldapp/page/Player/chat_room.dart';
 import 'package:miniworldapp/service/team.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/missionComp.dart';
+
+import '../../model/missionComp.dart';
 import '../../model/race.dart';
 import '../../model/result/attendRaceResult.dart';
+import '../../model/team.dart';
 import '../../service/attend.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
-import '../../model/race.dart';
+import 'chat_lobby.dart';
 
 class Lobby extends StatefulWidget {
   const Lobby({super.key});
@@ -47,11 +53,14 @@ class _LobbyState extends State<Lobby> {
   late int idUser;
   late int idTeam;
   int idRace = 0;
-  late int idAttend;
+  int idAttend = 0;
   late int userCreate;
   var result;
   late int status = 1;
   late int raceStatus;
+
+  String Username = '';
+  String raceName = '';
 
   bool pressAttention = false;
   late AttendStatusDto atDto;
@@ -65,6 +74,7 @@ class _LobbyState extends State<Lobby> {
     idAttend = context.read<AppData>().idAt;
     idTeam = context.read<AppData>().idTeam;
     status = context.read<AppData>().status;
+    Username = context.read<AppData>().Username;
     raceStatus = context.read<AppData>().raceStatus;
     attendService =
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
@@ -124,25 +134,45 @@ class _LobbyState extends State<Lobby> {
                 Padding(
                   padding: const EdgeInsets.only(top: 15, left: 10),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: FaIcon(
+                              FontAwesomeIcons.circleChevronLeft,
+                              color: Colors.yellow,
+                              size: 35,
+                            ),
+                          ),
+                          Text(
+                            "ล็อบบี้",
+                            style: textTheme.displayMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.purple,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
                       IconButton(
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          Get.to(() => ChatRoomPage(
+                                raceID: idRace,
+                                userID: idUser,
+                                userName: Username,
+                                raceName: raceName,
+                              ));
                         },
                         icon: FaIcon(
-                          FontAwesomeIcons.circleChevronLeft,
-                          color: Colors.yellow,
-                          size: 35,
+                          FontAwesomeIcons.solidCommentDots,
+                          color: Colors.pink,
+                          size: 30,
                         ),
                       ),
-                      Text(
-                        "ล็อบบี้",
-                        style: textTheme.displayMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.purple,
-                          fontSize: 20,
-                        ),
-                      )
                     ],
                   ),
                 ),
@@ -212,6 +242,7 @@ class _LobbyState extends State<Lobby> {
                       children: [
                         attends.isEmpty
                             ? Text("ยังไม่มีทีมเข้าร่วม")
+                            //Name team (Host)
                             : Text(e.values.first.first.team.teamName),
                         e.values.first.first.status == 2
                             ? Padding(
@@ -247,16 +278,17 @@ class _LobbyState extends State<Lobby> {
             width: 120,
             child: ElevatedButton(
                 onPressed: () async {
-                  status = 2;
-                  AttendStatusDto atDto = AttendStatusDto(status: status);
-                  debugPrint(attendStatusDtoToJson(atDto));
+                  attendShow = [];
+                  AttendStatusDto atDto = AttendStatusDto(status: 2);
+                  debugPrint("asdfasdfasdf" + attendStatusDtoToJson(atDto));
                   log("id Att ${idAttend}");
                   var b = await attendService.attendByAtID(atDto, idAttend);
-                  attendShow = [];
+
                   log("message");
+                  //loadDataMethod = loadData();
                   setState(() {
-                    context.read<AppData>().status = status;
                     loadDataMethod = loadData();
+                    context.read<AppData>().status = status;
                   });
                 },
                 style: ElevatedButton.styleFrom(primary: Colors.green),
@@ -268,10 +300,13 @@ class _LobbyState extends State<Lobby> {
             width: 120,
             child: ElevatedButton(
                 onPressed: () async {
-                  status = 1;
-                  AttendStatusDto atDto = AttendStatusDto(status: status);
-                  var b = await attendService.attendByAtID(atDto, idAttend);
                   attendShow = [];
+                  AttendStatusDto atDto = AttendStatusDto(status: 1);
+                  debugPrint("asdfasdfasdf" + attendStatusDtoToJson(atDto));
+                  log("id Att ${idAttend}");
+                  var b = await attendService.attendByAtID(atDto, idAttend);
+
+                  //loadDataMethod = loadData();
                   setState(() {
                     loadDataMethod = loadData();
                     context.read<AppData>().status = status;
@@ -291,13 +326,16 @@ class _LobbyState extends State<Lobby> {
       // var r = await raceService.racesByID(userID: idUser);
 
       var a = await attendService.attendByRaceID(raceID: idRace);
-      log("ssdsd" + a.data.first.atId.toString());
+
       attends = a.data;
       status = a.data.first.status;
       userCreate = a.data.first.team.race.userId;
+      raceName = attends.first.team.race.raceName;
+
       log('userCreate' + userCreate.toString());
 
       log(attendShow.toList().toString());
+      log(" sta == ${status}");
     } catch (err) {
       log('Error:$err');
     }

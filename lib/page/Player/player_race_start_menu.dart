@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:miniworldapp/page/General/home_join_detail.dart';
 import 'package:miniworldapp/page/Player/player_race_start_gps.dart';
 import 'package:miniworldapp/page/Player/player_race_start_hint.dart';
 import 'package:miniworldapp/page/Player/player_race_start_mission.dart';
@@ -34,47 +36,53 @@ class _PlayerRaceStartMenuState extends State<PlayerRaceStartMenu> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    return Scaffold(
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 15, left: 10),
-            child: Topbar(context, textTheme),
-          ),
-          Expanded(
-            child: Center(
-              child: _widgetOptions.elementAt(_selectedIndex),
+    return WillPopScope(
+      onWillPop: () async {
+        Get.to(() => const HomeJoinDetail());
+        return true;
+      },
+      child: Scaffold(
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 15, left: 10),
+              child: Topbar(context, textTheme),
             ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: FaIcon(
-              FontAwesomeIcons.listUl,
-              size: 20,
+            Expanded(
+              child: Center(
+                child: _widgetOptions.elementAt(_selectedIndex),
+              ),
             ),
-            label: 'ภารกิจ',
-          ),
-          BottomNavigationBarItem(
-            icon: FaIcon(
-              FontAwesomeIcons.exclamation,
-              size: 20,
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: FaIcon(
+                FontAwesomeIcons.listUl,
+                size: 20,
+              ),
+              label: 'ภารกิจ',
             ),
-            label: 'ค้นหา',
-          ),
-          BottomNavigationBarItem(
-            icon: FaIcon(
-              FontAwesomeIcons.mapLocationDot,
-              size: 20,
+            BottomNavigationBarItem(
+              icon: FaIcon(
+                FontAwesomeIcons.exclamation,
+                size: 20,
+              ),
+              label: 'ค้นหา',
             ),
-            label: 'ตำแหน่ง',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        //selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
+            BottomNavigationBarItem(
+              icon: FaIcon(
+                FontAwesomeIcons.mapLocationDot,
+                size: 20,
+              ),
+              label: 'ตำแหน่ง',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          //selectedItemColor: Colors.amber[800],
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }
@@ -85,7 +93,7 @@ class _PlayerRaceStartMenuState extends State<PlayerRaceStartMenu> {
         IconButton(
           onPressed: () {
             setState(() {
-              Navigator.of(context).pop(context);
+              Get.to(HomeJoinDetail());
             });
           },
           icon: const FaIcon(

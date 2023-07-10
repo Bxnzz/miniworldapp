@@ -56,6 +56,7 @@ class _CeateTeamState extends State<CeateTeam> {
 
   int idUser = 0;
   int idUser2 = 0;
+  late int status;
   final _formKey = GlobalKey<FormState>();
 
   List<User> items = [];
@@ -83,12 +84,14 @@ class _CeateTeamState extends State<CeateTeam> {
     userService.getUserAll().then((value) {
       log("is ${userService}");
     });
-    idrace = context.read<AppData>().idrace;
+
     log("race id is " + idrace.toString());
     // 2.2 async method
-
+    idrace = context.read<AppData>().idrace;
     Username = context.read<AppData>().Username;
     idUser = context.read<AppData>().idUser;
+    status = context.read<AppData>().status;
+
     log("user is " + idUser.toString());
 
     nameMember1.text = Username;
@@ -273,7 +276,9 @@ class _CeateTeamState extends State<CeateTeam> {
     try {
       var a = await userService.getUserAll();
       items = a.data;
-      // debugPrint("asdfasdfasdfasd" + users.toString());
+      // var b=  await attendService.attendByRaceID(raceID: idrace);
+
+      // status = b.data.first.status;
     } catch (err) {
       log('Error:$err');
     }
@@ -329,8 +334,8 @@ class _CeateTeamState extends State<CeateTeam> {
       var team = await teamService.teams(dto);
       log(idUser.toString());
       AttendDto attendDto = AttendDto(
-          lat: 0.0,
-          lng: 0.0,
+          lat: 0.1,
+          lng: 0.1,
           datetime: '2023-02-1',
           userId: idUser,
           teamId: team.data.teamId,
@@ -338,8 +343,8 @@ class _CeateTeamState extends State<CeateTeam> {
 
       var attends = await attendService.attends(attendDto);
       AttendDto attendDto2 = AttendDto(
-          lat: 0.0,
-          lng: 0.0,
+          lat: 0.1,
+          lng: 0.1,
           datetime: '2023-02-1',
           userId: idUser2,
           teamId: team.data.teamId,
@@ -352,12 +357,7 @@ class _CeateTeamState extends State<CeateTeam> {
           const SnackBar(content: Text('team Successful')),
         );
         log("team success");
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const Lobby(),
-              settings: RouteSettings(arguments: null),
-            ));
+        Get.to(() => Lobby());
         return;
       } else {
         log("team fail");

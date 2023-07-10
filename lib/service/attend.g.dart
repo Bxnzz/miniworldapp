@@ -98,34 +98,7 @@ class _AttendService implements AttendService {
   }
 
   @override
-  Future<HttpResponse<List<AttendRace>>> attendByTeamID(
-      {required teamID}) async {
-    const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'teamID': teamID};
-    final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<List<dynamic>>(
-        _setStreamType<HttpResponse<List<AttendRace>>>(Options(
-      method: 'GET',
-      headers: _headers,
-      extra: _extra,
-    )
-            .compose(
-              _dio.options,
-              '/attend/',
-              queryParameters: queryParameters,
-              data: _data,
-            )
-            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    var value = _result.data!
-        .map((dynamic i) => AttendRace.fromJson(i as Map<String, dynamic>))
-        .toList();
-    final httpResponse = HttpResponse(value, _result);
-    return httpResponse;
-  }
-
-  @override
-  Future<HttpResponse<int>> attendByAtID(
+  Future<HttpResponse<AttendStatusDto>> attendByAtID(
     attendStatusDto,
     atID,
   ) async {
@@ -134,8 +107,8 @@ class _AttendService implements AttendService {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(attendStatusDto.toJson());
-    final _result =
-        await _dio.fetch<int>(_setStreamType<HttpResponse<int>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<HttpResponse<AttendStatusDto>>(Options(
       method: 'PUT',
       headers: _headers,
       extra: _extra,
@@ -147,7 +120,7 @@ class _AttendService implements AttendService {
               data: _data,
             )
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = _result.data!;
+    final value = AttendStatusDto.fromJson(_result.data!);
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }
