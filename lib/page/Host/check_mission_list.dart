@@ -2,10 +2,19 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:miniworldapp/model/attend.dart';
+import 'package:miniworldapp/model/result/attendRaceResult.dart';
+import 'package:miniworldapp/model/team.dart';
+import 'package:miniworldapp/service/race.dart';
+import 'package:miniworldapp/service/team.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/DTO/raceStatusDTO.dart';
 import '../../model/mission.dart';
 import '../../model/result/raceResult.dart';
+import '../../service/attend.dart';
 import '../../service/mission.dart';
 import '../../service/provider/appdata.dart';
 import '../../widget/loadData.dart';
@@ -21,16 +30,26 @@ class _CheckMissionState extends State<CheckMission> {
   late RaceResult misRe;
   int idrace = 0;
   List<Mission> missions = [];
+  List<Team> teams= [];
+  List<AttendRace> attends= [];
+   Map<String, dynamic> mc = {};
 
   final seq = <int>[];
   late Future<void> loadDataMethod;
   late RaceResult misResults;
+  late AttendService attendService;
   late MissionService missionService;
+  late TeamService teamService;
+  late RaceService raceService;
+   String raceName = '';
   String type1 = '';
   String type2 = '';
   String type3 = '';
   String mType = '';
   String types = '';
+ int raceStatus = 0;
+ List<int> teamsID = [];
+ List<String> playerIds = [];
 
   bool isLoaded = false;
 
@@ -50,10 +69,16 @@ class _CheckMissionState extends State<CheckMission> {
 
     missionService =
         MissionService(Dio(), baseUrl: context.read<AppData>().baseurl);
-    missionService.missionByraceID(raceID: idrace).then((value) {
-      //    log(value.data.first.misName);
-    });
+    
+     attendService =
+        AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    
+     teamService =
+    TeamService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
+     raceService =
+    RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
+   
     // 2.2 async method
     loadDataMethod = loadData();
   }
@@ -64,6 +89,26 @@ class _CheckMissionState extends State<CheckMission> {
       var a = await missionService.missionByraceID(raceID: idrace);
       missions = a.data;
       mType = a.data.first.misType.toString();
+      raceName = a.data.first.race.raceName;
+
+      var t = await teamService.teambyRaceID(raceID: idrace);
+      teams = t.data;
+      teamsID.clear() ;
+      for (var element in t.data) {
+        teamsID.add(element.teamId);
+      }
+      log('team ' + teamsID.toString());
+      
+      var at = await attendService.attendByRaceID(raceID: idrace);
+      attends = at.data;
+      playerIds.clear() ;
+      for (var element in at.data) {
+        if(element.user.onesingnalId.isNotEmpty){
+        playerIds.add(element.user.onesingnalId);
+        }
+        
+      }
+      log('att ' + playerIds.toString());
 
       isLoaded = true;
     } catch (err) {
@@ -72,6 +117,28 @@ class _CheckMissionState extends State<CheckMission> {
     } finally {
       stopLoading();
     }
+  }
+
+  void _Endgame() async {
+   raceStatus = 3;
+    RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
+    var racestatus = await raceService.updateStatusRaces(racedto, idrace);
+    mc = {'notitype':'endgame','mcid': raceStatus};
+    var notification1 = OSCreateNotification(
+        //playerID
+       additionalData: mc,
+        playerIds: playerIds,
+        content:  raceName,
+        heading: "จบการแข่งขัน",
+        //  iosAttachments: {"id1",urlImage},
+        // bigPicture: imUrlString,
+        buttons: [
+          OSActionButton(text: "ตกลง", id: "id1"),
+          OSActionButton(text: "ยกเลิก", id: "id2")
+        ]);
+    log('player '+playerIds.toString());
+    var response1 = await OneSignal.shared.postNotification(notification1);
+    Get.defaultDialog(title: mc.toString());
   }
 
   @override
@@ -84,6 +151,19 @@ class _CheckMissionState extends State<CheckMission> {
           //  style: TextStyle(color: Colors.white),
         )),
       ),
+      floatingActionButton:  FloatingActionButton.extended(
+        backgroundColor: Colors.pinkAccent,
+       
+        onPressed: () {
+          _Endgame();
+        },
+        label: Text('จบการแข่งขัน',style: Get.textTheme.bodyLarge!.copyWith(
+                              color: Get.theme.colorScheme.onPrimary,
+                              fontWeight: FontWeight.bold),),
+        
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      
       body: FutureBuilder(
           future: loadDataMethod,
           builder: (context, AsyncSnapshot snapshot) {
@@ -98,7 +178,7 @@ class _CheckMissionState extends State<CheckMission> {
                         const EdgeInsets.only(left: 8, right: 8, bottom: 8),
                     child: Card(
                       //  shadowColor: ,
-                      
+
                       clipBehavior: Clip.hardEdge,
 
                       child: InkWell(
@@ -114,29 +194,32 @@ class _CheckMissionState extends State<CheckMission> {
                                   ? const EdgeInsets.symmetric(vertical: 16.0)
                                   : EdgeInsets.zero,
                               child: ListTile(
-                                title: Text(
-                                  element.misName,
-                                  style: textTheme.bodyText2?.copyWith(
-                                    fontSize: 16,
+                                  title: Text(
+                                    element.misName,
+                                    style: textTheme.bodyText2?.copyWith(
+                                      fontSize: 16,
+                                    ),
                                   ),
-                                ),
-                              
-                                leading: SizedBox(
-                                  width: 36,
-                                  height: 36,
-                                  child: Center(
-                                    child: Text(
-                                      //int sortn = mis.misSeq,
-                                      '${missions.indexOf(element) + 1}',
-                                      style: textTheme.bodyLarge?.copyWith(
-                                        color: Colors.purple,
-                                        fontSize: 16,
+                                  leading: SizedBox(
+                                    width: 36,
+                                    height: 36,
+                                    child: Center(
+                                      child: Text(
+                                        //int sortn = mis.misSeq,
+                                        '${missions.indexOf(element) + 1}',
+                                        style: textTheme.bodyLarge?.copyWith(
+                                          color: Colors.purple,
+                                          fontSize: 16,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                trailing: FilledButton(child: Text('ตรวจสอบภารกิจ'),onPressed: (){},)
-                              ),
+                                  trailing: FilledButton(
+                                    child: Text('ตรวจสอบภารกิจ'),
+                                    onPressed: () {
+                                     
+                                    },
+                                  )),
                             ),
                           ],
                         ),
@@ -146,7 +229,7 @@ class _CheckMissionState extends State<CheckMission> {
                 }).toList(),
               );
             } else {
-              return const CircularProgressIndicator();
+              return Container();
             }
           }),
     );

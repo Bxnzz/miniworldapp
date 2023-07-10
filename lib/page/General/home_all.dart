@@ -14,6 +14,7 @@ import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/page/Host/race_create.dart';
 import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/page/Host/start_list_mission.dart';
+import 'package:miniworldapp/page/uploadImage,video.dart';
 
 import 'package:provider/provider.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
@@ -22,6 +23,7 @@ import '../../model/race.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
 import '../../widget/loadData.dart';
+import '../Host/check_mission_Noti.dart';
 import '../Player/createTeam.dart';
 import '../notification.dart';
 import 'home_create.dart';
@@ -88,10 +90,10 @@ class _HomeAllState extends State<HomeAll> {
               backgroundColor: Colors.amber,
               label: 'Noti',
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => NontificationPage()));
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => CheckMisNoti()));
                 setState(() {
                   _text = '"Noti"';
                 });
@@ -357,8 +359,10 @@ class _RaceAllState extends State<RaceAll> {
                   );
                 }).toList(),
               );
-            } else {
-              return const CircularProgressIndicator();
+            }
+             else {
+              return Container();
+              // const CircularProgressIndicator();
             }
           }),
     );

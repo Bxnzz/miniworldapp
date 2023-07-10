@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:miniworldapp/model/DTO/attendStatusDTO.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';
@@ -24,6 +24,10 @@ abstract class AttendService {
   @GET("/attend/")
   Future<HttpResponse<List<AttendRace>>> attendByRaceID(
       {@Query("raceID") required int raceID});
+
+   @GET("/attend/")
+  Future<HttpResponse<List<AttendRace>>> attendByTeamID(
+      {@Query("teamID") required int teamID});
 
   @PUT("/attend/{AtID}")
   //@DioResponseType(ResponseType.plain)

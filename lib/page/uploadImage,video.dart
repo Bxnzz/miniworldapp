@@ -34,7 +34,7 @@ class _UploadPageState extends State<UploadPage> {
 
     final urlDownload = await snapshot.ref.getDownloadURL();
     log('Download Link:$urlDownload');
-    videoPlayerController = VideoPlayerController.network(urlDownload)
+    videoPlayerController = VideoPlayerController.file(File(pickedFile!.path!))
       ..initialize().then((_) {
         log(videoPlayerController.toString());
         _customVideoPlayerController = CustomVideoPlayerController(
@@ -60,6 +60,18 @@ class _UploadPageState extends State<UploadPage> {
       });
     } else {
       isImage = false;
+         videoPlayerController = VideoPlayerController.file(File(pickedFile!.path!))
+      ..initialize().then((_) {
+        log(videoPlayerController.toString());
+        _customVideoPlayerController = CustomVideoPlayerController(
+          context: context,
+          videoPlayerController: videoPlayerController!,
+        );
+        
+        setState(() {
+          
+        });
+       });
     }
   }
 

@@ -326,7 +326,7 @@ class _CeateTeamState extends State<CeateTeam> {
       log(users.toList().toString());
       TeamDto dto =
           TeamDto(raceId: idrace, teamName: nameTeam.text, teamImage: img);
-      var team = await teamService.Teams(dto);
+      var team = await teamService.teams(dto);
       log(idUser.toString());
       AttendDto attendDto = AttendDto(
           lat: 0.0,

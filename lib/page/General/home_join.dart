@@ -13,6 +13,7 @@ import 'package:miniworldapp/page/General/home_join_detail.dart';
 import 'package:miniworldapp/page/Player/lobby.dart';
 import 'package:miniworldapp/service/attend.dart';
 import 'package:miniworldapp/service/race.dart';
+import 'package:miniworldapp/widget/loadData.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/provider/appdata.dart';
@@ -147,7 +148,7 @@ class _Home_joinState extends State<Home_join> {
                 }).toList(),
               );
             } else {
-              return const CircularProgressIndicator();
+              return Container();
             }
           }),
     );
@@ -209,12 +210,15 @@ class _Home_joinState extends State<Home_join> {
   }
 
   Future<void> loadData() async {
+    startLoading(context);
     try {
       // var r = await raceService.racesByID(userID: idUser);
       var a = await attendService.attendByUserID(userID: idUser);
       attends = a.data;
     } catch (err) {
       log('Error:$err');
+    }finally{
+      stopLoading();
     }
   }
 }

@@ -15,6 +15,7 @@ import '../../model/race.dart';
 import '../../model/result/raceResult.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
+import '../Host/check_mission_list.dart';
 import '../Host/detil_mission.dart';
 import '../Host/race_edit.dart';
 import '../Player/createTeam.dart';
@@ -428,50 +429,21 @@ class _DetailHostState extends State<DetailHost> {
                             ),
                           ),
                           Center(
-                              child: races.first.raceStatus == 1
-                                  ? SizedBox(
-                                      width: 200,
-                                      child: ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const Lobby(),
-                                                ));
-                                            context.read<AppData>().idrace =
-                                                idrace;
-                                            context.read<AppData>().idUser =
-                                                idUser;
-                                            context.read<AppData>().idAt =
-                                                idAttend;
-                                            context.read<AppData>().idTeam =
-                                                idTeam;
-                                          },
-                                          child: Text('เข้าล็อบบี้')),
-                                    )
-                                  : SizedBox(
-                                      width: 200,
-                                      child: ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const HostRaceStart(),
-                                                ));
-                                            context.read<AppData>().idrace =
-                                                idrace;
-                                            context.read<AppData>().idUser =
-                                                idUser;
-                                            context.read<AppData>().idAt =
-                                                idAttend;
-                                            context.read<AppData>().idTeam =
-                                                idTeam;
-                                          },
-                                          child:
-                                              Text('การแข่งขันกำลังดำเนินการ')),
-                                    ))
+                            child: SizedBox(
+                              width: 200,
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const ShowMapPage()));
+                                    //              CheckMission()));
+                                    context.read<AppData>().idrace = idrace;
+                                  },
+                                  child: Text('ตำแหน่งผู้เล่น')),
+                            ),
+                          )
                         ]),
                       ))
                 ],

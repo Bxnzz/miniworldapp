@@ -19,7 +19,7 @@ class _TeamService implements TeamService {
   String? baseUrl;
 
   @override
-  Future<HttpResponse<Team>> Teams(TeamDto) async {
+  Future<HttpResponse<Team>> teams(TeamDto) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -44,7 +44,7 @@ class _TeamService implements TeamService {
   }
 
   @override
-  Future<HttpResponse<List<Team>>> TeambyRaceID({required raceID}) async {
+  Future<HttpResponse<List<Team>>> teambyRaceID({required raceID}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'raceID': raceID};
     final _headers = <String, dynamic>{};
