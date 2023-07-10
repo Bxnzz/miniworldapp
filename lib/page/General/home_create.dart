@@ -14,6 +14,7 @@ import 'package:miniworldapp/page/Host/detil_mission.dart';
 import 'package:miniworldapp/page/Host/race_edit.dart';
 
 import 'package:miniworldapp/widget/dialog.dart';
+import 'package:miniworldapp/widget/loadData.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/race.dart';
@@ -272,18 +273,21 @@ class _Home_createState extends State<Home_create> {
                 }).toList(),
               );
             } else {
-              return const CircularProgressIndicator();
+              return Container();
             }
           }),
     );
   }
 
   Future<void> loadData() async {
+    startLoading(context);
     try {
       var a = await raceService.racesByID(userID: idUser);
       race = a.data;
     } catch (err) {
       log('Error:$err');
+    }finally{
+      stopLoading();
     }
   }
 

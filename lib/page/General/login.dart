@@ -8,6 +8,7 @@ import 'package:miniworldapp/model/DTO/userDTO.dart';
 import 'package:miniworldapp/model/result/raceResult.dart';
 
 import 'package:miniworldapp/page/General/home_all.dart';
+import 'package:miniworldapp/page/Player/lobby.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:miniworldapp/service/user.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -76,7 +77,9 @@ class _LoginState extends State<Login> {
         Get.to(() => CheckMisNoti(IDmc: int.parse(additionalData['mcid'])));
       } else if (additionalData['notitype'].toString() == 'checkMis') {
         Get.defaultDialog(title: 'ส่งมาละจ้า');
-      }  else {
+      } else if(additionalData['notitype'].toString() == 'endgame'){
+         Get.defaultDialog(title: 'จบเกมแล้วจ้าา');
+      } else {
         log('YYYY');
       }
     });
@@ -107,6 +110,11 @@ class _LoginState extends State<Login> {
         log('nnnnnnnnnnn');
       }else if(event.notification.additionalData!['notitype'] == 'checkMis'){
          Get.defaultDialog(title: 'ส่งมาละจ้าา');
+      }else if(event.notification.additionalData!['notitype'] == 'endgame'){
+         Get.defaultDialog(title: 'จบเกมแล้วจ้าา').then((value) {
+          Get.to(Lobby());
+         });
+         
       }
     });
     await OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");

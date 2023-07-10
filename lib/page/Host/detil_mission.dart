@@ -232,7 +232,7 @@ class _DetailMissionState extends State<DetailMission> {
               ],
             );
           } else {
-            return const CircularProgressIndicator();
+            return Container();
           }
         },
       ),

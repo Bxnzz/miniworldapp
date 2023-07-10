@@ -153,9 +153,9 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
       var mis = await missionService.missionByraceID(raceID: idrace);
 
       missionComp = a.data;
-      missionComp = a.data;
-
+      
       mission = mis.data;
+      
       urlImage = a.data.first.mcPhoto;
       mcText = a.data.first.mcText;
       urlVideo = a.data.first.mcVideo;
@@ -211,10 +211,6 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
     mc = {'notitype':'checkMis','mcid':mcID};
     var missionComp = await missionCompService.updateStatusMisCom(
         missionComDto, widget.IDmc.toString());
-
-    // if (deviceState == null || deviceState.userId == null) return;
-
-    // var playerId = deviceState.userId!;
 
     var notification1 = OSCreateNotification(
         //playerID

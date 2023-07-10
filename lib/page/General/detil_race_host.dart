@@ -15,6 +15,7 @@ import '../../model/race.dart';
 import '../../model/result/raceResult.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
+import '../Host/check_mission_list.dart';
 import '../Host/detil_mission.dart';
 import '../Host/race_edit.dart';
 import '../Player/createTeam.dart';
@@ -458,7 +459,7 @@ class _DetailHostState extends State<DetailHost> {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const HostRaceStart(),
+                                                      const CheckMission(),
                                                 ));
                                             context.read<AppData>().idrace =
                                                 idrace;

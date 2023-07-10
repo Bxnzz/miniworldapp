@@ -267,7 +267,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
   GlobalKey<CircularMenuState> key = GlobalKey<CircularMenuState>();
   @override
   Widget build(BuildContext context) {
-    OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");
+   
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: FutureBuilder(

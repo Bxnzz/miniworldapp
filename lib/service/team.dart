@@ -12,8 +12,8 @@ abstract class TeamService {
   factory TeamService(Dio dio, {String baseUrl}) = _TeamService;
 
   @POST("/team")
-  Future<HttpResponse<Team>> Teams(@Body() TeamDto TeamDto);
+  Future<HttpResponse<Team>> teams(@Body() TeamDto TeamDto);
   @GET("/team/")
-  Future<HttpResponse<List<Team>>> TeambyRaceID(
+  Future<HttpResponse<List<Team>>> teambyRaceID(
       {@Query("raceID") required int raceID});
 }

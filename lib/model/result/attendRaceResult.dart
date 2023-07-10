@@ -39,6 +39,7 @@ class AttendRace {
   });
 
   factory AttendRace.fromJson(Map<String, dynamic> json) {
+    debugPrint(json.toString());
     return AttendRace(
       atId: json["AtId"],
       lat: json["Lat"],
