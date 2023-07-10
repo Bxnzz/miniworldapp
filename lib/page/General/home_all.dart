@@ -14,6 +14,7 @@ import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/page/Host/race_create.dart';
 import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/page/Host/start_list_mission.dart';
+import 'package:miniworldapp/page/uploadImage,video.dart';
 
 import 'package:provider/provider.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
@@ -91,7 +92,7 @@ class _HomeAllState extends State<HomeAll> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => NontificationPage()));
+                        builder: (context) => UploadPage()));
                 setState(() {
                   _text = '"Noti"';
                 });
@@ -357,8 +358,10 @@ class _RaceAllState extends State<RaceAll> {
                   );
                 }).toList(),
               );
-            } else {
-              return const CircularProgressIndicator();
+            }
+             else {
+              return Container();
+              // const CircularProgressIndicator();
             }
           }),
     );

@@ -5,11 +5,21 @@
 import 'package:meta/meta.dart';
 import 'dart:convert';
 
-List<User> userFromJson(String str) => List<User>.from(json.decode(str).map((x) => User.fromJson(x)));
+User userFromJson(String str) => User.fromJson(json.decode(str));
 
-String userToJson(List<User> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String userToJson(User data) => json.encode(data.toJson());
 
 class User {
+    int userId;
+    String userName;
+    String userMail;
+    String userPassword;
+    String userFullname;
+    String userImage;
+    String userDiscription;
+    String userFacebookId;
+    String onesingnalId;
+
     User({
         required this.userId,
         required this.userName,
@@ -19,16 +29,8 @@ class User {
         required this.userImage,
         required this.userDiscription,
         required this.userFacebookId,
+        required this.onesingnalId,
     });
-
-    int userId;
-    String userName;
-    String userMail;
-    String userPassword;
-    String userFullname;
-    String userImage;
-    String userDiscription;
-    String userFacebookId;
 
     factory User.fromJson(Map<String, dynamic> json) => User(
         userId: json["UserID"],
@@ -39,6 +41,7 @@ class User {
         userImage: json["UserImage"],
         userDiscription: json["UserDiscription"],
         userFacebookId: json["UserFacebookID"],
+        onesingnalId: json["OnesingnalID"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -50,5 +53,6 @@ class User {
         "UserImage": userImage,
         "UserDiscription": userDiscription,
         "UserFacebookID": userFacebookId,
+        "OnesingnalID": onesingnalId,
     };
 }

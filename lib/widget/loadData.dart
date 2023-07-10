@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:http/http.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
 Widget loadingIndicator(BuildContext context) => Container(
@@ -7,18 +10,18 @@ Widget loadingIndicator(BuildContext context) => Container(
           color: Theme.of(context).colorScheme.surface,
           borderRadius: const BorderRadius.all(Radius.circular(8))),
       child: SizedBox(
-        width: 120,
-        height: 100,
+        width: Get.width / 3 + 30,
+        height: Get.height / 4 - 50,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: 40,
-              height: 40,
+              width: 100,
+              height: 100,
               child: LoadingIndicator(
-                indicatorType: Indicator.ballRotateChase,
-                colors: [Theme.of(context).colorScheme.onPrimaryContainer],
-                strokeWidth: 28,
+                indicatorType: Indicator.pacman,
+                colors: [Theme.of(context).colorScheme.onSecondary],
+                strokeWidth: 2.0,
               ),
             ),
             Padding(

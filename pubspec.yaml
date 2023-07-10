@@ -84,6 +84,14 @@ dependencies:
   animations: ^2.0.7
   expandable: ^5.0.1
   quickalert: ^1.0.1
+
+  circular_menu: ^2.0.1
+  flutter_chat_types: ^3.6.0
+  flutter_chat_ui: ^1.6.6
+  shared_preferences: ^2.2.0
+  cloud_firestore: ^4.8.2
+  image_picker: ^1.0.0
+  open_file: ^3.3.2
   
   
 
