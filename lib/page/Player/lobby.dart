@@ -278,17 +278,18 @@ class _LobbyState extends State<Lobby> {
             width: 120,
             child: ElevatedButton(
                 onPressed: () async {
-                  attendShow = [];
-                  AttendStatusDto atDto = AttendStatusDto(status: 2);
+                  status = 2;
+
+                  AttendStatusDto atDto = AttendStatusDto(status: status);
                   debugPrint("asdfasdfasdf" + attendStatusDtoToJson(atDto));
                   log("id Att ${idAttend}");
                   var b = await attendService.attendByAtID(atDto, idAttend);
-
+                  attendShow = [];
                   log("message");
-                  //loadDataMethod = loadData();
+                  loadDataMethod = loadData();
                   setState(() {
-                    loadDataMethod = loadData();
                     context.read<AppData>().status = status;
+                    loadDataMethod = loadData();
                   });
                 },
                 style: ElevatedButton.styleFrom(primary: Colors.green),
@@ -300,13 +301,14 @@ class _LobbyState extends State<Lobby> {
             width: 120,
             child: ElevatedButton(
                 onPressed: () async {
+                  status = 1;
                   attendShow = [];
-                  AttendStatusDto atDto = AttendStatusDto(status: 1);
+                  AttendStatusDto atDto = AttendStatusDto(status: status);
                   debugPrint("asdfasdfasdf" + attendStatusDtoToJson(atDto));
                   log("id Att ${idAttend}");
                   var b = await attendService.attendByAtID(atDto, idAttend);
 
-                  //loadDataMethod = loadData();
+                  loadDataMethod = loadData();
                   setState(() {
                     loadDataMethod = loadData();
                     context.read<AppData>().status = status;
