@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:miniworldapp/page/Host/check_mission_list.dart';
 import 'package:miniworldapp/page/Host/host_race_start.dart';
 import 'package:miniworldapp/page/Player/lobby.dart';
 
@@ -458,7 +459,7 @@ class _DetailHostState extends State<DetailHost> {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const HostRaceStart(),
+                                                      const CheckMission(),
                                                 ));
                                             context.read<AppData>().idrace =
                                                 idrace;
