@@ -92,6 +92,7 @@ dependencies:
   cloud_firestore: ^4.8.2
   image_picker: ^1.0.0
   open_file: ^3.3.2
+  flutter_rating_bar: ^4.0.1
   
   
 
