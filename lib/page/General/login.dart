@@ -8,6 +8,8 @@ import 'package:miniworldapp/model/DTO/userDTO.dart';
 import 'package:miniworldapp/model/result/raceResult.dart';
 
 import 'package:miniworldapp/page/General/home_all.dart';
+import 'package:miniworldapp/page/Player/chat_lobby.dart';
+import 'package:miniworldapp/page/Player/chat_room.dart';
 import 'package:miniworldapp/page/Player/lobby.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:miniworldapp/service/user.dart';
@@ -61,6 +63,9 @@ class _LoginState extends State<Login> {
   }
 
   Future<void> _online() async {
+    var a = await userService.getUserAll();
+    a.data;
+   // var userName = a.data.first.userName; 
     startLoading(context);
     OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
 
@@ -114,7 +119,7 @@ class _LoginState extends State<Login> {
          Get.defaultDialog(title: 'ส่งมาละจ้าา');
       }else if(event.notification.additionalData!['notitype'] == 'endgame'){
          Get.defaultDialog(title:event.notification.additionalData!['masseage']).then((value) {
-          Get.to(Lobby());
+         // Get.to(ChatRoomPage(userID: userID, raceID: raceID, userName: userName, raceName: raceName));
          });
          
       }

@@ -123,7 +123,7 @@ class _CheckMissionState extends State<CheckMission> {
    raceStatus = 3;
     RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
     var racestatus = await raceService.updateStatusRaces(racedto, idrace);
-    mc = {'notitype':'endgame','mcid': raceStatus};
+    mc = {'notitype':'endgame','mcid': raceStatus,'raceID':idrace,};
     var notification1 = OSCreateNotification(
         //playerID
        additionalData: mc,
