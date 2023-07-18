@@ -368,7 +368,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                         padding: const EdgeInsets.only(bottom: 8, top: 10),
                         child: Container(
                           height: 35,
-                          width: 100,
+                          width: 200,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             color: Get.theme.colorScheme.secondary,

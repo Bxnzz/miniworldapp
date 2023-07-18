@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:miniworldapp/page/Host/approve_mission.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/mission.dart';
@@ -22,6 +23,8 @@ class _ListApproveState extends State<ListApprove> {
   late MissionCompService missionCompService;
   late List<MissionComplete> missionComp;
   int misID = 0; 
+  String misType = '';
+  String type = '';
   List<Mission> missions = [];
 
   bool isLoaded = false;
@@ -31,10 +34,12 @@ class _ListApproveState extends State<ListApprove> {
   void initState() {
     super.initState();
     misID = context.read<AppData>().misID;
-
+    log(misID.toString());
+    
     missionCompService =
         MissionCompService(Dio(), baseUrl: context.read<AppData>().baseurl);
-    
+     
+
      loadDataMethod = loadData();
   }
   
@@ -43,11 +48,30 @@ class _ListApproveState extends State<ListApprove> {
     try {
       var a = await missionCompService.missionCompBymisId(misID: misID);
       missionComp = a.data;
-      
+      misType = a.data.first.mission.misType.toString();
+
+       var splitT = misType.split('');
+     
+      List<String> substrings = splitT.toString().split(",");
+     
+      log(misType);
+      if (misType.contains('12')) {
+        type = 'ข้อความ,สื่อ';
+      } else if (misType.contains('1')) {
+        type = 'ข้อความ';
+      } else if (misType.contains('2')) {
+        type = 'สื่อ';
+      } else if (misType.contains('3')) {
+        type = 'ไม่มีการส่ง';
+      } else {
+        return;
+      }
       isLoaded = true;
     } catch (err) {
       isLoaded = false;
       log('Error:$err');
+    }finally{
+      stopLoading();
     }
     }
     
@@ -55,19 +79,32 @@ class _ListApproveState extends State<ListApprove> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('หลักฐานทั้งหมด')),
+      floatingActionButton:  FloatingActionButton.extended(
+        backgroundColor: Colors.pinkAccent,
+       
+        onPressed: () {
+        //  _Endgame();
+        },
+        label: Text('ส่งไปยังผู้ชม',style: Get.textTheme.bodyLarge!.copyWith(
+                              color: Get.theme.colorScheme.onPrimary,
+                              fontWeight: FontWeight.bold),),
+        
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: FutureBuilder(
           future: loadDataMethod,
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return ListView(
                 padding: EdgeInsets.only(top: 10),
-                children: missions.map((element) {
+                children: missionComp.map((element) {
                   final theme = Theme.of(context);
                   final textTheme = theme.textTheme;
                   return Padding(
                     padding:
                         const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                    child: Card(
+                    child:  element.mission.misType != 3
+                    ? Card(
                       //  shadowColor: ,
 
                       clipBehavior: Clip.hardEdge,
@@ -81,42 +118,39 @@ class _ListApproveState extends State<ListApprove> {
                             Container(
                               alignment: Alignment.center,
                               // For testing different size item. You can comment this line
-                              padding: element.misName == element.misName
+                              padding: element.misId == element.misId
                                   ? const EdgeInsets.symmetric(vertical: 16.0)
                                   : EdgeInsets.zero,
-                              child: ListTile(
-                                  title: Text(
-                                    element.misName,
-                                    style: textTheme.bodyText2?.copyWith(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  leading: SizedBox(
-                                    width: 36,
-                                    height: 36,
-                                    child: Center(
-                                      child: Text(
-                                        //int sortn = mis.misSeq,
-                                        '${missions.indexOf(element) + 1}',
-                                        style: textTheme.bodyLarge?.copyWith(
-                                          color: Colors.purple,
+                              child:  ListTile(
+                                  title:  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'ทีม : ${element.team.teamName}',
+                                        style: textTheme.bodyText2?.copyWith(
                                           fontSize: 16,
                                         ),
                                       ),
-                                    ),
+                                      Text('ประเภท : ${type}',
+                                        style: textTheme.bodyText2?.copyWith(
+                                          fontSize: 16,
+                                        ),)
+                                    ],
                                   ),
                                   trailing: FilledButton(
-                                    child: Text('ตรวจสอบภารกิจ'),
+                                    child: Text('ตรวจสอบ'),
                                     onPressed: () {
-                                     Get.to(ListApprove());
-                                     context.read<AppData>().misID = misID;
+                                     Get.to(ApproveMission(IDmc: element.mcId,));
+                                   //  context.read<AppData>().misID = element.misId;
                                     },
                                   )),
+                                
+                                  
                             ),
                           ],
                         ),
                       ),
-                    ),
+                    ) : Container(),
                   );
                 }).toList(),
               );

@@ -140,6 +140,7 @@ class _EditRaceState extends State<EditRace> {
               return Container();
             }
             return Container(
+              
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               decoration: const BoxDecoration(
@@ -283,7 +284,7 @@ class _EditRaceState extends State<EditRace> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: ElevatedButton(
                                     onPressed: () async {
-                                      //  if (keys.currentState!.validate()) {}
+                                     //  if (keys.currentState!.validate()) {}
                                       if (raceLimit.text == "") {
                                         // log("team fail");
                                         ScaffoldMessenger.of(context)
@@ -315,9 +316,9 @@ class _EditRaceState extends State<EditRace> {
 
                                       img = '';
                                       log("name" + raceName.text);
-                                      log('date ' + TexttimeST.text);
-                                      log('date ' + TexttimeFN.text);
-                                      log('date ' + TexttimeDate.text);
+                                      log('date1 ' + TexttimeST.text);
+                                      log('date2 ' + TexttimeFN.text);
+                                      log('date3 ' + TexttimeDate.text);
                                       RaceDto dto = RaceDto(
                                         raceName: raceName.text,
                                         raceLocation: raceLocation.text,
@@ -370,7 +371,7 @@ class _EditRaceState extends State<EditRace> {
 
                                         return;
                                       }
-                                    },
+                                     },
                                     child: const Text("แก้ไข")),
                               ),
                             ],

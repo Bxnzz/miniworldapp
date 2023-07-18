@@ -222,7 +222,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
                                     child: Text('ตรวจสอบภารกิจ'),
                                     onPressed: () {
                                      Get.to(ListApprove());
-                                     context.read<AppData>().misID = misID;
+                                     context.read<AppData>().misID = element.misId;
                                     },
                                   )),
                             ),
