@@ -26,6 +26,7 @@ import 'package:provider/provider.dart';
 
 import '../../model/Status/missionCompStatus.dart';
 import '../../model/mission.dart';
+import '../../model/missionComp.dart';
 import '../../service/attend.dart';
 import '../../service/provider/appdata.dart';
 
@@ -34,18 +35,18 @@ class Notpass {
   Notpass({required this.masseage});
 }
 
-class CheckMisNoti extends StatefulWidget {
-  CheckMisNoti({super.key, required this.IDmc});
+class ApproveMission extends StatefulWidget {
+  ApproveMission({super.key, required this.IDmc});
   late int IDmc;
   @override
-  State<CheckMisNoti> createState() => _CheckMisNotiState();
+  State<ApproveMission> createState() => _ApproveMissionState();
 }
 
-class _CheckMisNotiState extends State<CheckMisNoti> {
+class _ApproveMissionState extends State<ApproveMission> {
   late MissionCompService missionCompService;
   late AttendService attendService;
   late MissionService missionService;
-  late List<misComp.MissionComplete> missionComp;
+  late List<MissionComplete> missionComp;
   late List<AttendRace> attend;
   late List<Mission> mission;
 

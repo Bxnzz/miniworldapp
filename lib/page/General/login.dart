@@ -20,7 +20,7 @@ import 'dart:developer';
 
 import '../../model/DTO/loginDTO.dart';
 import '../../service/login.dart';
-import '../Host/check_mission_Noti.dart';
+import '../Host/approve_mission.dart';
 import '../Newhome.dart';
 import 'fontpage_register.dart';
 
@@ -47,8 +47,12 @@ class _LoginState extends State<Login> {
   String _debugLabelString = "";
   String McID = '';
   int IDmc = 0;
+  int raceID = 0;
+  String raceName = '';
   String start = "s";
   String end = "e";
+  String userName = '';
+  int userID = 0;
 
   @override
   void initState() {
@@ -65,7 +69,7 @@ class _LoginState extends State<Login> {
   Future<void> _online() async {
     var a = await userService.getUserAll();
     a.data;
-   // var userName = a.data.first.userName; 
+    var userName = a.data.first.userName; 
     startLoading(context);
     OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
 
@@ -81,7 +85,7 @@ class _LoginState extends State<Login> {
       if (additionalData!['notitype'] == 'mission') {
         log('zzz');
         additionalData['mcid'];
-        Get.to(() => CheckMisNoti(IDmc: int.parse(additionalData['mcid'])));
+        Get.to(() => ApproveMission(IDmc: int.parse(additionalData['mcid'])));
       } else if (additionalData['notitype'].toString() == 'checkMis') {
         Get.defaultDialog(title: additionalData['masseage']);
       } else if(additionalData['notitype'].toString() == 'endgame'){
@@ -109,7 +113,7 @@ class _LoginState extends State<Login> {
           actions: <Widget>[
             ElevatedButton(
               child: const Text('ตรวจสอบหลักฐาน'),
-              onPressed: () => Get.to(CheckMisNoti(IDmc: int.parse(event.notification.additionalData!['mcid']))),
+              onPressed: () => Get.to(ApproveMission(IDmc: int.parse(event.notification.additionalData!['mcid']))),
             ),
           ],
         );
@@ -118,8 +122,10 @@ class _LoginState extends State<Login> {
       }else if(event.notification.additionalData!['notitype'] == 'checkMis'){
          Get.defaultDialog(title: 'ส่งมาละจ้าา');
       }else if(event.notification.additionalData!['notitype'] == 'endgame'){
+          raceName = event.notification.additionalData!['raceName'];
+          raceID = int.parse(event.notification.additionalData!['raceID']);
          Get.defaultDialog(title:event.notification.additionalData!['masseage']).then((value) {
-         // Get.to(ChatRoomPage(userID: userID, raceID: raceID, userName: userName, raceName: raceName));
+          Get.to(ChatRoomPage(userID: userID, raceID: raceID, userName: userName, raceName: raceName));
          });
          
       }
@@ -377,14 +383,7 @@ class _LoginState extends State<Login> {
                                 icon: FaIcon(FontAwesomeIcons.facebook),
                               ),
                             ),
-                            SizedBox(
-                              width: 240,
-                              child: ElevatedButton.icon(
-                                onPressed: () {},
-                                label: const Text('Sign up Facebook'),
-                                icon: FaIcon(FontAwesomeIcons.facebook),
-                              ),
-                            )
+                           
                           ],
                         ),
                       ),

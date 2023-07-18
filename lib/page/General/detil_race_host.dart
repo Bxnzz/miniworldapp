@@ -459,7 +459,7 @@ class _DetailHostState extends State<DetailHost> {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const CheckMission(),
+                                                      const CheckMissionList(),
                                                 ));
                                             context.read<AppData>().idrace =
                                                 idrace;

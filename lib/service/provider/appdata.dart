@@ -16,6 +16,7 @@ class AppData with ChangeNotifier {
   int idrace = 0;
   String Username = '';
   int mcID = 0;
+  int misID = 0;
   int idUser = 0;
   int idMis = 0;
   int sqnum = 0;

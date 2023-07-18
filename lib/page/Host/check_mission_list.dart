@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:miniworldapp/model/attend.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';
 import 'package:miniworldapp/model/team.dart';
+import 'package:miniworldapp/page/Host/list_approve.dart';
 import 'package:miniworldapp/service/race.dart';
 import 'package:miniworldapp/service/team.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -19,14 +20,14 @@ import '../../service/mission.dart';
 import '../../service/provider/appdata.dart';
 import '../../widget/loadData.dart';
 
-class CheckMission extends StatefulWidget {
-  const CheckMission({super.key});
+class CheckMissionList extends StatefulWidget {
+  const CheckMissionList({super.key});
 
   @override
-  State<CheckMission> createState() => _CheckMissionState();
+  State<CheckMissionList> createState() => _CheckMissionListState();
 }
 
-class _CheckMissionState extends State<CheckMission> {
+class _CheckMissionListState extends State<CheckMissionList> {
   late RaceResult misRe;
   int idrace = 0;
   List<Mission> missions = [];
@@ -48,10 +49,13 @@ class _CheckMissionState extends State<CheckMission> {
   String mType = '';
   String types = '';
  int raceStatus = 0;
+ int misID = 0;
+ 
  List<int> teamsID = [];
  List<String> playerIds = [];
 
   bool isLoaded = false;
+
 
   bool inReorder = false;
 
@@ -217,7 +221,8 @@ class _CheckMissionState extends State<CheckMission> {
                                   trailing: FilledButton(
                                     child: Text('ตรวจสอบภารกิจ'),
                                     onPressed: () {
-                                     
+                                     Get.to(ListApprove());
+                                     context.read<AppData>().misID = misID;
                                     },
                                   )),
                             ),
