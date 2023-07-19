@@ -50,7 +50,7 @@ class _MissioncreateState extends State<Missioncreate> {
   String cb = '';
   int mType = 0;
   int square = 0;
-  int sqnum = 0; 
+  int sqnum = 0;
   late MissionService missionService;
   List<Mission> missions = [];
   List<MissionDto> missionDtos = [];
@@ -62,6 +62,7 @@ class _MissioncreateState extends State<Missioncreate> {
   String cb1 = '';
   String cb2 = '';
   String cb3 = '';
+  int fristMis = 0;
   bool isLoaded = false;
   Set<Polyline> _polylines = Set<Polyline>();
   List<LatLng> polylineCoordinates = [];
@@ -89,19 +90,20 @@ class _MissioncreateState extends State<Missioncreate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // Overide the default Back button
+        automaticallyImplyLeading: false,
+        leadingWidth: 100,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: FaIcon(
+            FontAwesomeIcons.circleChevronLeft,
+            color: Colors.yellow,
+            size: 35,
+          ),
+        ),
         title: const Text('สร้างภารกิจ'),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const DetailMission(),
-                      settings: const RouteSettings(arguments: null),
-                    ));
-              },
-              icon: const FaIcon(FontAwesomeIcons.flagCheckered))
-        ],
       ),
       body: raceMap(),
     );
@@ -169,7 +171,7 @@ class _MissioncreateState extends State<Missioncreate> {
                         left: (MediaQuery.of(context).size.width / 2) - 16,
                         child: Column(
                           children: [
-                           Image.asset("assets/image/target.png"),
+                            Image.asset("assets/image/target.png"),
                             // Text('Lat:'+lat+',Long:'+long),
                           ],
                         )),
@@ -187,7 +189,9 @@ class _MissioncreateState extends State<Missioncreate> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            const Text('สร้างภารกิจ'),
+            SizedBox(
+              height: 15,
+            ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -304,18 +308,18 @@ class _MissioncreateState extends State<Missioncreate> {
                   child: const Text('สร้างภารกิจ'),
                   onPressed: () async {
                     // setState(() {
-                      // if(sqnum == 2){
-                      //    sqnum = 0;
-                      // }
+                    // if(sqnum == 2){
+                    //    sqnum = 0;
+                    // }
                     //     });
-                   //    log('num '+square.toString());
-                   if(sqnum == 0){
-                     sqnum = sqnum + 1;
-                   }
-                   if(sqnum == sqnum){
-                     sqnum++;
-                    } 
-                    log('num '+sqnum.toString());
+                    //    log('num '+square.toString());
+                    if (sqnum == 0) {
+                      sqnum = sqnum + 1;
+                    }
+                    if (sqnum == sqnum) {
+                      sqnum++;
+                    }
+                    log('num ' + sqnum.toString());
 
                     if (lats == '' && longs == '') {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -327,7 +331,6 @@ class _MissioncreateState extends State<Missioncreate> {
                     log('ch ' + cb);
                     mType = int.parse(cb);
                     log('ty: ' + mType.toString());
-               
 
                     MissionDto missionDto = MissionDto(
                         misName: nameMission.text,
@@ -348,12 +351,12 @@ class _MissioncreateState extends State<Missioncreate> {
                         const SnackBar(content: Text('mision Successful')),
                       );
                       log("race Successful");
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const DetailMission(),
-                            settings: const RouteSettings(arguments: null),
-                          ));
+                      if (fristMis == 1) {
+                        Get.to(DetailMission());
+                      } else {
+                        Navigator.of(context).pop();
+                      }
+                      //  if()
                       return;
                     } else {
                       // log("team fail");
@@ -424,23 +427,23 @@ class _MissioncreateState extends State<Missioncreate> {
   }
 
   Future<void> loadData() async {
-     startLoading(context);
-    try { 
+    startLoading(context);
+    try {
       postion = await determinePosition();
       currentLatLng = LatLng(postion.latitude, postion.longitude);
       isLoaded = true;
+      var r = await missionService.missionAll();
+      fristMis = r.data.first.misSeq;
     } catch (err) {
       currentLatLng = const LatLng(16.24922394827912, 103.2505221260871);
-       isLoaded = false;
+      isLoaded = false;
       log('Error:$err');
-    }
-    finally {
+    } finally {
       stopLoading();
     }
-    
   }
 
-   Future<Position> determinePosition() async {
+  Future<Position> determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 

@@ -198,21 +198,25 @@ class _DetailMissionState extends State<DetailMission> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // leading: IconButton(
-        //     icon: FaIcon(
-        //       FontAwesomeIcons.circleChevronLeft,
-        //       color: Colors.yellow,
-        //       size: 30,
-        //     ),
-        //    // onPressed: () => Navigator.of(context).pop(),
-        //   ),
-        title: const Center(
-            child: Text(
-          'ภารกิจ',
-          style: TextStyle(color: Colors.white),
-        )),
-
+        // Overide the default Back button
+        automaticallyImplyLeading: false,
+        leadingWidth: 100,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: FaIcon(
+            FontAwesomeIcons.circleChevronLeft,
+            color: Colors.yellow,
+            size: 35,
+          ),
+        ),
         backgroundColor: const Color.fromARGB(255, 238, 145, 255),
+        // other stuff
+        title: Text(
+          'จัดการภารกิจ',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: FutureBuilder(
         future: loadDataMethod,
@@ -412,30 +416,24 @@ class _DetailMissionState extends State<DetailMission> {
               //   //   _checkbox == true;
               //   // }
               if (splitT.contains('1') == true) {
-                
-                  type1 = 'ข้อความ';
-                  log(type1);
-               
+                type1 = 'ข้อความ';
+                log(type1);
               }
               if (splitT.contains('2') == true) {
-                
-                  type1 = 'สื่อ';
-                  log(type1);
-              
+                type1 = 'สื่อ';
+                log(type1);
+
                 ;
               }
               if (splitT.contains('3') == true) {
-             
-                  type1 = 'ไม่มีการส่ง';
-                  log(type1);
-             
+                type1 = 'ไม่มีการส่ง';
+                log(type1);
               } else {
                 return;
               }
-
             });
-             String tt = type1;
-             log('tt'+tt);
+            String tt = type1;
+            log('tt' + tt);
             showDialog(
               context: context,
               builder: (context) => AlertDialog(

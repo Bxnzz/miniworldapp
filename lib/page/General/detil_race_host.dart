@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/page/Host/host_race_start.dart';
 import 'package:miniworldapp/page/Player/lobby.dart';
+import 'package:miniworldapp/widget/loadData.dart';
 
 import 'package:provider/provider.dart';
 
@@ -77,6 +78,7 @@ class _DetailHostState extends State<DetailHost> {
   }
 
   Future<void> loadData() async {
+    startLoading(context);
     try {
       var a = await raceService.racesByraceID(raceID: idrace);
       races = a.data;
@@ -105,6 +107,8 @@ class _DetailHostState extends State<DetailHost> {
       log(UrlImg);
     } catch (err) {
       log('Error:$err');
+    } finally {
+      stopLoading();
     }
   }
 
@@ -434,12 +438,10 @@ class _DetailHostState extends State<DetailHost> {
                                       width: 200,
                                       child: ElevatedButton(
                                           onPressed: () {
-                                            Navigator.pushReplacement(
-                                                context,
+                                            Navigator.of(context).push(
                                                 MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const Lobby(),
-                                                ));
+                                                    builder: (context) =>
+                                                        const Lobby()));
                                             context.read<AppData>().idrace =
                                                 idrace;
                                             context.read<AppData>().idUser =
@@ -455,12 +457,11 @@ class _DetailHostState extends State<DetailHost> {
                                       width: 200,
                                       child: ElevatedButton(
                                           onPressed: () {
-                                            Navigator.pushReplacement(
-                                                context,
+                                            Navigator.of(context).push(
                                                 MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const CheckMissionList(),
-                                                ));
+                                                    builder: (context) =>
+                                                        const CheckMissionList()));
+
                                             context.read<AppData>().idrace =
                                                 idrace;
                                             context.read<AppData>().idUser =
@@ -478,7 +479,7 @@ class _DetailHostState extends State<DetailHost> {
                 ],
               );
             } else {
-              return Center(child: const CircularProgressIndicator());
+              return Container();
             }
           }),
     );

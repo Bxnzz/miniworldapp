@@ -239,12 +239,7 @@ class _EditMissionState extends State<EditMission> {
                       left: (MediaQuery.of(context).size.width / 2) - 16,
                       child: Column(
                         children: [
-                          FaIcon(
-                            FontAwesomeIcons.locationDot,
-                            size: 32,
-                            color: Colors.yellowAccent,
-                          ),
-                          // Text('Lat:'+lat+',Long:'+long),
+                            Image.asset("assets/image/target.png"),
                         ],
                       )),
                 ]),
@@ -390,12 +385,7 @@ class _EditMissionState extends State<EditMission> {
                         const SnackBar(content: Text('update Successful')),
                       );
                       log("mission Successful");
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const DetailMission(),
-                            settings: const RouteSettings(arguments: null),
-                          ));
+                     Navigator.of(context).pop();
                       return;
                     } else {
                       // log("team fail");
