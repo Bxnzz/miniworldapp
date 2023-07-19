@@ -75,6 +75,9 @@ class _Home_joinState extends State<Home_join> {
                                   MaterialPageRoute(
                                       builder: (context) => HomeJoinDetail()));
                               context.read<AppData>().idUser = e.userId;
+                              context.read<AppData>().idTeam = e.teamId;
+                              context.read<AppData>().idrace = e.team.raceId;
+                              context.read<AppData>().idAt = e.atId;
                               //showDetailDialog(context, e);
                             },
                             child: Column(
@@ -217,7 +220,7 @@ class _Home_joinState extends State<Home_join> {
       attends = a.data;
     } catch (err) {
       log('Error:$err');
-    }finally{
+    } finally {
       stopLoading();
     }
   }

@@ -289,14 +289,20 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                           textAlign: TextAlign.center,
                         ),
                         Text("รายละเอียด : $misDescrip"),
-                        Text("ประเภทภารกิจ : " + type)
+                        Text("ประเภทภารกิจ : " + misType)
                       ],
                     ),
                     actions: <Widget>[
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
-                            misID = context.read<AppData>().idMis;
+                            context.read<AppData>().idMis = misID;
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const PlayerRaceStartMenu(),
+                                ));
                           },
                           child: const Text('ดูรายละเอียด'),
                         ),
