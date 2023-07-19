@@ -231,6 +231,7 @@ class _ApproveMissionState extends State<ApproveMission> {
         ]);
 
     var response1 = await OneSignal.shared.postNotification(notification1);
+     Get.defaultDialog(title :mc.toString());
   }
 
   void _CheckMisUnPass()  {
@@ -496,8 +497,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                                     log(playerID.toString());
 
                                     // if (pickedFile == null) {
-                                    //   Get.defaultDialog(
-                                    //       title: 'กรุณาเลือกหลักฐาน');
+                                     
                                     // } else {}
                                   },
                                   child: Text('ผ่าน',
