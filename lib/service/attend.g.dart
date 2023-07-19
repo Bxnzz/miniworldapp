@@ -125,7 +125,7 @@ class _AttendService implements AttendService {
   }
 
   @override
-  Future<HttpResponse<AttendStatusDto>> attendByAtID(
+  Future<HttpResponse<int>> attendByAtID(
     attendStatusDto,
     atID,
   ) async {
@@ -134,8 +134,8 @@ class _AttendService implements AttendService {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(attendStatusDto.toJson());
-    final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<HttpResponse<AttendStatusDto>>(Options(
+    final _result =
+        await _dio.fetch<int>(_setStreamType<HttpResponse<int>>(Options(
       method: 'PUT',
       headers: _headers,
       extra: _extra,
@@ -147,7 +147,7 @@ class _AttendService implements AttendService {
               data: _data,
             )
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = AttendStatusDto.fromJson(_result.data!);
+    final value = _result.data!;
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }

@@ -16,11 +16,11 @@ Widget loadingIndicator(BuildContext context) => Container(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: 100,
-              height: 100,
+              width: 80,
+              height: 80,
               child: LoadingIndicator(
                 indicatorType: Indicator.pacman,
-                colors: [Theme.of(context).colorScheme.onSecondary],
+                colors: [Get.theme.colorScheme.primary],
                 strokeWidth: 2.0,
               ),
             ),
@@ -29,7 +29,7 @@ Widget loadingIndicator(BuildContext context) => Container(
               child: Text(
                 'กำลังประมวลผล',
                 style: TextStyle(
-                    color: Theme.of(context).colorScheme.onPrimaryContainer),
+                    color: Get.theme.colorScheme.primary),
               ),
             )
           ],
