@@ -192,11 +192,14 @@ class _LobbyState extends State<Lobby> {
                         chkReadyBtn(context),
                         //Host
                       ])
-                    : ElevatedButton(
-                        onPressed: () {
-                          showAlertDialog(context);
-                        },
-                        child: Text('เริ่มเกม'))
+                    : Padding(
+                      padding: const EdgeInsets.only(bottom: 15),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            showAlertDialog(context);
+                          },
+                          child: Text('เริ่มเกม')),
+                    )
               ]);
             } else {
               return Center(child: const CircularProgressIndicator());
