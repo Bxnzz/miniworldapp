@@ -24,11 +24,15 @@ abstract class MissionCompService {
   Future<HttpResponse<List<MissionComplete>>> missionCompBymcId(
       {@Query("mcID") required int mcID});
 
+  @GET("/missionComp/")
+  Future<HttpResponse<List<MissionComplete>>> missionCompBymisId(
+      {@Query("misID") required int misID});
+
   @POST("/missionComp")
-  Future<HttpResponse<MissionComplete>> insertMissionComps(@Body() MissionCompDto missionCompDto);
+  Future<HttpResponse<MissionComplete>> insertMissionComps(
+      @Body() MissionCompDto missionCompDto);
 
   @PUT("/missionComp/{mcID}")
   Future<HttpResponse<RaceResult>> updateStatusMisCom(
-  @Body() MissionCompStatus missionComStatus, @Path("mcID") String mcID);
+      @Body() MissionCompStatus missionComStatus, @Path("mcID") String mcID);
 }
-

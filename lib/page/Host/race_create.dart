@@ -38,7 +38,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
   TextEditingController raceTimeST = TextEditingController();
   TextEditingController raceTimeFN = TextEditingController();
   TextEditingController eventDatetime = TextEditingController();
-   final keys = GlobalKey<FormState>();
+  final keys = GlobalKey<FormState>();
   // final _formKey1 = GlobalKey<FormState>();
   // final _formKey2 = GlobalKey<FormState>();
   // final _formKey3 = GlobalKey<FormState>();
@@ -109,7 +109,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                   children: [
                 Card(
                   margin: EdgeInsets.fromLTRB(32, 95, 32, 32),
-               //   color: Theme.of(context).primaryColor,
+                  //   color: Theme.of(context).primaryColor,
                   child: SingleChildScrollView(
                     child: Column(
                       children: <Widget>[
@@ -121,11 +121,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                           padding: const EdgeInsets.all(8.0),
                           child: SizedBox(
                             width: 240,
-                            child: textField(
-                                raceName,
-                                'ชื่อการแข่งขัน...',
-                                'ชื่อการแข่งขัน',
-                                'กรุณากรอกชื่อการแข่งขัน'),
+                            child: textField(raceName, 'ชื่อการแข่งขัน...',
+                                'ชื่อการแข่งขัน', 'กรุณากรอกชื่อการแข่งขัน'),
                           ),
                         ),
                         Padding(
@@ -265,7 +262,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                       DateTime.parse("2002-03-14T00:00:00Z"),
                                   eventDatetime:
                                       DateTime.parse("2002-03-14T00:00:00Z"),
-                                  raceStatus: 0,
+                                  raceStatus: 1,
                                   raceTimeFn:
                                       DateTime.parse("2002-03-14T00:00:00Z"),
                                   raceTimeSt:
@@ -286,13 +283,12 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                   Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => Missioncreate(
-                                            ),
+                                        builder: (context) => Missioncreate(),
                                         settings:
                                             RouteSettings(arguments: null),
                                       ));
-                                           context.read<AppData>().idrace =
-                                        race.data.raceId;
+                                  context.read<AppData>().idrace =
+                                      race.data.raceId;
                                   return;
                                 } else {
                                   // log("team fail");
@@ -388,32 +384,31 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
     }
   }
 
-  upImg(){
+  upImg() {
     return GestureDetector(
+        onTap: () {
+          selectFile();
+          log('message');
+        },
+        child: pickedFile != null
+            ? CircleAvatar(
+                key: keys,
+                radius: 35.0,
+                backgroundImage: FileImage(pickedFile!))
+            : CircleAvatar(
+                radius: 35.0,
+                child: GestureDetector(
                     onTap: () {
                       selectFile();
                       log('message');
                     },
-                    child: pickedFile != null
-                        ? CircleAvatar(
-                            key: keys,
-                            radius: 35.0,
-                            backgroundImage: FileImage(pickedFile!))
-                        : CircleAvatar(
-                            radius: 35.0,
-                            child: GestureDetector(
-                              onTap: () {
-                                selectFile();
-                                log('message');
-                              },
-                              child: FaIcon(FontAwesomeIcons.camera, size: 25)
-                            ),
-                          ));
+                    child: FaIcon(FontAwesomeIcons.camera, size: 25)),
+              ));
   }
   // Widget uploadImage() {
   //   return Stack(
   //     children: const <Widget>[
-        
+
   //       CircleAvatar(
   //         radius: 35.0,
   //         backgroundColor: Colors.grey,

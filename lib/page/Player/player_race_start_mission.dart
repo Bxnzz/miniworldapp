@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-
 import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:circular_menu/circular_menu.dart';
 import 'package:dio/dio.dart';
@@ -24,6 +23,7 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/mission.dart';
+import '../../model/missionComp.dart';
 import '../../service/provider/appdata.dart';
 
 class PlayerRaceStartMis extends StatefulWidget {
@@ -36,10 +36,12 @@ class PlayerRaceStartMis extends StatefulWidget {
 class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
   late MissionCompService missionCompService;
   late MissionService missionService;
-  late List<misComp.MissionComplete> missionComp;
-  late List<Mission> mission;
+  late List<MissionComplete> missionComp;
+  late List<MissionComplete> missionCompmc;
+  //late List<Mission> mission;
   late int IDteam;
   late int CompmissionId;
+  late int misID;
   int idrace = 0;
   String onesingnalId = '';
   String misName = '';
@@ -60,8 +62,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
   Color _color = Colors.black;
   String mcID = '';
   Map<String, dynamic> mc = {};
-
-  PlatformFile? pickedFile;
+  File? pickedFile;
 
   UploadTask? uploadTask;
   VideoPlayerController? videoPlayerController;
@@ -72,33 +73,41 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
 
   Future selectFile() async {
     final result = await FilePicker.platform.pickFiles();
+    File file;
+    PlatformFile platFile;
     var stname;
-    if (result == null) return;
-    pickedFile = result.files.single;
-    //stname = pickedFile.toString()+;
-    log(result.files.single.toString());
-    log(pickedFile!.extension.toString());
-    //selectFile Image
-    if (pickedFile!.extension == 'jpg' || pickedFile!.extension == 'png') {
-      setState(() {
+
+    setState(() {
+      if (result == null) return;
+      platFile = result.files.single;
+      file = File(platFile.path!);
+      pickedFile = file;
+      //stname = pickedFile.toString()+;
+      log(result.files.single.toString());
+      log(platFile.extension.toString());
+
+      //selectFile Image
+      if (platFile!.extension == 'jpg' ||
+          platFile!.extension == 'png' ||
+          platFile!.extension == 'jpeg') {
         isImage = true;
-      });
-    }
-    //selectFile video
-    else {
-      isImage = false;
-      videoPlayerController =
-          VideoPlayerController.file(File(pickedFile!.path!))
-            ..initialize().then((_) {
-              log(videoPlayerController.toString());
-              //SizedBox(child: ,)
-              _customVideoPlayerController = CustomVideoPlayerController(
-                context: context,
-                videoPlayerController: videoPlayerController!,
-              );
-              setState(() {});
-            });
-    }
+      }
+      //selectFile video
+      else {
+        isImage = false;
+        videoPlayerController =
+            VideoPlayerController.file(File(pickedFile!.path))
+              ..initialize().then((_) {
+                log(videoPlayerController.toString());
+                //SizedBox(child: ,)
+                _customVideoPlayerController = CustomVideoPlayerController(
+                  context: context,
+                  videoPlayerController: videoPlayerController!,
+                );
+                setState(() {});
+              });
+      }
+    });
   }
 
   @override
@@ -107,6 +116,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
     OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
     IDteam = context.read<AppData>().idTeam;
     idrace = context.read<AppData>().idrace;
+    misID = context.read<AppData>().idMis;
     log('id' + idrace.toString());
     missionCompService =
         MissionCompService(Dio(), baseUrl: context.read<AppData>().baseurl);
@@ -118,23 +128,24 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
   Future<void> loadData() async {
     try {
       var a = await missionCompService.missionCompByTeamId(teamID: IDteam);
-      var m = await missionService.missionAll();
-      var mis = await missionService.missionByraceID(raceID: idrace);
 
-      missionComp = a.data;
-      mission = m.data;
-      mission = mis.data;
-      onesingnalId = mis.data.first.race.user.onesingnalId;
-      misName = a.data.first.mission.misName;
-      misDiscrip = a.data.first.mission.misDiscrip;
+      //  var mis = await missionService.missionByraceID(raceID: idrace);
+      var mis2 = await missionService.missionBymisID(misID: misID);
+      //var mc = await missionCompService.missionCompBymisId(misID: misID);
+      log("misID ====${misID}");
+      //log("${mc.data.length}");
+      //mission = mis.data;
+      onesingnalId = mis2.data.first.race.user.onesingnalId;
+      misName = mis2.data.first.misName;
+      misDiscrip = mis2.data.first.misDiscrip;
       misStatus = a.data.first.mcStatus.toString();
-      misType = a.data.first.mission.misType.toString();
+      misType = mis2.data.first.misType.toString();
       mlat = a.data.first.mission.misLat;
       mlng = a.data.first.mission.misLng;
       teamID = a.data.first.team.teamId;
       teamName = a.data.first.team.teamName;
 
-      mID = a.data.first.mission.misId;
+      //   mID = a.data.first.mission.misId;
 
       var splitT = misType.split('');
       // log(splitT.toString());
@@ -173,7 +184,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
     // log(dateTime);
     //final berlinWallFell = DateTime.utc(now);
 
-    final path = 'files/${pickedFile!.name}';
+    final path = 'files/${pickedFile?.path.split('/').last}';
 
     final file = File(pickedFile!.path!);
 
@@ -198,15 +209,16 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
           mcLng: mlng,
           mcMasseage: '',
           mcPhoto: urlDownload,
-          mcStatus: 0,
+          mcStatus: 1,
           mcText: '',
           mcVideo: '',
-          misId: mID,
+          misId: misID,
           teamId: teamID);
       var missionComp = await missionCompService.insertMissionComps(mdto);
       missionComp.data;
       mcID = missionComp.data.mcId.toString();
-      mc = {'notitype':'mission','mcid':mcID,'mission':misName};
+
+      mc = {'notitype': 'mission', 'mcid': mcID, 'mission': misName};
       log('img ${missionComp.data.misId}');
     } else {
       //update video
@@ -216,16 +228,16 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
           mcLng: mlng,
           mcMasseage: '',
           mcPhoto: '',
-          mcStatus: 0,
+          mcStatus: 1,
           mcText: '',
           mcVideo: urlDownload,
-          misId: mID,
+          misId: misID,
           teamId: teamID);
       var missionComp = await missionCompService.insertMissionComps(mdto);
       mcID = missionComp.data.mcId.toString();
 
-     mc = {'notitype':'mission','mcid':mcID,'mission':misName};
-      log('mcc$mc' );
+      mc = {'notitype': 'mission', 'mcid': mcID, 'mission': misName};
+      log('mcc$mc');
       log('one $onesingnalId');
     }
     if (deviceState == null || deviceState.userId == null) return;
@@ -237,7 +249,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
         additionalData: mc,
         playerIds: [
           onesingnalId,
-        
+
           //'9556bafc-c68e-4ef2-a469-2a4b61d09168',
         ],
         content: 'ส่งจากทีม: $teamName',
@@ -274,13 +286,6 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
         future: loadDataMethod,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            for (int i = 0; i < mission.length; i++) {
-              for (int j = 0; j < missionComp.length; j++) {
-                if (missionComp[j].mcStatus == 2) {
-                  log("message${missionComp[j].mcStatus}");
-                }
-              }
-            }
             return Padding(
               padding: const EdgeInsets.only(bottom: 10, left: 15, right: 15),
               child: Card(
@@ -434,21 +439,27 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
                       //   ],
                       // ),
                       pickedFile != null
-                          ? Expanded(
-                              child: isImage == true
-                                  ? Image.file(
-                                      File(pickedFile!.path!),
-                                      width: Get.width * 0.3,
-                                    )
-                                  : (_customVideoPlayerController != null)
-                                      ? CustomVideoPlayer(
-                                          customVideoPlayerController:
-                                              _customVideoPlayerController!)
-                                      : Container(
-                                          child: Text("กรุณาเลือกไฟล์อื่น"),
-                                        ),
-                            )
-                          : Container(),
+                          ? isImage == true
+                              ? SizedBox(
+                                  width: Get.width / 3,
+                                  height: Get.height / 3,
+                                  child: GestureDetector(
+                                    child: Image.file(
+                                      (pickedFile!),
+                                      width: Get.width / 2,
+                                      height: Get.height / 2,
+                                    ),
+                                  ),
+                                )
+                              : SizedBox(
+                                  width: Get.width,
+                                  height: Get.height / 3,
+                                  child: CustomVideoPlayer(
+                                      customVideoPlayerController:
+                                          _customVideoPlayerController!),
+                                )
+                          : Text("ยังไม่ได้เพิ่มไฟล์"),
+
                       // buildProgress(),
                       Padding(
                         padding: const EdgeInsets.only(top: 45, bottom: 20),
@@ -463,7 +474,9 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
                                 if (pickedFile == null) {
                                   Get.defaultDialog(title: 'กรุณาเลือกหลักฐาน');
                                 } else {
-                                  uploadFile();
+                                  setState(() {
+                                    uploadFile();
+                                  });
                                 }
                               },
                               child: Text('ส่งหลักฐาน',
@@ -484,5 +497,4 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
       ),
     );
   }
-
 }

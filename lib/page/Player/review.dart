@@ -35,6 +35,8 @@ class _ReviewPageState extends State<ReviewPage> {
             clipBehavior: Clip.hardEdge,
             children: [
               Positioned(
+                left: Get.width / 4,
+                top: 20,
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
