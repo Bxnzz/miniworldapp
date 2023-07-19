@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:miniworldapp/page/Host/check_mission_list.dart';
 import 'package:miniworldapp/page/Host/host_race_start.dart';
 import 'package:miniworldapp/page/Player/lobby.dart';
 
@@ -429,21 +428,50 @@ class _DetailHostState extends State<DetailHost> {
                             ),
                           ),
                           Center(
-                            child: SizedBox(
-                              width: 200,
-                              child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const ShowMapPage()));
-                                    //              CheckMission()));
-                                    context.read<AppData>().idrace = idrace;
-                                  },
-                                  child: Text('ตำแหน่งผู้เล่น')),
-                            ),
-                          )
+                              child: races.first.raceStatus == 1
+                                  ? SizedBox(
+                                      width: 200,
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const Lobby(),
+                                                ));
+                                            context.read<AppData>().idrace =
+                                                idrace;
+                                            context.read<AppData>().idUser =
+                                                idUser;
+                                            context.read<AppData>().idAt =
+                                                idAttend;
+                                            context.read<AppData>().idTeam =
+                                                idTeam;
+                                          },
+                                          child: Text('เข้าล็อบบี้')),
+                                    )
+                                  : SizedBox(
+                                      width: 200,
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const HostRaceStart(),
+                                                ));
+                                            context.read<AppData>().idrace =
+                                                idrace;
+                                            context.read<AppData>().idUser =
+                                                idUser;
+                                            context.read<AppData>().idAt =
+                                                idAttend;
+                                            context.read<AppData>().idTeam =
+                                                idTeam;
+                                          },
+                                          child:
+                                              Text('การแข่งขันกำลังดำเนินการ')),
+                                    ))
                         ]),
                       ))
                 ],
