@@ -69,7 +69,7 @@ class _TextFieldDateState extends State<TextFieldDate> {
                       
                      widget.dates.text = '${dateTime.toIso8601String()}Z';
                    // context.read<AppData>().dates = dates ;
-                    //  log(dates);
+                   //  log(widget.dates.text);
                     },
                   );
                 },

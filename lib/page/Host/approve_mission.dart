@@ -9,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:miniworldapp/model/DTO/missionCompDTO.dart';
@@ -25,6 +26,7 @@ import 'package:provider/provider.dart';
 
 import '../../model/Status/missionCompStatus.dart';
 import '../../model/mission.dart';
+import '../../model/missionComp.dart';
 import '../../service/attend.dart';
 import '../../service/provider/appdata.dart';
 
@@ -33,18 +35,18 @@ class Notpass {
   Notpass({required this.masseage});
 }
 
-class CheckMisNoti extends StatefulWidget {
-  CheckMisNoti({super.key, required this.IDmc});
+class ApproveMission extends StatefulWidget {
+  ApproveMission({super.key, required this.IDmc});
   late int IDmc;
   @override
-  State<CheckMisNoti> createState() => _CheckMisNotiState();
+  State<ApproveMission> createState() => _ApproveMissionState();
 }
 
-class _CheckMisNotiState extends State<CheckMisNoti> {
+class _ApproveMissionState extends State<ApproveMission> {
   late MissionCompService missionCompService;
   late AttendService attendService;
   late MissionService missionService;
-  late List<misComp.MissionComplete> missionComp;
+  late List<MissionComplete> missionComp;
   late List<AttendRace> attend;
   late List<Mission> mission;
 
@@ -63,6 +65,8 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
   List<String> playerIds = [];
   String hostName = '';
 
+  TextEditingController anothor = TextEditingController();
+
   int _counter = 0;
   List<Notpass> message = [
     Notpass(masseage: 'ประเภทหลักฐานไม่ถูกต้อง'),
@@ -70,7 +74,7 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
     Notpass(masseage: 'กรุณาถ่ายรูปใหม่'),
     Notpass(masseage: 'กรุณาส่งวิดิโอใหม่'),
     Notpass(masseage: 'ภาพไม่ชัดเจน'),
-    Notpass(masseage: 'อื่น...')
+    Notpass(masseage: 'อื่นๆ...')
   ];
   int _selected = 0;
   void _incrementCounter() {
@@ -82,6 +86,7 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
   int teamID = 0;
   int misID = 0;
   String teamName = '';
+  String masseageMC = '';
 
   String mcID = '';
   Map<String, dynamic> mc = {};
@@ -153,9 +158,9 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
       var mis = await missionService.missionByraceID(raceID: idrace);
 
       missionComp = a.data;
-      
+
       mission = mis.data;
-      
+
       urlImage = a.data.first.mcPhoto;
       mcText = a.data.first.mcText;
       urlVideo = a.data.first.mcVideo;
@@ -169,7 +174,7 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
 
       var at = await attendService.attendByTeamID(teamID: teamID);
       attend = at.data;
-      playerIds.clear() ;
+      playerIds.clear();
       for (var element in at.data) {
         playerIds.add(element.user.onesingnalId);
       }
@@ -203,12 +208,12 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
 
   void _CheckMisPass() async {
     //var deviceState = await OneSignal.shared.getDeviceState();
-
+    masseageMC = 'ผ่าน';
     MissionCompStatus missionComDto = MissionCompStatus(
-        mcMasseage: 'ผ่าน', mcStatus: 1, misId: misID, teamId: teamID);
+        mcMasseage: masseageMC, mcStatus: 2, misId: misID, teamId: teamID);
     //log(lats);
     //print(double.parse('lat'+lats));
-    mc = {'notitype':'checkMis','mcid':mcID};
+    mc = {'notitype': 'checkMis', 'masseage': masseageMC};
     var missionComp = await missionCompService.updateStatusMisCom(
         missionComDto, widget.IDmc.toString());
 
@@ -226,6 +231,111 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
         ]);
 
     var response1 = await OneSignal.shared.postNotification(notification1);
+     Get.defaultDialog(title :mc.toString());
+  }
+
+  void _CheckMisUnPass()  {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text('ไม่ผ่านเพราะ....'),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+              actions: <Widget>[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                  ),
+                  onPressed: () async {
+                    masseageMC =message[_selected].masseage;
+                    MissionCompStatus missionComDto = MissionCompStatus(
+                        mcMasseage: masseageMC,
+                        mcStatus: 3,
+                        misId: misID,
+                        teamId: teamID);
+                    //log(lats);
+                    //print(double.parse('lat'+lats));
+                    mc = {'notitype': 'checkMis', 'masseage': masseageMC};
+                    var missionComp =
+                        await missionCompService.updateStatusMisCom(
+                            missionComDto, widget.IDmc.toString());
+
+                    var notification1 = OSCreateNotification(
+                        //playerID
+                        additionalData: mc,
+                        playerIds: playerIds,
+                        content: 'ส่งจากผู้สร้างการแข่งขัน: $hostName',
+                        heading: "หลักฐานภารกิจ: ผ่าน",
+                        //  iosAttachments: {"id1",urlImage},
+                        // bigPicture: imUrlString,
+                        buttons: [
+                          OSActionButton(text: "ตกลง", id: "id1"),
+                          OSActionButton(text: "ยกเลิก", id: "id2")
+                        ]);
+
+                    var response1 =
+                        await OneSignal.shared.postNotification(notification1);
+                  },
+                  child: Text('ส่ง',
+                      style: TextStyle(color: Get.theme.colorScheme.onPrimary)),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Get.theme.colorScheme.error,
+                  ),
+                  onPressed: () => Navigator.pop(
+                    context,
+                    'ยกเลิก',
+                  ),
+                  child: Text('ยกเลิก',
+                      style: TextStyle(color: Get.theme.colorScheme.onPrimary)),
+                ),
+              ],
+              content: SingleChildScrollView(
+                child: StatefulBuilder(builder: (context, setdialog) {
+                  return Container(
+                    width: double.maxFinite,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Divider(),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: MediaQuery.of(context).size.height * 0.4,
+                          ),
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: message.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return RadioListTile(
+                                    title: Text(message[index].masseage),
+                                    value: index,
+                                    groupValue: _selected,
+                                    onChanged: (value) {
+                                      setdialog(() {
+                                        _selected = index;
+                                        log(message[_selected].masseage);
+                                      });
+                                    });
+                              }),
+                        ),
+                        Divider(),
+                        TextFormField(
+                          controller: anothor,
+                          autofocus: false,
+                          maxLines: 1,
+                          style: TextStyle(fontSize: 18),
+                          decoration: new InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "อื่นๆ....",
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ),
+            ));
   }
 
   GlobalKey<CircularMenuState> key = GlobalKey<CircularMenuState>();
@@ -259,7 +369,7 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
                         padding: const EdgeInsets.only(bottom: 8, top: 10),
                         child: Container(
                           height: 35,
-                          width: 100,
+                          width: 200,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             color: Get.theme.colorScheme.secondary,
@@ -318,6 +428,7 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
                             child: urlImage != ''
                                 ? Container(
                                     width: Get.width * 0.7,
+                                    height: double.infinity,
                                     decoration: BoxDecoration(
                                       border: Border.all(
                                           color:
@@ -325,7 +436,7 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
                                       borderRadius: BorderRadius.circular(10),
                                       image: DecorationImage(
                                         image: NetworkImage(urlImage),
-                                        fit: BoxFit.cover,
+                                        //  fit: BoxFit.cover,
                                       ),
                                       shape: BoxShape.rectangle,
                                     ),
@@ -386,8 +497,7 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
                                     log(playerID.toString());
 
                                     // if (pickedFile == null) {
-                                    //   Get.defaultDialog(
-                                    //       title: 'กรุณาเลือกหลักฐาน');
+                                     
                                     // } else {}
                                   },
                                   child: Text('ผ่าน',
@@ -406,111 +516,9 @@ class _CheckMisNotiState extends State<CheckMisNoti> {
                                     backgroundColor:
                                         Get.theme.colorScheme.error,
                                   ),
-                                  onPressed: () => showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          AlertDialog(
-                                            title: Text('ไม่ผ่านเพราะ....'),
-                                            shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20))),
-                                            actions: <Widget>[
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Colors.green,
-                                                ),
-                                                onPressed: () => Navigator.pop(
-                                                    context, 'ส่ง'),
-                                                child: Text('ส่ง',
-                                                    style: TextStyle(
-                                                        color: Get
-                                                            .theme
-                                                            .colorScheme
-                                                            .onPrimary)),
-                                              ),
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Get
-                                                      .theme.colorScheme.error,
-                                                ),
-                                                onPressed: () => Navigator.pop(
-                                                  context,
-                                                  'ยกเลิก',
-                                                ),
-                                                child: Text('ยกเลิก',
-                                                    style: TextStyle(
-                                                        color: Get
-                                                            .theme
-                                                            .colorScheme
-                                                            .onPrimary)),
-                                              ),
-                                            ],
-                                            content: SingleChildScrollView(
-                                              child: StatefulBuilder(builder:
-                                                  (context, setdialog) {
-                                                return Container(
-                                                  width: double.maxFinite,
-                                                  child: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: <Widget>[
-                                                      Divider(),
-                                                      ConstrainedBox(
-                                                        constraints:
-                                                            BoxConstraints(
-                                                          maxHeight:
-                                                              MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .height *
-                                                                  0.4,
-                                                        ),
-                                                        child: ListView.builder(
-                                                            shrinkWrap: true,
-                                                            itemCount:
-                                                                message.length,
-                                                            itemBuilder:
-                                                                (BuildContext
-                                                                        context,
-                                                                    int index) {
-                                                              return RadioListTile(
-                                                                  title: Text(message[
-                                                                          index]
-                                                                      .masseage),
-                                                                  value: index,
-                                                                  groupValue:
-                                                                      _selected,
-                                                                  onChanged:
-                                                                      (value) {
-                                                                    setdialog(
-                                                                        () {
-                                                                      _selected =
-                                                                          index;
-                                                                      log(_selected
-                                                                          .toString());
-                                                                    });
-                                                                  });
-                                                            }),
-                                                      ),
-                                                      Divider(),
-                                                      TextField(
-                                                        autofocus: false,
-                                                        maxLines: 1,
-                                                        style: TextStyle(
-                                                            fontSize: 18),
-                                                        decoration:
-                                                            new InputDecoration(
-                                                          border:
-                                                              InputBorder.none,
-                                                          hintText: "อื่นๆ....",
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              }),
-                                            ),
-                                          )),
+                                  onPressed: () {
+                                    _CheckMisUnPass();
+                                  },
                                   child: Text('ไม่ผ่าน',
                                       style: Get.textTheme.bodyLarge!.copyWith(
                                           color:
