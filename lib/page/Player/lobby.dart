@@ -96,7 +96,7 @@ class _LobbyState extends State<Lobby> {
     loadDataMethod = loadData();
   }
 
-  Widget CardDetailPlayer() {
+  Widget CardDetailPlayer(Map<String, List<AttendRace>> e) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     return FutureBuilder(
@@ -131,7 +131,7 @@ class _LobbyState extends State<Lobby> {
                                 //ทีมที่เข้าร่วม
                                 Row(children: [
                                     Text(
-                                      ("${attends[index].team.teamName} (ทีมคุณ)"),
+                                      ("${e.values.first.first.team.teamName} (ทีมคุณ)"),
                                       style: textTheme.bodyLarge?.copyWith(
                                           fontWeight: FontWeight.bold,
                                           color:
@@ -153,7 +153,9 @@ class _LobbyState extends State<Lobby> {
                                           ? Text("ยังไม่มีทีมเข้าร่วม")
                                           //Name team (Host)
                                           //another team
-                                          : Text(attends[index].team.teamName,
+                                          : Text(
+                                              e.values.first.first.team
+                                                  .teamName,
                                               style: textTheme.bodyLarge
                                                   ?.copyWith(
                                                       fontWeight:
@@ -468,7 +470,7 @@ class _LobbyState extends State<Lobby> {
                             child: Container(
                                 width: Get.width,
                                 height: Get.height,
-                                child: CardDetailPlayer()));
+                                child: CardDetailPlayer(e)));
                       }).toList(),
                     ),
                   ),
