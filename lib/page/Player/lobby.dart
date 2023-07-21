@@ -227,8 +227,7 @@ class _LobbyState extends State<Lobby> {
                                                           .user
                                                           .userImage)),
                                               Gap(5),
-                                              Text(attends[index]
-                                                  .user
+                                              Text(e.values.first.first.user
                                                   .userName
                                                   .toString()),
                                             ],
