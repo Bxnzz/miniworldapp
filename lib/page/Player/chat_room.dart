@@ -4,6 +4,8 @@ import 'dart:io' as io;
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -51,21 +53,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     // Create chatUser object
     _user =
         types.User(id: widget.userID.toString(), firstName: widget.userName);
-
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // if (prefs.getString(widget.roomID) != null) {
-    //   String? messagesTxt = prefs.getString(widget.roomID);
-    //   if (messagesTxt != null) {
-    //     var messages = jsonDecode(messagesTxt);
-    //     for (var message in messages) {
-    //       types.Message msg = types.Message.fromJson(message);
-    //       _addMessage(msg);
-    //     }
-    //     setState(() {
-    //       log('messages is loaded');
-    //     });
-    //   }
-    // }
   }
 
   // Create Text message and send to firebase
@@ -127,27 +114,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     }
   }
 
-  //  In case select file (not using)
-  // void _handleFileSelection() async {
-  //   final result = await FilePicker.platform.pickFiles(
-  //     type: FileType.any,
-  //   );
-
-  //   if (result != null && result.files.single.path != null) {
-  //     final message = types.FileMessage(
-  //       author: _user,
-  //       createdAt: DateTime.now().millisecondsSinceEpoch,
-  //       id: const Uuid().v4(),
-  //       mimeType: lookupMimeType(result.files.single.path!),
-  //       name: result.files.single.name,
-  //       size: result.files.single.size,
-  //       uri: result.files.single.path!,
-  //     );
-
-  //     _sendMessage(message);
-  //   }
-  // }
-
   // UI select image/file
   void _handleAttachmentPressed() {
     showModalBottomSheet<void>(
@@ -179,16 +145,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     child: Text('เลือกรูปภาพ'),
                   ),
                 ),
-                // TextButton(
-                //   onPressed: () {
-                //     Navigator.pop(context);
-                //     _handleFileSelection();
-                //   },
-                //   child: const Align(
-                //     alignment: Alignment.centerLeft,
-                //     child: Text('File'),
-                //   ),
-                // ),
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: const Align(
@@ -250,11 +206,42 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     return Scaffold(
-        appBar: AppBar(
-          title:
-              Text('ชื่อการแข่งขัน : ${widget.raceName}   #${widget.raceID}'),
-        ),
+        appBar: PreferredSize(
+            preferredSize: Size(Get.width, Get.height),
+            child: SafeArea(
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    icon: const FaIcon(
+                      FontAwesomeIcons.circleChevronLeft,
+                      color: Colors.yellow,
+                      size: 35,
+                    ),
+                  ),
+                  Text(
+                    '${widget.raceName}',
+                    style: textTheme.displayMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.purple,
+                      fontSize: 20,
+                    ),
+                  ),
+                  Text(
+                    "#${widget.raceID}",
+                    style: textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.purple,
+                    ),
+                  )
+                ],
+              ),
+            )),
         body: StreamBuilder(
           // Start stream check
           stream: _chatStream,
