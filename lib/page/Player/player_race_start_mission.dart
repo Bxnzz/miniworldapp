@@ -67,6 +67,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
   UploadTask? uploadTask;
   VideoPlayerController? videoPlayerController;
   CustomVideoPlayerController? _customVideoPlayerController;
+  TextEditingController answerPass = TextEditingController();
   bool isImage = false;
 
   late Future<void> loadDataMethod;
@@ -210,7 +211,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
           mcMasseage: '',
           mcPhoto: urlDownload,
           mcStatus: 1,
-          mcText: '',
+          mcText: answerPass.text,
           mcVideo: '',
           misId: misID,
           teamId: teamID);
@@ -229,7 +230,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
           mcMasseage: '',
           mcPhoto: '',
           mcStatus: 1,
-          mcText: '',
+          mcText: answerPass.text,
           mcVideo: urlDownload,
           misId: misID,
           teamId: teamID);
@@ -288,204 +289,228 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
           if (snapshot.connectionState == ConnectionState.done) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 10, left: 15, right: 15),
-              child: Card(
-                child: InkWell(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 15),
-                        child: Text(
-                          misName,
-                          style: Get.textTheme.headlineSmall!.copyWith(
-                              color: Get.theme.colorScheme.primary,
-                              fontWeight: FontWeight.bold),
+              child: SingleChildScrollView(
+                child: Card(
+                  child: InkWell(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15),
+                          child: Text(
+                            misName,
+                            style: Get.textTheme.headlineSmall!.copyWith(
+                                color: Get.theme.colorScheme.primary,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 35, bottom: 8),
-                            child: Text('รายละเอียด',
-                                style: Get.textTheme.bodyMedium!.copyWith(
-                                    color: Get.theme.colorScheme.onBackground,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 15, left: 15),
-                        child: Container(
-                            width: Get.width,
-                            height: 80,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 3,
-                                    color: Get.theme.colorScheme.primary),
-                                borderRadius: BorderRadius.circular(40),
-                                color: Colors.white),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Text(misDiscrip),
-                            )),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 35, top: 8),
-                            child: Text('ประเภท',
-                                style: Get.textTheme.bodyMedium!.copyWith(
-                                    color: Get.theme.colorScheme.onBackground,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 35, bottom: 8),
-                            child: Container(
-                              height: 35,
-                              width: 75,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 35, bottom: 8),
+                              child: Text('รายละเอียด',
+                                  style: Get.textTheme.bodyMedium!.copyWith(
+                                      color: Get.theme.colorScheme.onBackground,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 15, left: 15),
+                          child: Container(
+                              width: Get.width,
+                              height: 80,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                color: Get.theme.colorScheme.secondary,
+                                  border: Border.all(
+                                      width: 3,
+                                      color: Get.theme.colorScheme.primary),
+                                  borderRadius: BorderRadius.circular(40),
+                                  color: Colors.white),
+                              child: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Text(misDiscrip),
+                              )),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 35, top: 8),
+                              child: Text('ประเภท',
+                                  style: Get.textTheme.bodyMedium!.copyWith(
+                                      color: Get.theme.colorScheme.onBackground,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 35, bottom: 8),
+                              child: Container(
+                                height: 35,
+                                width: 75,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Get.theme.colorScheme.secondary,
+                                ),
+                                child: Center(
+                                  child: Text(type,
+                                      style: Get.textTheme.bodyLarge!.copyWith(
+                                          color:
+                                              Get.theme.colorScheme.onPrimary,
+                                          fontWeight: FontWeight.bold)),
+                                ),
                               ),
-                              child: Center(
-                                child: Text(type,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 35, bottom: 8),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.orangeAccent,
+                                  shape: CircleBorder(), //<-- SEE HERE
+                                  padding: EdgeInsets.all(15),
+                                ),
+                                onPressed: () {
+                                  selectFile();
+                                },
+                                child: FaIcon(
+                                  //<-- SEE HERE
+                                  FontAwesomeIcons.plus,
+                                  color: Colors.white,
+                                  size: 35,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        // CircularMenu(
+                        //   alignment: Alignment.bottomCenter,
+                        //   radius: 60,
+                        //   toggleButtonSize: 35,
+                        //   startingAngleInRadian: 0.75 * 2.5,
+                        //   endingAngleInRadian: 1.5 * 3.14,
+                        //   backgroundWidget: Row(
+                        //     children: [
+                        //       MaterialButton(
+                        //         onPressed: () {
+                        //           key.currentState!.forwardAnimation();
+                        //         },
+                        //         shape: RoundedRectangleBorder(
+                        //             borderRadius: BorderRadius.circular(35)),
+                        //         padding: const EdgeInsets.all(35),
+                        //       ),
+                        //       MaterialButton(
+                        //         onPressed: () {
+                        //           key.currentState!.reverseAnimation();
+                        //         },
+                        //         shape: RoundedRectangleBorder(
+                        //             borderRadius: BorderRadius.circular(15)),
+                        //         padding: const EdgeInsets.all(15),
+                        //       ),
+                        //     ],
+                        //   ),
+                        //   key: key,
+                        //   items: [
+                        //     CircularMenuItem(
+                        //       icon: FontAwesomeIcons.camera,
+                        //       onTap: () {
+                        //         log('กด');
+                        //       },
+                        //       color: Colors.green,
+                        //       iconColor: Colors.white,
+                        //     ),
+                        //     CircularMenuItem(
+                        //       icon: Icons.image,
+                        //       onTap: () {
+                        //         selectFile();
+                        //       },
+                        //       color: Colors.orange,
+                        //       iconColor: Colors.white,
+                        //     ),
+                        //     CircularMenuItem(
+                        //       icon: Icons.text_fields,
+                        //       onTap: () {
+                        //         log('message');
+                        //       },
+                        //       color: Colors.deepPurple,
+                        //       iconColor: Colors.white,
+                        //     ),
+                        //   ],
+                        // ),
+                        pickedFile != null
+                            ? isImage == true
+                                ? SizedBox(
+                                    width: Get.width / 3,
+                                    height: Get.height / 3,
+                                    child: GestureDetector(
+                                      child: Image.file(
+                                        (pickedFile!),
+                                        width: Get.width / 2,
+                                        height: Get.height / 2,
+                                      ),
+                                    ),
+                                  )
+                                : SizedBox(
+                                    width: Get.width,
+                                    height: Get.height / 3,
+                                    child: CustomVideoPlayer(
+                                        customVideoPlayerController:
+                                            _customVideoPlayerController!),
+                                  )
+                            : Text("ยังไม่ได้เพิ่มไฟล์"),
+
+                        // buildProgress(),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 15, right: 15, bottom: 8),
+                          child: TextField(
+                            controller: answerPass,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: 3,
+                            textInputAction: TextInputAction.done,
+                            decoration: InputDecoration(
+                              hintText: ' คำอธิบาย...',
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      width: 3,
+                                      color: Get.theme.colorScheme.primary)),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10,bottom: 50),
+                          child: SizedBox(
+                            width: 200,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Get.theme.colorScheme.primary,
+                                ),
+                                onPressed: () {
+                                  //  _handleSendNotification();
+                                  if (pickedFile == null) {
+                                    Get.defaultDialog(
+                                        title: 'กรุณาเลือกหลักฐาน');
+                                  } else {
+                                    setState(() {
+                                      uploadFile();
+                                    });
+                                  }
+                                },
+                                child: Text('ส่งหลักฐาน',
                                     style: Get.textTheme.bodyLarge!.copyWith(
                                         color: Get.theme.colorScheme.onPrimary,
-                                        fontWeight: FontWeight.bold)),
-                              ),
-                            ),
+                                        fontWeight: FontWeight.bold))),
                           ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(right: 35, bottom: 8),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.orangeAccent,
-                                shape: CircleBorder(), //<-- SEE HERE
-                                padding: EdgeInsets.all(15),
-                              ),
-                              onPressed: () {
-                                selectFile();
-                              },
-                              child: FaIcon(
-                                //<-- SEE HERE
-                                FontAwesomeIcons.plus,
-                                color: Colors.white,
-                                size: 35,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      // CircularMenu(
-                      //   alignment: Alignment.bottomCenter,
-                      //   radius: 60,
-                      //   toggleButtonSize: 35,
-                      //   startingAngleInRadian: 0.75 * 2.5,
-                      //   endingAngleInRadian: 1.5 * 3.14,
-                      //   backgroundWidget: Row(
-                      //     children: [
-                      //       MaterialButton(
-                      //         onPressed: () {
-                      //           key.currentState!.forwardAnimation();
-                      //         },
-                      //         shape: RoundedRectangleBorder(
-                      //             borderRadius: BorderRadius.circular(35)),
-                      //         padding: const EdgeInsets.all(35),
-                      //       ),
-                      //       MaterialButton(
-                      //         onPressed: () {
-                      //           key.currentState!.reverseAnimation();
-                      //         },
-                      //         shape: RoundedRectangleBorder(
-                      //             borderRadius: BorderRadius.circular(15)),
-                      //         padding: const EdgeInsets.all(15),
-                      //       ),
-                      //     ],
-                      //   ),
-                      //   key: key,
-                      //   items: [
-                      //     CircularMenuItem(
-                      //       icon: FontAwesomeIcons.camera,
-                      //       onTap: () {
-                      //         log('กด');
-                      //       },
-                      //       color: Colors.green,
-                      //       iconColor: Colors.white,
-                      //     ),
-                      //     CircularMenuItem(
-                      //       icon: Icons.image,
-                      //       onTap: () {
-                      //         selectFile();
-                      //       },
-                      //       color: Colors.orange,
-                      //       iconColor: Colors.white,
-                      //     ),
-                      //     CircularMenuItem(
-                      //       icon: Icons.text_fields,
-                      //       onTap: () {
-                      //         log('message');
-                      //       },
-                      //       color: Colors.deepPurple,
-                      //       iconColor: Colors.white,
-                      //     ),
-                      //   ],
-                      // ),
-                      pickedFile != null
-                          ? isImage == true
-                              ? SizedBox(
-                                  width: Get.width / 3,
-                                  height: Get.height / 3,
-                                  child: GestureDetector(
-                                    child: Image.file(
-                                      (pickedFile!),
-                                      width: Get.width / 2,
-                                      height: Get.height / 2,
-                                    ),
-                                  ),
-                                )
-                              : SizedBox(
-                                  width: Get.width,
-                                  height: Get.height / 3,
-                                  child: CustomVideoPlayer(
-                                      customVideoPlayerController:
-                                          _customVideoPlayerController!),
-                                )
-                          : Text("ยังไม่ได้เพิ่มไฟล์"),
-
-                      // buildProgress(),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 45, bottom: 20),
-                        child: SizedBox(
-                          width: 200,
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Get.theme.colorScheme.primary,
-                              ),
-                              onPressed: () {
-                                //  _handleSendNotification();
-                                if (pickedFile == null) {
-                                  Get.defaultDialog(title: 'กรุณาเลือกหลักฐาน');
-                                } else {
-                                  setState(() {
-                                    uploadFile();
-                                  });
-                                }
-                              },
-                              child: Text('ส่งหลักฐาน',
-                                  style: Get.textTheme.bodyLarge!.copyWith(
-                                      color: Get.theme.colorScheme.onPrimary,
-                                      fontWeight: FontWeight.bold))),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

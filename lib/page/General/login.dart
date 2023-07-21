@@ -22,6 +22,7 @@ import '../../model/DTO/loginDTO.dart';
 import '../../service/login.dart';
 import '../Host/approve_mission.dart';
 import '../Newhome.dart';
+import '../Player/player_race_start_menu.dart';
 import 'fontpage_register.dart';
 
 class Login extends StatefulWidget {
@@ -90,6 +91,8 @@ class _LoginState extends State<Login> {
         Get.defaultDialog(title: additionalData['masseage']);
       } else if (additionalData['notitype'].toString() == 'endgame') {
         Get.defaultDialog(title: additionalData['masseage']);
+      }else if (additionalData['notitype'].toString() == 'startgame') {
+        Get.defaultDialog(title: 'เริ่มการแข่งขัน');
       } else {
         log('YYYY');
       }
@@ -122,10 +125,13 @@ class _LoginState extends State<Login> {
         log('nnnnnnnnnnn');
       } else if (event.notification.additionalData!['notitype'] == 'checkMis') {
         Get.defaultDialog(title: 'ส่งมาละจ้าา');
+      }else if (event.notification.additionalData!['notitype'] == 'startgame') {
+        Get.defaultDialog(title: 'เริ่มการแข่งขัน').then((value) => 
+        Get.to(PlayerRaceStartMenu()));
       } else if (event.notification.additionalData!['notitype'] == 'endgame') {
         raceName = event.notification.additionalData!['raceName'];
         raceID = int.parse(event.notification.additionalData!['raceID']);
-        Get.defaultDialog(title: event.notification.additionalData!['masseage'])
+        Get.defaultDialog(title: 'จบการแข่งขัน')
             .then((value) {
           Get.to(ChatRoomPage(
               userID: userID,

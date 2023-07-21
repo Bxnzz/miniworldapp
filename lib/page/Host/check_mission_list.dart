@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:miniworldapp/model/attend.dart';
 import 'package:miniworldapp/model/missionComp.dart';
@@ -35,9 +36,9 @@ class _CheckMissionListState extends State<CheckMissionList> {
   int idrace = 0;
   List<Mission> missions = [];
   List<MissionComplete> missionComs = [];
-  List<Team> teams= [];
-  List<AttendRace> attends= [];
-   Map<String, dynamic> mc = {};
+  List<Team> teams = [];
+  List<AttendRace> attends = [];
+  Map<String, dynamic> mc = {};
 
   final seq = <int>[];
   late Future<void> loadDataMethod;
@@ -47,21 +48,20 @@ class _CheckMissionListState extends State<CheckMissionList> {
   late TeamService teamService;
   late RaceService raceService;
   late MissionCompService missionCompService;
-   String raceName = '';
+  String raceName = '';
   String type1 = '';
   String type2 = '';
   String type3 = '';
   String mType = '';
   String types = '';
- int misStatus = 0; 
- int raceStatus = 0;
- int misID = 0;
- 
- List<int> teamsID = [];
- List<String> playerIds = [];
+  int misStatus = 0;
+  int raceStatus = 0;
+  int misID = 0;
+
+  List<int> teamsID = [];
+  List<String> playerIds = [];
 
   bool isLoaded = false;
-
 
   bool inReorder = false;
 
@@ -76,19 +76,17 @@ class _CheckMissionListState extends State<CheckMissionList> {
 
     missionService =
         MissionService(Dio(), baseUrl: context.read<AppData>().baseurl);
-    
-     attendService =
-        AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
-    
-     missionCompService =
-        MissionCompService(Dio(), baseUrl: context.read<AppData>().baseurl);
-    
-     teamService =
-    TeamService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
-     raceService =
-    RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
-   
+    attendService =
+        AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
+    missionCompService =
+        MissionCompService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
+    teamService = TeamService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
+    raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
     // 2.2 async method
     loadDataMethod = loadData();
   }
@@ -103,27 +101,26 @@ class _CheckMissionListState extends State<CheckMissionList> {
 
       var t = await teamService.teambyRaceID(raceID: idrace);
       teams = t.data;
-      teamsID.clear() ;
+      teamsID.clear();
       for (var element in t.data) {
         teamsID.add(element.teamId);
       }
       log('team ' + teamsID.toString());
-      
+
       var at = await attendService.attendByRaceID(raceID: idrace);
       attends = at.data;
-      playerIds.clear() ;
+      playerIds.clear();
       for (var element in at.data) {
-        if(element.user.onesingnalId.isNotEmpty){
-        playerIds.add(element.user.onesingnalId);
+        if (element.user.onesingnalId.isNotEmpty) {
+          playerIds.add(element.user.onesingnalId);
         }
-        
       }
       log('att ' + playerIds.toString());
-        var mcs = await missionCompService.missionCompAll();
-       missionComs = mcs.data;
-      
+      var mcs = await missionCompService.missionCompAll();
+      missionComs = mcs.data;
+
       // misStatus = mcs.
-      
+
       isLoaded = true;
     } catch (err) {
       isLoaded = false;
@@ -134,15 +131,19 @@ class _CheckMissionListState extends State<CheckMissionList> {
   }
 
   void _Endgame() async {
-   raceStatus = 3;
+    raceStatus = 3;
     RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
     var racestatus = await raceService.updateStatusRaces(racedto, idrace);
-    mc = {'notitype':'endgame','mcid': raceStatus,'raceID':idrace,};
+    mc = {
+      'notitype': 'endgame',
+      'mcid': raceStatus,
+      'raceID': idrace,
+    };
     var notification1 = OSCreateNotification(
         //playerID
-       additionalData: mc,
+        additionalData: mc,
         playerIds: playerIds,
-        content:  raceName,
+        content: raceName,
         heading: "จบการแข่งขัน",
         //  iosAttachments: {"id1",urlImage},
         // bigPicture: imUrlString,
@@ -150,34 +151,45 @@ class _CheckMissionListState extends State<CheckMissionList> {
           OSActionButton(text: "ตกลง", id: "id1"),
           OSActionButton(text: "ยกเลิก", id: "id2")
         ]);
-    log('player '+playerIds.toString());
+    log('player ' + playerIds.toString());
     var response1 = await OneSignal.shared.postNotification(notification1);
-    Get.defaultDialog(title: mc.toString());
+    Get.defaultDialog(title: 'จบการแข่งขันแล้ว');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-            child: Text(
-          'ภารกิจ',
-          //  style: TextStyle(color: Colors.white),
-        )),
+        // Overide the default Back button
+        automaticallyImplyLeading: false,
+        leadingWidth: 100,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: FaIcon(
+            FontAwesomeIcons.circleChevronLeft,
+            color: Colors.yellow,
+            size: 35,
+          ),
+        ),
+
+        // other stuff
+        title: const Text('ภารกิจ'),
       ),
-      floatingActionButton:  FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.pinkAccent,
-       
         onPressed: () {
           _Endgame();
         },
-        label: Text('จบการแข่งขัน',style: Get.textTheme.bodyLarge!.copyWith(
-                              color: Get.theme.colorScheme.onPrimary,
-                              fontWeight: FontWeight.bold),),
-        
+        label: Text(
+          'จบการแข่งขัน',
+          style: Get.textTheme.bodyLarge!.copyWith(
+              color: Get.theme.colorScheme.onPrimary,
+              fontWeight: FontWeight.bold),
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      
       body: FutureBuilder(
           future: loadDataMethod,
           builder: (context, AsyncSnapshot snapshot) {
@@ -187,81 +199,92 @@ class _CheckMissionListState extends State<CheckMissionList> {
                 children: missions.map((element) {
                   final theme = Theme.of(context);
                   final textTheme = theme.textTheme;
-                  var mcStatus = missionComs.where((e) => e.mission.misId == element.misId && e.mcStatus == 1).length;
-      log('mcss '+mcStatus.toString());
+                  var mcStatus = missionComs
+                      .where((e) =>
+                          e.mission.misId == element.misId && e.mcStatus == 1)
+                      .length;
+                  log('mcss ' + mcStatus.toString());
                   return Padding(
                     padding:
                         const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                    child: element.misType != 3 ? 
-                    badges.Badge(
-                       position:
+                    child: element.misType != 3
+                        ? badges.Badge(
+                            position:
                                 badges.BadgePosition.topEnd(top: -5, end: 5),
                             badgeAnimation: badges.BadgeAnimation.slide(
                                 // disappearanceFadeAnimationDuration: Duration(milliseconds: 200),
                                 // curve: Curves.easeInCubic,
                                 ),
-                          //  showBadge: _showCartBadge,
+                            //  showBadge: _showCartBadge,
                             badgeStyle: badges.BadgeStyle(
                               badgeColor: Colors.red,
                             ),
                             badgeContent: Text(
                               mcStatus.toString(),
-                              style: textTheme.bodyText2?.copyWith(
-                                        fontSize: 16,color: Colors.white
-                                      ),
+                              style: textTheme.bodyText2
+                                  ?.copyWith(fontSize: 16, color: Colors.white),
                             ),
-                      child: element.misType != 3 
-                      ? Card(
-                        //  shadowColor: ,
-                    
-                        clipBehavior: Clip.hardEdge,
-                    
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12.0),
-                          splashColor: Colors.blue.withAlpha(30),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                alignment: Alignment.center,
-                                // For testing different size item. You can comment this line
-                                padding: element.misName == element.misName
-                                    ? const EdgeInsets.symmetric(vertical: 16.0)
-                                    : EdgeInsets.zero,
-                                child: ListTile(
-                                    title: Text(
-                                      element.misName,
-                                      style: textTheme.bodyText2?.copyWith(
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    leading: SizedBox(
-                                      width: 36,
-                                      height: 36,
-                                      child: Center(
-                                        child: Text(
-                                          //int sortn = mis.misSeq,
-                                          '${missions.indexOf(element) + 1}',
-                                          style: textTheme.bodyLarge?.copyWith(
-                                            color: Colors.purple,
-                                            fontSize: 16,
+                            child: element.misType != 3
+                                ? Card(
+                                    //  shadowColor: ,
+
+                                    clipBehavior: Clip.hardEdge,
+
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      splashColor: Colors.blue.withAlpha(30),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Container(
+                                            alignment: Alignment.center,
+                                            // For testing different size item. You can comment this line
+                                            padding: element.misName ==
+                                                    element.misName
+                                                ? const EdgeInsets.symmetric(
+                                                    vertical: 16.0)
+                                                : EdgeInsets.zero,
+                                            child: ListTile(
+                                                title: Text(
+                                                  element.misName,
+                                                  style: textTheme.bodyText2
+                                                      ?.copyWith(
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                                leading: SizedBox(
+                                                  width: 36,
+                                                  height: 36,
+                                                  child: Center(
+                                                    child: Text(
+                                                      //int sortn = mis.misSeq,
+                                                      '${missions.indexOf(element) + 1}',
+                                                      style: textTheme.bodyLarge
+                                                          ?.copyWith(
+                                                        color: Colors.purple,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                trailing: FilledButton(
+                                                  child: Text('ตรวจสอบภารกิจ'),
+                                                  onPressed: () {
+                                                    Get.to(ListApprove());
+                                                    context
+                                                        .read<AppData>()
+                                                        .misID = element.misId;
+                                                  },
+                                                )),
                                           ),
-                                        ),
+                                        ],
                                       ),
                                     ),
-                                    trailing: FilledButton(
-                                      child: Text('ตรวจสอบภารกิจ'),
-                                      onPressed: () {
-                                       Get.to(ListApprove());
-                                       context.read<AppData>().misID = element.misId;
-                                      },
-                                    )),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ): Container(),
-                    ) : Container(),
+                                  )
+                                : Container(),
+                          )
+                        : Container(),
                   );
                 }).toList(),
               );

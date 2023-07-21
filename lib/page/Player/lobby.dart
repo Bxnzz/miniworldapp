@@ -14,10 +14,13 @@ import 'package:miniworldapp/model/DTO/attendStatusDTO.dart';
 import 'package:miniworldapp/model/DTO/raceDTO.dart';
 import 'package:miniworldapp/model/DTO/raceStatusDTO.dart';
 import 'package:miniworldapp/model/attend.dart';
+import 'package:miniworldapp/page/General/detil_race_host.dart';
 
 import 'package:miniworldapp/page/Host/host_race_start.dart';
 import 'package:miniworldapp/page/Player/chat_room.dart';
 import 'package:miniworldapp/service/team.dart';
+import 'package:miniworldapp/widget/loadData.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/missionComp.dart';
@@ -58,6 +61,9 @@ class _LobbyState extends State<Lobby> {
   late int status = 1;
   late int raceStatus;
 
+  List<String> playerIds = [];
+  Map<String, dynamic> mc = {};
+
   String Username = '';
   String raceName = '';
 
@@ -91,6 +97,33 @@ class _LobbyState extends State<Lobby> {
     log('id Team is${idTeam}');
     log('StatusStart :${status}');
     log("Race Status$raceStatus");
+  }
+
+  void _Startgame() async {
+    raceStatus = 2;
+    RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
+    var racestatus = await raceService.updateStatusRaces(racedto, idRace);
+    mc = {
+      'notitype': 'startgame',
+      'mcid': raceStatus,
+      'raceID': idRace,
+    };
+    var notification1 = OSCreateNotification(
+        //playerID
+        additionalData: mc,
+        playerIds: playerIds,
+        content: raceName,
+        heading: "เริ่มการแข่งขัน",
+        //  iosAttachments: {"id1",urlImage},
+        // bigPicture: imUrlString,
+        buttons: [
+          OSActionButton(text: "ตกลง", id: "id1"),
+          OSActionButton(text: "ยกเลิก", id: "id2")
+        ]);
+    log('player ' + playerIds.toString());
+    var response1 = await OneSignal.shared.postNotification(notification1);
+    // Get.defaultDialog(title: mc.toString());
+    Get.to(DetailHost());
   }
 
   @override
@@ -192,14 +225,18 @@ class _LobbyState extends State<Lobby> {
                         chkReadyBtn(context),
                         //Host
                       ])
-                    : ElevatedButton(
-                        onPressed: () {
-                          showAlertDialog(context);
-                        },
-                        child: Text('เริ่มเกม'))
+                    : Padding(
+                        padding: const EdgeInsets.only(bottom: 15),
+                        child: ElevatedButton(
+                            onPressed: () {
+                              _Startgame();
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('เริ่มเกม')),
+                      )
               ]);
             } else {
-              return Center(child: const CircularProgressIndicator());
+              return Container();
             }
           }),
     );
@@ -321,6 +358,7 @@ class _LobbyState extends State<Lobby> {
   }
 
   Future<void> loadData() async {
+    startLoading(context);
     try {
       log("LoadData");
       log(idRace.toString());
@@ -333,6 +371,12 @@ class _LobbyState extends State<Lobby> {
       userCreate = a.data.first.team.race.userId;
       raceName = attends.first.team.race.raceName;
 
+      playerIds.clear();
+      for (var element in a.data) {
+        if (element.user.onesingnalId.isNotEmpty) {
+          playerIds.add(element.user.onesingnalId);
+        }
+      }
       log('userCreate' + userCreate.toString());
 
       log(attendShow.toList().toString());
@@ -340,6 +384,7 @@ class _LobbyState extends State<Lobby> {
     } catch (err) {
       log('Error:$err');
     }
+    stopLoading();
   }
 
   showAlertDialog(BuildContext context) {
