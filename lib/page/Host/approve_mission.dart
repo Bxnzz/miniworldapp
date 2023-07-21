@@ -66,6 +66,7 @@ class _ApproveMissionState extends State<ApproveMission> {
   String hostName = '';
 
   TextEditingController anothor = TextEditingController();
+  TextEditingController textMc = TextEditingController();
 
   int _counter = 0;
   List<Notpass> message = [
@@ -87,6 +88,7 @@ class _ApproveMissionState extends State<ApproveMission> {
   int misID = 0;
   String teamName = '';
   String masseageMC = '';
+  String mctext = '';
 
   String mcID = '';
   Map<String, dynamic> mc = {};
@@ -169,6 +171,7 @@ class _ApproveMissionState extends State<ApproveMission> {
       teamName = a.data.first.team.teamName;
       teamID = a.data.first.team.teamId;
       misID = a.data.first.mission.misId;
+     
       hostName = mis.data.first.race.user.userName;
       log('tt ' + teamID.toString());
 
@@ -424,7 +427,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                       ),
                       Expanded(
                         child: Padding(
-                            padding: const EdgeInsets.only(top: 15, bottom: 35),
+                            padding: const EdgeInsets.only(top: 15, bottom: 8),
                             child: urlImage != ''
                                 ? Container(
                                     width: Get.width * 0.7,
@@ -445,25 +448,10 @@ class _ApproveMissionState extends State<ApproveMission> {
                                     ? CustomVideoPlayer(
                                         customVideoPlayerController:
                                             _customVideoPlayerController!)
-                                    : mcText != null
-                                        ? Container(
-                                            width: Get.width,
-                                            height: 80,
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    width: 3,
-                                                    color: Get.theme.colorScheme
-                                                        .primary),
-                                                borderRadius:
-                                                    BorderRadius.circular(40),
-                                                color: Colors.white),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(15),
-                                              child: Text(mcText),
-                                            ))
+                                    
                                         : Container()),
                       ),
-
+                              
                       // pickedFile != null
                       //  Expanded(
                       //     child: isImage == true
@@ -481,6 +469,23 @@ class _ApproveMissionState extends State<ApproveMission> {
                       //   ),
                       //: Container(),
                       // buildProgress(),
+                      mcText != '' ?  
+                      Padding(
+                        padding: const EdgeInsets.only(right: 15, left: 15,bottom: 15),
+                        child: Container(
+                            width: Get.width,
+                            height: 80,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 3,
+                                    color: Get.theme.colorScheme.primary),
+                                borderRadius: BorderRadius.circular(40),
+                                color: Colors.white),
+                            child: Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Text(mcText),
+                            )),
+                      ):Container(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -495,7 +500,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                                   onPressed: () async {
                                     _CheckMisPass();
                                     log(playerID.toString());
-
+                              
                                     // if (pickedFile == null) {
                                      
                                     // } else {}
@@ -528,6 +533,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                           )
                         ],
                       ),
+
                     ],
                   ),
                 ),
