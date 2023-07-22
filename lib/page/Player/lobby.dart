@@ -93,6 +93,7 @@ class _LobbyState extends State<Lobby> {
     log('id Team is${idTeam}');
     log('StatusStart :${status}');
     log("Race Status$raceStatus");
+    attendShow = [];
     loadDataMethod = loadData();
   }
 
@@ -103,8 +104,12 @@ class _LobbyState extends State<Lobby> {
         future: loadDataMethod,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
+            // log('xxxxx ' + attendShow.last.values.first.length.toString());
+            // log('xxxxx ' + attendShow.last.values.first.last.user.userName);
+            // attendShow.[team].values.first.[player].user.userName
+
             return ListView.builder(
-              itemCount: attends.length,
+              itemCount: attendShow.length,
               itemBuilder: (context, index) {
                 return Card(
                     clipBehavior: Clip.hardEdge,
@@ -116,7 +121,12 @@ class _LobbyState extends State<Lobby> {
                           child: Opacity(
                             opacity: 0.3,
                             child: Image.network(
-                              attends[index].user.userImage,
+                              attendShow[index]
+                                  .values
+                                  .first
+                                  .first
+                                  .team
+                                  .teamImage,
                               height: 60,
                               width: double.infinity,
                               fit: BoxFit.cover,
@@ -125,13 +135,15 @@ class _LobbyState extends State<Lobby> {
                         ),
                         ExpansionTile(
                             key: Key(selec.toString()),
-                            initiallyExpanded: idAttend == attends[index].atId,
-                            title: idAttend == attends[index].atId
+                            initiallyExpanded: idTeam ==
+                                attendShow[index].values.first.first.teamId,
+                            title: idTeam ==
+                                    attendShow[index].values.first.first.teamId
                                 ?
                                 //ทีมที่เข้าร่วม
                                 Row(children: [
                                     Text(
-                                      ("${e.values.first.first.team.teamName} (ทีมคุณ)"),
+                                      ("${attendShow[index].values.first.first.team.teamName} (ทีมคุณ)"),
                                       style: textTheme.bodyLarge?.copyWith(
                                           fontWeight: FontWeight.bold,
                                           color:
@@ -154,7 +166,11 @@ class _LobbyState extends State<Lobby> {
                                           //Name team (Host)
                                           //another team
                                           : Text(
-                                              e.values.first.first.team
+                                              attendShow[index]
+                                                  .values
+                                                  .first
+                                                  .first
+                                                  .team
                                                   .teamName,
                                               style: textTheme.bodyLarge
                                                   ?.copyWith(
@@ -170,85 +186,122 @@ class _LobbyState extends State<Lobby> {
                                                   ])),
                                     ],
                                   ),
-                            children: [
-                              idAttend == attends[index].atId
-                                  ? ListTile(
-                                      title: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              CircleAvatar(
-                                                  radius: 25,
-                                                  backgroundImage: NetworkImage(
-                                                      attends[index]
-                                                          .user
-                                                          .userImage)),
-                                              Gap(5),
-                                              Text(attends[index]
-                                                  .user
-                                                  .userName
-                                                  .toString()),
-                                            ],
+                            children: attendShow[index].values.first.map((e) {
+                              return ListTile(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        CircleAvatar(
+                                            radius: 25,
+                                            backgroundImage:
+                                                NetworkImage(e.user.userImage)),
+                                        Gap(5),
+                                        Text(e.user.userName),
+                                      ],
+                                    ),
+                                    e.status == 2
+                                        //statuscheck(logging in)
+                                        ? const FaIcon(
+                                            FontAwesomeIcons.solidCircleCheck,
+                                            color: Colors.green,
+                                            size: 30,
+                                          )
+                                        : const FaIcon(
+                                            FontAwesomeIcons.solidCircleXmark,
+                                            color: Colors.red,
+                                            size: 30,
                                           ),
-                                          attends[index].status == 2 &&
-                                                  attends[index].atId ==
-                                                      attends[index].atId
-                                              //statuscheck(logging in)
-                                              ? const FaIcon(
-                                                  FontAwesomeIcons
-                                                      .solidCircleCheck,
-                                                  color: Colors.green,
-                                                  size: 30,
-                                                )
-                                              : const FaIcon(
-                                                  FontAwesomeIcons
-                                                      .solidCircleXmark,
-                                                  color: Colors.red,
-                                                  size: 30,
-                                                ),
-                                        ],
-                                      ),
-                                    )
-                                  : ListTile(
-                                      title: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              CircleAvatar(
-                                                  radius: 25,
-                                                  backgroundImage: NetworkImage(
-                                                      attends[index]
-                                                          .user
-                                                          .userImage)),
-                                              Gap(5),
-                                              Text(e.values.first.first.user
-                                                  .userName
-                                                  .toString()),
-                                            ],
-                                          ),
-                                          attends[index].status == 2
-                                              ? const FaIcon(
-                                                  FontAwesomeIcons
-                                                      .solidCircleCheck,
-                                                  color: Colors.green,
-                                                  size: 30,
-                                                )
-                                              : const FaIcon(
-                                                  FontAwesomeIcons
-                                                      .solidCircleXmark,
-                                                  color: Colors.red,
-                                                  size: 30,
-                                                ),
-                                        ],
-                                      ),
-                                    )
-                            ])
+                                  ],
+                                ),
+                              );
+                            }).toList()
+
+                            // [
+                            //Text(e.user.userName),
+                            //   idTeam == attendShow[index].values.first.first.teamId
+                            //       ? ListTile(
+                            //           title: Row(
+                            //             mainAxisAlignment:
+                            //                 MainAxisAlignment.spaceBetween,
+                            //             children: [
+                            //               Row(
+                            //                 mainAxisAlignment:
+                            //                     MainAxisAlignment.spaceBetween,
+                            //                 children: [
+                            //                   CircleAvatar(
+                            //                       radius: 25,
+                            //                       backgroundImage: NetworkImage(
+                            //                           attends[index]
+                            //                               .user
+                            //                               .userImage)),
+                            //                   Gap(5),
+                            //                   Text(
+                            //                       attends[index].user.userName),
+                            //                 ],
+                            //               ),
+                            //               attends[index].status == 2 &&
+                            //                       attends[index].atId ==
+                            //                           attends[index].atId
+                            //                   //statuscheck(logging in)
+                            //                   ? const FaIcon(
+                            //                       FontAwesomeIcons
+                            //                           .solidCircleCheck,
+                            //                       color: Colors.green,
+                            //                       size: 30,
+                            //                     )
+                            //                   : const FaIcon(
+                            //                       FontAwesomeIcons
+                            //                           .solidCircleXmark,
+                            //                       color: Colors.red,
+                            //                       size: 30,
+                            //                     ),
+                            //             ],
+                            //           ),
+                            //         )
+                            //       : ListTile(
+                            //           title: Row(
+                            //             mainAxisAlignment:
+                            //                 MainAxisAlignment.spaceBetween,
+                            //             children: [
+                            //               Row(
+                            //                 children: [
+                            //                   CircleAvatar(
+                            //                       radius: 25,
+                            //                       backgroundImage: NetworkImage(
+                            //                           attends[index]
+                            //                               .user
+                            //                               .userImage)),
+                            //                   Gap(5),
+                            //                   Text(attends[index]
+                            //                       .user
+                            //                       .userName
+                            //                       .toString()),
+                            //                 ],
+                            //               ),
+                            //               attends[index].status == 2
+                            //                   ? const FaIcon(
+                            //                       FontAwesomeIcons
+                            //                           .solidCircleCheck,
+                            //                       color: Colors.green,
+                            //                       size: 30,
+                            //                     )
+                            //                   : const FaIcon(
+                            //                       FontAwesomeIcons
+                            //                           .solidCircleXmark,
+                            //                       color: Colors.red,
+                            //                       size: 30,
+                            //                     ),
+                            //             ],
+                            //           ),
+                            //         )
+                            // ]
+
+                            )
                       ]),
                     ));
               },
@@ -320,10 +373,10 @@ class _LobbyState extends State<Lobby> {
       status = a.data.first.status;
       userCreate = a.data.first.team.race.userId;
       raceName = a.data.first.team.race.raceName;
-      idAttend = a.data.first.atId;
+
       log('userCreate' + userCreate.toString());
       log("raceName Load is = ${raceName}");
-      log("idAttend Load is = ${idAttend}");
+
       log(attendShow.toList().toString());
       log(" sta == ${status}");
     } catch (err) {
