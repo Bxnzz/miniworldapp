@@ -317,7 +317,14 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                     actions: <Widget>[
                       Center(
                         child: ElevatedButton(
-                          onPressed: () => Navigator.pop(context, 'OK'),
+                          onPressed: () {
+                            setState(() {
+                              dis = Geolocator.distanceBetween(
+                                  latDevice, lngDevice, lat, lng);
+                              loadDataMethod = LoadData();
+                            });
+                            Navigator.pop(context);
+                          },
                           child: const Text('OK'),
                         ),
                       ),

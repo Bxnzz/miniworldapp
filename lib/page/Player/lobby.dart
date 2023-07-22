@@ -377,11 +377,7 @@ class _LobbyState extends State<Lobby> {
           RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
           var a = await raceService.updateStatusRaces(racedto, idRace);
 
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const HostRaceStart(),
-              ));
+          _Startgame();
         },
       ),
     );
