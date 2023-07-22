@@ -168,13 +168,9 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
       misDescrip = mis.data.first.misDiscrip;
       misType = mis.data.first.misType.toString();
       misDistance = mis.data.first.misDistance;
-      // for (int i = 0; i < mission.length; i++) {
-      //   if (i + 1 > mission.length - 1) {
-      //     lastmisComp = true;
-      //     log("lastmisComp" + lastmisComp.toString());
-      //   }
-      // }
+
       log("lastmisComp" + lastmisComp.toString());
+      log("msi id = ${misID}");
     } catch (err) {
       log('Error:$err');
     } finally {
