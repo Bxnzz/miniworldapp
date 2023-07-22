@@ -54,7 +54,7 @@ class _LobbyState extends State<Lobby> {
   late int idTeam;
   int idRace = 0;
   int idAttend = 0;
-  late int userCreate;
+  int userCreate = 0;
   var result;
   late int status = 1;
   late int raceStatus;
@@ -136,9 +136,33 @@ class _LobbyState extends State<Lobby> {
                         ExpansionTile(
                             key: Key(selec.toString()),
                             initiallyExpanded: idTeam ==
-                                attendShow[index].values.first.first.teamId,
+                                    attendShow[index]
+                                        .values
+                                        .first
+                                        .first
+                                        .teamId &&
+                                idUser !=
+                                    attendShow[index]
+                                        .values
+                                        .first
+                                        .first
+                                        .team
+                                        .race
+                                        .userId,
                             title: idTeam ==
-                                    attendShow[index].values.first.first.teamId
+                                        attendShow[index]
+                                            .values
+                                            .first
+                                            .first
+                                            .teamId &&
+                                    idUser !=
+                                        attendShow[index]
+                                            .values
+                                            .first
+                                            .first
+                                            .team
+                                            .race
+                                            .userId
                                 ?
                                 //ทีมที่เข้าร่วม
                                 Row(children: [
@@ -161,29 +185,25 @@ class _LobbyState extends State<Lobby> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      attends.isEmpty
-                                          ? Text("ยังไม่มีทีมเข้าร่วม")
-                                          //Name team (Host)
-                                          //another team
-                                          : Text(
-                                              attendShow[index]
-                                                  .values
-                                                  .first
-                                                  .first
-                                                  .team
-                                                  .teamName,
-                                              style: textTheme.bodyLarge
-                                                  ?.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      shadows: [
-                                                    Shadow(
-                                                      blurRadius: 20.0,
-                                                      color: Color.fromRGBO(
-                                                          253, 244, 255, 1),
-                                                      offset: Offset(5, 3),
-                                                    ),
-                                                  ])),
+                                      //Name team (Host)
+                                      //another team
+                                      Text(
+                                          attendShow[index]
+                                              .values
+                                              .first
+                                              .first
+                                              .team
+                                              .teamName,
+                                          style: textTheme.bodyLarge?.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              shadows: [
+                                                Shadow(
+                                                  blurRadius: 20.0,
+                                                  color: Color.fromRGBO(
+                                                      253, 244, 255, 1),
+                                                  offset: Offset(5, 3),
+                                                ),
+                                              ])),
                                     ],
                                   ),
                             children: attendShow[index].values.first.map((e) {
@@ -219,89 +239,7 @@ class _LobbyState extends State<Lobby> {
                                   ],
                                 ),
                               );
-                            }).toList()
-
-                            // [
-                            //Text(e.user.userName),
-                            //   idTeam == attendShow[index].values.first.first.teamId
-                            //       ? ListTile(
-                            //           title: Row(
-                            //             mainAxisAlignment:
-                            //                 MainAxisAlignment.spaceBetween,
-                            //             children: [
-                            //               Row(
-                            //                 mainAxisAlignment:
-                            //                     MainAxisAlignment.spaceBetween,
-                            //                 children: [
-                            //                   CircleAvatar(
-                            //                       radius: 25,
-                            //                       backgroundImage: NetworkImage(
-                            //                           attends[index]
-                            //                               .user
-                            //                               .userImage)),
-                            //                   Gap(5),
-                            //                   Text(
-                            //                       attends[index].user.userName),
-                            //                 ],
-                            //               ),
-                            //               attends[index].status == 2 &&
-                            //                       attends[index].atId ==
-                            //                           attends[index].atId
-                            //                   //statuscheck(logging in)
-                            //                   ? const FaIcon(
-                            //                       FontAwesomeIcons
-                            //                           .solidCircleCheck,
-                            //                       color: Colors.green,
-                            //                       size: 30,
-                            //                     )
-                            //                   : const FaIcon(
-                            //                       FontAwesomeIcons
-                            //                           .solidCircleXmark,
-                            //                       color: Colors.red,
-                            //                       size: 30,
-                            //                     ),
-                            //             ],
-                            //           ),
-                            //         )
-                            //       : ListTile(
-                            //           title: Row(
-                            //             mainAxisAlignment:
-                            //                 MainAxisAlignment.spaceBetween,
-                            //             children: [
-                            //               Row(
-                            //                 children: [
-                            //                   CircleAvatar(
-                            //                       radius: 25,
-                            //                       backgroundImage: NetworkImage(
-                            //                           attends[index]
-                            //                               .user
-                            //                               .userImage)),
-                            //                   Gap(5),
-                            //                   Text(attends[index]
-                            //                       .user
-                            //                       .userName
-                            //                       .toString()),
-                            //                 ],
-                            //               ),
-                            //               attends[index].status == 2
-                            //                   ? const FaIcon(
-                            //                       FontAwesomeIcons
-                            //                           .solidCircleCheck,
-                            //                       color: Colors.green,
-                            //                       size: 30,
-                            //                     )
-                            //                   : const FaIcon(
-                            //                       FontAwesomeIcons
-                            //                           .solidCircleXmark,
-                            //                       color: Colors.red,
-                            //                       size: 30,
-                            //                     ),
-                            //             ],
-                            //           ),
-                            //         )
-                            // ]
-
-                            )
+                            }).toList())
                       ]),
                     ));
               },
@@ -444,6 +382,24 @@ class _LobbyState extends State<Lobby> {
           builder: (context, AsyncSnapshot snapshot) {
             debugPrint(attendShow.toList().toString());
             if (snapshot.connectionState == ConnectionState.done) {
+              // if (snapshot.hasData) {
+              //   return Container(
+              //     child: Text("data"),
+              //   );
+              //   if (snapshot.data) {
+              //     log('No chatroom');
+              //     attendShow = [];
+              //     log("datahas no");
+              //     // SharedPreferences.getInstance().then((prefs) {
+              //     //   prefs.setString(widget.roomID, jsonEncode({}));
+              //     //   _messages = [];
+              //     // });
+              //     Container(
+              //       child: Text("data"),
+              //     );
+              //   }
+              // }
+
               String tmId = '';
               List<AttendRace> temp = [];
               for (var i = 0; i < attends.length; i++) {
@@ -539,7 +495,7 @@ class _LobbyState extends State<Lobby> {
                 ]),
               );
             } else {
-              return Center(child: const CircularProgressIndicator());
+              return const CircularProgressIndicator();
             }
           }),
     );
