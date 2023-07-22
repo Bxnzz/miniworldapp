@@ -1,31 +1,22 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:miniworldapp/model/DTO/attendDTO.dart';
+
 import 'package:miniworldapp/model/DTO/attendStatusDTO.dart';
-import 'package:miniworldapp/model/DTO/raceDTO.dart';
 import 'package:miniworldapp/model/DTO/raceStatusDTO.dart';
 import 'package:miniworldapp/model/attend.dart';
 import 'package:miniworldapp/page/General/detil_race_host.dart';
 
-import 'package:miniworldapp/page/Host/host_race_start.dart';
 import 'package:miniworldapp/page/Player/chat_room.dart';
 import 'package:miniworldapp/service/team.dart';
 import 'package:miniworldapp/widget/loadData.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../model/missionComp.dart';
-
-import '../../model/missionComp.dart';
 import '../../model/race.dart';
 import '../../model/result/attendRaceResult.dart';
 import '../../model/team.dart';
@@ -131,7 +122,7 @@ class _LobbyState extends State<Lobby> {
     Get.to(DetailHost());
   }
 
-  Widget CardDetailPlayer(Map<String, List<AttendRace>> e) {
+  Widget CardDetailPlayer() {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     return FutureBuilder(
@@ -151,22 +142,6 @@ class _LobbyState extends State<Lobby> {
                       borderRadius: BorderRadius.circular(12.0),
                       splashColor: Colors.blue.withAlpha(30),
                       child: Stack(children: [
-                        Positioned(
-                          child: Opacity(
-                            opacity: 0.3,
-                            child: Image.network(
-                              attendShow[index]
-                                  .values
-                                  .first
-                                  .first
-                                  .team
-                                  .teamImage,
-                              height: 60,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
                         ExpansionTile(
                             key: Key(selec.toString()),
                             initiallyExpanded: idTeam ==
@@ -250,10 +225,17 @@ class _LobbyState extends State<Lobby> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        CircleAvatar(
-                                            radius: 25,
-                                            backgroundImage:
-                                                NetworkImage(e.user.userImage)),
+                                        GestureDetector(
+                                          onTap: () {
+                                            showProfileAlertDialog(
+                                                context, e.user);
+                                            log("tab${e.user.userName}");
+                                          },
+                                          child: CircleAvatar(
+                                              radius: 25,
+                                              backgroundImage: NetworkImage(
+                                                  e.user.userImage)),
+                                        ),
                                         Gap(5),
                                         Text(e.user.userName),
                                       ],
@@ -406,6 +388,35 @@ class _LobbyState extends State<Lobby> {
     );
   }
 
+  showProfileAlertDialog(BuildContext context, AttendRaceUser user) {
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Container(
+        width: Get.width,
+        child: Column(
+          children: [
+            Text("${user.userName}"),
+            CircleAvatar(
+              radius: Get.width / 6,
+              backgroundImage: NetworkImage("${user.userImage}"),
+            ),
+            Text("${user.userFullname}"),
+          ],
+        ),
+      ),
+      actions: [],
+      content: Container(child: Text("${user.userDiscription}")),
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -506,18 +517,20 @@ class _LobbyState extends State<Lobby> {
                     ],
                   ),
                   Expanded(
-                    child: ListView(
-                      //padding: const EdgeInsets.all(8.0),
-                      physics: const BouncingScrollPhysics(),
-                      children: attendShow.map((e) {
-                        return Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8, bottom: 8, right: 15, left: 15),
-                            child: Container(
-                                width: Get.width,
-                                height: Get.height,
-                                child: CardDetailPlayer(e)));
-                      }).toList(),
+                    child: SafeArea(
+                      child: ListView(
+                        //padding: const EdgeInsets.all(8.0),
+                        physics: const BouncingScrollPhysics(),
+                        children: attendShow.map((e) {
+                          return Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 8, bottom: 8, right: 15, left: 15),
+                              child: Container(
+                                  width: Get.width,
+                                  height: Get.height,
+                                  child: CardDetailPlayer()));
+                        }).toList(),
+                      ),
                     ),
                   ),
                   idUser != userCreate

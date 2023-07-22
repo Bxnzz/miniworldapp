@@ -44,7 +44,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
   late double lng = 0;
   late double latplot = 0;
   late double lngplot = 0;
-  late double dis;
+  late double dis = 0;
   late String misName;
   late String misDescrip;
   late String misType = '';
@@ -154,6 +154,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
   Future<void> LoadData() async {
     startLoading(context);
     try {
+      checkGps();
       var a = await missionCompService.missionCompByTeamId(teamID: teamID);
 
       var mis = await missionService.missionByraceID(raceID: raceID);
@@ -185,6 +186,10 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
         future: loadDataMethod,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
+            lat = mission[0].misLat;
+            lng = mission[0].misLng;
+
+            log("dis ${dis}");
             for (int i = 0; i < mission.length; i++) {
               for (int j = 0; j < missionComp.length; j++) {
                 if (missionComp[j].misId == mission[i].misId &&
@@ -193,10 +198,9 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
 
                   if (i + 1 > mission.length - 1) {
                     log("next ${mission[i].misId}");
+
                     lastmisComp = true;
                     // showAlertDialog();
-
-                    log(lastmisComp.toString());
                   } else {
                     log("next ${mission[i + 1].misId}");
                     log("lat lng${mission[i + 1].misLat}${mission[i + 1].misLng}");
