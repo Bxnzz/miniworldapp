@@ -119,9 +119,9 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
 
   getLocation() async {
     position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    print(position.longitude); //Output: 80.24599079
-    print(position.latitude); //Output: 29.6593457
+        desiredAccuracy: LocationAccuracy.best);
+    log('xxxxxxx'+position.longitude.toString()); //Output: 80.24599079
+    log(position.latitude.toString()); //Output: 29.6593457
 
     lngDevice = position.longitude;
     latDevice = position.latitude;
