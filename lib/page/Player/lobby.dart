@@ -49,6 +49,7 @@ class _LobbyState extends State<Lobby> {
   List<Team> teams = [];
   late Attend attend;
   late AttendService attendService;
+
   late Future loadDataMethod;
   late RaceService raceService;
   late TeamService teamService;
@@ -56,10 +57,11 @@ class _LobbyState extends State<Lobby> {
   late int idTeam;
   int idRace = 0;
   int idAttend = 0;
-  late int userCreate;
+  int userCreate = 0;
   var result;
   late int status = 1;
   late int raceStatus;
+  int selec = 1;
 
   List<String> playerIds = [];
   Map<String, dynamic> mc = {};
@@ -90,13 +92,16 @@ class _LobbyState extends State<Lobby> {
     raceService.racesByraceID(raceID: idRace).then((value) {
       log(value.data.first.raceName);
     });
-    loadDataMethod = loadData();
+
     log('id User is ${idUser}');
     log('id Race is ${idRace}');
+    log('raceName is${raceName}');
     log('id Attend is${idAttend}');
     log('id Team is${idTeam}');
     log('StatusStart :${status}');
     log("Race Status$raceStatus");
+    attendShow = [];
+    loadDataMethod = loadData();
   }
 
   void _Startgame() async {
@@ -126,6 +131,281 @@ class _LobbyState extends State<Lobby> {
     Get.to(DetailHost());
   }
 
+  Widget CardDetailPlayer(Map<String, List<AttendRace>> e) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    return FutureBuilder(
+        future: loadDataMethod,
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            // log('xxxxx ' + attendShow.last.values.first.length.toString());
+            // log('xxxxx ' + attendShow.last.values.first.last.user.userName);
+            // attendShow.[team].values.first.[player].user.userName
+
+            return ListView.builder(
+              itemCount: attendShow.length,
+              itemBuilder: (context, index) {
+                return Card(
+                    clipBehavior: Clip.hardEdge,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12.0),
+                      splashColor: Colors.blue.withAlpha(30),
+                      child: Stack(children: [
+                        Positioned(
+                          child: Opacity(
+                            opacity: 0.3,
+                            child: Image.network(
+                              attendShow[index]
+                                  .values
+                                  .first
+                                  .first
+                                  .team
+                                  .teamImage,
+                              height: 60,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        ExpansionTile(
+                            key: Key(selec.toString()),
+                            initiallyExpanded: idTeam ==
+                                    attendShow[index]
+                                        .values
+                                        .first
+                                        .first
+                                        .teamId &&
+                                idUser !=
+                                    attendShow[index]
+                                        .values
+                                        .first
+                                        .first
+                                        .team
+                                        .race
+                                        .userId,
+                            title: idTeam ==
+                                        attendShow[index]
+                                            .values
+                                            .first
+                                            .first
+                                            .teamId &&
+                                    idUser !=
+                                        attendShow[index]
+                                            .values
+                                            .first
+                                            .first
+                                            .team
+                                            .race
+                                            .userId
+                                ?
+                                //ทีมที่เข้าร่วม
+                                Row(children: [
+                                    Text(
+                                      ("${attendShow[index].values.first.first.team.teamName} (ทีมคุณ)"),
+                                      style: textTheme.bodyLarge?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Color.fromRGBO(156, 39, 176, 1),
+                                          shadows: [
+                                            Shadow(
+                                              blurRadius: 10,
+                                              color: Colors.white54,
+                                              offset: Offset(5, 3),
+                                            ),
+                                          ]),
+                                    ),
+                                  ])
+                                : Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      //Name team (Host)
+                                      //another team
+                                      Text(
+                                          attendShow[index]
+                                              .values
+                                              .first
+                                              .first
+                                              .team
+                                              .teamName,
+                                          style: textTheme.bodyLarge?.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              shadows: [
+                                                Shadow(
+                                                  blurRadius: 20.0,
+                                                  color: Color.fromRGBO(
+                                                      253, 244, 255, 1),
+                                                  offset: Offset(5, 3),
+                                                ),
+                                              ])),
+                                    ],
+                                  ),
+                            children: attendShow[index].values.first.map((e) {
+                              return ListTile(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        CircleAvatar(
+                                            radius: 25,
+                                            backgroundImage:
+                                                NetworkImage(e.user.userImage)),
+                                        Gap(5),
+                                        Text(e.user.userName),
+                                      ],
+                                    ),
+                                    e.status == 2
+                                        //statuscheck(logging in)
+                                        ? const FaIcon(
+                                            FontAwesomeIcons.solidCircleCheck,
+                                            color: Colors.green,
+                                            size: 30,
+                                          )
+                                        : const FaIcon(
+                                            FontAwesomeIcons.solidCircleXmark,
+                                            color: Colors.red,
+                                            size: 30,
+                                          ),
+                                  ],
+                                ),
+                              );
+                            }).toList())
+                      ]),
+                    ));
+              },
+            );
+          } else {
+            return Container();
+          }
+        });
+  }
+
+  SizedBox chkReadyBtn(BuildContext context) {
+    return context.read<AppData>().status == 1
+        ? SizedBox(
+            width: 120,
+            child: ElevatedButton(
+                onPressed: () async {
+                  status = 2;
+
+                  AttendStatusDto atDto = AttendStatusDto(status: status);
+                  debugPrint("asdfasdfasdf" + attendStatusDtoToJson(atDto));
+                  log("id Att ${idAttend}");
+                  var b = await attendService.attendByAtID(atDto, idAttend);
+                  attendShow = [];
+                  log("message");
+                  pressAttention = true;
+                  loadDataMethod = loadData();
+                  setState(() {
+                    context.read<AppData>().status = status;
+                  });
+                },
+                style: ElevatedButton.styleFrom(primary: Colors.green),
+                child: const Text(
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                    "พร้อม")),
+          )
+        : SizedBox(
+            width: 120,
+            child: ElevatedButton(
+                onPressed: () async {
+                  status = 1;
+                  attendShow = [];
+                  pressAttention = false;
+                  AttendStatusDto atDto = AttendStatusDto(status: status);
+                  debugPrint("asdfasdfasdf" + attendStatusDtoToJson(atDto));
+                  log("id Att ${idAttend}");
+                  var b = await attendService.attendByAtID(atDto, idAttend);
+
+                  loadDataMethod = loadData();
+                  setState(() {
+                    context.read<AppData>().status = status;
+                  });
+                },
+                style: ElevatedButton.styleFrom(primary: Colors.red),
+                child: const Text(
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                    "ยกเลิก")),
+          );
+  }
+
+  Future<void> loadData() async {
+    startLoading(context);
+    try {
+      log("LoadData");
+      log(idRace.toString());
+      // var r = await raceService.racesByID(userID: idUser);
+
+      var a = await attendService.attendByRaceID(raceID: idRace);
+
+      attends = a.data;
+      status = a.data.first.status;
+      userCreate = a.data.first.team.race.userId;
+      raceName = a.data.first.team.race.raceName;
+
+      playerIds.clear();
+      for (var element in a.data) {
+        if (element.user.onesingnalId.isNotEmpty) {
+          playerIds.add(element.user.onesingnalId);
+        }
+      }
+      log('userCreate' + userCreate.toString());
+      log("raceName Load is = ${raceName}");
+
+      log(attendShow.toList().toString());
+      log(" sta == ${status}");
+    } catch (err) {
+      log('Error:$err');
+    }
+    stopLoading();
+  }
+
+  showAlertDialog(BuildContext context) {
+    // set up the button
+    Widget okButton = SizedBox(
+      width: 120,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(backgroundColor: Colors.orangeAccent),
+        child: Text(style: const TextStyle(color: Colors.white), "เริ่มเกม"),
+        onPressed: () async {
+          idRace = context.read<AppData>().idrace;
+          raceStatus = 2;
+          RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
+          var a = await raceService.updateStatusRaces(racedto, idRace);
+
+          _Startgame();
+        },
+      ),
+    );
+    Widget cancleButton = SizedBox(
+      width: 120,
+      child: ElevatedButton(
+        child: const Text("ยกเลิก"),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      ),
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: const Text("ต้องการจะเริ่มเกมหรือไม่"),
+      actions: [cancleButton, okButton],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -140,6 +420,24 @@ class _LobbyState extends State<Lobby> {
           builder: (context, AsyncSnapshot snapshot) {
             debugPrint(attendShow.toList().toString());
             if (snapshot.connectionState == ConnectionState.done) {
+              // if (snapshot.hasData) {
+              //   return Container(
+              //     child: Text("data"),
+              //   );
+              //   if (snapshot.data) {
+              //     log('No chatroom');
+              //     attendShow = [];
+              //     log("datahas no");
+              //     // SharedPreferences.getInstance().then((prefs) {
+              //     //   prefs.setString(widget.roomID, jsonEncode({}));
+              //     //   _messages = [];
+              //     // });
+              //     Container(
+              //       child: Text("data"),
+              //     );
+              //   }
+              // }
+
               String tmId = '';
               List<AttendRace> temp = [];
               for (var i = 0; i < attends.length; i++) {
@@ -162,10 +460,9 @@ class _LobbyState extends State<Lobby> {
               // log(attendShow.toString());
               // log(attendShow[1]['102']!.first.userId.toString());
               //log(attendShow.length.toString());
-              return Column(mainAxisSize: MainAxisSize.min, children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 15, left: 10),
-                  child: Row(
+              return SafeArea(
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
@@ -192,6 +489,7 @@ class _LobbyState extends State<Lobby> {
                       ),
                       IconButton(
                         onPressed: () {
+                          attendShow = [];
                           Get.to(() => ChatRoomPage(
                                 raceID: idRace,
                                 userID: idUser,
@@ -207,229 +505,37 @@ class _LobbyState extends State<Lobby> {
                       ),
                     ],
                   ),
-                ),
-                Expanded(
-                  child: ListView(
-                    //padding: const EdgeInsets.all(8.0),
-                    physics: const BouncingScrollPhysics(),
-                    children: attendShow.map((e) {
-                      return Padding(
-                          padding: const EdgeInsets.only(
-                              top: 8, bottom: 8, right: 15, left: 15),
-                          child: CardDetailPlayer(e));
-                    }).toList(),
+                  Expanded(
+                    child: ListView(
+                      //padding: const EdgeInsets.all(8.0),
+                      physics: const BouncingScrollPhysics(),
+                      children: attendShow.map((e) {
+                        return Padding(
+                            padding: const EdgeInsets.only(
+                                top: 8, bottom: 8, right: 15, left: 15),
+                            child: Container(
+                                width: Get.width,
+                                height: Get.height,
+                                child: CardDetailPlayer(e)));
+                      }).toList(),
+                    ),
                   ),
-                ),
-                idUser != userCreate
-                    ? Column(children: [
-                        chkReadyBtn(context),
-                        //Host
-                      ])
-                    : Padding(
-                        padding: const EdgeInsets.only(bottom: 15),
-                        child: ElevatedButton(
-                            onPressed: () {
-                              _Startgame();
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('เริ่มเกม')),
-                      )
-              ]);
+                  idUser != userCreate
+                      ? Column(children: [
+                          chkReadyBtn(context),
+                          //Host
+                        ])
+                      : ElevatedButton(
+                          onPressed: () {
+                            showAlertDialog(context);
+                          },
+                          child: Text('เริ่มเกม'))
+                ]),
+              );
             } else {
-              return Container();
+              return const CircularProgressIndicator();
             }
           }),
-    );
-  }
-
-  Card CardDetailPlayer(Map<String, List<AttendRace>> e) {
-    return Card(
-      clipBehavior: Clip.hardEdge,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12.0),
-        splashColor: Colors.blue.withAlpha(30),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 25),
-          child: ExpansionTile(
-              title: idAttend == e.values.first.first.atId
-                  ?
-                  //ทีมที่เข้าร่วม
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(e.values.first.first.team.teamName + " (ทีมคุณ)"),
-                        e.values.first.first.status == 2 &&
-                                e.values.first.first.atId == idAttend
-                            ? Padding(
-                                padding: const EdgeInsets.only(right: 35),
-                                child: const Text(
-                                  "(พร้อม)",
-                                  style: TextStyle(color: Colors.green),
-                                ),
-                              )
-                            : const Text(
-                                "(ยังไม่พร้อม)",
-                                style: TextStyle(color: Colors.red),
-                              )
-                      ],
-                    )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        attends.isEmpty
-                            ? Text("ยังไม่มีทีมเข้าร่วม")
-                            //Name team (Host)
-                            : Text(e.values.first.first.team.teamName),
-                        e.values.first.first.status == 2
-                            ? Padding(
-                                padding: const EdgeInsets.only(right: 35),
-                                child: const Text(
-                                  "(พร้อม)",
-                                  style: TextStyle(color: Colors.green),
-                                ),
-                              )
-                            : const Text(
-                                "(ยังไม่พร้อม)",
-                                style: TextStyle(color: Colors.red),
-                              ),
-                      ],
-                    ),
-              children: e.values.first
-                  .map((user) => ListTile(
-                        title: Row(
-                          children: [
-                            Text(user.user.userName.toString()),
-                          ],
-                        ),
-                      ))
-                  .toList()),
-        ),
-      ),
-    );
-  }
-
-  SizedBox chkReadyBtn(BuildContext context) {
-    return context.read<AppData>().status == 1
-        ? SizedBox(
-            width: 120,
-            child: ElevatedButton(
-                onPressed: () async {
-                  status = 2;
-
-                  AttendStatusDto atDto = AttendStatusDto(status: status);
-                  debugPrint("asdfasdfasdf" + attendStatusDtoToJson(atDto));
-                  log("id Att ${idAttend}");
-                  var b = await attendService.attendByAtID(atDto, idAttend);
-                  attendShow = [];
-                  log("message");
-                  loadDataMethod = loadData();
-                  setState(() {
-                    context.read<AppData>().status = status;
-                    loadDataMethod = loadData();
-                  });
-                },
-                style: ElevatedButton.styleFrom(primary: Colors.green),
-                child: const Text(
-                    style: TextStyle(fontSize: 20, color: Colors.white),
-                    "พร้อม")),
-          )
-        : SizedBox(
-            width: 120,
-            child: ElevatedButton(
-                onPressed: () async {
-                  status = 1;
-                  attendShow = [];
-                  AttendStatusDto atDto = AttendStatusDto(status: status);
-                  debugPrint("asdfasdfasdf" + attendStatusDtoToJson(atDto));
-                  log("id Att ${idAttend}");
-                  var b = await attendService.attendByAtID(atDto, idAttend);
-
-                  loadDataMethod = loadData();
-                  setState(() {
-                    loadDataMethod = loadData();
-                    context.read<AppData>().status = status;
-                  });
-                },
-                style: ElevatedButton.styleFrom(primary: Colors.red),
-                child: const Text(
-                    style: TextStyle(fontSize: 20, color: Colors.white),
-                    "ยกเลิก")),
-          );
-  }
-
-  Future<void> loadData() async {
-    startLoading(context);
-    try {
-      log("LoadData");
-      log(idRace.toString());
-      // var r = await raceService.racesByID(userID: idUser);
-
-      var a = await attendService.attendByRaceID(raceID: idRace);
-
-      attends = a.data;
-      status = a.data.first.status;
-      userCreate = a.data.first.team.race.userId;
-      raceName = attends.first.team.race.raceName;
-
-      playerIds.clear();
-      for (var element in a.data) {
-        if (element.user.onesingnalId.isNotEmpty) {
-          playerIds.add(element.user.onesingnalId);
-        }
-      }
-      log('userCreate' + userCreate.toString());
-
-      log(attendShow.toList().toString());
-      log(" sta == ${status}");
-    } catch (err) {
-      log('Error:$err');
-    }
-    stopLoading();
-  }
-
-  showAlertDialog(BuildContext context) {
-    // set up the button
-    Widget okButton = SizedBox(
-      width: 120,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Colors.orangeAccent),
-        child: Text(style: const TextStyle(color: Colors.white), "เริ่มเกม"),
-        onPressed: () async {
-          idRace = context.read<AppData>().idrace;
-          raceStatus = 2;
-          RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
-          var a = await raceService.updateStatusRaces(racedto, idRace);
-
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const HostRaceStart(),
-              ));
-        },
-      ),
-    );
-    Widget cancleButton = SizedBox(
-      width: 120,
-      child: ElevatedButton(
-        child: const Text("ยกเลิก"),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      ),
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: const Text("ต้องการจะเริ่มเกมหรือไม่"),
-      actions: [cancleButton, okButton],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
     );
   }
 }
