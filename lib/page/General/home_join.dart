@@ -4,6 +4,7 @@ import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/model/DTO/attendDTO.dart';
 import 'package:miniworldapp/model/attend.dart';
@@ -50,110 +51,119 @@ class _Home_joinState extends State<Home_join> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-          future: loadDataMethod,
-          builder: (context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return ListView(
-                children: attends.map((e) {
-                  final theme = Theme.of(context);
-                  final textTheme = theme.textTheme;
-                  return Padding(
-                    padding:
-                        const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                    child: Column(
-                      children: [
-                        Card(
-                          color: Colors.white,
-                          clipBehavior: Clip.hardEdge,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(12.0),
-                            splashColor: Colors.blue.withAlpha(30),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => HomeJoinDetail()));
-                              context.read<AppData>().idUser = e.userId;
-                              context.read<AppData>().idTeam = e.teamId;
-                              context.read<AppData>().idrace = e.team.raceId;
-                              context.read<AppData>().idAt = e.atId;
-                              //showDetailDialog(context, e);
-                            },
-                            child: Column(
-                              children: <Widget>[
-                                Image.network(e.team.race.raceImage,
-                                    height: 100,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover),
-                                Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(15, 15, 15, 0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "ชื่อ: " + e.team.race.raceName,
-                                            style: textTheme.displayMedium
-                                                ?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.purple,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          Text(
-                                            "# ${e.team.race.raceId}",
-                                            style: textTheme.displayMedium
-                                                ?.copyWith(
-                                              color: Colors.purple,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Text(
-                                        "สถานที่: " + e.team.race.raceLocation,
-                                        style: textTheme.bodyLarge?.copyWith(
-                                          color: Color.fromARGB(
-                                              255, 122, 122, 122),
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      Text(
-                                        "วันจัดการแข่งขัน: " +
-                                            formatter
-                                                .formatInBuddhistCalendarThai(
-                                              e.team.race.eventDatetime,
-                                            ),
-                                        style: textTheme.bodyLarge?.copyWith(
-                                          color: Color.fromARGB(
-                                              255, 122, 122, 122),
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      Gap(25)
-                                      // Text("สถานที่: " + e.raceLocation),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+      body: Container(
+        decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                begin: FractionalOffset(0.0, 0.0),
+                end: FractionalOffset(1.0, 0.0),
+                stops: [0.0, 1.0],
+                tileMode: TileMode.clamp,
+                colors: [
+                  Colors.purpleAccent,
+                  Color.fromARGB(255, 144, 64, 255),
+                ])),
+        child: FutureBuilder(
+            future: loadDataMethod,
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return GridView.count(
+                  crossAxisCount: 2,
+                  padding: EdgeInsets.only(top: 10),
+                  children: attends.map((e) {
+                    final theme = Theme.of(context);
+                    final textTheme = theme.textTheme;
+                    return Padding(
+                      padding:
+                       const EdgeInsets.only(left: 2.5, right: 2.5, bottom: 5),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          side: const BorderSide(
+                            width: 5,
+                            color: Colors.white,
                           ),
+                          borderRadius:
+                              BorderRadius.circular(20.0), //<-- SEE HERE
                         ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              );
-            } else {
-              return Container();
-            }
-          }),
+                        color: Colors.white,
+                        clipBehavior: Clip.hardEdge,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12.0),
+                          splashColor: Colors.blue.withAlpha(30),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        HomeJoinDetail()));
+                            context.read<AppData>().idUser = e.userId;
+                            context.read<AppData>().idTeam = e.teamId;
+                            context.read<AppData>().idrace = e.team.raceId;
+                            context.read<AppData>().idAt = e.atId;
+                            //showDetailDialog(context, e);
+                          },
+                          child: GridTile(
+                              // crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Image.network(e.team.race.raceImage,
+                                  //  width: Get.width,
+                                  //  height: Get.width*0.5625/2,
+                                  fit: BoxFit.cover),
+                              footer: Container(
+                                color: Get.theme.colorScheme.onBackground
+                                    .withOpacity(0.5),
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(e.team.race.raceName,
+                                            style: Get.textTheme.bodyMedium!
+                                                .copyWith(
+                                                    fontWeight:
+                                                        FontWeight.bold,
+                                                    color: Get
+                                                        .theme
+                                                        .colorScheme
+                                                        .onPrimary)),
+                                        Text("# ${e.team.race.raceId}",
+                                            style: Get.textTheme.bodySmall!
+                                                .copyWith(
+                                                    color: Get
+                                                        .theme
+                                                        .colorScheme
+                                                        .onPrimary)),
+                                      ],
+                                    ),
+                                    Container(height: 5),
+                                    // Text("ปิดรับสมัคร: " +
+                                    //     formatter.formatInBuddhistCalendarThai(
+                                    //         element.raceTimeFn)),
+                                    Text(
+                                        "สถานที่: " +
+                                            e.team.race.raceLocation,
+                                        style: Get.textTheme.bodySmall!
+                                            .copyWith(
+                                                color: Get.theme.colorScheme
+                                                    .onPrimary
+                                                    .withOpacity(0.8))),
+                                    Container(height: 5),
+                                  ],
+                                ),
+                              )),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                );
+              } else {
+                return Container();
+              }
+            }),
+      ),
     );
   }
 

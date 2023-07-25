@@ -336,7 +336,7 @@ class _LoginState extends State<Login> {
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                    const HomeAll(),
+                                                    const RaceAll(),
                                                 settings: const RouteSettings(
                                                     arguments: null),
                                               ));
