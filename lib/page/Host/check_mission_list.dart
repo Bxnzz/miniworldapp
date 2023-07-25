@@ -9,6 +9,7 @@ import 'package:miniworldapp/model/missionComp.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';
 import 'package:miniworldapp/model/team.dart';
 import 'package:miniworldapp/page/Host/list_approve.dart';
+import 'package:miniworldapp/page/Host/rank_race.dart';
 import 'package:miniworldapp/service/missionComp.dart';
 import 'package:miniworldapp/service/race.dart';
 import 'package:miniworldapp/service/team.dart';
@@ -56,7 +57,10 @@ class _CheckMissionListState extends State<CheckMissionList> {
   String types = '';
   int misStatus = 0;
   int raceStatus = 0;
+  int rStatus = 0;
   int misID = 0;
+  int mcStatus =0 ;
+
 
   List<int> teamsID = [];
   List<String> playerIds = [];
@@ -98,6 +102,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
       missions = a.data;
       mType = a.data.first.misType.toString();
       raceName = a.data.first.race.raceName;
+     // rStatus = a.
 
       var t = await teamService.teambyRaceID(raceID: idrace);
       teams = t.data;
@@ -118,7 +123,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
       log('att ' + playerIds.toString());
       var mcs = await missionCompService.missionCompAll();
       missionComs = mcs.data;
-
+      
       // misStatus = mcs.
 
       isLoaded = true;
@@ -155,6 +160,32 @@ class _CheckMissionListState extends State<CheckMissionList> {
     var response1 = await OneSignal.shared.postNotification(notification1);
     Get.defaultDialog(title: 'จบการแข่งขันแล้ว');
   }
+   void _processGame() async {
+    raceStatus = 4;
+    RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
+    var racestatus = await raceService.updateStatusRaces(racedto, idrace);
+    mc = {
+      'notitype': 'processgame',
+      'mcid': raceStatus,
+      'raceID': idrace,
+    };
+    var notification1 = OSCreateNotification(
+        //playerID
+        additionalData: mc,
+        playerIds: playerIds,
+        content: raceName,
+        heading: "ประมวลผลการแข่งขัน",
+        //  iosAttachments: {"id1",urlImage},
+        // bigPicture: imUrlString,
+        buttons: [
+          OSActionButton(text: "ตกลง", id: "id1"),
+          OSActionButton(text: "ยกเลิก", id: "id2")
+        ]);
+    log('player ' + playerIds.toString());
+    var response1 = await OneSignal.shared.postNotification(notification1);
+    Get.defaultDialog(title: 'ประมวลผลการแข่งขันแล้ว');
+    Get.to(RankRace());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,10 +208,12 @@ class _CheckMissionListState extends State<CheckMissionList> {
         // other stuff
         title: const Text('ภารกิจ'),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      
+        floatingActionButton: 
+        raceStatus == 2 ? FloatingActionButton.extended(
         backgroundColor: Colors.pinkAccent,
         onPressed: () {
-          _Endgame();
+           _Endgame();
         },
         label: Text(
           'จบการแข่งขัน',
@@ -188,7 +221,18 @@ class _CheckMissionListState extends State<CheckMissionList> {
               color: Get.theme.colorScheme.onPrimary,
               fontWeight: FontWeight.bold),
         ),
-      ),
+      ):raceStatus == 3 ? FloatingActionButton.extended(
+        backgroundColor: Colors.lightGreen,
+        onPressed: () {
+            _processGame();
+        },
+        label: Text(
+          'ประมวลผลการแข่งขัน',
+          style: Get.textTheme.bodyLarge!.copyWith(
+              color: Get.theme.colorScheme.onPrimary,
+              fontWeight: FontWeight.bold),
+        ),
+      ):Container(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: FutureBuilder(
           future: loadDataMethod,
@@ -199,7 +243,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
                 children: missions.map((element) {
                   final theme = Theme.of(context);
                   final textTheme = theme.textTheme;
-                  var mcStatus = missionComs
+                  mcStatus = missionComs
                       .where((e) =>
                           e.mission.misId == element.misId && e.mcStatus == 1)
                       .length;
