@@ -12,6 +12,7 @@ import 'package:miniworldapp/page/General/home_all.dart';
 
 import 'package:miniworldapp/page/Player/chat_room.dart';
 import 'package:miniworldapp/page/Player/lobby.dart';
+import 'package:miniworldapp/page/Player/review.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:miniworldapp/service/user.dart';
 import 'package:miniworldapp/widget/loadData.dart';
@@ -90,10 +91,12 @@ class _LoginState extends State<Login> {
         Get.to(() => ApproveMission(IDmc: int.parse(additionalData['mcid'])));
       } else if (additionalData['notitype'].toString() == 'checkMis') {
         Get.defaultDialog(title: additionalData['masseage']);
-      } else if (additionalData['notitype'].toString() == 'endgame') {
-        Get.defaultDialog(title: additionalData['masseage']);
       }else if (additionalData['notitype'].toString() == 'startgame') {
         Get.defaultDialog(title: 'เริ่มการแข่งขัน');
+      } else if (additionalData['notitype'].toString() == 'endgame') {
+        Get.defaultDialog(title: additionalData['masseage']);
+      }else if (additionalData['notitype'].toString() == 'processgame') {
+        Get.defaultDialog(title: additionalData['masseage']);
       } else {
         log('YYYY');
       }
@@ -139,6 +142,13 @@ class _LoginState extends State<Login> {
               raceID: raceID,
               userName: userName,
               raceName: raceName));
+        });
+      }else if (event.notification.additionalData!['notitype'] == 'processgame') {
+        raceName = event.notification.additionalData!['raceName'];
+        raceID = int.parse(event.notification.additionalData!['raceID']);
+        Get.defaultDialog(title: 'ประมวลผลการแข่งขัน')
+            .then((value) {
+          Get.to(ReviewPage());
         });
       }
     });
@@ -336,7 +346,7 @@ class _LoginState extends State<Login> {
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                    const RaceAll(),
+                                                    const HomeAll(),
                                                 settings: const RouteSettings(
                                                     arguments: null),
                                               ));
