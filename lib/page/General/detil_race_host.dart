@@ -453,15 +453,13 @@ class _DetailHostState extends State<DetailHost> {
                                           },
                                           child: Text('เข้าล็อบบี้')),
                                     )
-                                  : SizedBox(
+                                  :races.first.raceStatus == 4 ?
+                                   Container()
+                                    : SizedBox(
                                       width: 200,
                                       child: ElevatedButton(
                                           onPressed: () {
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const CheckMissionList()));
-
+                                           Get.to(CheckMissionList());
                                             context.read<AppData>().idrace =
                                                 idrace;
                                             context.read<AppData>().idUser =
@@ -470,6 +468,8 @@ class _DetailHostState extends State<DetailHost> {
                                                 idAttend;
                                             context.read<AppData>().idTeam =
                                                 idTeam;
+                                             context.read<AppData>().raceStatus =
+                                                races.first.raceStatus;
                                           },
                                           child:
                                               Text('การแข่งขันกำลังดำเนินการ')),
