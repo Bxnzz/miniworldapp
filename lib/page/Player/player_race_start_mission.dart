@@ -39,7 +39,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
   late List<MissionComplete> missionComp;
   late List<MissionComplete> missionCompmc;
   //late List<Mission> mission;
-  late int IDteam;
+
   late int CompmissionId;
   late int misID;
   int idrace = 0;
@@ -52,8 +52,8 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
   String type = '';
   String urlImage = '';
   String urlVideo = '';
-  double mlat = 0.0;
-  double mlng = 0.0;
+  double mlat = 0.1;
+  double mlng = 0.1;
   int mID = 0;
   int teamID = 0;
   String dateTime = '';
@@ -88,9 +88,9 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
       log(platFile.extension.toString());
 
       //selectFile Image
-      if (platFile!.extension == 'jpg' ||
-          platFile!.extension == 'png' ||
-          platFile!.extension == 'jpeg') {
+      if (platFile.extension == 'jpg' ||
+          platFile.extension == 'png' ||
+          platFile.extension == 'jpeg') {
         isImage = true;
       }
       //selectFile video
@@ -115,7 +115,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
   void initState() {
     super.initState();
     OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
-    IDteam = context.read<AppData>().idTeam;
+    teamID = context.read<AppData>().idTeam;
     idrace = context.read<AppData>().idrace;
     misID = context.read<AppData>().idMis;
     log('id' + idrace.toString());
@@ -128,8 +128,8 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
 
   Future<void> loadData() async {
     try {
-      var a = await missionCompService.missionCompByTeamId(teamID: IDteam);
-
+      var a = await missionCompService.missionCompByTeamId(teamID: teamID);
+      log("idteam ====${teamID}");
       //  var mis = await missionService.missionByraceID(raceID: idrace);
       var mis2 = await missionService.missionBymisID(misID: misID);
       //var mc = await missionCompService.missionCompBymisId(misID: misID);
@@ -137,14 +137,16 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
       //log("${mc.data.length}");
       //mission = mis.data;
       onesingnalId = mis2.data.first.race.user.onesingnalId;
+      log("onesingnalId ====${onesingnalId}");
       misName = mis2.data.first.misName;
       misDiscrip = mis2.data.first.misDiscrip;
-      misStatus = a.data.first.mcStatus.toString();
       misType = mis2.data.first.misType.toString();
-      mlat = a.data.first.mission.misLat;
-      mlng = a.data.first.mission.misLng;
-      teamID = a.data.first.team.teamId;
-      teamName = a.data.first.team.teamName;
+
+      // misStatus = a.data.first.mcStatus.toString();
+      // mlat = a.data.first.mission.misLat;
+      // mlng = a.data.first.mission.misLng;
+      // teamID = a.data.first.team.teamId;
+      // teamName = a.data.first.team.teamName;
 
       //   mID = a.data.first.mission.misId;
 
@@ -171,7 +173,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
 
       log('name ' + misName);
       log('type ' + type);
-      log(IDteam.toString());
+      log(teamID.toString());
     } catch (err) {
       log('Error:$err');
     }
@@ -215,7 +217,9 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
           mcVideo: '',
           misId: misID,
           teamId: teamID);
+      debugPrint(missionCompDtoToJson(mdto));
       var missionComp = await missionCompService.insertMissionComps(mdto);
+
       missionComp.data;
       mcID = missionComp.data.mcId.toString();
 
@@ -484,7 +488,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 10,bottom: 50),
+                          padding: const EdgeInsets.only(top: 10, bottom: 50),
                           child: SizedBox(
                             width: 200,
                             child: ElevatedButton(

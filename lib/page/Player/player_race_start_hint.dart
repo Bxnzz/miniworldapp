@@ -44,7 +44,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
   late double lng = 0;
   late double latplot = 0;
   late double lngplot = 0;
-  late double dis;
+  late double dis = 0;
   late String misName;
   late String misDescrip;
   late String misType = '';
@@ -154,6 +154,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
   Future<void> LoadData() async {
     startLoading(context);
     try {
+      checkGps();
       var a = await missionCompService.missionCompByTeamId(teamID: teamID);
 
       var mis = await missionService.missionByraceID(raceID: raceID);
@@ -185,7 +186,31 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
         future: loadDataMethod,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
+            log("dis ${dis}");
             for (int i = 0; i < mission.length; i++) {
+              //first mis
+              if (i == 0) {
+                log("first Mis");
+                lat = mission[0].misLat;
+                lng = mission[0].misLng;
+
+                misID = mission[0].misId;
+                misName = mission[0].misName;
+                misDistance = mission[0].misDistance;
+                misDescrip = mission[0].misDiscrip;
+                misType = mission[0].misType.toString();
+                if (misType.contains('12')) {
+                  type = 'ข้อความ,สื่อ';
+                }
+                if (misType.contains('1')) {
+                  type = 'ข้อความ';
+                } else if (misType.contains('2')) {
+                  type = 'สื่อ';
+                } else if (misType.contains('3')) {
+                  type = 'ไม่มีการส่ง';
+                }
+              }
+
               for (int j = 0; j < missionComp.length; j++) {
                 if (missionComp[j].misId == mission[i].misId &&
                     missionComp[j].mcStatus == 2) {
@@ -193,10 +218,9 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
 
                   if (i + 1 > mission.length - 1) {
                     log("next ${mission[i].misId}");
+
                     lastmisComp = true;
                     // showAlertDialog();
-
-                    log(lastmisComp.toString());
                   } else {
                     log("next ${mission[i + 1].misId}");
                     log("lat lng${mission[i + 1].misLat}${mission[i + 1].misLng}");
@@ -211,6 +235,9 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                     misDistance = mission[i + 1].misDistance;
                     misDescrip = mission[i + 1].misDiscrip;
                     misType = mission[i + 1].misType.toString();
+                    if (misType.contains('12')) {
+                      type = 'ข้อความ,สื่อ';
+                    }
                     if (misType.contains('1')) {
                       type = 'ข้อความ';
                     } else if (misType.contains('2')) {
@@ -226,10 +253,6 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                   }
                 } else {
                   log("not match;");
-                  if (lat == 0 && lng == 0) {
-                    lat = mission[0].misLat;
-                    lng = mission[0].misLng;
-                  }
                 }
               }
             }
@@ -285,7 +308,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                           textAlign: TextAlign.center,
                         ),
                         Text("รายละเอียด : $misDescrip"),
-                        Text("ประเภทภารกิจ : " + misType)
+                        Text("ประเภทภารกิจ : " + type)
                       ],
                     ),
                     actions: <Widget>[
@@ -293,6 +316,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                         child: ElevatedButton(
                           onPressed: () {
                             context.read<AppData>().idMis = misID;
+                            context.read<AppData>().idTeam = teamID;
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
