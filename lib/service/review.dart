@@ -13,4 +13,8 @@ abstract class ReviewService {
 
   @POST("/review")
   Future<HttpResponse<ReviewResult>> reviews(@Body() Reviewdto reviewdto);
+
+  @GET("/review/")
+  Future<HttpResponse<List<Review>>> reviewByRaceID(
+      {@Query("raceID") required int raceID});
 }

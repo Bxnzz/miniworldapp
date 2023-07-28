@@ -21,6 +21,7 @@ import 'package:provider/provider.dart';
 import '../../model/race.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
+import '../Host/race_review.dart';
 
 class HomeJoinDetail extends StatefulWidget {
   const HomeJoinDetail({super.key});
@@ -342,6 +343,11 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                 Get.to(() => const ReviewPage());
                               },
                               child: Text("Review")),
+                          ElevatedButton(
+                              onPressed: () {
+                                Get.to(() => const raceReview());
+                              },
+                              child: Text("ดูรีวิว"))
                         ]),
                       ))
                 ],
