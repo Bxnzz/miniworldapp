@@ -47,7 +47,7 @@ dependencies:
   flutter_facebook_auth: ^5.0.7
 
   google_maps_flutter: ^2.2.2
-  location: ^2.5.4
+  location: ^5.0.1
   geolocator: ^9.0.2
   flutterfire_cli: ^0.2.7
   firebase_core: ^2.4.1
@@ -60,9 +60,10 @@ dependencies:
   flutter_facebook_keyhash: ^0.0.4
   platform_device_id: ^1.0.1
   
-  intl: ^0.17.0
+  intl: ^0.18.0
   searchfield: ^0.7.5
-  date_time_picker: ^2.1.0
+  date_time_picker:
+    path: libraries/date_time_picker
   flutter_datetime_picker: ^1.5.1
   buddhist_datetime_dateformat:
     path: libraries/buddhist_datetime_dateformat_sns
