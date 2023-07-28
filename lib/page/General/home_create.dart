@@ -99,7 +99,7 @@ class _Home_createState extends State<Home_create> {
                         child:  Card(
                           shape: RoundedRectangleBorder(
                               side: BorderSide(
-                                width: 5,
+                                width: 2,
                                 color: Colors.white,
                               ),
                               borderRadius:

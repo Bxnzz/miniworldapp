@@ -294,7 +294,7 @@ class _RaceAllState extends State<RaceAll> {
                       child: Card(
                          shape: RoundedRectangleBorder(
                               side: BorderSide(
-                                width: 5,
+                                width: 2,
                                 color: Colors.white,
                               ),
                               borderRadius:

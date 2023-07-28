@@ -241,10 +241,13 @@ class _CheckMissionListState extends State<CheckMissionList> {
               ? FloatingActionButton.extended(
                   backgroundColor: Colors.lightGreen,
                   onPressed: () {
+                   // log();
                     if(remainMC != 0){
                      Get.defaultDialog(title: 'กรุณาตรวจสอบภารกิจให้เสร็จสิ้น');
-                    }
+                    }else{
                        _processGame();
+                    }
+                      
                     
                    
                   },

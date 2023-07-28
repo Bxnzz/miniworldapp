@@ -78,7 +78,7 @@ class _Home_joinState extends State<Home_join> {
                       child: Card(
                         shape: RoundedRectangleBorder(
                           side: const BorderSide(
-                            width: 5,
+                            width: 2,
                             color: Colors.white,
                           ),
                           borderRadius:

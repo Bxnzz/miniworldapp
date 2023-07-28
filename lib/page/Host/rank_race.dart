@@ -39,56 +39,52 @@ class _RankRaceState extends State<RankRace> {
     missionCompService =
         MissionCompService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
-      // 2.2 async method
+    // 2.2 async method
     loadDataMethod = loadData();
   }
-  
-Future<void> loadData() async{
-     startLoading(context);
+
+  Future<void> loadData() async {
+    startLoading(context);
     try {
       idrace = context.read<AppData>().idrace;
       var a = await missionService.missionByraceID(raceID: idrace);
       missions = a.data;
-     // log(missions.length.toString());
-     reMissions = missions.reversed.toList();
-     log(reMissions.first.misSeq.toString());
+      // log(missions.length.toString());
+      reMissions = missions.reversed.toList();
+      log(reMissions.first.misSeq.toString());
 
       var mcs = await missionCompService.missionCompByraceId(raceID: idrace);
       missionComs = mcs.data;
-      Set<int> teams = {}; 
-
+      List<MissionComplete> teams = [];
       for (var mission in reMissions) {
-       var mcs = missionComs.where((element) => element.misId == mission.misId);
+        var mcs =
+            missionComs.where((element) => element.misId == mission.misId);
+        // mcs = teams ที่ผ่าน mission id นี้ 110, 109, 108
         for (var mc in mcs) {
-          log('mcccc'+mc.teamId.toString());  
-          log('misid '+mission.misId.toString());
-           teams.add(mc.team.teamId);
+          log('mcccc' + mc.teamId.toString());
+          log('misid ' + mission.misId.toString());
+          if (teams.where((e) => e.teamId == mc.teamId).isEmpty) {
+            teams.add(mc);
+          }
         }
-        //จบภารกิจxx
-       if(teams.length >= 3){
-         break;
-       }
       }
-      for (var teamID in teams) {
-        log(teamID.toString());
+      //loop เรียงลำดับ
+      for (var i = 0; i < teams.length; i++) {
+        log('Rank: ${i+1} ${teams[i].teamId} ${teams[i].team.teamName} ${teams[i].misId} ${teams[i].mcDatetime}' );
       }
       debugPrint(teams.toString());
 
       //log(missionComs.length.toString());
       //    misStatus = mcs.data.where((element) => element.mcStatus == 1);
-
-      
     } catch (err) {
-     
       log('Error:$err');
     } finally {
       stopLoading();
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold();
   }
-  
-  
 }
