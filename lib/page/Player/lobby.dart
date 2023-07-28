@@ -260,6 +260,17 @@ class _LobbyState extends State<Lobby> {
                 borderRadius: BorderRadius.circular(12.0),
                 splashColor: Colors.blue.withAlpha(30),
                 child: Stack(children: [
+                  Positioned(
+                    child: Opacity(
+                      opacity: 0.3,
+                      child: Image.network(
+                        attendShow[index].values.first.first.team.teamImage,
+                        height: 60,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
                   ExpansionTile(
                       key: Key(selec.toString()),
                       initiallyExpanded: idTeam ==
@@ -637,17 +648,8 @@ class _LobbyState extends State<Lobby> {
                     ),
                   ),
                   idUser == userCreate
-                      ? Column(children: [
-                          chkReadyBtn(context),
-                          //Host
-                        ])
-                      : Column(
+                      ? Column(
                           children: [
-                            Container(
-                              width: Get.width,
-                              height: Get.height / 2,
-                              child: Center(child: Text("ยังไม่มีทีมเข้าร่วม")),
-                            ),
                             ElevatedButton(
                                 onPressed: () {
                                   showAlertDialog(context);
@@ -655,6 +657,10 @@ class _LobbyState extends State<Lobby> {
                                 child: Text('เริ่มเกม')),
                           ],
                         )
+                      : Column(children: [
+                          chkReadyBtn(context),
+                          //Host
+                        ])
                 ]),
               );
             } else {
