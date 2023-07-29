@@ -1,9 +1,13 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:miniworldapp/model/result/attendRaceResult.dart';
 import 'package:miniworldapp/model/team.dart';
+import 'package:miniworldapp/service/attend.dart';
 import 'package:miniworldapp/service/mission.dart';
 import 'package:miniworldapp/service/missionComp.dart';
 import 'package:provider/provider.dart';
@@ -23,11 +27,15 @@ class RankRace extends StatefulWidget {
 class _RankRaceState extends State<RankRace> {
   late MissionCompService missionCompService;
   late MissionService missionService;
+  late AttendService attendService;
 
   late Future<void> loadDataMethod;
   List<Mission> missions = [];
   List<MissionComplete> missionComs = [];
   List<MissionComplete> teams = [];
+  List<AttendRace> attends = [];
+  List<Map<String, List<AttendRace>>> attendShow = [];
+
   int idrace = 0;
   String teamImage1 = '';
   String teamName1 = '';
@@ -45,6 +53,9 @@ class _RankRaceState extends State<RankRace> {
 
     missionCompService =
         MissionCompService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
+    attendService =
+        AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
     // 2.2 async method
     loadDataMethod = loadData();
@@ -89,7 +100,35 @@ class _RankRaceState extends State<RankRace> {
       log('name' + teamName1);
       debugPrint(teams.toString());
 
-      //log(missionComs.length.toString());
+      var att = await attendService.attendByRaceID(raceID: idrace);
+      attends = att.data;
+      String tmId = '';
+      List<AttendRace> temp = [];
+      for (var i = 0; i < attends.length; i++) {
+        if (attends[i].teamId.toString() != tmId) {
+          if (temp.isNotEmpty) {
+            var team = {tmId: temp};
+            attendShow.add(team);
+            temp = [];
+          }
+          tmId = attends[i].teamId.toString();
+          // log(tmId.toString());
+        }
+
+        temp.add(attends[i]);
+      }
+      if (temp.isNotEmpty) {
+        var team = {tmId: temp};
+        attendShow.add(team);
+      }
+
+      // for (var at in attendShow) {
+      //   log(at.keys.first.toString());
+      //   var tt = at.values.first;
+      //   for (var teamUser in tt) {
+      //     log(teamUser.userId.toString());
+      //   }
+      // }
       //    misStatus = mcs.data.where((element) => element.mcStatus == 1);
     } catch (err) {
       log('Error:$err');
@@ -101,8 +140,10 @@ class _RankRaceState extends State<RankRace> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 224, 193, 246),
       appBar: AppBar(
         elevation: 0,
+        backgroundColor: Colors.transparent,
         title: Text('ลำดับการแข่งขัน'),
       ),
       body: FutureBuilder(
@@ -159,15 +200,15 @@ class _RankRaceState extends State<RankRace> {
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       image: DecorationImage(
-                                          image: NetworkImage(
-                                              teamImage1),
+                                          image: NetworkImage(teamImage1),
                                           fit: BoxFit.cover),
                                     ),
                                   ),
                                   Text(teamName1,
-                                  style: Get.textTheme.bodyLarge!.copyWith(
-                                      color: Get.theme.colorScheme.onPrimary,
-                                      fontWeight: FontWeight.bold)),
+                                      style: Get.textTheme.bodyLarge!.copyWith(
+                                          color:
+                                              Get.theme.colorScheme.onPrimary,
+                                          fontWeight: FontWeight.bold)),
                                 ],
                               ),
                             ),
@@ -188,20 +229,21 @@ class _RankRaceState extends State<RankRace> {
                                             "assets/image/crown2.png"),
                                       ),
                                       Container(
-                                    width: 100,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              teamImage2),
-                                          fit: BoxFit.cover),
-                                    ),
-                                  ),
-                                  Text(teamName2,
-                                  style: Get.textTheme.bodyLarge!.copyWith(
-                                      color: Get.theme.colorScheme.onPrimary,
-                                      fontWeight: FontWeight.bold)),
+                                        width: 100,
+                                        height: 100,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                              image: NetworkImage(teamImage2),
+                                              fit: BoxFit.cover),
+                                        ),
+                                      ),
+                                      Text(teamName2,
+                                          style: Get.textTheme.bodyLarge!
+                                              .copyWith(
+                                                  color: Get.theme.colorScheme
+                                                      .onPrimary,
+                                                  fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                   Column(
@@ -212,21 +254,22 @@ class _RankRaceState extends State<RankRace> {
                                         child: Image.asset(
                                             "assets/image/crown3.png"),
                                       ),
-                                     Container(
-                                    width: 100,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              teamImage3),
-                                          fit: BoxFit.cover),
-                                    ),
-                                  ),
-                                  Text(teamName3,
-                                  style: Get.textTheme.bodyLarge!.copyWith(
-                                      color: Get.theme.colorScheme.onPrimary,
-                                      fontWeight: FontWeight.bold)),
+                                      Container(
+                                        width: 100,
+                                        height: 100,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                              image: NetworkImage(teamImage3),
+                                              fit: BoxFit.cover),
+                                        ),
+                                      ),
+                                      Text(teamName3,
+                                          style: Get.textTheme.bodyLarge!
+                                              .copyWith(
+                                                  color: Get.theme.colorScheme
+                                                      .onPrimary,
+                                                  fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                 ],
@@ -240,38 +283,136 @@ class _RankRaceState extends State<RankRace> {
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        child:  ListView(
+                        child: ListView(
                           children: teams.map((e) {
-                            return  Padding(
-                              padding: const EdgeInsets.only(left: 8,right: 8,),                            
-                              child:   Card(
-                                clipBehavior: Clip.hardEdge,
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  splashColor: Colors.blue.withAlpha(30),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Container(
-                                        alignment: Alignment.center,
-                                        // For testing different size item. You can comment this line
-                                        child: ListTile(
-                                          title: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'ทีม : ${e.teamId}',
-                                              ),
-                                            ],
+                            return Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 8,
+                                  right: 8,
+                                ),
+                                child: Card(
+                                  clipBehavior: Clip.hardEdge,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                    splashColor: Colors.blue.withAlpha(30),
+                                    child: Stack(
+                                      children: [
+                                        Positioned(
+                                          child: Opacity(
+                                            opacity: 0.3,
+                                            child: Image.network(
+                                              e.team.teamImage,
+                                              height: 60,
+                                              width: double.infinity,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                        Positioned(
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            // For testing different size item. You can comment this line
+                                            child: ListTile(
+                                              title: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  teams.indexOf(e) == 0
+                                                      ? SizedBox(
+                                                          width: 40,
+                                                          height: 40,
+                                                          child: Image.asset(
+                                                              "assets/image/crown1.png"),
+                                                        )
+                                                      : teams.indexOf(e) == 1
+                                                          ? SizedBox(
+                                                              width: 40,
+                                                              height: 40,
+                                                              child: Image.asset(
+                                                                  "assets/image/crown2.png"),
+                                                            )
+                                                          : teams.indexOf(e) ==
+                                                                  2
+                                                              ? SizedBox(
+                                                                  width: 40,
+                                                                  height: 40,
+                                                                  child: Image
+                                                                      .asset(
+                                                                          "assets/image/crown3.png"),
+                                                                )
+                                                              : teams.indexOf(
+                                                                          e) >=
+                                                                      3
+                                                                  ? Container(
+                                                                      width: 40,
+                                                                      height:
+                                                                          40,
+                                                                      decoration: const BoxDecoration(
+                                                                          shape: BoxShape
+                                                                              .circle,
+                                                                          color:
+                                                                              Colors.white),
+                                                                      child:
+                                                                          Center(
+                                                                        child: Text(
+                                                                            '${teams.indexOf(e) + 1}',
+                                                                            style:
+                                                                                Get.textTheme.bodyLarge!.copyWith(color: Get.theme.colorScheme.primary, fontWeight: FontWeight.bold)),
+                                                                      ),
+                                                                    )
+                                                                  : Container(),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        ExpansionTile(
+                                            title: Stack(
+                                              alignment: Alignment.center,
+                                              children: <Widget>[
+                                                // Stroked text as border.
+                                                Text(
+                                                  e.team.teamName,
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    foreground: Paint()
+                                                      ..style =
+                                                          PaintingStyle.stroke
+                                                      ..strokeWidth = 3
+                                                      ..color = Colors.white,
+                                                  ),
+                                                ),
+                                                // Solid text as fill.
+                                                Text(
+                                                  e.team.teamName,
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            children: attendShow
+                                                .where((atUser) =>
+                                                    atUser.keys.first ==
+                                                    e.teamId)
+                                                .map((element) {
+                                              return ListTile(
+                                                title: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(element.values.first
+                                                        .toString())
+                                                  ],
+                                                ),
+                                              );
+                                            }).toList())
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              )
-                            );
+                                ));
                           }).toList(),
                         ),
                       ),
