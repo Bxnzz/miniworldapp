@@ -246,10 +246,8 @@ class _CheckMissionListState extends State<CheckMissionList> {
                      Get.defaultDialog(title: 'กรุณาตรวจสอบภารกิจให้เสร็จสิ้น');
                     }else{
                        _processGame();
+                        context.read<AppData>().idrace = idrace;
                     }
-                      
-                    
-                   
                   },
                   label: Text(
                     'ประมวลผลการแข่งขัน',
