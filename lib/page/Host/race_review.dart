@@ -131,8 +131,8 @@ class _raceReviewState extends State<raceReview> {
                                       child: Scrollbar(
                                         child: SingleChildScrollView(
                                           child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 10, bottom: 20),
+                                            padding:
+                                                const EdgeInsets.only(left: 10),
                                             child: Text(
                                               "${e.revText}",
                                             ),
