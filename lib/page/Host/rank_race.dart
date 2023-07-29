@@ -395,18 +395,24 @@ class _RankRaceState extends State<RankRace> {
                                             children: attendShow
                                                 .where((atUser) =>
                                                     atUser.keys.first ==
-                                                    e.teamId)
+                                                    e.teamId.toString())
                                                 .map((element) {
+                                              /// attendShow
+                                              /// [{'130', ['kop', 'dan']}, {'129', ['bob']}
+                                              /// , {'101', ['ar ap....']}]
+                                              /// element.values.first => ['kop', 'dan']
+
                                               return ListTile(
-                                                title: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(element.values.first
-                                                        .toString())
-                                                  ],
-                                                ),
+                                                title: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: element
+                                                        .values.first
+                                                        .map((te) {
+                                                      return Text(
+                                                          te.user.userName);
+                                                    }).toList()),
                                               );
                                             }).toList())
                                       ],
