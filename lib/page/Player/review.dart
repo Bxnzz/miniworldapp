@@ -182,7 +182,7 @@ class _ReviewPageState extends State<ReviewPage> {
                                                         content: Text(
                                                             'รีวิวสำเร็จ :)')),
                                                   );
-                                                  Get.to(() => RaceAll());
+                                                  Get.to(() => HomeAll());
                                                   return;
                                                 } else {
                                                   ScaffoldMessenger.of(context)

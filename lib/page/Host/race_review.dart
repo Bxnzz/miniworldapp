@@ -6,8 +6,10 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:miniworldapp/model/review.dart';
 import 'package:miniworldapp/service/review.dart';
 import 'package:provider/provider.dart';
 
@@ -24,11 +26,12 @@ class raceReview extends StatefulWidget {
 class _raceReviewState extends State<raceReview> {
   late Future<void> loadDataMethods;
   late ReviewService reviewservice;
-
+  late List<Review> reviews = [];
   int raceID = 0;
   int revPoint = 0;
   int userID = 0;
 
+  String img = "";
   String revText = "";
 
   late DateTime revDateTime;
@@ -47,6 +50,10 @@ class _raceReviewState extends State<raceReview> {
     startLoading(context);
     try {
       var review = await reviewservice.reviewByRaceID(raceID: raceID);
+
+      reviews = review.data;
+      revText = review.data.first.revText;
+      img = review.data.first.user.userImage;
     } catch (err) {
       log("Eror:$err");
     } finally {
@@ -85,70 +92,95 @@ class _raceReviewState extends State<raceReview> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: FutureBuilder(
-            future: loadDataMethods,
-            builder: (context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return SizedBox(
-                  width: Get.width,
-                  child: Card(
-                    child: InkWell(
-                        child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text("ชื่อ"),
-                            ratungBar(),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: Get.width / 7,
+      body: FutureBuilder(
+          future: loadDataMethods,
+          builder: (context, AsyncSnapshot snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return ListView(
+                children: reviews.map((e) {
+                  return Stack(
+                    alignment: AlignmentDirectional.topEnd,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            right: 8, left: 8, top: 4, bottom: 4),
+                        child: Container(
+                          width: Get.width,
+                          height: Get.height / 6,
+                          child: Card(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                CircleAvatar(
+                                    radius: Get.width / 9,
+                                    backgroundImage:
+                                        NetworkImage("${e.user.userImage}")),
+                                Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Container(
+                                      height: Get.height / 10,
+                                      width: Get.width / 1.8,
+                                      // decoration: BoxDecoration(
+                                      //   border: Border.all(
+                                      //       width: 1.5, color: Colors.purple),
+                                      //   borderRadius: BorderRadius.all(
+                                      //       Radius.elliptical(10, 10)),
+                                      // ),
+                                      child: Scrollbar(
+                                        child: SingleChildScrollView(
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 10),
+                                            child: Text(
+                                              "${e.revText}",
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
                             ),
-                            SizedBox(
-                              height: Get.height / 5,
-                              width: Get.width / 1.5,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.all(15),
-                                      hintText: 'กิจกรรมเป็นอย่างไร....'),
-                                  keyboardType: TextInputType.multiline,
-                                  minLines: 7,
-                                  maxLines: 8,
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ],
-                    )),
-                  ),
-                );
-              } else {
-                return Container();
-              }
-            }),
-      ),
+                      ),
+                      Positioned(
+                          top: 10,
+                          right: 15,
+                          child: ratingBar(e.revPoint.toDouble())),
+                      Positioned(
+                        top: 10,
+                        right: 115,
+                        child: Text(
+                          "${e.user.userName}\t",
+                        ),
+                      )
+                    ],
+                  );
+                }).toList(),
+              );
+            } else {
+              return Container();
+            }
+          }),
     );
   }
 
-  RatingBar ratungBar() {
+  RatingBar ratingBar(point) {
     return RatingBar.builder(
       glowColor: Colors.yellowAccent,
-      glowRadius: 10,
-      initialRating: 3,
-      minRating: 1,
+      glowRadius: 5,
+      initialRating: point,
+      ignoreGestures: true,
       direction: Axis.horizontal,
       itemCount: 5,
-      itemSize: 50,
+      itemSize: 20,
       itemBuilder: (context, _) => FaIcon(
         FontAwesomeIcons.solidStar,
-        color: Colors.yellow,
+        color: Color.fromARGB(255, 255, 197, 38),
       ),
       onRatingUpdate: (lating) {},
     );
