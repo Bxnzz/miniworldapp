@@ -3,10 +3,12 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';
 import 'package:miniworldapp/model/team.dart';
+import 'package:miniworldapp/page/Host/share.dart';
 import 'package:miniworldapp/service/attend.dart';
 import 'package:miniworldapp/service/mission.dart';
 import 'package:miniworldapp/service/missionComp.dart';
@@ -140,290 +142,365 @@ class _RankRaceState extends State<RankRace> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 224, 193, 246),
+      backgroundColor: const Color.fromARGB(255, 224, 193, 246),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        title: Text('ลำดับการแข่งขัน'),
+        title: const Text('ลำดับการแข่งขัน'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Get.to(Share());
+              },
+              icon: Container(
+                
+                  height: 40,
+                  width: 40,
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle, color: Colors.amberAccent),
+                  child: const Center(
+                    child:  FaIcon(
+                      FontAwesomeIcons.shareNodes,
+                      color: Colors.white,
+                    ),
+                  )))
+        ],
       ),
       body: FutureBuilder(
           future: loadDataMethod,
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              return SingleChildScrollView(
-                child: SizedBox(
-                  height: Get.height,
-                  child: Stack(
-                    children: [
-                      SizedBox(
-                        height: Get.height * 0.55 + 30, //30 for bottom
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              top: 0,
-                              bottom: 150, // to shift little up
-                              left: 0,
-                              right: 0,
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.vertical(
-                                      bottom: Radius.circular(20),
-                                    ),
-                                    gradient: LinearGradient(
-                                        begin: FractionalOffset(0.0, 0.0),
-                                        end: FractionalOffset(1.0, 0.0),
-                                        stops: [0.0, 1.0],
-                                        tileMode: TileMode.clamp,
-                                        colors: [
-                                          Colors.purpleAccent,
-                                          Color.fromARGB(255, 144, 64, 255),
-                                        ])),
-                                width: Get.width,
-                                height: Get.height * 0.3,
-                              ),
+              return SizedBox(
+                height: Get.height,
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      height: Get.height * 0.55 + 30, //30 for bottom
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            top: 0,
+                            bottom: 150, // to shift little up
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.vertical(
+                                    bottom: Radius.circular(20),
+                                  ),
+                                  gradient: LinearGradient(
+                                      begin: FractionalOffset(0.0, 0.0),
+                                      end: FractionalOffset(1.0, 0.0),
+                                      stops: [0.0, 1.0],
+                                      tileMode: TileMode.clamp,
+                                      colors: [
+                                        Colors.purpleAccent,
+                                        Color.fromARGB(255, 144, 64, 255),
+                                      ])),
+                              width: Get.width,
+                              height: Get.height * 0.3,
                             ),
-                            Positioned(
-                              top: 20,
-                              left: 10,
-                              right: 10,
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child:
-                                        Image.asset("assets/image/crown1.png"),
-                                  ),
-                                  Container(
-                                    width: 100,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                          image: NetworkImage(teamImage1),
-                                          fit: BoxFit.cover),
-                                    ),
-                                  ),
-                                  Text(teamName1,
-                                      style: Get.textTheme.bodyLarge!.copyWith(
-                                          color:
-                                              Get.theme.colorScheme.onPrimary,
-                                          fontWeight: FontWeight.bold)),
-                                ],
-                              ),
-                            ),
-                            Positioned(
-                              top: Get.height * 0.08,
-                              left: 10,
-                              right: 10,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    children: [
-                                      SizedBox(
-                                        width: 50,
-                                        height: 50,
-                                        child: Image.asset(
-                                            "assets/image/crown2.png"),
-                                      ),
-                                      Container(
-                                        width: 100,
-                                        height: 100,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                              image: NetworkImage(teamImage2),
-                                              fit: BoxFit.cover),
-                                        ),
-                                      ),
-                                      Text(teamName2,
-                                          style: Get.textTheme.bodyLarge!
-                                              .copyWith(
-                                                  color: Get.theme.colorScheme
-                                                      .onPrimary,
-                                                  fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                  Column(
-                                    children: [
-                                      SizedBox(
-                                        width: 50,
-                                        height: 50,
-                                        child: Image.asset(
-                                            "assets/image/crown3.png"),
-                                      ),
-                                      Container(
-                                        width: 100,
-                                        height: 100,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                              image: NetworkImage(teamImage3),
-                                              fit: BoxFit.cover),
-                                        ),
-                                      ),
-                                      Text(teamName3,
-                                          style: Get.textTheme.bodyLarge!
-                                              .copyWith(
-                                                  color: Get.theme.colorScheme
-                                                      .onPrimary,
-                                                  fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        top: 250,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: ListView(
-                          children: teams.map((e) {
-                            return Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 8,
-                                  right: 8,
+                          ),
+                          Positioned(
+                            top: 20,
+                            left: 10,
+                            right: 10,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: Image.asset("assets/image/crown1.png"),
                                 ),
-                                child: Card(
-                                  clipBehavior: Clip.hardEdge,
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    splashColor: Colors.blue.withAlpha(30),
-                                    child: Stack(
-                                      children: [
-                                        Positioned(
-                                          child: Opacity(
-                                            opacity: 0.3,
-                                            child: Image.network(
-                                              e.team.teamImage,
-                                              height: 60,
-                                              width: double.infinity,
-                                              fit: BoxFit.cover,
-                                            ),
+                                Container(
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: NetworkImage(teamImage1),
+                                        fit: BoxFit.cover),
+                                  ),
+                                ),
+                                Text(teamName1,
+                                    style: Get.textTheme.bodyLarge!.copyWith(
+                                        color: Get.theme.colorScheme.onPrimary,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                          Positioned(
+                            top: Get.height * 0.08,
+                            left: 10,
+                            right: 10,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  children: [
+                                    SizedBox(
+                                      width: 50,
+                                      height: 50,
+                                      child: Image.asset(
+                                          "assets/image/crown2.png"),
+                                    ),
+                                    Container(
+                                      width: 100,
+                                      height: 100,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            image: NetworkImage(teamImage2),
+                                            fit: BoxFit.cover),
+                                      ),
+                                    ),
+                                    Text(teamName2,
+                                        style: Get.textTheme.bodyLarge!
+                                            .copyWith(
+                                                color: Get.theme.colorScheme
+                                                    .onPrimary,
+                                                fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    SizedBox(
+                                      width: 50,
+                                      height: 50,
+                                      child: Image.asset(
+                                          "assets/image/crown3.png"),
+                                    ),
+                                    Container(
+                                      width: 100,
+                                      height: 100,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            image: NetworkImage(teamImage3),
+                                            fit: BoxFit.cover),
+                                      ),
+                                    ),
+                                    Text(teamName3,
+                                        style: Get.textTheme.bodyLarge!
+                                            .copyWith(
+                                                color: Get.theme.colorScheme
+                                                    .onPrimary,
+                                                fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      top: 250,
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: ListView(
+                        children: teams.map((e) {
+                          return Padding(
+                              padding: const EdgeInsets.only(
+                                left: 8,
+                                right: 8,
+                              ),
+                              child: Card(
+                                clipBehavior: Clip.hardEdge,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  splashColor: Colors.blue.withAlpha(30),
+                                  child: Stack(
+                                    children: [
+                                      Positioned(
+                                        child: Opacity(
+                                          opacity: 0.3,
+                                          child: Image.network(
+                                            e.team.teamImage,
+                                            height: 60,
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
                                           ),
                                         ),
-                                        Positioned(
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                            // For testing different size item. You can comment this line
-                                            child: ListTile(
-                                              title: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  teams.indexOf(e) == 0
-                                                      ? SizedBox(
-                                                          width: 40,
-                                                          height: 40,
-                                                          child: Image.asset(
-                                                              "assets/image/crown1.png"),
-                                                        )
-                                                      : teams.indexOf(e) == 1
-                                                          ? SizedBox(
-                                                              width: 40,
-                                                              height: 40,
-                                                              child: Image.asset(
-                                                                  "assets/image/crown2.png"),
-                                                            )
-                                                          : teams.indexOf(e) ==
-                                                                  2
-                                                              ? SizedBox(
-                                                                  width: 40,
-                                                                  height: 40,
-                                                                  child: Image
-                                                                      .asset(
-                                                                          "assets/image/crown3.png"),
-                                                                )
-                                                              : teams.indexOf(
-                                                                          e) >=
-                                                                      3
-                                                                  ? Container(
-                                                                      width: 40,
-                                                                      height:
-                                                                          40,
-                                                                      decoration: const BoxDecoration(
-                                                                          shape: BoxShape
-                                                                              .circle,
-                                                                          color:
-                                                                              Colors.white),
-                                                                      child:
-                                                                          Center(
-                                                                        child: Text(
-                                                                            '${teams.indexOf(e) + 1}',
-                                                                            style:
-                                                                                Get.textTheme.bodyLarge!.copyWith(color: Get.theme.colorScheme.primary, fontWeight: FontWeight.bold)),
-                                                                      ),
-                                                                    )
-                                                                  : Container(),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        ExpansionTile(
-                                            title: Stack(
-                                              alignment: Alignment.center,
-                                              children: <Widget>[
-                                                // Stroked text as border.
-                                                Text(
-                                                  e.team.teamName,
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    foreground: Paint()
-                                                      ..style =
-                                                          PaintingStyle.stroke
-                                                      ..strokeWidth = 3
-                                                      ..color = Colors.white,
-                                                  ),
-                                                ),
-                                                // Solid text as fill.
-                                                Text(
-                                                  e.team.teamName,
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
+                                      ),
+                                      Positioned(
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          // For testing different size item. You can comment this line
+                                          child: ListTile(
+                                            title: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                teams.indexOf(e) == 0
+                                                    ? SizedBox(
+                                                        width: 40,
+                                                        height: 40,
+                                                        child: Image.asset(
+                                                            "assets/image/crown1.png"),
+                                                      )
+                                                    : teams.indexOf(e) == 1
+                                                        ? SizedBox(
+                                                            width: 40,
+                                                            height: 40,
+                                                            child: Image.asset(
+                                                                "assets/image/crown2.png"),
+                                                          )
+                                                        : teams.indexOf(e) == 2
+                                                            ? SizedBox(
+                                                                width: 40,
+                                                                height: 40,
+                                                                child: Image.asset(
+                                                                    "assets/image/crown3.png"),
+                                                              )
+                                                            : teams.indexOf(
+                                                                        e) >=
+                                                                    3
+                                                                ? Container(
+                                                                    width: 40,
+                                                                    height: 40,
+                                                                    decoration: const BoxDecoration(
+                                                                        shape: BoxShape
+                                                                            .circle,
+                                                                        color: Colors
+                                                                            .white),
+                                                                    child:
+                                                                        Center(
+                                                                      child: Text(
+                                                                          '${teams.indexOf(e) + 1}',
+                                                                          style: Get
+                                                                              .textTheme
+                                                                              .bodyLarge!
+                                                                              .copyWith(color: Get.theme.colorScheme.primary, fontWeight: FontWeight.bold)),
+                                                                    ),
+                                                                  )
+                                                                : Container(),
                                               ],
                                             ),
-                                            children: attendShow
-                                                .where((atUser) =>
-                                                    atUser.keys.first ==
-                                                    e.teamId.toString())
-                                                .map((element) {
-                                              /// attendShow
-                                              /// [{'130', ['kop', 'dan']}, {'129', ['bob']}
-                                              /// , {'101', ['ar ap....']}]
-                                              /// element.values.first => ['kop', 'dan']
+                                          ),
+                                        ),
+                                      ),
+                                      ExpansionTile(
+                                          title: Stack(
+                                            alignment: Alignment.center,
+                                            children: <Widget>[
+                                              // Stroked text as border.
+                                              Text(
+                                                e.team.teamName,
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  foreground: Paint()
+                                                    ..style =
+                                                        PaintingStyle.stroke
+                                                    ..strokeWidth = 3
+                                                    ..color = Colors.white,
+                                                ),
+                                              ),
+                                              // Solid text as fill.
+                                              Text(
+                                                e.team.teamName,
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          children: attendShow
+                                              .where((atUser) =>
+                                                  atUser.keys.first ==
+                                                  e.teamId.toString())
+                                              .map((element) {
+                                            /// attendShow
+                                            /// [{'130', ['kop', 'dan']}, {'129', ['bob']}
+                                            /// , {'101', ['ar ap....']}]
+                                            /// element.values.first => ['kop', 'dan']
 
-                                              return ListTile(
-                                                title: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: element
-                                                        .values.first
-                                                        .map((te) {
-                                                      return Text(
-                                                          te.user.userName);
-                                                    }).toList()),
-                                              );
-                                            }).toList())
-                                      ],
-                                    ),
+                                            return ListTile(
+                                              title: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: element.values.first
+                                                      .map((te) {
+                                                    return InkWell(
+                                                      onTap: () {
+                                                        showDialog<void>(
+                                                            context: context,
+                                                            builder:
+                                                                (context) =>
+                                                                    AlertDialog(
+                                                                      title:
+                                                                          SizedBox(
+                                                                        width: Get
+                                                                            .width,
+                                                                        child:
+                                                                            Column(
+                                                                          children: [
+                                                                            Text(te.user.userName),
+                                                                            CircleAvatar(
+                                                                              radius: Get.width / 6,
+                                                                              backgroundImage: NetworkImage(te.user.userImage),
+                                                                            ),
+                                                                            Text(te.user.userFullname),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                      content:
+                                                                          Text(
+                                                                        te.user
+                                                                            .userDiscription,
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                      ),
+                                                                    ));
+                                                      },
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    top: 5),
+                                                            child:
+                                                                GestureDetector(
+                                                              onTap: () {},
+                                                              child: CircleAvatar(
+                                                                  radius: 25,
+                                                                  backgroundImage:
+                                                                      NetworkImage(te
+                                                                          .user
+                                                                          .userImage)),
+                                                            ),
+                                                          ),
+                                                          Divider(),
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    top: 5,
+                                                                    left: 5),
+                                                            child: Text(
+                                                              te.user.userName,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }).toList()),
+                                            );
+                                          }).toList())
+                                    ],
                                   ),
-                                ));
-                          }).toList(),
-                        ),
+                                ),
+                              ));
+                        }).toList(),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               );
             } else {
