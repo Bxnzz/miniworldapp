@@ -322,17 +322,17 @@ class _RankRaceState extends State<RankRace> {
                                   splashColor: Colors.blue.withAlpha(30),
                                   child: Stack(
                                     children: [
-                                      Positioned(
-                                        child: Opacity(
-                                          opacity: 0.3,
-                                          child: Image.network(
-                                            e.team.teamImage,
-                                            height: 60,
-                                            width: double.infinity,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
+                                      // Positioned(
+                                      //   child: Opacity(
+                                      //     opacity: 0.3,
+                                      //     child: Image.network(
+                                      //       e.team.teamImage,
+                                      //       height: 60,
+                                      //       width: double.infinity,
+                                      //       fit: BoxFit.cover,
+                                      //     ),
+                                      //   ),
+                                      // ),
                                       Positioned(
                                         child: Container(
                                           alignment: Alignment.center,
@@ -369,11 +369,10 @@ class _RankRaceState extends State<RankRace> {
                                                                 ? Container(
                                                                     width: 40,
                                                                     height: 40,
-                                                                    decoration: const BoxDecoration(
+                                                                    decoration:  BoxDecoration(
                                                                         shape: BoxShape
                                                                             .circle,
-                                                                        color: Colors
-                                                                            .white),
+                                                                        color:Get.theme.colorScheme.primary),
                                                                     child:
                                                                         Center(
                                                                       child: Text(
@@ -447,6 +446,7 @@ class _RankRaceState extends State<RankRace> {
                                                                             .width,
                                                                         child:
                                                                             Column(
+                                                                              mainAxisAlignment: MainAxisAlignment.start,
                                                                           children: [
                                                                             Text(te.user.userName),
                                                                             CircleAvatar(
@@ -466,38 +466,41 @@ class _RankRaceState extends State<RankRace> {
                                                                       ),
                                                                     ));
                                                       },
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
+                                                      child: Column(
                                                         children: [
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    top: 5),
-                                                            child:
-                                                                GestureDetector(
-                                                              onTap: () {},
-                                                              child: CircleAvatar(
-                                                                  radius: 25,
-                                                                  backgroundImage:
-                                                                      NetworkImage(te
-                                                                          .user
-                                                                          .userImage)),
-                                                            ),
-                                                          ),
                                                           Divider(),
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    top: 5,
-                                                                    left: 5),
-                                                            child: Text(
-                                                              te.user.userName,
-                                                            ),
+                                                          Row(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        top: 5),
+                                                                child:
+                                                                    GestureDetector(
+                                                                  child: CircleAvatar(
+                                                                      radius: 25,
+                                                                      backgroundImage:
+                                                                          NetworkImage(te
+                                                                              .user
+                                                                              .userImage)),
+                                                                ),
+                                                              ),
+                                                            
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        top: 5,
+                                                                        left: 5),
+                                                                child: Text(
+                                                                  te.user.userName,
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
+                                                         
                                                         ],
                                                       ),
                                                     );
