@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:miniworldapp/model/DTO/rewardDTO.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';
+import 'package:miniworldapp/model/reward.dart';
 import 'package:miniworldapp/model/team.dart';
 import 'package:miniworldapp/page/Host/share.dart';
 import 'package:miniworldapp/service/attend.dart';
@@ -17,6 +19,7 @@ import 'package:provider/provider.dart';
 import '../../model/mission.dart';
 import '../../model/missionComp.dart';
 import '../../service/provider/appdata.dart';
+import '../../service/reward.dart';
 import '../../widget/loadData.dart';
 
 class RankRace extends StatefulWidget {
@@ -30,15 +33,18 @@ class _RankRaceState extends State<RankRace> {
   late MissionCompService missionCompService;
   late MissionService missionService;
   late AttendService attendService;
+  late RewardService rewardService;
 
   late Future<void> loadDataMethod;
   List<Mission> missions = [];
   List<MissionComplete> missionComs = [];
   List<MissionComplete> teams = [];
   List<AttendRace> attends = [];
+  List<Reward> rewards = [];
   List<Map<String, List<AttendRace>>> attendShow = [];
 
   int idrace = 0;
+  int idUser = 0;
   String teamImage1 = '';
   String teamName1 = '';
   String teamImage2 = '';
@@ -59,6 +65,9 @@ class _RankRaceState extends State<RankRace> {
     attendService =
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
+    rewardService =
+        RewardService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
     // 2.2 async method
     loadDataMethod = loadData();
   }
@@ -67,6 +76,7 @@ class _RankRaceState extends State<RankRace> {
     startLoading(context);
     try {
       idrace = context.read<AppData>().idrace;
+      idUser = context.read<AppData>().idUser;
       var a = await missionService.missionByraceID(raceID: idrace);
       missions = a.data;
       // log(missions.length.toString());
@@ -153,13 +163,12 @@ class _RankRaceState extends State<RankRace> {
                 Get.to(Share());
               },
               icon: Container(
-                
                   height: 40,
                   width: 40,
                   decoration: const BoxDecoration(
                       shape: BoxShape.circle, color: Colors.amberAccent),
                   child: const Center(
-                    child:  FaIcon(
+                    child: FaIcon(
                       FontAwesomeIcons.shareNodes,
                       color: Colors.white,
                     ),
@@ -386,25 +395,27 @@ class _RankRaceState extends State<RankRace> {
                                             alignment: Alignment.center,
                                             children: <Widget>[
                                               // Stroked text as border.
-                                              Text(
-                                                e.team.teamName,
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  foreground: Paint()
-                                                    ..style =
-                                                        PaintingStyle.stroke
-                                                    ..strokeWidth = 3
-                                                    ..color = Colors.white,
-                                                ),
-                                              ),
-                                              // Solid text as fill.
-                                              Text(
-                                                e.team.teamName,
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
+                                            if (attendShow.where((att) =>
+                                                      att.keys.first ==
+                                                      e.teamId)  == attendShow.where((atts) =>
+                                                      atts.keys.first ==
+                                                      idUser)) Text(
+                                                      e.team.teamName +
+                                                          '(ทีมคุณ)',
+                                                      style: TextStyle(
+                                                          fontSize: 20,
+                                                          color:
+                                                              Colors.deepPurple,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ) else Text(
+                                                      e.team.teamName,
+                                                      style: TextStyle(
+                                                          fontSize: 20,
+                                                          color: Colors.black,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
                                             ],
                                           ),
                                           children: attendShow

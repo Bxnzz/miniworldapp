@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:miniworldapp/model/DTO/rewardDTO.dart';
 import 'package:miniworldapp/model/attend.dart';
 import 'package:miniworldapp/model/missionComp.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';
@@ -25,9 +26,11 @@ import 'package:badges/badges.dart' as badges;
 import '../../model/DTO/raceStatusDTO.dart';
 import '../../model/mission.dart';
 import '../../model/result/raceResult.dart';
+import '../../model/reward.dart';
 import '../../service/attend.dart';
 import '../../service/mission.dart';
 import '../../service/provider/appdata.dart';
+import '../../service/reward.dart';
 import '../../widget/loadData.dart';
 
 class CheckMissionList extends StatefulWidget {
@@ -42,9 +45,12 @@ class _CheckMissionListState extends State<CheckMissionList> {
   int idrace = 0;
   List<Mission> missions = [];
   List<MissionComplete> missionComs = [];
+  List<MissionComplete> teamRewards = [];
   List<Team> teams = [];
   List<AttendRace> attends = [];
+  List<Reward> rewards = [];
   Map<String, dynamic> mc = {};
+  List<Mission> reMissions = [];
 
   final seq = <int>[];
   late Future<void> loadDataMethod;
@@ -54,6 +60,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
   late TeamService teamService;
   late RaceService raceService;
   late MissionCompService missionCompService;
+  late RewardService rewardService;
   String raceName = '';
   String type1 = '';
   String type2 = '';
@@ -79,7 +86,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
   void initState() {
     super.initState();
 
-   // context.read<AppData>().remainMC = 0;
+    // context.read<AppData>().remainMC = 0;
     idrace = context.read<AppData>().idrace;
     log('id' + idrace.toString());
 
@@ -99,6 +106,9 @@ class _CheckMissionListState extends State<CheckMissionList> {
 
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
+    rewardService =
+        RewardService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
     // 2.2 async method
     loadDataMethod = loadData();
   }
@@ -106,8 +116,6 @@ class _CheckMissionListState extends State<CheckMissionList> {
   Future<void> loadData() async {
     startLoading(context);
     try {
-     
-
       var a = await missionService.missionByraceID(raceID: idrace);
       missions = a.data;
       mType = a.data.first.misType.toString();
@@ -134,7 +142,20 @@ class _CheckMissionListState extends State<CheckMissionList> {
       log('att ' + playerIds.toString());
       var mcs = await missionCompService.missionCompAll();
       missionComs = mcs.data;
+      reMissions = missions.reversed.toList();
       //    misStatus = mcs.data.where((element) => element.mcStatus == 1);
+      for (var mission in reMissions) {
+        var mcs =
+            missionComs.where((element) => element.misId == mission.misId);
+        // mcs = teams ที่ผ่าน mission id นี้ 110, 109, 108
+        for (var mcc in mcs) {
+          log('mcccc' + mcc.teamId.toString());
+          log('misid ' + mission.misId.toString());
+          if (teamRewards.where((e) => e.teamId == mcc.teamId).isEmpty) {
+            teamRewards.add(mcc);
+          }
+        }
+      }
 
       isLoaded = true;
     } catch (err) {
@@ -168,13 +189,24 @@ class _CheckMissionListState extends State<CheckMissionList> {
         ]);
     log('player ' + playerIds.toString());
     var response1 = await OneSignal.shared.postNotification(notification1);
-    Get.defaultDialog(title: 'จบการแข่งขันแล้ว').then((value) => Get.to(HomeAll()));
+    Get.defaultDialog(title: 'จบการแข่งขันแล้ว')
+        .then((value) => Get.to(HomeAll()));
   }
 
   void _processGame() async {
     raceStatus = 4;
     RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
     var racestatus = await raceService.updateStatusRaces(racedto, idrace);
+
+       for (var i = 0; i < teamRewards.length; i++) {
+      log('Rank: ${i + 1} ${teamRewards[i].teamId} ${teamRewards[i].team.teamName} ${teamRewards[i].misId} ${teamRewards[i].mcDatetime}');
+     
+      RewardDto rewardDto = RewardDto(
+          reType: i + 1, teamId: teamRewards[i].teamId, raceId: idrace);
+     // var reward = await rewardService.reward(rewardDto);
+
+    }
+
     mc = {
       'notitype': 'processgame',
       'mcid': raceStatus,
@@ -195,6 +227,9 @@ class _CheckMissionListState extends State<CheckMissionList> {
     log('player ' + playerIds.toString());
     var response1 = await OneSignal.shared.postNotification(notification1);
     Get.defaultDialog(title: 'ประมวลผลการแข่งขันแล้ว');
+
+ 
+
     Get.to(
       RankRace(),
     );
@@ -222,13 +257,11 @@ class _CheckMissionListState extends State<CheckMissionList> {
         // other stuff
         title: const Text('ภารกิจ'),
       ),
-      
-      floatingActionButton: context.read<AppData>().raceStatus != 3 
+      floatingActionButton: context.read<AppData>().raceStatus != 3
           ? FloatingActionButton.extended(
               backgroundColor: Colors.pinkAccent,
               onPressed: () {
                 _Endgame();
-                  
               },
               label: Text(
                 'จบการแข่งขัน',
@@ -241,12 +274,15 @@ class _CheckMissionListState extends State<CheckMissionList> {
               ? FloatingActionButton.extended(
                   backgroundColor: Colors.lightGreen,
                   onPressed: () {
-                   // log();
-                    if(remainMC != 0){
-                     Get.defaultDialog(title: 'กรุณาตรวจสอบภารกิจให้เสร็จสิ้น');
-                    }else{
-                       _processGame();
-                        context.read<AppData>().idrace = idrace;
+                    // log();
+                    if (remainMC != 0) {
+                      Get.defaultDialog(
+                          title: 'กรุณาตรวจสอบภารกิจให้เสร็จสิ้น');
+                    } else {
+                      //loop เรียงลำดับ
+
+                      _processGame();
+                      context.read<AppData>().idrace = idrace;
                     }
                   },
                   label: Text(
@@ -273,7 +309,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
                           e.mission.misId == element.misId && e.mcStatus == 1)
                       .length;
 
-                 remainMC += mcStatus;
+                  remainMC += mcStatus;
 
                   log('remain ' + remainMC.toString());
                   //  log('mcss ' + mcStatus.toString());
