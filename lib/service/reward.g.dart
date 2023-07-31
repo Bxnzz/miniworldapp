@@ -44,13 +44,14 @@ class _RewardService implements RewardService {
   }
 
   @override
-  Future<HttpResponse<List<Reward>>> rewardByRaceID({required raceID}) async {
+  Future<HttpResponse<List<RewardResult>>> rewardByRaceID(
+      {required raceID}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'raceID': raceID};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<List<dynamic>>(
-        _setStreamType<HttpResponse<List<Reward>>>(Options(
+        _setStreamType<HttpResponse<List<RewardResult>>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -63,20 +64,21 @@ class _RewardService implements RewardService {
             )
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     var value = _result.data!
-        .map((dynamic i) => Reward.fromJson(i as Map<String, dynamic>))
+        .map((dynamic i) => RewardResult.fromJson(i as Map<String, dynamic>))
         .toList();
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }
 
   @override
-  Future<HttpResponse<List<Reward>>> rewardByTeamID({required teamID}) async {
+  Future<HttpResponse<List<RewardResult>>> rewardByTeamID(
+      {required teamID}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'teamID': teamID};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<List<dynamic>>(
-        _setStreamType<HttpResponse<List<Reward>>>(Options(
+        _setStreamType<HttpResponse<List<RewardResult>>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -89,7 +91,7 @@ class _RewardService implements RewardService {
             )
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     var value = _result.data!
-        .map((dynamic i) => Reward.fromJson(i as Map<String, dynamic>))
+        .map((dynamic i) => RewardResult.fromJson(i as Map<String, dynamic>))
         .toList();
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;

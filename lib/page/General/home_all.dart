@@ -85,21 +85,7 @@ class _HomeAllState extends State<HomeAll> {
                 });
               },
             ),
-            SpeedDialChild(
-              child: const FaIcon(FontAwesomeIcons.bell),
-              foregroundColor: Colors.black,
-              backgroundColor: Colors.amber,
-              label: 'Noti',
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => NontificationPage()));
-                setState(() {
-                  _text = '"Noti"';
-                });
-              },
-            ),
+            
           ],
           closedForegroundColor: Colors.black,
           openForegroundColor: Colors.white,

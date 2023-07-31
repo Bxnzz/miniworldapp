@@ -203,7 +203,9 @@ class _CheckMissionListState extends State<CheckMissionList> {
      
       RewardDto rewardDto = RewardDto(
           reType: i + 1, teamId: teamRewards[i].teamId, raceId: idrace);
-     // var reward = await rewardService.reward(rewardDto);
+           log('re'+rewardDtoToJson(rewardDto));
+         // ('reward'+rewardDto.toString());
+     var reward = await rewardService.reward(rewardDto);
 
     }
 

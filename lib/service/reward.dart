@@ -5,6 +5,8 @@ import 'package:miniworldapp/model/reward.dart';
 import 'package:retrofit/dio.dart';
 import 'package:retrofit/http.dart';
 
+import '../model/result/rewardResult.dart';
+
 part 'reward.g.dart';
 
 
@@ -17,10 +19,10 @@ abstract class RewardService {
   Future<HttpResponse<Reward>> reward(@Body() RewardDto rewardDto);
 
   @GET("/reward/")
-  Future<HttpResponse<List<Reward>>> rewardByRaceID(
+  Future<HttpResponse<List<RewardResult>>> rewardByRaceID(
       {@Query("raceID") required int raceID});
 
     @GET("/reward/")
-  Future<HttpResponse<List<Reward>>> rewardByTeamID(
+  Future<HttpResponse<List<RewardResult>>> rewardByTeamID(
       {@Query("teamID") required int teamID});
 }
