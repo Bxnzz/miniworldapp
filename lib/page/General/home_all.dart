@@ -6,6 +6,7 @@ import 'package:animations/animations.dart';
 import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +14,7 @@ import 'package:miniworldapp/page/General/detil_race.dart';
 import 'package:miniworldapp/page/General/home_join_detail.dart';
 
 import 'package:miniworldapp/page/General/login.dart';
+import 'package:miniworldapp/page/General/profile_edit.dart';
 import 'package:miniworldapp/page/Host/race_create.dart';
 import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/page/Host/start_list_mission.dart';
@@ -43,6 +45,7 @@ class _HomeAllState extends State<HomeAll> {
   final transitionType = ContainerTransitionType.fade;
   String Username = '';
   String _text = '';
+  int userID = 0;
   TextEditingController textController = TextEditingController();
   List<Race> races = [];
   late RaceService raceService;
@@ -53,7 +56,9 @@ class _HomeAllState extends State<HomeAll> {
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
     Username = context.read<AppData>().Username;
+    userID = context.read<AppData>().idUser;
     log(Username);
+    log("${userID}");
   }
 
   @override
@@ -141,12 +146,16 @@ class _HomeAllState extends State<HomeAll> {
             ],
           ),
           actions: [
-            IconButton(
-              icon: FaIcon(FontAwesomeIcons.search),
-              onPressed: () {
-                showSearch(context: context, delegate: mySearchDelegate());
-              },
-            )
+            CircleAvatar(
+              backgroundColor: Colors.amber,
+              child: IconButton(
+                icon: const Icon(Icons.search_sharp),
+                color: Colors.white,
+                onPressed: () {
+                  showSearch(context: context, delegate: mySearchDelegate());
+                },
+              ),
+            ),
           ],
           centerTitle: false,
           titleSpacing: 0,
@@ -226,7 +235,9 @@ class _HomeAllState extends State<HomeAll> {
                   leading: const FaIcon(FontAwesomeIcons.user),
                   title: const Text('แก้ไขโปรไฟล์'),
                   onTap: () {
-                    Navigator.pop(context);
+                    context.read<AppData>().idUser = userID;
+
+                    Get.to(() => Profile_edit());
                   },
                 ),
                 ListTile(
@@ -287,7 +298,8 @@ class mySearchDelegate extends SearchDelegate {
         races = a.data;
 
         for (var rac in races) {
-          if (rac.raceName.toLowerCase().contains(query.toLowerCase())) {
+          if (rac.raceName.toLowerCase().contains(query.toLowerCase()) ||
+              rac.raceId.toString().contains(query.toLowerCase())) {
             match.add(rac);
           }
         }
@@ -336,7 +348,8 @@ class mySearchDelegate extends SearchDelegate {
         races = a.data;
 
         for (var rac in races) {
-          if (rac.raceName.toLowerCase().contains(query.toLowerCase())) {
+          if (rac.raceName.toLowerCase().contains(query.toLowerCase()) ||
+              rac.raceId.toString().contains(query.toLowerCase())) {
             match.add(rac);
           }
         }

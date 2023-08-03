@@ -657,21 +657,7 @@ class _LobbyState extends State<Lobby> {
                                 child: Text('เริ่มเกม')),
                           ],
                         )
-                     
-                      : Column(
-                          children: [
-                            Container(
-                              width: Get.width,
-                              height: Get.height / 2,
-                              child: Center(child: Text("ยังไม่มีทีมเข้าร่วม")),
-                            ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  showAlertDialog(context);
-                                },
-                                child: Text('เริ่มเกม')),
-                          ],
-                        )
+                      : chkReadyBtn(context)
                 ]),
               );
             } else {
