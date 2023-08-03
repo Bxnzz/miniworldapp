@@ -18,6 +18,7 @@ import 'package:miniworldapp/service/team.dart';
 import 'package:miniworldapp/widget/loadData.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:pushable_button/pushable_button.dart';
 
 import '../../model/race.dart';
 import '../../model/result/attendRaceResult.dart';
@@ -650,14 +651,31 @@ class _LobbyState extends State<Lobby> {
                   idUser == userCreate
                       ? Column(
                           children: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  showAlertDialog(context);
-                                },
-                                child: Text('เริ่มเกม')),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 30),
+                              child: SizedBox(
+                                width: 120,
+                                child: PushableButton(
+                                  child: Text(
+                                    'เริ่มเกม',
+                                    style: textTheme.displayMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                  height: 40,
+                                  elevation: 8,
+                                  hslColor:const HSLColor.fromAHSL(1.0, 120, 1.0, 0.37),
+                                  onPressed: () {
+                                    showAlertDialog(context);
+                                  },
+                                ),
+                              ),
+                            ),
+                          
                           ],
                         )
-                     
                       : Column(
                           children: [
                             Container(

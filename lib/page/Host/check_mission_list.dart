@@ -140,9 +140,10 @@ class _CheckMissionListState extends State<CheckMissionList> {
         }
       }
       log('att ' + playerIds.toString());
-      var mcs = await missionCompService.missionCompAll();
+       var mcs = await missionCompService.missionCompByraceId(raceID: idrace);
       missionComs = mcs.data;
-      reMissions = missions.reversed.toList();
+     reMissions = missions.reversed.toList();
+      log(reMissions.first.misSeq.toString());
       //    misStatus = mcs.data.where((element) => element.mcStatus == 1);
       for (var mission in reMissions) {
         var mcs =
@@ -202,7 +203,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
       log('Rank: ${i + 1} ${teamRewards[i].teamId} ${teamRewards[i].team.teamName} ${teamRewards[i].misId} ${teamRewards[i].mcDatetime}');
      
       RewardDto rewardDto = RewardDto(
-          reType: i + 1, teamId: teamRewards[i].teamId, raceId: idrace);
+          reType: i+1, teamId: teamRewards[i].teamId, raceId: idrace);
            log('re'+rewardDtoToJson(rewardDto));
          // ('reward'+rewardDto.toString());
      var reward = await rewardService.reward(rewardDto);

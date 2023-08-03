@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:miniworldapp/page/General/detil_race.dart';
 
 import 'package:miniworldapp/page/General/login.dart';
+import 'package:miniworldapp/page/General/static.dart';
 import 'package:miniworldapp/page/Host/race_create.dart';
 import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/page/Host/start_list_mission.dart';
@@ -188,7 +189,7 @@ class _HomeAllState extends State<HomeAll> {
                   leading: FaIcon(FontAwesomeIcons.chartLine),
                   title: const Text('สถิติการแข่งขัน'),
                   onTap: () {
-                    Navigator.pop(context);
+                    Get.to(const Static()) ;
                   },
                 ),
                 ListTile(
