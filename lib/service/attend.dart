@@ -16,6 +16,9 @@ abstract class AttendService {
   Future<HttpResponse<Attend>> attends(@Body() AttendDto attendDto);
 
   @GET("/attend/")
+  Future<HttpResponse<List<AttendRace>>> attendsAll();
+
+  @GET("/attend/")
   Future<HttpResponse<List<AttendRace>>> attendByUserID(
       {@Query("userID") required int userID});
 

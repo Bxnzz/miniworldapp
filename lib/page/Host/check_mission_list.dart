@@ -16,6 +16,7 @@ import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/home_create.dart';
 import 'package:miniworldapp/page/Host/list_approve.dart';
 import 'package:miniworldapp/page/Host/rank_race.dart';
+import 'package:miniworldapp/page/showmap.dart';
 import 'package:miniworldapp/service/missionComp.dart';
 import 'package:miniworldapp/service/race.dart';
 import 'package:miniworldapp/service/team.dart';
@@ -140,9 +141,9 @@ class _CheckMissionListState extends State<CheckMissionList> {
         }
       }
       log('att ' + playerIds.toString());
-       var mcs = await missionCompService.missionCompByraceId(raceID: idrace);
+      var mcs = await missionCompService.missionCompByraceId(raceID: idrace);
       missionComs = mcs.data;
-     reMissions = missions.reversed.toList();
+      reMissions = missions.reversed.toList();
       log(reMissions.first.misSeq.toString());
       //    misStatus = mcs.data.where((element) => element.mcStatus == 1);
       for (var mission in reMissions) {
@@ -199,15 +200,14 @@ class _CheckMissionListState extends State<CheckMissionList> {
     RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
     var racestatus = await raceService.updateStatusRaces(racedto, idrace);
 
-       for (var i = 0; i < teamRewards.length; i++) {
+    for (var i = 0; i < teamRewards.length; i++) {
       log('Rank: ${i + 1} ${teamRewards[i].teamId} ${teamRewards[i].team.teamName} ${teamRewards[i].misId} ${teamRewards[i].mcDatetime}');
-     
-      RewardDto rewardDto = RewardDto(
-          reType: i+1, teamId: teamRewards[i].teamId, raceId: idrace);
-           log('re'+rewardDtoToJson(rewardDto));
-         // ('reward'+rewardDto.toString());
-     var reward = await rewardService.reward(rewardDto);
 
+      RewardDto rewardDto = RewardDto(
+          reType: i + 1, teamId: teamRewards[i].teamId, raceId: idrace);
+      log('re' + rewardDtoToJson(rewardDto));
+      // ('reward'+rewardDto.toString());
+      var reward = await rewardService.reward(rewardDto);
     }
 
     mc = {
@@ -231,8 +231,6 @@ class _CheckMissionListState extends State<CheckMissionList> {
     var response1 = await OneSignal.shared.postNotification(notification1);
     Get.defaultDialog(title: 'ประมวลผลการแข่งขันแล้ว');
 
- 
-
     Get.to(
       RankRace(),
     );
@@ -243,6 +241,21 @@ class _CheckMissionListState extends State<CheckMissionList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: IconButton(
+              icon: Image.asset(
+                "assets/image/target.png"
+              ),
+              onPressed: () {
+                Get.to(ShowMapPage());
+                context.read<AppData>().idrace = idrace;
+              },
+             
+            ),
+          )
+        ],
         // Overide the default Back button
         automaticallyImplyLeading: false,
         leadingWidth: 100,

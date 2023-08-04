@@ -15,6 +15,7 @@ import 'package:miniworldapp/page/General/static.dart';
 import 'package:miniworldapp/page/Host/race_create.dart';
 import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/page/Host/start_list_mission.dart';
+import 'package:miniworldapp/page/spectator/list_spactator.dart';
 import 'package:miniworldapp/page/uploadImage,video.dart';
 import 'package:miniworldapp/page/uploadImage,video.dart';
 
@@ -81,12 +82,12 @@ class _HomeAllState extends State<HomeAll> {
               backgroundColor: Colors.blue,
               label: 'เข้าชมการแข่งขัน',
               onPressed: () {
+                Get.to(ListSpactator());
                 setState(() {
                   _text = '"เข้าชมการแข่งขัน"';
                 });
               },
             ),
-            
           ],
           closedForegroundColor: Colors.black,
           openForegroundColor: Colors.white,
@@ -107,7 +108,6 @@ class _HomeAllState extends State<HomeAll> {
                     colors: [
                       Colors.purpleAccent,
                       Color.fromARGB(255, 144, 64, 255),
-                     
                     ])),
           ),
           // backgroundColor: Theme.of(context).colorScheme.primary,
@@ -122,6 +122,9 @@ class _HomeAllState extends State<HomeAll> {
           titleSpacing: 0,
           //  actions: <Widget>[Text(Username)],
           bottom: TabBar(
+            dividerColor: Colors.transparent,
+            indicatorPadding: EdgeInsets.zero,
+            indicatorWeight: double.minPositive,
             labelColor: Get.theme.colorScheme.primary,
             unselectedLabelColor: Get.theme.colorScheme.onPrimary,
             indicatorSize: TabBarIndicatorSize.tab,
@@ -189,7 +192,7 @@ class _HomeAllState extends State<HomeAll> {
                   leading: FaIcon(FontAwesomeIcons.chartLine),
                   title: const Text('สถิติการแข่งขัน'),
                   onTap: () {
-                    Get.to(const Static()) ;
+                    Get.to(const Static());
                   },
                 ),
                 ListTile(
@@ -257,16 +260,16 @@ class _RaceAllState extends State<RaceAll> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.onPrimary,
       body: Container(
-         decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: FractionalOffset(0.0, 0.0),
-                    end: FractionalOffset(1.0, 0.0),
-                    stops: [0.0, 1.0],
-                    tileMode: TileMode.clamp,
-                    colors: [
-                      Colors.purpleAccent,
-                      Color.fromARGB(255, 144, 64, 255),
-                    ])),
+        decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                begin: FractionalOffset(0.0, 0.0),
+                end: FractionalOffset(1.0, 0.0),
+                stops: [0.0, 1.0],
+                tileMode: TileMode.clamp,
+                colors: [
+                  Colors.purpleAccent,
+                  Color.fromARGB(255, 144, 64, 255),
+                ])),
         child: FutureBuilder(
             future: loadDataMethod,
             builder: (context, AsyncSnapshot snapshot) {
@@ -276,21 +279,21 @@ class _RaceAllState extends State<RaceAll> {
                   padding: EdgeInsets.only(top: 10),
                   children: races.map((element) {
                     return Padding(
-                      padding:
-                          const EdgeInsets.only(left: 2.5, right: 2.5, bottom: 5),
+                      padding: const EdgeInsets.only(
+                          left: 2.5, right: 2.5, bottom: 5),
                       child: Card(
-                         shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                width: 2,
-                                color: Colors.white,
-                              ),
-                              borderRadius:
-                                  BorderRadius.circular(20.0), //<-- SEE HERE
-                            ),
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            width: 2,
+                            color: Colors.white,
+                          ),
+                          borderRadius:
+                              BorderRadius.circular(20.0), //<-- SEE HERE
+                        ),
                         //  shadowColor: ,
                         color: Colors.white,
                         clipBehavior: Clip.hardEdge,
-      
+
                         child: InkWell(
                           borderRadius: BorderRadius.circular(12.0),
                           splashColor: Colors.blue.withAlpha(30),
@@ -310,7 +313,8 @@ class _RaceAllState extends State<RaceAll> {
                               footer: Container(
                                 color: Get.theme.colorScheme.onBackground
                                     .withOpacity(0.5),
-                                padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 5, 10, 0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -336,11 +340,12 @@ class _RaceAllState extends State<RaceAll> {
                                     //     formatter.formatInBuddhistCalendarThai(
                                     //         element.raceTimeFn)),
                                     Text("สถานที่: " + element.raceLocation,
-                                        style: Get.textTheme.bodySmall!.copyWith(
-                                            color: Get.theme.colorScheme.onPrimary
-                                                .withOpacity(0.8))),
+                                        style: Get.textTheme.bodySmall!
+                                            .copyWith(
+                                                color: Get
+                                                    .theme.colorScheme.onPrimary
+                                                    .withOpacity(0.8))),
                                     Container(height: 5),
-                      
                                   ],
                                 ),
                               )),
@@ -349,8 +354,7 @@ class _RaceAllState extends State<RaceAll> {
                     );
                   }).toList(),
                 );
-              }
-               else {
+              } else {
                 return Container();
                 // const CircularProgressIndicator();
               }
