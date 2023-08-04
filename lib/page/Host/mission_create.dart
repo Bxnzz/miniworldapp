@@ -126,20 +126,7 @@ class _MissioncreateState extends State<Missioncreate> {
                     GoogleMap(
                       myLocationEnabled: false,
                       myLocationButtonEnabled: false,
-                      // onTap: (LatLng latlng) {
-                      //   Marker newmarker = Marker(
-                      //     markerId: MarkerId('$id'),
-                      //     position: LatLng(latlng.latitude, latlng.longitude),
-                      //     infoWindow: InfoWindow(title: 'New place'),
-                      //     icon: BitmapDescriptor.defaultMarkerWithHue(
-                      //         BitmapDescriptor.hueRose),
-                      //     onTap: () {},
-                      //   );
-                      //   markerss.add(newmarker);
-                      //   id = id + 1;
-                      //   setState(() {});
-                      //   log('Our lat and long is: $latlng');
-                      // },
+                     
                       mapType: MapType.hybrid,
                       initialCameraPosition: CameraPosition(
                         target: LatLng(
@@ -152,15 +139,6 @@ class _MissioncreateState extends State<Missioncreate> {
                       markers: markerss.map((e) => e).toSet(),
                       polylines: _polylines,
                       onCameraMove: (position) {
-                        // latitude = position.target.latitude.toInt();
-                        // lat = int.tryParse(lats.toString().split('.')[3]);
-                        // longstitude = position.target.latitude.toInt();
-                        // long = int.tryParse(lats.toString().split('.')[3]);
-                        // log('xxxx ' +
-                        //     position.target.latitude.toString() +
-                        //     ' ' +
-                        //     position.target.longitude.toString());
-                        // Text(position.target.latitude.toString());
                         lats = position.target.latitude.toString();
                         longs = position.target.longitude.toString();
                         log('lat' + position.target.latitude.toString());
