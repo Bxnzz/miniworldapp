@@ -126,14 +126,14 @@ class _UserService implements UserService {
 
   @override
   Future<HttpResponse<RaceResult>> chengePassword(
-    registerDto,
+    chengePassDto,
     userID,
   ) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(registerDto.toJson());
+    _data.addAll(chengePassDto.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<HttpResponse<RaceResult>>(Options(
       method: 'PUT',

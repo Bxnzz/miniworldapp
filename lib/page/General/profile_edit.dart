@@ -11,6 +11,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:miniworldapp/model/DTO/passwordChengeDTO.dart';
 import 'package:miniworldapp/model/DTO/registerDTO.dart';
 import 'package:miniworldapp/model/DTO/userDTO.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
@@ -125,7 +126,7 @@ class _Profile_editState extends State<Profile_edit> {
     }
 
     final path = 'files/${_image?.path.split('/').last}';
-    final file = File(_image!.path);
+    final file = File(_image!.path!);
     final ref = FirebaseStorage.instance.ref().child(path);
     log(ref.toString());
 
@@ -134,10 +135,12 @@ class _Profile_editState extends State<Profile_edit> {
     });
     final snapshot = await uploadTask!.whenComplete(() {});
 
-    final urlDownload = await snapshot.ref.getDownloadURL();
+    String urlDownload = await snapshot.ref.getDownloadURL();
     log('Download Link:$urlDownload');
     img = urlDownload;
-
+    if (urlDownload == null) {
+      urlDownload = '';
+    }
     avata.currentWidget;
     setState(() {
       loadDataMethod = loadData();
@@ -145,7 +148,7 @@ class _Profile_editState extends State<Profile_edit> {
     });
     UserDto user = UserDto(
         userName: userName.text,
-        userMail: '',
+        userMail: userMail.text,
         userFullname: userFullName.text,
         userImage: urlDownload,
         userDiscription: userDis.text,
@@ -384,8 +387,8 @@ class _Profile_editState extends State<Profile_edit> {
                             ElevatedButton(
                                 onPressed: () async {
                                   if (await _formKey.currentState!.validate()) {
-                                    setState(() {
-                                      chengePassword();
+                                    setState(() async {
+                                      await chengePassword();
                                     });
                                   }
                                 },
@@ -402,17 +405,11 @@ class _Profile_editState extends State<Profile_edit> {
   }
 
   Future<void> chengePassword() async {
-    RegisterDto user = RegisterDto(
-        userName: '',
-        userMail: '',
-        userPassword: newPassword.text,
-        userFullname: '',
-        userImage: '',
-        userDiscription: '',
-        userFacebookId: '');
+    PasswordChengeDto passChenge =
+        PasswordChengeDto(userPassword: newPassword.text);
 
     var userChangePass = await userservice.chengePassword(
-      user,
+      passChenge,
       userID.toString(),
     );
     userResult = userChangePass.data;
