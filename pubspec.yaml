@@ -103,6 +103,10 @@ dependencies:
   appinio_social_share: ^0.2.4
   path_provider: ^2.0.15
   pushable_button: ^0.0.2
+  otp: ^3.1.4
+  base32: ^2.1.3
+  hex: ^0.2.0
+  syncfusion_flutter_barcodes: ^22.2.7
   
   
 
