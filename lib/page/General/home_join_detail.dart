@@ -89,7 +89,6 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
     width = size.width;
     return WillPopScope(
       onWillPop: () async {
-        Get.to(() => const HomeAll());
         return true;
       },
       child: Scaffold(
@@ -120,7 +119,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                         children: [
                           IconButton(
                             onPressed: () {
-                              Get.to(() => HomeAll());
+                              Navigator.pop(context);
                             },
                             icon: FaIcon(
                               FontAwesomeIcons.circleChevronLeft,

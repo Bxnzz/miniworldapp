@@ -9,16 +9,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:hex/hex.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:installed_apps/app_info.dart';
+import 'package:installed_apps/installed_apps.dart';
 import 'package:miniworldapp/model/DTO/passwordChengeDTO.dart';
 import 'package:miniworldapp/model/DTO/registerDTO.dart';
 import 'package:miniworldapp/model/DTO/userDTO.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
+import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:miniworldapp/service/user.dart';
+import 'package:otp/otp.dart';
 import 'package:provider/provider.dart';
-
+import 'package:syncfusion_flutter_barcodes/barcodes.dart';
+import 'package:base32/base32.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../model/result/raceResult.dart';
 import '../../model/user.dart';
 import '../../widget/loadData.dart';
@@ -43,14 +50,18 @@ class _Profile_editState extends State<Profile_edit> {
   TextEditingController oldPassword = TextEditingController();
   TextEditingController newPassword = TextEditingController();
   TextEditingController confirmnewPassword = TextEditingController();
-
+  TextEditingController pin = TextEditingController();
   final avata = GlobalKey<FormState>();
   final _formKey = GlobalKey<FormState>();
+  final _formKey2 = GlobalKey<FormState>();
   File? _image;
   File? pickedFile;
   UploadTask? uploadTask;
   int userID = 0;
   String img = '';
+  String uri = '';
+  String uri2 = '';
+  String value = '';
   @override
   void initState() {
     // TODO: implement initState
@@ -268,6 +279,7 @@ class _Profile_editState extends State<Profile_edit> {
         onPressed: () {
           //EditProfile
           showModalBottomSheet(
+              enableDrag: false,
               context: context,
               isScrollControlled: true,
               builder: (context) {
@@ -293,12 +305,9 @@ class _Profile_editState extends State<Profile_edit> {
                     Padding(
                       padding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).viewInsets.bottom),
-                      child: Container(
-                        height: Get.height / 2 - 40,
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: showModalBottomSheetEdit(context),
-                        ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: showModalBottomSheetEdit(context),
                       ),
                     ),
                   ],
@@ -311,7 +320,6 @@ class _Profile_editState extends State<Profile_edit> {
   Column showModalBottomSheetEdit(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      mainAxisSize: MainAxisSize.min,
       children: [
         GestureDetector(
             onTap: () {
@@ -347,53 +355,74 @@ class _Profile_editState extends State<Profile_edit> {
           width: 150,
           child: ElevatedButton(
               onPressed: () async {
+                uri = getGoogleAuthenticatorUri(
+                    "mnrace", userMail.text, users.first.userPassword);
+                // await launchUrl(Uri.parse(uri2));
                 showModalBottomSheet(
+                    isScrollControlled: true,
                     context: context,
                     builder: (context) {
                       return Form(
                         key: _formKey,
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              controller: oldPassword,
-                              decoration:
-                                  InputDecoration(label: Text("รหัสผ่านเดิม")),
-                              validator: (value) {
-                                if (value != users.first.userPassword) {
-                                  return 'ใส่รหัสผ่านเดิมไม่ถูกต้อง.';
-                                }
-                                return null;
-                              },
-                            ),
-                            TextFormField(
-                              controller: newPassword,
-                              decoration:
-                                  InputDecoration(label: Text("รหัสผ่านใหม่")),
-                            ),
-                            TextFormField(
-                              controller: confirmnewPassword,
-                              decoration: InputDecoration(
-                                  label: Text("ยืนยันรหัสผ่าน")),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'ยืนยันรหัสผ่าน.';
-                                }
-                                if (value != newPassword.text) {
-                                  return 'รหัสยืนยันไม่ถูกต้อง.';
-                                }
-                                return null;
-                              },
-                            ),
-                            ElevatedButton(
-                                onPressed: () async {
-                                  if (await _formKey.currentState!.validate()) {
-                                    setState(() async {
-                                      await chengePassword();
-                                    });
+                        child: Container(
+                          width: Get.width,
+                          height: Get.height,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 200,
+                                child: Image.network(
+                                    "https://www.google.com/chart?chs=200x200&chld=M|0&cht=qr&chl=$uri)"),
+                              ),
+                              TextFormField(
+                                controller: pin,
+                                keyboardType: TextInputType.number,
+                                decoration:
+                                    InputDecoration(label: Text("ใส่ PIN")),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'ใส่Pin.';
                                   }
+                                  if (value !=
+                                      getTotp(users.first.userPassword)) {
+                                    return 'ใส่ PIN ไม่ถูกต้อง.';
+                                  }
+
+                                  return null;
                                 },
-                                child: Text("เปลี่ยนรหัสผ่าน"))
-                          ],
+                              ),
+                              // TextFormField(
+                              //   controller: oldPassword,
+                              //   decoration:
+                              //       InputDecoration(label: Text("รหัสผ่านเดิม")),
+                              //   validator: (value) {
+                              //     if (value != users.first.userPassword) {
+                              //       return 'ใส่รหัสผ่านเดิมไม่ถูกต้อง.';
+                              //     }
+                              //     return null;
+                              //   },
+                              // ),
+
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    log(getTotp(users.first.userPassword));
+                                    //check app installed
+                                    // AppInfo app = await InstalledApps.getAppInfo(
+                                    //     'com.google.android.apps.authenticator2');
+                                    // if (app.name!.isEmpty) {
+                                    //   log('Not installed. Show QR');
+                                    // } else {
+                                    //   log(app.name!);
+                                    //   await launchUrl(Uri.parse(uri));
+                                    // }
+                                    if (await _formKey.currentState!
+                                        .validate()) {
+                                      passwordRenew(context);
+                                    }
+                                  },
+                                  child: Text("ยืนยัน"))
+                            ],
+                          ),
                         ),
                       );
                     });
@@ -402,6 +431,74 @@ class _Profile_editState extends State<Profile_edit> {
         )
       ],
     );
+  }
+
+  Future<dynamic> passwordRenew(BuildContext context) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            width: Get.width,
+            height: Get.height,
+            child: Form(
+              key: _formKey2,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  TextFormField(
+                    controller: newPassword,
+                    decoration: InputDecoration(label: Text("รหัสผ่านใหม่")),
+                  ),
+                  TextFormField(
+                    controller: confirmnewPassword,
+                    decoration: InputDecoration(label: Text("ยืนยันรหัสผ่าน")),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'ยืนยันรหัสผ่าน.';
+                      }
+                      if (value != newPassword.text) {
+                        return 'รหัสยืนยันไม่ถูกต้อง.';
+                      }
+                      return null;
+                    },
+                  ),
+                  ElevatedButton(
+                      onPressed: () async {
+                        if (await _formKey2.currentState!.validate()) {
+                          setState(() {});
+                          await chengePassword();
+                          Get.to(() => Login());
+                        }
+                      },
+                      child: Text("รีเซ็ตรหัสผ่าน"))
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  String getGoogleAuthenticatorUri(String appname, String email, String key) {
+    List<int> list = utf8.encode(key);
+    String hex = HEX.encode(list);
+    String secret = base32.encodeHexString(hex);
+    log('secret $secret');
+    uri =
+        'otpauth://totp/${Uri.encodeComponent('$appname:$email?secret=$secret&issuer=$appname')}';
+    uri2 = 'otpauth://totp/$appname:$email?secret=$secret&issuer=$appname';
+
+    return uri;
+  }
+
+  String getTotp(String key) {
+    List<int> list = utf8.encode(key);
+    String hex = HEX.encode(list);
+
+    String secret = base32.encodeHexString(hex);
+    String totp = OTP.generateTOTPCodeString(
+        secret, DateTime.now().millisecondsSinceEpoch,
+        algorithm: Algorithm.SHA1, isGoogle: true);
+    return totp;
   }
 
   Future<void> chengePassword() async {
