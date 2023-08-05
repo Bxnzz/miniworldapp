@@ -69,10 +69,12 @@ class _CeateTeamState extends State<CeateTeam> {
   File? pickedFile;
   UploadTask? uploadTask;
   bool isImage = true;
-  bool isJoin = true;
+  bool isJoin = false;
 
   final avata = GlobalKey<FormState>();
   String img = '';
+  late DateTime raceST;
+  late DateTime raceFN;
 
   // 2. สร้าง initState เพื่อสร้าง object ของ service
   // และ async method ที่จะใช้กับ FutureBuilder
@@ -179,18 +181,16 @@ class _CeateTeamState extends State<CeateTeam> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   if (await _formKey.currentState!.validate()) {
-                                    setState(() {
-                                      if (isJoin == true) {
-                                        uploadFile();
-                                      } else {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                              content: Text(
-                                                  'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
-                                        );
-                                      }
-                                    });
+                                    if (isJoin == true) {
+                                      uploadFile();
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
+                                      );
+                                    }
                                   }
                                 },
                                 child: Text('สร้างทีม'),
@@ -297,15 +297,27 @@ class _CeateTeamState extends State<CeateTeam> {
 
       var r = await raceService.racesByraceID(raceID: idrace);
       races = r.data;
-
+      raceST = races.first.raceTimeSt;
+      raceFN = races.first.raceTimeFn;
       // status = b.data.first.status;
+      // log("${races.first.raceTimeSt}");
+      // log("fin${races.first.raceTimeFn}");
+      // for (var i in races) {
+      //   log("${i.raceId}");
+      // }
+      log("${races.first.raceId}");
+
       for (var j in attends) {
         log("${j.atId}");
-        if (j.datetime.isAfter(races.first.raceTimeSt) &&
-            j.datetime.isBefore(races.first.raceTimeFn)) {
+        log("attend${j.datetime}");
+        log("start${raceST}");
+        log("stop${raceFN}");
+        if (j.datetime.isAfter(raceST) && j.datetime.isBefore(raceFN)) {
           isJoin = false;
+          log(isJoin.toString());
         } else {
           isJoin = true;
+          log(isJoin.toString());
         }
       }
     } catch (err) {
