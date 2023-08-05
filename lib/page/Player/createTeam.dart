@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -10,8 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:miniworldapp/model/DTO/attendDTO.dart';
 import 'package:miniworldapp/model/attend.dart';
+import 'package:miniworldapp/model/race.dart';
+import 'package:miniworldapp/model/result/attendRaceResult.dart';
 import 'package:miniworldapp/page/Player/lobby.dart';
 import 'package:miniworldapp/service/attend.dart';
+import 'package:miniworldapp/service/race.dart';
 
 import 'package:provider/provider.dart';
 import 'package:textfield_search/textfield_search.dart';
@@ -35,13 +37,15 @@ class _CeateTeamState extends State<CeateTeam> {
   // 1. กำหนดตัวแปร
   List<Team> teams = [];
   List<User> users = [];
-  List<Attend> attends = [];
+  List<AttendRace> attends = [];
   List<TeamDto> teamDTOs = [];
+  List<Race> races = [];
 
   late Future<void> loadDataMethod;
   late TeamService teamService;
   late UserService userService;
   late AttendService attendService;
+  late RaceService raceService;
 
   TextEditingController nameTeam = TextEditingController();
   TextEditingController nameMember1 = TextEditingController();
@@ -65,8 +69,12 @@ class _CeateTeamState extends State<CeateTeam> {
   File? pickedFile;
   UploadTask? uploadTask;
   bool isImage = true;
+  bool isJoin = false;
+
   final avata = GlobalKey<FormState>();
   String img = '';
+  late DateTime raceST;
+  late DateTime raceFN;
 
   // 2. สร้าง initState เพื่อสร้าง object ของ service
   // และ async method ที่จะใช้กับ FutureBuilder
@@ -79,19 +87,19 @@ class _CeateTeamState extends State<CeateTeam> {
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
     teamService = TeamService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
     userService = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
     userService.getUserAll().then((value) {
       log("is ${userService}");
     });
 
-    log("race id is " + idrace.toString());
     // 2.2 async method
     idrace = context.read<AppData>().idrace;
     Username = context.read<AppData>().Username;
     idUser = context.read<AppData>().idUser;
     status = context.read<AppData>().status;
-
+    log("race id is " + idrace.toString());
     log("user is " + idUser.toString());
 
     nameMember1.text = Username;
@@ -173,9 +181,16 @@ class _CeateTeamState extends State<CeateTeam> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   if (await _formKey.currentState!.validate()) {
-                                    setState(() {
+                                    if (isJoin == true) {
                                       uploadFile();
-                                    });
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
+                                      );
+                                    }
                                   }
                                 },
                                 child: Text('สร้างทีม'),
@@ -276,9 +291,35 @@ class _CeateTeamState extends State<CeateTeam> {
     try {
       var a = await userService.getUserAll();
       items = a.data;
-      // var b=  await attendService.attendByRaceID(raceID: idrace);
 
+      var b = await attendService.attendByUserID(userID: idUser);
+      attends = b.data;
+
+      var r = await raceService.racesByraceID(raceID: idrace);
+      races = r.data;
+      raceST = races.first.raceTimeSt;
+      raceFN = races.first.raceTimeFn;
       // status = b.data.first.status;
+      // log("${races.first.raceTimeSt}");
+      // log("fin${races.first.raceTimeFn}");
+      // for (var i in races) {
+      //   log("${i.raceId}");
+      // }
+      log("${races.first.raceId}");
+
+      for (var j in attends) {
+        log("${j.atId}");
+        log("attend${j.datetime}");
+        log("start${raceST}");
+        log("stop${raceFN}");
+        if (j.datetime.isAfter(raceST) && j.datetime.isBefore(raceFN)) {
+          isJoin = false;
+          log(isJoin.toString());
+        } else {
+          isJoin = true;
+          log(isJoin.toString());
+        }
+      }
     } catch (err) {
       log('Error:$err');
     }
@@ -336,7 +377,7 @@ class _CeateTeamState extends State<CeateTeam> {
       AttendDto attendDto = AttendDto(
           lat: 0.1,
           lng: 0.1,
-          datetime: '2023-02-1',
+          datetime: DateTime.now().toIso8601String(),
           userId: idUser,
           teamId: team.data.teamId,
           status: 1);
@@ -345,13 +386,18 @@ class _CeateTeamState extends State<CeateTeam> {
       AttendDto attendDto2 = AttendDto(
           lat: 0.1,
           lng: 0.1,
-          datetime: '2023-02-1',
+          datetime: DateTime.now().toIso8601String(),
           userId: idUser2,
           teamId: team.data.teamId,
           status: 1);
       var attends2 = await attendService.attends(attendDto2);
 
       log(attends.data.massage);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('team Successful')),
+      );
+
       if (team.data.teamId > 0 && attends.data.massage == "Insert Success") {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('team Successful')),

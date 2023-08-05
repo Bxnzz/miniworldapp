@@ -23,7 +23,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 // ...
 final DefaultTheme defaultTheme = DefaultTheme();
 Future<void> main() async {
-  
   WidgetsFlutterBinding.ensureInitialized();
   Intl.defaultLocale = "th";
 
@@ -31,7 +30,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-    
+
   //Generate Key on device a build app
   // String? key = await FlutterFacebookKeyhash.getFaceBookKeyHash ??
   //     'Unknown platform version';
@@ -45,14 +44,13 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-
   MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-         // here
+      // here
       navigatorObservers: [FlutterSmartDialog.observer],
       // here
       builder: FlutterSmartDialog.init(),

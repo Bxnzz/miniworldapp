@@ -12,6 +12,7 @@ String userDtoToJson(UserDto data) => json.encode(data.toJson());
 class UserDto {
   String userName;
   String userMail;
+  String userPassword;
   String userFullname;
   String userImage;
   String userDiscription;
@@ -20,6 +21,7 @@ class UserDto {
   UserDto({
     required this.userName,
     required this.userMail,
+    required this.userPassword,
     required this.userFullname,
     required this.userImage,
     required this.userDiscription,
@@ -29,6 +31,7 @@ class UserDto {
   factory UserDto.fromJson(Map<String, dynamic> json) => UserDto(
         userName: json["UserName"],
         userMail: json["UserMail"],
+        userPassword: json["UserPassword"],
         userFullname: json["UserFullname"],
         userImage: json["UserImage"],
         userDiscription: json["UserDiscription"],
@@ -38,6 +41,7 @@ class UserDto {
   Map<String, dynamic> toJson() => {
         "UserName": userName,
         "UserMail": userMail,
+        "UserPassword": userPassword,
         "UserFullname": userFullname,
         "UserImage": userImage,
         "UserDiscription": userDiscription,

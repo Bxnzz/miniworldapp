@@ -34,6 +34,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
   var size, height, width;
   // List<Race> races = [];
   List<AttendRace> attends = [];
+  List<Race> races = [];
   late int idUser;
   late int idrace;
   late int status;
@@ -365,37 +366,35 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
     startLoading(context);
     try {
       // var r = await raceService.racesByID(userID: idUser);
-      var a = await attendService.attendByUserID(userID: idUser);
-      attends = a.data;
-      idrace = a.data.first.team.raceId;
-      idAttend = a.data.first.atId;
-      teamid = a.data.first.teamId;
-      status = a.data.first.status;
-      Rname = a.data.first.team.race.raceName;
+      // var a = await attendService.attendByUserID(userID: idUser);
+      // attends = a.data;
+      var a = await raceService.racesByraceID(raceID: idrace);
+      races = a.data;
+      idrace = a.data.first.raceId;
+
+      Rname = a.data.first.raceName;
       log(Rname);
-      Rlocation = a.data.first.team.race.raceLocation;
-      team = a.data.first.team.race.raceLimitteam.toString();
-      String formattedDate01 =
-          DateFormat.Hm().format(a.data.first.team.race.raceTimeSt);
+      Rlocation = a.data.first.raceLocation;
+      team = a.data.first.raceLimitteam.toString();
+      String formattedDate01 = DateFormat.Hm().format(a.data.first.raceTimeSt);
       raceTimeST = formattedDate01;
-      String formattedDate02 =
-          DateFormat.Hm().format(a.data.first.team.race.raceTimeSt);
+      String formattedDate02 = DateFormat.Hm().format(a.data.first.raceTimeFn);
       raceTimeFN = formattedDate02;
 
       var formatter = DateFormat.yMMMMEEEEd();
-      var dateFormat01 = formatter
-          .formatInBuddhistCalendarThai(a.data.first.team.race.signUpTimeSt);
-      var dateFormat02 = formatter
-          .formatInBuddhistCalendarThai(a.data.first.team.race.signUpTimeFn);
-      var dateFormat03 = formatter
-          .formatInBuddhistCalendarThai(a.data.first.team.race.eventDatetime);
+      var dateFormat01 =
+          formatter.formatInBuddhistCalendarThai(a.data.first.signUpTimeSt);
+      var dateFormat02 =
+          formatter.formatInBuddhistCalendarThai(a.data.first.signUpTimeFn);
+      var dateFormat03 =
+          formatter.formatInBuddhistCalendarThai(a.data.first.eventDatetime);
       singUpST = dateFormat01;
       singUpFN = dateFormat02;
       eventDatetime = dateFormat03;
 
-      a.data.first.team.race.raceName;
-      UrlImg = a.data.first.team.race.raceImage;
-      raceStatus = a.data.first.team.race.raceStatus;
+      a.data.first.raceName;
+      UrlImg = a.data.first.raceImage;
+      raceStatus = a.data.first.raceStatus;
       log(UrlImg);
       log("Rase statys = $raceStatus");
     } catch (err) {

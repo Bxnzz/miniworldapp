@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:miniworldapp/model/DTO/passwordChengeDTO.dart';
+import 'package:miniworldapp/model/DTO/registerDTO.dart';
 
 import 'package:retrofit/retrofit.dart';
 
@@ -19,6 +21,14 @@ abstract class UserService {
   @GET("/user")
   Future<HttpResponse<List<User>>> getUserAll();
 
+  @GET("/user/")
+  Future<HttpResponse<List<User>>> getUserByID(@Query("userID") int userID);
+
   @PUT("/user/{userID}")
-  Future<HttpResponse<RaceResult>> updateUsers(@Body() UserDto userDto,@Path("userID")String userID);
+  Future<HttpResponse<RaceResult>> updateUsers(
+      @Body() UserDto userDto, @Path("userID") String userID);
+
+  @PUT("/user/{userID}")
+  Future<HttpResponse<RaceResult>> chengePassword(
+      @Body() PasswordChengeDto chengePassDto, @Path("userID") String userID);
 }
