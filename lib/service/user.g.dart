@@ -71,7 +71,7 @@ class _UserService implements UserService {
   }
 
   @override
-  Future<HttpResponse<List<User>>> getUserByID(userID) async {
+  Future<HttpResponse<List<User>>> getUserByID({required userID}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'userID': userID};
     final _headers = <String, dynamic>{};
