@@ -171,7 +171,7 @@ class _ApproveMissionState extends State<ApproveMission> {
       teamName = a.data.first.team.teamName;
       teamID = a.data.first.team.teamId;
       misID = a.data.first.mission.misId;
-     
+
       hostName = mis.data.first.race.user.userName;
       log('tt ' + teamID.toString());
 
@@ -234,10 +234,10 @@ class _ApproveMissionState extends State<ApproveMission> {
         ]);
 
     var response1 = await OneSignal.shared.postNotification(notification1);
-     Get.defaultDialog(title :mc.toString());
+    Get.defaultDialog(title: mc.toString());
   }
 
-  void _CheckMisUnPass()  {
+  void _CheckMisUnPass() {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -250,7 +250,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                     backgroundColor: Colors.green,
                   ),
                   onPressed: () async {
-                    masseageMC =message[_selected].masseage;
+                    masseageMC = message[_selected].masseage;
                     MissionCompStatus missionComDto = MissionCompStatus(
                         mcMasseage: masseageMC,
                         mcStatus: 3,
@@ -296,7 +296,7 @@ class _ApproveMissionState extends State<ApproveMission> {
               ],
               content: SingleChildScrollView(
                 child: StatefulBuilder(builder: (context, setdialog) {
-                  return Container(
+                  return SizedBox(
                     width: double.maxFinite,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -347,7 +347,28 @@ class _ApproveMissionState extends State<ApproveMission> {
     final now = DateTime.now();
     dateTime = '${now.toIso8601String()}Z';
     return Scaffold(
-      appBar: AppBar(title: Text('ตรวจสอบหลักฐาน')),
+      appBar: AppBar(
+        title: const Text('หลักฐาน'),
+        actions: <Widget>[
+          Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: ElevatedButton.icon(
+                style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.amber)),
+                onPressed: () {},
+                icon: FaIcon(
+                  FontAwesomeIcons.solidPaperPlane,
+                  color: Get.theme.colorScheme.onPrimary,
+                  size: 15,
+                ),
+                label: Text(
+                  'ส่งให้ผู้ชม',
+                  style: Get.textTheme.bodyMedium!.copyWith(
+                      color: Get.theme.colorScheme.onPrimary,
+                      ),
+                ),
+              ))
+        ],
+      ),
       body: FutureBuilder(
         future: loadDataMethod,
         builder: (context, AsyncSnapshot snapshot) {
@@ -448,10 +469,9 @@ class _ApproveMissionState extends State<ApproveMission> {
                                     ? CustomVideoPlayer(
                                         customVideoPlayerController:
                                             _customVideoPlayerController!)
-                                    
-                                        : Container()),
+                                    : Container()),
                       ),
-                              
+
                       // pickedFile != null
                       //  Expanded(
                       //     child: isImage == true
@@ -469,23 +489,25 @@ class _ApproveMissionState extends State<ApproveMission> {
                       //   ),
                       //: Container(),
                       // buildProgress(),
-                      mcText != '' ?  
-                      Padding(
-                        padding: const EdgeInsets.only(right: 15, left: 15,bottom: 15),
-                        child: Container(
-                            width: Get.width,
-                            height: 80,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 3,
-                                    color: Get.theme.colorScheme.primary),
-                                borderRadius: BorderRadius.circular(40),
-                                color: Colors.white),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Text(mcText),
-                            )),
-                      ):Container(),
+                      mcText != ''
+                          ? Padding(
+                              padding: const EdgeInsets.only(
+                                  right: 15, left: 15, bottom: 15),
+                              child: Container(
+                                  width: Get.width,
+                                  height: 80,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 3,
+                                          color: Get.theme.colorScheme.primary),
+                                      borderRadius: BorderRadius.circular(40),
+                                      color: Colors.white),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Text(mcText),
+                                  )),
+                            )
+                          : Container(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -500,9 +522,9 @@ class _ApproveMissionState extends State<ApproveMission> {
                                   onPressed: () async {
                                     _CheckMisPass();
                                     log(playerID.toString());
-                              
+
                                     // if (pickedFile == null) {
-                                     
+
                                     // } else {}
                                   },
                                   child: Text('ผ่าน',
@@ -533,7 +555,6 @@ class _ApproveMissionState extends State<ApproveMission> {
                           )
                         ],
                       ),
-
                     ],
                   ),
                 ),

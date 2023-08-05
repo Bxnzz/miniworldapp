@@ -45,7 +45,7 @@ class _RaceService implements RaceService {
   }
 
   @override
-  Future<HttpResponse<List<Race>>> racesByID({required userID}) async {
+  Future<HttpResponse<List<Race>>> racesByUserID({required userID}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'userID': userID};
     final _headers = <String, dynamic>{};

@@ -52,7 +52,7 @@ class _Home_createState extends State<Home_create> {
     log("id:" + idUser.toString());
 
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
-    raceService.racesByID(userID: idUser).then((value) {
+    raceService.racesByUserID(userID: idUser).then((value) {
       log(value.data.first.raceName);
     });
 
@@ -302,7 +302,7 @@ class _Home_createState extends State<Home_create> {
   Future<void> loadData() async {
     startLoading(context);
     try {
-      var a = await raceService.racesByID(userID: idUser);
+      var a = await raceService.racesByUserID(userID: idUser);
       race = a.data;
     } catch (err) {
       log('Error:$err');

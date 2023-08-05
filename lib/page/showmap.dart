@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:miniworldapp/model/DTO/attendDTO.dart';
@@ -78,6 +79,7 @@ class ShowMapPageState extends State<ShowMapPage> {
       var marker = Marker(
         markerId: MarkerId(latlng.atId.toString()),
         position: LatLng(latlng.lat.toDouble(), latlng.lng.toDouble()),
+         infoWindow:  InfoWindow(title: "ทีม", snippet: "สมาชิก",onTap: () => Get.defaultDialog(title:'ข้อมูลสมาชิก'))
       );
 
       markers.add(marker);
@@ -117,8 +119,7 @@ class ShowMapPageState extends State<ShowMapPage> {
             return DefaultTabController(
               initialIndex: 1,
               length: 3,
-              child: Scaffold( 
-                  appBar: AppBar(title: const Text("Map"), actions: <Widget>[]),
+              child: Scaffold(     
                   body: GoogleMap(
                     markers: markers,
                     mapType: MapType.normal,

@@ -16,7 +16,7 @@ abstract class RaceService {
   Future<HttpResponse<List<Race>>> races();
 
   @GET("/race/")
-  Future<HttpResponse<List<Race>>> racesByID(
+  Future<HttpResponse<List<Race>>> racesByUserID(
       {@Query("userID") required int userID});
   @GET("/race/")
   Future<HttpResponse<List<Race>>> racesByraceID(

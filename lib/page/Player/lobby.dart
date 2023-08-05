@@ -20,6 +20,7 @@ import 'package:miniworldapp/service/team.dart';
 import 'package:miniworldapp/widget/loadData.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:pushable_button/pushable_button.dart';
 
 import '../../model/race.dart';
 import '../../model/result/attendRaceResult.dart';
@@ -583,95 +584,126 @@ class _LobbyState extends State<Lobby> {
                     // log(tmId.toString());
                   }
 
-                  temp.add(attends[i]);
-                }
-                if (temp.isNotEmpty) {
-                  var team = {tmId: temp};
-                  attendShow.add(team);
-                }
-                // log(attendShow.toString());
-                // log(attendShow[1]['102']!.first.userId.toString());
-                //log(attendShow.length.toString());
-                return SafeArea(
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              icon: FaIcon(
-                                FontAwesomeIcons.circleChevronLeft,
-                                color: Colors.yellow,
-                                size: 35,
-                              ),
+                temp.add(attends[i]);
+              }
+              if (temp.isNotEmpty) {
+                var team = {tmId: temp};
+                attendShow.add(team);
+              }
+              // log(attendShow.toString());
+              // log(attendShow[1]['102']!.first.userId.toString());
+              //log(attendShow.length.toString());
+              return SafeArea(
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: FaIcon(
+                              FontAwesomeIcons.circleChevronLeft,
+                              color: Colors.yellow,
+                              size: 35,
                             ),
-                            Text(
-                              "ล็อบบี้",
-                              style: textTheme.displayMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.purple,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ],
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            attendShow = [];
-                            Get.to(() => ChatRoomPage(
-                                  raceID: idRace,
-                                  userID: idUser,
-                                  userName: Username,
-                                  raceName: raceName,
-                                ));
-                          },
-                          icon: FaIcon(
-                            FontAwesomeIcons.solidCommentDots,
-                            color: Colors.pink,
-                            size: 30,
                           ),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: SafeArea(
-                        child: ListView(
-                          //padding: const EdgeInsets.all(8.0),
-                          physics: const BouncingScrollPhysics(),
-                          children: attendShow.map((e) {
-                            return Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 8, bottom: 8, right: 15, left: 15),
-                                child: Container(
-                                    width: Get.width,
-                                    height: Get.height,
-                                    child: CardDetailPlayer()));
-                          }).toList(),
+                          Text(
+                            "ล็อบบี้",
+                            style: textTheme.displayMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.purple,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          attendShow = [];
+                          Get.to(() => ChatRoomPage(
+                                raceID: idRace,
+                                userID: idUser,
+                                userName: Username,
+                                raceName: raceName,
+                              ));
+                        },
+                        icon: FaIcon(
+                          FontAwesomeIcons.solidCommentDots,
+                          color: Colors.pink,
+                          size: 30,
                         ),
                       ),
+                    ],
+                  ),
+                  Expanded(
+                    child: SafeArea(
+                      child: ListView(
+                        //padding: const EdgeInsets.all(8.0),
+                        physics: const BouncingScrollPhysics(),
+                        children: attendShow.map((e) {
+                          return Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 8, bottom: 8, right: 15, left: 15),
+                              child: Container(
+                                  width: Get.width,
+                                  height: Get.height,
+                                  child: CardDetailPlayer()));
+                        }).toList(),
+                      ),
                     ),
-                    idUser == userCreate
-                        ? Column(
-                            children: [
-                              ElevatedButton(
+                  ),
+                  idUser == userCreate
+                      ? Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 30),
+                              child: SizedBox(
+                                width: 120,
+                                child: PushableButton(
+                                  child: Text(
+                                    'เริ่มเกม',
+                                    style: textTheme.displayMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                  height: 40,
+                                  elevation: 8,
+                                  hslColor:const HSLColor.fromAHSL(1.0, 120, 1.0, 0.37),
                                   onPressed: () {
                                     showAlertDialog(context);
                                   },
-                                  child: Text('เริ่มเกม')),
-                            ],
-                          )
-                        : chkReadyBtn(context)
-                  ]),
-                );
-              } else {
-                return const CircularProgressIndicator();
-              }
-            }),
-      ),
+                                ),
+                              ),
+                            ),
+                          
+                          ],
+                        )
+                      : Column(
+                          children: [
+                            Container(
+                              width: Get.width,
+                              height: Get.height / 2,
+                              child: Center(child: Text("ยังไม่มีทีมเข้าร่วม")),
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  showAlertDialog(context);
+                                },
+                                child: Text('เริ่มเกม')),
+                          ],
+                        )
+                ]),
+              );
+            } else {
+              return const CircularProgressIndicator();
+            }
+          }),
+      )
     );
   }
 }

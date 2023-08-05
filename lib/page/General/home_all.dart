@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:anim_search_bar/anim_search_bar.dart';
+
 import 'package:animations/animations.dart';
 import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
 import 'package:dio/dio.dart';
@@ -14,10 +14,12 @@ import 'package:miniworldapp/page/General/detil_race.dart';
 import 'package:miniworldapp/page/General/home_join_detail.dart';
 
 import 'package:miniworldapp/page/General/login.dart';
+import 'package:miniworldapp/page/General/static.dart';
 import 'package:miniworldapp/page/General/profile_edit.dart';
 import 'package:miniworldapp/page/Host/race_create.dart';
 import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/page/Host/start_list_mission.dart';
+import 'package:miniworldapp/page/spectator/list_spactator.dart';
 import 'package:miniworldapp/page/uploadImage,video.dart';
 import 'package:miniworldapp/page/uploadImage,video.dart';
 
@@ -91,23 +93,9 @@ class _HomeAllState extends State<HomeAll> {
               backgroundColor: Colors.blue,
               label: 'เข้าชมการแข่งขัน',
               onPressed: () {
+                Get.to(ListSpactator());
                 setState(() {
-                  _text = '"เข้าชมการแข่งขัน" ';
-                });
-              },
-            ),
-            SpeedDialChild(
-              child: const FaIcon(FontAwesomeIcons.bell),
-              foregroundColor: Colors.black,
-              backgroundColor: Colors.amber,
-              label: 'Noti',
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => NontificationPage()));
-                setState(() {
-                  _text = '"Noti"';
+                  _text = '"เข้าชมการแข่งขัน"';
                 });
               },
             ),
@@ -161,6 +149,9 @@ class _HomeAllState extends State<HomeAll> {
           titleSpacing: 0,
           //  actions: <Widget>[Text(Username)],
           bottom: TabBar(
+            dividerColor: Colors.transparent,
+            indicatorPadding: EdgeInsets.zero,
+            indicatorWeight: double.minPositive,
             labelColor: Get.theme.colorScheme.primary,
             unselectedLabelColor: Get.theme.colorScheme.onPrimary,
             indicatorSize: TabBarIndicatorSize.tab,
@@ -228,7 +219,7 @@ class _HomeAllState extends State<HomeAll> {
                   leading: FaIcon(FontAwesomeIcons.chartLine),
                   title: const Text('สถิติการแข่งขัน'),
                   onTap: () {
-                    Navigator.pop(context);
+                    Get.to(const Static());
                   },
                 ),
                 ListTile(
