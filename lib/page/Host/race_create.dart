@@ -7,6 +7,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/page/Host/mission_create.dart';
@@ -43,7 +46,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
   // final _formKey2 = GlobalKey<FormState>();
   // final _formKey3 = GlobalKey<FormState>();
 
-  File? pickedFile;
+  // File? pickedFile;
+  File? _image;
   UploadTask? uploadTask;
   bool isImage = true;
   String image = '';
@@ -190,33 +194,31 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                           ),
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          // mainAxisAlignment: MainAxisAlignment.,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                child: SizedBox(
-                                    width: 120,
-                                    child: SizedBox(
-                                      child: TextFieldTime(
-                                          controller: raceTimeST,
-                                          hintText: '00:00',
-                                          labelText: 'เวลาเริ่มแข่งขัน'),
-                                    )),
-                              ),
+                              padding:
+                                  const EdgeInsets.only(left: 25, right: 5),
+                              child: SizedBox(
+                                  width: 115,
+                                  child: SizedBox(
+                                    child: TextFieldTime(
+                                        controller: raceTimeST,
+                                        hintText: '00:00',
+                                        labelText: 'เริ่ม'),
+                                  )),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                child: SizedBox(
-                                    width: 120,
-                                    child: SizedBox(
-                                      child: TextFieldTime(
-                                          controller: raceTimeFN,
-                                          hintText: '00:00',
-                                          labelText: 'เวลาจบแข่งขัน'),
-                                    )),
-                              ),
+                              padding:
+                                  const EdgeInsets.only(right: 10, left: 5),
+                              child: SizedBox(
+                                  width: 120,
+                                  child: SizedBox(
+                                    child: TextFieldTime(
+                                        controller: raceTimeFN,
+                                        hintText: '00:00',
+                                        labelText: 'สิ้นสุด'),
+                                  )),
                             ),
                           ],
                         ),
@@ -236,8 +238,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                   return;
                                 }
                                 final path =
-                                    'files/${pickedFile?.path.split('/').last}';
-                                final file = File(pickedFile!.path);
+                                    'files/${_image?.path.split('/').last}';
+                                final file = File(_image!.path);
                                 final ref =
                                     FirebaseStorage.instance.ref().child(path);
                                 log(ref.toString());
@@ -364,46 +366,91 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
     );
   }
 
-  Future selectFile() async {
-    final result = await FilePicker.platform.pickFiles();
-    File file;
-    PlatformFile platFile;
-    if (result == null) return;
-    platFile = result.files.single;
-    file = File(platFile.path!);
-    pickedFile = file;
+  Future _pickImage(ImageSource source) async {
+    final image = await ImagePicker().pickImage(source: source);
+    if (image == null) return;
+    File? img = File(image.path!);
 
-    log(result.files.single.toString());
-    log(platFile.extension.toString());
-    if (platFile.extension == 'jpg' || platFile.extension == 'png') {
-      setState(() {
-        isImage = true;
-      });
-    } else {
-      isImage = false;
-    }
+    // img = await _cropImage(imageFile: img);
+    _image = img;
+    setState(() {});
+    log(img.path);
   }
 
+  // Future selectFile() async {
+  //   final result = await FilePicker.platform.pickFiles();
+  //   File file;
+  //   PlatformFile platFile;
+  //   if (result == null) return;
+  //   platFile = result.files.single;
+  //   file = File(platFile.path!);
+  //   pickedFile = file;
+
+  //   log(result.files.single.toString());
+  //   log(platFile.extension.toString());
+  // }
+
   upImg() {
-    return GestureDetector(
-        onTap: () {
-          selectFile();
-          log('message');
-        },
-        child: pickedFile != null
-            ? CircleAvatar(
+    return _image != null
+        ? Stack(
+            children: [
+              SizedBox(
+                width: 250,
+                height: 150,
+                child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(color: Colors.white, width: 5),
+                    ),
+                    key: keys,
+                    child: Image.file(
+                      _image!,
+                      fit: BoxFit.cover,
+                    )),
+              ),
+              Positioned(
+                bottom: 10,
+                right: 10,
+                child: Container(
+                    decoration: BoxDecoration(
+                      
+                      color: Colors.white.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: IconButton(
+                        onPressed: () {
+                          _pickImage(ImageSource.gallery);
+                          log('message');
+                        },
+                        icon: const FaIcon(
+                          FontAwesomeIcons.camera,
+                          
+                          size: 25,
+                        ))),
+              )
+            ],
+          )
+        : SizedBox(
+            width: 250,
+            height: 150,
+            child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: Colors.white, width: 5),
+                  color: Colors.purpleAccent,
+                ),
                 key: keys,
-                radius: 35.0,
-                backgroundImage: FileImage(pickedFile!))
-            : CircleAvatar(
-                radius: 35.0,
-                child: GestureDetector(
-                    onTap: () {
-                      selectFile();
+                child: IconButton(
+                    onPressed: () async {
+                      _pickImage(ImageSource.gallery);
                       log('message');
                     },
-                    child: FaIcon(FontAwesomeIcons.camera, size: 25)),
-              ));
+                    icon: FaIcon(
+                      FontAwesomeIcons.camera,
+                      size: 30,
+                      color: Get.theme.colorScheme.onPrimary,
+                    ))),
+          );
   }
   // Widget uploadImage() {
   //   return Stack(
