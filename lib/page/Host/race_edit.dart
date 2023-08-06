@@ -38,6 +38,8 @@ class _EditRaceState extends State<EditRace> {
   TextEditingController raceTimeST = TextEditingController();
   TextEditingController raceTimeFN = TextEditingController();
   TextEditingController eventDatetime = TextEditingController();
+   TextEditingController  TimeST =  TextEditingController();
+  TextEditingController  TimeFN =  TextEditingController();
 
   final keys = GlobalKey<FormState>();
 
@@ -258,9 +260,10 @@ class _EditRaceState extends State<EditRace> {
                                           width: 120,
                                           child: SizedBox(
                                             child: TextFieldTime(
-                                              controller: raceTimeST,
+                                              controllers: raceTimeST,
                                               hintText: '00:00',
                                               labelText: 'เวลาเริ่มแข่งขัน',
+                                              times: TimeST,
                                             ),
                                           )),
                                     ),
@@ -272,9 +275,10 @@ class _EditRaceState extends State<EditRace> {
                                           width: 120,
                                           child: SizedBox(
                                             child: TextFieldTime(
-                                                controller: raceTimeFN,
+                                                controllers: raceTimeFN,
                                                 hintText: '00:00',
-                                                labelText: 'เวลาจบแข่งขัน'),
+                                                labelText: 'เวลาจบแข่งขัน',
+                                                times: TimeFN,),
                                           )),
                                     ),
                                   ),

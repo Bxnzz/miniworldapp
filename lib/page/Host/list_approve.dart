@@ -79,18 +79,7 @@ class _ListApproveState extends State<ListApprove> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('หลักฐานทั้งหมด')),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.pinkAccent,
-        onPressed: () {
-          //  _Endgame();
-        },
-        label: Text(
-          'ส่งไปยังผู้ชม',
-          style: Get.textTheme.bodyLarge!.copyWith(
-              color: Get.theme.colorScheme.onPrimary,
-              fontWeight: FontWeight.bold),
-        ),
-      ),
+     
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: FutureBuilder(
           future: loadDataMethod,

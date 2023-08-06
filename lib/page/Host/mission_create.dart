@@ -33,9 +33,10 @@ class _MissioncreateState extends State<Missioncreate> {
   TextEditingController nameMission = TextEditingController();
   TextEditingController DescriptionMission = TextEditingController();
   final List<String> items = [
-    '5',
     '10',
-    '15',
+    '20',
+    '30',
+    '40'
   ];
   String? selectedValue;
   late Future<void> loadDataMethod;
@@ -329,7 +330,7 @@ class _MissioncreateState extends State<Missioncreate> {
                         const SnackBar(content: Text('mision Successful')),
                       );
                       log("race Successful");
-                      if (fristMis == 1) {
+                      if (fristMis == 0) {
                         Get.to(DetailMission());
                       } else {
                         Navigator.of(context).pop();
