@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/page/General/detil_race.dart';
@@ -47,6 +48,9 @@ class _HomeAllState extends State<HomeAll> {
   String Username = '';
   String _text = '';
   int userID = 0;
+  String userimg = '';
+  String userDescrip = '';
+  String userFullName = '';
   TextEditingController textController = TextEditingController();
   List<Race> races = [];
   late RaceService raceService;
@@ -58,6 +62,10 @@ class _HomeAllState extends State<HomeAll> {
 
     Username = context.read<AppData>().Username;
     userID = context.read<AppData>().idUser;
+    userimg = context.read<AppData>().userImage;
+    userFullName = context.read<AppData>().userFullName;
+    userDescrip = context.read<AppData>().userDescrip;
+
     log(Username);
     log("${userID}");
   }
@@ -189,65 +197,108 @@ class _HomeAllState extends State<HomeAll> {
               ),
             ],
           ),
-          drawer: SizedBox(
-            width: Get.width / 1.3,
-            child: Drawer(
-              backgroundColor: Get.theme.colorScheme.onPrimary,
-              child: ListView(
-                // Important: Remove any padding from the ListView.
-                padding: EdgeInsets.zero,
-                children: [
-                  DrawerHeader(
-                    decoration: const BoxDecoration(),
+          drawer: Container(
+            child: SizedBox(
+              width: Get.width / 1.2,
+              child: Drawer(
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10),
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 15,
+                      // Important: Remove any padding from the ListView.
+
+                      children: [
+                        Container(
+                          height: 230,
+                          child: DrawerHeader(
+                            decoration: BoxDecoration(),
+                            child: Stack(children: [
+                              Positioned(
+                                  bottom: 140,
+                                  left: Get.width / 1.6,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      Get.to(() => Profile_edit());
+                                    },
+                                    icon: FaIcon(FontAwesomeIcons.edit),
+                                  )),
+                              Column(
+                                children: [
+                                  Gap(20),
+                                  Align(
+                                    heightFactor: 1,
+                                    alignment: Alignment.topLeft,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                              width: 5,
+                                              color: const Color.fromARGB(
+                                                  255, 255, 255, 255))),
+                                      child: CircleAvatar(
+                                          radius: 40,
+                                          backgroundImage:
+                                              NetworkImage(userimg)),
+                                    ),
+                                  ),
+                                  Gap(20),
+                                  Align(
+                                    heightFactor: 1,
+                                    alignment: Alignment.bottomLeft,
+                                    child: Container(
+                                      child: Text(Username,
+                                          style: Get
+                                              .theme.textTheme.titleMedium!
+                                              .copyWith(
+                                                  fontWeight: FontWeight.bold)),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomLeft,
+                                    child: Container(
+                                      child: Text(
+                                        userDescrip,
+                                        style: Get.theme.textTheme.bodySmall!
+                                            .copyWith(
+                                                color: Color.fromARGB(
+                                                    255, 104, 104, 104)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ]),
+                          ),
                         ),
-                        Text(
-                          Username,
-                          // style: TextStyle(color: Colors.grey),
-                        )
+                        ListTile(
+                          leading: const FaIcon(FontAwesomeIcons.house),
+                          title: const Text('หน้าหลัก'),
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ListTile(
+                          leading: FaIcon(FontAwesomeIcons.chartSimple),
+                          title: const Text('สถิติการแข่งขัน'),
+                          onTap: () {
+                            Get.to(const Static());
+                          },
+                        ),
+                        ListTile(
+                          leading: FaIcon(FontAwesomeIcons.doorOpen),
+                          title: const Text('ออกจากระบบ'),
+                          onTap: () {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const Login(),
+                                ));
+                          },
+                        ),
                       ],
                     ),
                   ),
-                  ListTile(
-                    leading: const FaIcon(FontAwesomeIcons.house),
-                    title: const Text('หน้าหลัก'),
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    leading: FaIcon(FontAwesomeIcons.chartLine),
-                    title: const Text('สถิติการแข่งขัน'),
-                    onTap: () {
-                      Get.to(const Static());
-                    },
-                  ),
-                  ListTile(
-                    leading: const FaIcon(FontAwesomeIcons.user),
-                    title: const Text('แก้ไขโปรไฟล์'),
-                    onTap: () {
-                      context.read<AppData>().idUser = userID;
-
-                      Get.to(() => Profile_edit());
-                    },
-                  ),
-                  ListTile(
-                    leading: FaIcon(FontAwesomeIcons.rightFromBracket),
-                    title: const Text('ออกจากระบบ'),
-                    onTap: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Login(),
-                          ));
-                    },
-                  ),
-                ],
+                ),
               ),
             ),
           ),
@@ -288,6 +339,7 @@ class mySearchDelegate extends SearchDelegate {
 
     late RaceService raceService;
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
     Future<void> loadData() async {
       startLoading(context);
       try {
@@ -506,7 +558,7 @@ class _RaceAllState extends State<RaceAll> {
 
   var formatter = DateFormat.yMEd();
   // var dateInBuddhistCalendarFormat = formatter.formatInBuddhistCalendarThai(now);
-
+  final ScrollController _scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -521,110 +573,125 @@ class _RaceAllState extends State<RaceAll> {
     loadDataMethod = loadData();
   }
 
+  Future refresh() async {
+    setState(() {
+      loadDataMethod = loadData();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      body: Container(
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                begin: FractionalOffset(0.0, 0.0),
-                end: FractionalOffset(1.0, 0.0),
-                stops: [0.0, 1.0],
-                tileMode: TileMode.clamp,
-                colors: [
-                  Colors.purpleAccent,
-                  Color.fromARGB(255, 144, 64, 255),
-                ])),
-        child: FutureBuilder(
-            future: loadDataMethod,
-            builder: (context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return GridView.count(
-                  crossAxisCount: 2,
-                  padding: EdgeInsets.only(top: 10),
-                  children: races.map((element) {
-                    return Padding(
-                      padding: const EdgeInsets.only(
-                          left: 2.5, right: 2.5, bottom: 5),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 2,
-                            color: Colors.white,
+      body: RefreshIndicator(
+        onRefresh: refresh,
+        child: Container(
+          decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  begin: FractionalOffset(0.0, 0.0),
+                  end: FractionalOffset(1.0, 0.0),
+                  stops: [0.0, 1.0],
+                  tileMode: TileMode.clamp,
+                  colors: [
+                    Colors.purpleAccent,
+                    Color.fromARGB(255, 144, 64, 255),
+                  ])),
+          child: FutureBuilder(
+              future: loadDataMethod,
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return GridView.count(
+                    crossAxisCount: 2,
+                    padding: EdgeInsets.only(top: 10),
+                    children: races.map((element) {
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                            left: 2.5, right: 2.5, bottom: 5),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              width: 2,
+                              color: Colors.white,
+                            ),
+                            borderRadius:
+                                BorderRadius.circular(20.0), //<-- SEE HERE
                           ),
-                          borderRadius:
-                              BorderRadius.circular(20.0), //<-- SEE HERE
-                        ),
-                        //  shadowColor: ,
-                        color: Colors.white,
-                        clipBehavior: Clip.hardEdge,
+                          //  shadowColor: ,
+                          color: Colors.white,
+                          clipBehavior: Clip.hardEdge,
 
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12.0),
-                          splashColor: Colors.blue.withAlpha(30),
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => DetailRace()));
-                            context.read<AppData>().idrace = element.raceId;
-                          },
-                          child: GridTile(
-                              // crossAxisAlignment: CrossAxisAlignment.start,
-                              child: Image.network(element.raceImage,
-                                  //  width: Get.width,
-                                  //  height: Get.width*0.5625/2,
-                                  fit: BoxFit.cover),
-                              footer: Container(
-                                color: Get.theme.colorScheme.onBackground
-                                    .withOpacity(0.5),
-                                padding:
-                                    const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(element.raceName,
-                                            style: Get.textTheme.bodyMedium!
-                                                .copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Get.theme.colorScheme
-                                                        .onPrimary)),
-                                        Text("# ${element.raceId}",
-                                            style: Get.textTheme.bodySmall!
-                                                .copyWith(
-                                                    color: Get.theme.colorScheme
-                                                        .onPrimary)),
-                                      ],
-                                    ),
-                                    Container(height: 5),
-                                    // Text("ปิดรับสมัคร: " +
-                                    //     formatter.formatInBuddhistCalendarThai(
-                                    //         element.raceTimeFn)),
-                                    Text("สถานที่: " + element.raceLocation,
-                                        style: Get.textTheme.bodySmall!
-                                            .copyWith(
-                                                color: Get
-                                                    .theme.colorScheme.onPrimary
-                                                    .withOpacity(0.8))),
-                                    Container(height: 5),
-                                  ],
-                                ),
-                              )),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12.0),
+                            splashColor: Colors.blue.withAlpha(30),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DetailRace()));
+                              context.read<AppData>().idrace = element.raceId;
+                            },
+                            child: GridTile(
+                                // crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Image.network(element.raceImage,
+                                    //  width: Get.width,
+                                    //  height: Get.width*0.5625/2,
+                                    fit: BoxFit.cover),
+                                footer: Container(
+                                  color: Get.theme.colorScheme.onBackground
+                                      .withOpacity(0.5),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(element.raceName,
+                                              style: Get.textTheme.bodyMedium!
+                                                  .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Get
+                                                          .theme
+                                                          .colorScheme
+                                                          .onPrimary)),
+                                          Text("# ${element.raceId}",
+                                              style: Get.textTheme.bodySmall!
+                                                  .copyWith(
+                                                      color: Get
+                                                          .theme
+                                                          .colorScheme
+                                                          .onPrimary)),
+                                        ],
+                                      ),
+                                      Container(height: 5),
+                                      // Text("ปิดรับสมัคร: " +
+                                      //     formatter.formatInBuddhistCalendarThai(
+                                      //         element.raceTimeFn)),
+                                      Text("สถานที่: " + element.raceLocation,
+                                          style: Get.textTheme.bodySmall!
+                                              .copyWith(
+                                                  color: Get.theme.colorScheme
+                                                      .onPrimary
+                                                      .withOpacity(0.8))),
+                                      Container(height: 5),
+                                    ],
+                                  ),
+                                )),
+                          ),
                         ),
-                      ),
-                    );
-                  }).toList(),
-                );
-              } else {
-                return Container();
-                // const CircularProgressIndicator();
-              }
-            }),
+                      );
+                    }).toList(),
+                  );
+                } else {
+                  return Container();
+                  // const CircularProgressIndicator();
+                }
+              }),
+        ),
       ),
     );
   }

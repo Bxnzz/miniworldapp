@@ -15,10 +15,13 @@ class AppData with ChangeNotifier {
   Map<String, dynamic> userFacebook = {};
   int idrace = 0;
   String Username = '';
+  String userImage = '';
+  String userDescrip = '';
+  String userFullName = '';
   String misName = '';
   String misDetail = '';
   String misType = '';
-  bool isFinished = false ;
+  bool isFinished = false;
   int remainMC = 0;
   int statusRace = 0;
 

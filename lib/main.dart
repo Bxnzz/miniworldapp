@@ -61,12 +61,26 @@ class MyApp extends StatelessWidget {
       title: 'Mini world race',
       themeMode: ThemeMode.light,
       theme: defaultTheme.flexTheme.theme.copyWith(
-          scaffoldBackgroundColor: Colors.white,
-          inputDecorationTheme:
-              defaultTheme.flexTheme.theme.inputDecorationTheme.copyWith(
-            contentPadding: const EdgeInsets.fromLTRB(6, 10, 6, 3),
-            isDense: true,
-          )),
+        scaffoldBackgroundColor: Colors.white,
+        inputDecorationTheme:
+            defaultTheme.flexTheme.theme.inputDecorationTheme.copyWith(
+          contentPadding: const EdgeInsets.fromLTRB(6, 10, 6, 3),
+          isDense: true,
+        ),
+        textTheme: defaultTheme.flexTheme.theme.textTheme.copyWith(
+          bodySmall: defaultTheme.flexTheme.theme.textTheme.bodySmall!
+              .copyWith(fontSize: 14),
+          bodyMedium: defaultTheme.flexTheme.theme.textTheme.bodyMedium!
+              .copyWith(fontSize: 15),
+          bodyLarge: defaultTheme.flexTheme.theme.textTheme.bodyLarge!
+              .copyWith(fontSize: 16),
+          titleMedium: defaultTheme.flexTheme.theme.textTheme.titleMedium!
+              .copyWith(fontSize: 20),
+          titleLarge: defaultTheme.flexTheme.theme.textTheme.titleLarge!
+              .copyWith(fontSize: 24),
+        ),
+      ),
+
       darkTheme: defaultTheme.flexTheme.darkTheme.copyWith(
           inputDecorationTheme:
               defaultTheme.flexTheme.darkTheme.inputDecorationTheme.copyWith(
