@@ -98,8 +98,15 @@ class _LobbyState extends State<Lobby> {
     log('id Team is${idTeam}');
     log('StatusStart :${status}');
     log("Race Status$raceStatus");
-    attendShow = [];
+    // attendShow = [];
     loadDataMethod = loadData();
+  }
+
+  Future refresh() async {
+    setState(() {
+      attendShow = [];
+      loadDataMethod = loadData();
+    });
   }
 
   void _Startgame() async {
@@ -140,111 +147,115 @@ class _LobbyState extends State<Lobby> {
             // log('xxxxx ' + attendShow.last.values.first.last.user.userName);
             // attendShow.[team].values.first.[player].user.userName
 
-            return ListView.builder(
-              itemCount: attendShow.length,
-              itemBuilder: (context, index) {
-                if (attends.first.team.race.userId == idUser) {
-                  return Slidable(
-                      key: const ValueKey(0),
+            return RefreshIndicator(
+              onRefresh: refresh,
+              child: ListView.builder(
+                itemCount: attendShow.length,
+                itemBuilder: (context, index) {
+                  if (attends.first.team.race.userId == idUser) {
+                    return Slidable(
+                        key: const ValueKey(0),
 
-                      // The start action pane is the one at the left or the top side.
-                      endActionPane: ActionPane(
-                        motion: ScrollMotion(),
-                        children: [
-                          SlidableAction(
-                            // An action can be bigger than the others.
-                            flex: 2,
-                            onPressed: (BuildContext context) async {
-                              idTeamDel = attendShow[index]
-                                  .values
-                                  .first
-                                  .first
-                                  .team
-                                  .teamId
-                                  .toString();
-                              log('team ID = ${idTeamDel}');
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                        title: Text(
-                                            "ลบทีม\"${attendShow[index].values.first.first.team.teamName}\" หรือไม่"),
-                                        actions: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              TextButton(
-                                                onPressed: () => Navigator.pop(
-                                                    context, 'Cancel'),
-                                                child: const Text('ยกเลิก',
-                                                    style: TextStyle(
-                                                        color: Colors.black)),
-                                              ),
-                                              ElevatedButton(
-                                                  onPressed: () async {
-                                                    var teamDelete =
-                                                        await teamService
-                                                            .DelbyTeamID(
-                                                                idTeamDel
-                                                                    .toString());
+                        // The start action pane is the one at the left or the top side.
+                        endActionPane: ActionPane(
+                          motion: ScrollMotion(),
+                          children: [
+                            SlidableAction(
+                              // An action can be bigger than the others.
+                              flex: 2,
+                              onPressed: (BuildContext context) async {
+                                idTeamDel = attendShow[index]
+                                    .values
+                                    .first
+                                    .first
+                                    .team
+                                    .teamId
+                                    .toString();
+                                log('team ID = ${idTeamDel}');
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                          title: Text(
+                                              "ลบทีม\"${attendShow[index].values.first.first.team.teamName}\" หรือไม่"),
+                                          actions: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          context, 'Cancel'),
+                                                  child: const Text('ยกเลิก',
+                                                      style: TextStyle(
+                                                          color: Colors.black)),
+                                                ),
+                                                ElevatedButton(
+                                                    onPressed: () async {
+                                                      var teamDelete =
+                                                          await teamService
+                                                              .DelbyTeamID(
+                                                                  idTeamDel
+                                                                      .toString());
 
-                                                    if (teamDelete
-                                                            .data.result ==
-                                                        '1') {
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(
-                                                        const SnackBar(
-                                                            content: Text(
-                                                                'delete Successful')),
-                                                      );
-                                                      attendShow.removeWhere(
-                                                          (element) {
-                                                        return element
-                                                                .values
-                                                                .first
-                                                                .first
-                                                                .teamId ==
-                                                            idTeamDel;
-                                                      }); //go through the loop and match content to delete from list
+                                                      if (teamDelete
+                                                              .data.result ==
+                                                          '1') {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                          const SnackBar(
+                                                              content: Text(
+                                                                  'delete Successful')),
+                                                        );
+                                                        attendShow.removeWhere(
+                                                            (element) {
+                                                          return element
+                                                                  .values
+                                                                  .first
+                                                                  .first
+                                                                  .teamId ==
+                                                              idTeamDel;
+                                                        }); //go through the loop and match content to delete from list
 
-                                                      setState(() {
-                                                        loadDataMethod =
-                                                            loadData();
-                                                      });
-                                                      Navigator.pop(context);
-                                                      // log("race Successful");
-                                                      return;
-                                                    } else {
-                                                      // log("team fail");
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(
-                                                        const SnackBar(
-                                                            content: Text(
-                                                                'delete fail try agin!')),
-                                                      );
-                                                    }
-                                                    ;
-                                                  },
-                                                  child: Text("ตกลง")),
-                                            ],
-                                          )
-                                        ],
-                                      ));
-                            },
-                            backgroundColor: Color.fromARGB(255, 255, 0, 0),
-                            foregroundColor: Colors.white,
-                            icon: Icons.delete,
-                            label: 'ลบทีม',
-                          ),
-                        ],
-                      ),
-                      child: CardDetail(index, textTheme, context));
-                }
+                                                        setState(() {
+                                                          loadDataMethod =
+                                                              loadData();
+                                                        });
+                                                        Navigator.pop(context);
+                                                        // log("race Successful");
+                                                        return;
+                                                      } else {
+                                                        // log("team fail");
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                          const SnackBar(
+                                                              content: Text(
+                                                                  'delete fail try agin!')),
+                                                        );
+                                                      }
+                                                      ;
+                                                    },
+                                                    child: Text("ตกลง")),
+                                              ],
+                                            )
+                                          ],
+                                        ));
+                              },
+                              backgroundColor: Color.fromARGB(255, 255, 0, 0),
+                              foregroundColor: Colors.white,
+                              icon: Icons.delete,
+                              label: 'ลบทีม',
+                            ),
+                          ],
+                        ),
+                        child: CardDetail(index, textTheme, context));
+                  }
 
-                return CardDetail(index, textTheme, context);
-              },
+                  return CardDetail(index, textTheme, context);
+                },
+              ),
             );
           } else {
             return Container();
@@ -255,131 +266,138 @@ class _LobbyState extends State<Lobby> {
   SizedBox CardDetail(int index, TextTheme textTheme, BuildContext context) {
     return SizedBox(
       width: Get.width,
-      child: Card(
-          clipBehavior: Clip.hardEdge,
-          child: Column(
-            children: [
-              InkWell(
-                borderRadius: BorderRadius.circular(12.0),
-                splashColor: Colors.blue.withAlpha(30),
-                child: Stack(children: [
-                  Positioned(
-                    child: Opacity(
-                      opacity: 0.3,
-                      child: Image.network(
-                        attendShow[index].values.first.first.team.teamImage,
-                        height: 60,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
+      child: SingleChildScrollView(
+        child: Card(
+            clipBehavior: Clip.hardEdge,
+            child: Column(
+              children: [
+                InkWell(
+                  borderRadius: BorderRadius.circular(12.0),
+                  splashColor: Colors.blue.withAlpha(30),
+                  child: Stack(children: [
+                    Positioned(
+                      child: Opacity(
+                        opacity: 0.3,
+                        child: Image.network(
+                          attendShow[index].values.first.first.team.teamImage,
+                          height: 60,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  ),
-                  ExpansionTile(
-                      key: Key(selec.toString()),
-                      initiallyExpanded: idTeam ==
-                              attendShow[index].values.first.first.teamId &&
-                          idUser !=
-                              attendShow[index]
-                                  .values
-                                  .first
-                                  .first
-                                  .team
-                                  .race
-                                  .userId,
-                      title: idTeam ==
-                                  attendShow[index].values.first.first.teamId &&
-                              idUser !=
-                                  attendShow[index]
-                                      .values
-                                      .first
-                                      .first
-                                      .team
-                                      .race
-                                      .userId
-                          ?
-                          //ทีมที่เข้าร่วม
-                          Row(children: [
-                              Text(
-                                ("${attendShow[index].values.first.first.team.teamName} (ทีมคุณ)"),
-                                style: textTheme.bodyLarge?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromRGBO(156, 39, 176, 1),
-                                    shadows: [
-                                      Shadow(
-                                        blurRadius: 10,
-                                        color: Colors.white54,
-                                        offset: Offset(5, 3),
-                                      ),
-                                    ]),
-                              ),
-                            ])
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                //Name team (Host)
-                                //another team
-                                Text(
+                    ExpansionTile(
+                        key: Key(selec.toString()),
+                        initiallyExpanded: idTeam ==
+                                attendShow[index].values.first.first.teamId &&
+                            idUser !=
+                                attendShow[index]
+                                    .values
+                                    .first
+                                    .first
+                                    .team
+                                    .race
+                                    .userId,
+                        title: idTeam ==
+                                    attendShow[index]
+                                        .values
+                                        .first
+                                        .first
+                                        .teamId &&
+                                idUser !=
                                     attendShow[index]
                                         .values
                                         .first
                                         .first
                                         .team
-                                        .teamName,
-                                    style: textTheme.bodyLarge?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        shadows: [
-                                          Shadow(
-                                            blurRadius: 20.0,
-                                            color: Color.fromRGBO(
-                                                253, 244, 255, 1),
-                                            offset: Offset(5, 3),
-                                          ),
-                                        ])),
-                              ],
-                            ),
-                      children: attendShow[index].values.first.map((e) {
-                        return ListTile(
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
+                                        .race
+                                        .userId
+                            ?
+                            //ทีมที่เข้าร่วม
+                            Row(children: [
+                                Text(
+                                  ("${attendShow[index].values.first.first.team.teamName} (ทีมคุณ)"),
+                                  style: textTheme.bodyLarge?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Color.fromRGBO(156, 39, 176, 1),
+                                      shadows: [
+                                        Shadow(
+                                          blurRadius: 10,
+                                          color: Colors.white54,
+                                          offset: Offset(5, 3),
+                                        ),
+                                      ]),
+                                ),
+                              ])
+                            : Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      showProfileAlertDialog(context, e.user);
-                                      log("tab${e.user.userName}");
-                                    },
-                                    child: CircleAvatar(
-                                        radius: 25,
-                                        backgroundImage:
-                                            NetworkImage(e.user.userImage)),
-                                  ),
-                                  Gap(5),
-                                  Text(e.user.userName),
+                                  //Name team (Host)
+                                  //another team
+                                  Text(
+                                      attendShow[index]
+                                          .values
+                                          .first
+                                          .first
+                                          .team
+                                          .teamName,
+                                      style: textTheme.bodyLarge?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          shadows: [
+                                            Shadow(
+                                              blurRadius: 20.0,
+                                              color: Color.fromRGBO(
+                                                  253, 244, 255, 1),
+                                              offset: Offset(5, 3),
+                                            ),
+                                          ])),
                                 ],
                               ),
-                              e.status == 2
-                                  //statuscheck(logging in)
-                                  ? const FaIcon(
-                                      FontAwesomeIcons.solidCircleCheck,
-                                      color: Colors.green,
-                                      size: 30,
-                                    )
-                                  : const FaIcon(
-                                      FontAwesomeIcons.solidCircleXmark,
-                                      color: Colors.red,
-                                      size: 30,
+                        children: attendShow[index].values.first.map((e) {
+                          return ListTile(
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        showProfileAlertDialog(context, e.user);
+                                        log("tab${e.user.userName}");
+                                      },
+                                      child: CircleAvatar(
+                                          radius: 25,
+                                          backgroundImage:
+                                              NetworkImage(e.user.userImage)),
                                     ),
-                            ],
-                          ),
-                        );
-                      }).toList())
-                ]),
-              ),
-            ],
-          )),
+                                    Gap(5),
+                                    Text(e.user.userName),
+                                  ],
+                                ),
+                                e.status == 2
+                                    //statuscheck(logging in)
+                                    ? const FaIcon(
+                                        FontAwesomeIcons.solidCircleCheck,
+                                        color: Colors.green,
+                                        size: 30,
+                                      )
+                                    : const FaIcon(
+                                        FontAwesomeIcons.solidCircleXmark,
+                                        color: Colors.red,
+                                        size: 30,
+                                      ),
+                              ],
+                            ),
+                          );
+                        }).toList())
+                  ]),
+                ),
+              ],
+            )),
+      ),
     );
   }
 
@@ -452,6 +470,7 @@ class _LobbyState extends State<Lobby> {
           playerIds.add(element.user.onesingnalId);
         }
       }
+
       log('userCreate' + userCreate.toString());
       log("raceName Load is = ${raceName}");
 
@@ -459,8 +478,9 @@ class _LobbyState extends State<Lobby> {
       log(" sta == ${status}");
     } catch (err) {
       log('Error:$err');
+    } finally {
+      stopLoading();
     }
-    stopLoading();
   }
 
   showAlertDialog(BuildContext context) {
@@ -569,7 +589,7 @@ class _LobbyState extends State<Lobby> {
                   //     );
                   //   }
                   // }
-
+                  attendShow = [];
                   String tmId = '';
                   List<AttendRace> temp = [];
                   for (var i = 0; i < attends.length; i++) {
@@ -691,7 +711,7 @@ class _LobbyState extends State<Lobby> {
                     ]),
                   );
                 } else {
-                  return const CircularProgressIndicator();
+                  return Container();
                 }
               }),
         ));

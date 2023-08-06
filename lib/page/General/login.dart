@@ -360,6 +360,16 @@ class _LoginState extends State<Login> {
 
                                             context.read<AppData>().idUser =
                                                 login.data.userId;
+                                            context.read<AppData>().userImage =
+                                                login.data.userImage;
+                                            context
+                                                    .read<AppData>()
+                                                    .userFullName =
+                                                login.data.userFullname;
+                                            context
+                                                    .read<AppData>()
+                                                    .userDescrip =
+                                                login.data.userDiscription;
                                             //Get.to(() => HomeAll());
                                             // Get.to(() => HomeAll());
                                             return;
