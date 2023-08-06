@@ -38,7 +38,6 @@ class _PlayerRaceStartMenuState extends State<PlayerRaceStartMenu> {
     final textTheme = theme.textTheme;
     return WillPopScope(
       onWillPop: () async {
-        Get.to(() => const HomeJoinDetail());
         return true;
       },
       child: Scaffold(
@@ -93,7 +92,7 @@ class _PlayerRaceStartMenuState extends State<PlayerRaceStartMenu> {
         IconButton(
           onPressed: () {
             setState(() {
-              Get.to(HomeJoinDetail());
+              Navigator.pop(context);
             });
           },
           icon: const FaIcon(

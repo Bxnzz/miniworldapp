@@ -181,16 +181,34 @@ class _CeateTeamState extends State<CeateTeam> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   if (await _formKey.currentState!.validate()) {
-                                    if (isJoin == true) {
-                                      uploadFile();
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
-                                      );
+                                    for (var j in attends) {
+                                      log("${j.atId}");
+                                      // log("attend${j.datetime}");
+                                      log("ST${raceST}");
+                                      log("FN${raceFN}");
+                                      log("stJoin${j.team.race.raceTimeSt}");
+                                      log("fnJoin${j.team.race.raceTimeFn}");
+                                      if (raceST.isBefore(
+                                              j.team.race.raceTimeFn) &&
+                                          raceFN.isAfter(
+                                              j.team.race.raceTimeSt)) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                              content: Text(
+                                                  'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
+                                        );
+                                        break;
+                                        log(isJoin.toString());
+                                      } else {
+                                        isJoin = true;
+                                        uploadFile();
+                                        break;
+                                        log(isJoin.toString());
+                                      }
                                     }
+                                    if (isJoin == true) {
+                                    } else {}
                                   }
                                 },
                                 child: Text('สร้างทีม'),
@@ -305,21 +323,12 @@ class _CeateTeamState extends State<CeateTeam> {
       // for (var i in races) {
       //   log("${i.raceId}");
       // }
-      log("${races.first.raceId}");
-
-      for (var j in attends) {
-        log("${j.atId}");
-        log("attend${j.datetime}");
-        log("start${raceST}");
-        log("stop${raceFN}");
-        if (j.datetime.isAfter(raceST) && j.datetime.isBefore(raceFN)) {
-          isJoin = false;
-          log(isJoin.toString());
-        } else {
-          isJoin = true;
-          log(isJoin.toString());
-        }
-      }
+      // log("start${raceST}");
+      // log("stop${raceFN}");
+      // log("id race${races.first.raceId}");
+      log("rid${races.first.raceId}");
+      log("ST${raceST}");
+      log("FN${raceFN}");
     } catch (err) {
       log('Error:$err');
     }
@@ -393,10 +402,6 @@ class _CeateTeamState extends State<CeateTeam> {
       var attends2 = await attendService.attends(attendDto2);
 
       log(attends.data.massage);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('team Successful')),
-      );
 
       if (team.data.teamId > 0 && attends.data.massage == "Insert Success") {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-
 import 'package:animations/animations.dart';
 import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
 import 'package:dio/dio.dart';
@@ -68,181 +67,188 @@ class _HomeAllState extends State<HomeAll> {
     return DefaultTabController(
       // initialIndex: 1,
       length: 3,
-      child: Scaffold(
-        floatingActionButton: SpeedDial(
-          child: const Icon(Icons.add),
-          speedDialChildren: <SpeedDialChild>[
-            SpeedDialChild(
-              child: const FaIcon(FontAwesomeIcons.squarePlus),
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.pink,
-              label: 'สร้างการแข่งขัน',
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const RaceCreatePage()));
-                setState(() {
-                  _text = 'สร้างการแข่งขัน';
-                });
-              },
-            ),
-            SpeedDialChild(
-              child: const FaIcon(FontAwesomeIcons.eye),
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.blue,
-              label: 'เข้าชมการแข่งขัน',
-              onPressed: () {
-                Get.to(ListSpactator());
-                setState(() {
-                  _text = '"เข้าชมการแข่งขัน"';
-                });
-              },
-            ),
-          ],
-          closedForegroundColor: Colors.black,
-          openForegroundColor: Colors.white,
-          closedBackgroundColor: Colors.white,
-          openBackgroundColor: Colors.black,
-        ),
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: FractionalOffset(0.0, 0.0),
-                    end: FractionalOffset(1.0, 0.0),
-                    stops: [0.0, 1.0],
-                    tileMode: TileMode.clamp,
-                    colors: [
-                      Colors.purpleAccent,
-                      Color.fromARGB(255, 144, 64, 255),
-                    ])),
-          ),
-          // backgroundColor: Theme.of(context).colorScheme.primary,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Builder(
-                builder: (context) => IconButton(
-                  icon: FaIcon(FontAwesomeIcons.alignLeft,
-                      color: Theme.of(context).colorScheme.onPrimary, size: 18),
-                  onPressed: () => Scaffold.of(context).openDrawer(),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            CircleAvatar(
-              backgroundColor: Colors.amber,
-              child: IconButton(
-                icon: const Icon(Icons.search_sharp),
-                color: Colors.white,
+      child: WillPopScope(
+        onWillPop: () async {
+          Get.to(() => const HomeAll());
+          return true;
+        },
+        child: Scaffold(
+          floatingActionButton: SpeedDial(
+            child: const Icon(Icons.add),
+            speedDialChildren: <SpeedDialChild>[
+              SpeedDialChild(
+                child: const FaIcon(FontAwesomeIcons.squarePlus),
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.pink,
+                label: 'สร้างการแข่งขัน',
                 onPressed: () {
-                  showSearch(context: context, delegate: mySearchDelegate());
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RaceCreatePage()));
+                  setState(() {
+                    _text = 'สร้างการแข่งขัน';
+                  });
                 },
               ),
+              SpeedDialChild(
+                child: const FaIcon(FontAwesomeIcons.eye),
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.blue,
+                label: 'เข้าชมการแข่งขัน',
+                onPressed: () {
+                  Get.to(ListSpactator());
+                  setState(() {
+                    _text = '"เข้าชมการแข่งขัน"';
+                  });
+                },
+              ),
+            ],
+            closedForegroundColor: Colors.black,
+            openForegroundColor: Colors.white,
+            closedBackgroundColor: Colors.white,
+            openBackgroundColor: Colors.black,
+          ),
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: FractionalOffset(0.0, 0.0),
+                      end: FractionalOffset(1.0, 0.0),
+                      stops: [0.0, 1.0],
+                      tileMode: TileMode.clamp,
+                      colors: [
+                        Colors.purpleAccent,
+                        Color.fromARGB(255, 144, 64, 255),
+                      ])),
             ),
-          ],
-          centerTitle: false,
-          titleSpacing: 0,
-          //  actions: <Widget>[Text(Username)],
-          bottom: TabBar(
-            dividerColor: Colors.transparent,
-            indicatorPadding: EdgeInsets.zero,
-            indicatorWeight: double.minPositive,
-            labelColor: Get.theme.colorScheme.primary,
-            unselectedLabelColor: Get.theme.colorScheme.onPrimary,
-            indicatorSize: TabBarIndicatorSize.tab,
-            indicator: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10)),
-                color: Colors.white),
-            tabs: const <Widget>[
-              Tab(
-                child: Text('ทั้งหมด'),
+            // backgroundColor: Theme.of(context).colorScheme.primary,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Builder(
+                  builder: (context) => IconButton(
+                    icon: FaIcon(FontAwesomeIcons.alignLeft,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        size: 18),
+                    onPressed: () => Scaffold.of(context).openDrawer(),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              CircleAvatar(
+                backgroundColor: Colors.amber,
+                child: IconButton(
+                  icon: const Icon(Icons.search_sharp),
+                  color: Colors.white,
+                  onPressed: () {
+                    showSearch(context: context, delegate: mySearchDelegate());
+                  },
+                ),
               ),
-              Tab(
-                child: Text('ที่สร้าง'),
+            ],
+            centerTitle: false,
+            titleSpacing: 0,
+            //  actions: <Widget>[Text(Username)],
+            bottom: TabBar(
+              dividerColor: Colors.transparent,
+              indicatorPadding: EdgeInsets.zero,
+              indicatorWeight: double.minPositive,
+              labelColor: Get.theme.colorScheme.primary,
+              unselectedLabelColor: Get.theme.colorScheme.onPrimary,
+              indicatorSize: TabBarIndicatorSize.tab,
+              indicator: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)),
+                  color: Colors.white),
+              tabs: const <Widget>[
+                Tab(
+                  child: Text('ทั้งหมด'),
+                ),
+                Tab(
+                  child: Text('ที่สร้าง'),
+                ),
+                Tab(
+                  child: Text('ที่เข้าร่วม'),
+                ),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: <Widget>[
+              Center(child: RaceAll()),
+              Center(
+                child: Home_create(),
               ),
-              Tab(
-                child: Text('ที่เข้าร่วม'),
+              Center(
+                child: Home_join(),
               ),
             ],
           ),
-        ),
-        body: TabBarView(
-          children: <Widget>[
-            Center(child: RaceAll()),
-            Center(
-              child: Home_create(),
-            ),
-            Center(
-              child: Home_join(),
-            ),
-          ],
-        ),
-        drawer: SizedBox(
-          width: Get.width / 1.3,
-          child: Drawer(
-            backgroundColor: Get.theme.colorScheme.onPrimary,
-            child: ListView(
-              // Important: Remove any padding from the ListView.
-              padding: EdgeInsets.zero,
-              children: [
-                DrawerHeader(
-                  decoration: const BoxDecoration(),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Text(
-                        Username,
-                        // style: TextStyle(color: Colors.grey),
-                      )
-                    ],
+          drawer: SizedBox(
+            width: Get.width / 1.3,
+            child: Drawer(
+              backgroundColor: Get.theme.colorScheme.onPrimary,
+              child: ListView(
+                // Important: Remove any padding from the ListView.
+                padding: EdgeInsets.zero,
+                children: [
+                  DrawerHeader(
+                    decoration: const BoxDecoration(),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          Username,
+                          // style: TextStyle(color: Colors.grey),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                ListTile(
-                  leading: const FaIcon(FontAwesomeIcons.house),
-                  title: const Text('หน้าหลัก'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: FaIcon(FontAwesomeIcons.chartLine),
-                  title: const Text('สถิติการแข่งขัน'),
-                  onTap: () {
-                    Get.to(const Static());
-                  },
-                ),
-                ListTile(
-                  leading: const FaIcon(FontAwesomeIcons.user),
-                  title: const Text('แก้ไขโปรไฟล์'),
-                  onTap: () {
-                    context.read<AppData>().idUser = userID;
+                  ListTile(
+                    leading: const FaIcon(FontAwesomeIcons.house),
+                    title: const Text('หน้าหลัก'),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: FaIcon(FontAwesomeIcons.chartLine),
+                    title: const Text('สถิติการแข่งขัน'),
+                    onTap: () {
+                      Get.to(const Static());
+                    },
+                  ),
+                  ListTile(
+                    leading: const FaIcon(FontAwesomeIcons.user),
+                    title: const Text('แก้ไขโปรไฟล์'),
+                    onTap: () {
+                      context.read<AppData>().idUser = userID;
 
-                    Get.to(() => Profile_edit());
-                  },
-                ),
-                ListTile(
-                  leading: FaIcon(FontAwesomeIcons.rightFromBracket),
-                  title: const Text('ออกจากระบบ'),
-                  onTap: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Login(),
-                        ));
-                  },
-                ),
-              ],
+                      Get.to(() => Profile_edit());
+                    },
+                  ),
+                  ListTile(
+                    leading: FaIcon(FontAwesomeIcons.rightFromBracket),
+                    title: const Text('ออกจากระบบ'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Login(),
+                          ));
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -543,167 +543,157 @@ class _LobbyState extends State<Lobby> {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     return WillPopScope(
-      onWillPop: () async {
-        Get.to(() => const Home_join());
-        return true;
-      },
-      child: Scaffold(
-        body: FutureBuilder(
-            future: loadDataMethod,
-            builder: (context, AsyncSnapshot snapshot) {
-              debugPrint(attendShow.toList().toString());
-              if (snapshot.connectionState == ConnectionState.done) {
-                // if (snapshot.hasData) {
-                //   return Container(
-                //     child: Text("data"),
-                //   );
-                //   if (snapshot.data) {
-                //     log('No chatroom');
-                //     attendShow = [];
-                //     log("datahas no");
-                //     // SharedPreferences.getInstance().then((prefs) {
-                //     //   prefs.setString(widget.roomID, jsonEncode({}));
-                //     //   _messages = [];
-                //     // });
-                //     Container(
-                //       child: Text("data"),
-                //     );
-                //   }
-                // }
+        onWillPop: () async {
+          return true;
+        },
+        child: Scaffold(
+          body: FutureBuilder(
+              future: loadDataMethod,
+              builder: (context, AsyncSnapshot snapshot) {
+                debugPrint(attendShow.toList().toString());
+                if (snapshot.connectionState == ConnectionState.done) {
+                  // if (snapshot.hasData) {
+                  //   return Container(
+                  //     child: Text("data"),
+                  //   );
+                  //   if (snapshot.data) {
+                  //     log('No chatroom');
+                  //     attendShow = [];
+                  //     log("datahas no");
+                  //     // SharedPreferences.getInstance().then((prefs) {
+                  //     //   prefs.setString(widget.roomID, jsonEncode({}));
+                  //     //   _messages = [];
+                  //     // });
+                  //     Container(
+                  //       child: Text("data"),
+                  //     );
+                  //   }
+                  // }
 
-                String tmId = '';
-                List<AttendRace> temp = [];
-                for (var i = 0; i < attends.length; i++) {
-                  if (attends[i].teamId.toString() != tmId) {
-                    if (temp.isNotEmpty) {
-                      var team = {tmId: temp};
-                      attendShow.add(team);
-                      temp = [];
+                  String tmId = '';
+                  List<AttendRace> temp = [];
+                  for (var i = 0; i < attends.length; i++) {
+                    if (attends[i].teamId.toString() != tmId) {
+                      if (temp.isNotEmpty) {
+                        var team = {tmId: temp};
+                        attendShow.add(team);
+                        temp = [];
+                      }
+                      tmId = attends[i].teamId.toString();
+                      // log(tmId.toString());
                     }
-                    tmId = attends[i].teamId.toString();
-                    // log(tmId.toString());
-                  }
 
-                temp.add(attends[i]);
-              }
-              if (temp.isNotEmpty) {
-                var team = {tmId: temp};
-                attendShow.add(team);
-              }
-              // log(attendShow.toString());
-              // log(attendShow[1]['102']!.first.userId.toString());
-              //log(attendShow.length.toString());
-              return SafeArea(
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    temp.add(attends[i]);
+                  }
+                  if (temp.isNotEmpty) {
+                    var team = {tmId: temp};
+                    attendShow.add(team);
+                  }
+                  // log(attendShow.toString());
+                  // log(attendShow[1]['102']!.first.userId.toString());
+                  //log(attendShow.length.toString());
+                  return SafeArea(
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                icon: FaIcon(
+                                  FontAwesomeIcons.circleChevronLeft,
+                                  color: Colors.yellow,
+                                  size: 35,
+                                ),
+                              ),
+                              Text(
+                                "ล็อบบี้",
+                                style: textTheme.displayMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.purple,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
+                          ),
                           IconButton(
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              attendShow = [];
+                              Get.to(() => ChatRoomPage(
+                                    raceID: idRace,
+                                    userID: idUser,
+                                    userName: Username,
+                                    raceName: raceName,
+                                  ));
                             },
                             icon: FaIcon(
-                              FontAwesomeIcons.circleChevronLeft,
-                              color: Colors.yellow,
-                              size: 35,
-                            ),
-                          ),
-                          Text(
-                            "ล็อบบี้",
-                            style: textTheme.displayMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.purple,
-                              fontSize: 20,
+                              FontAwesomeIcons.solidCommentDots,
+                              color: Colors.pink,
+                              size: 30,
                             ),
                           ),
                         ],
                       ),
-                      IconButton(
-                        onPressed: () {
-                          attendShow = [];
-                          Get.to(() => ChatRoomPage(
-                                raceID: idRace,
-                                userID: idUser,
-                                userName: Username,
-                                raceName: raceName,
-                              ));
-                        },
-                        icon: FaIcon(
-                          FontAwesomeIcons.solidCommentDots,
-                          color: Colors.pink,
-                          size: 30,
+                      Expanded(
+                        child: SafeArea(
+                          child: ListView(
+                            //padding: const EdgeInsets.all(8.0),
+                            physics: const BouncingScrollPhysics(),
+                            children: attendShow.map((e) {
+                              return Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8, bottom: 8, right: 15, left: 15),
+                                  child: Container(
+                                      width: Get.width,
+                                      height: Get.height,
+                                      child: CardDetailPlayer()));
+                            }).toList(),
+                          ),
                         ),
                       ),
-                    ],
-                  ),
-                  Expanded(
-                    child: SafeArea(
-                      child: ListView(
-                        //padding: const EdgeInsets.all(8.0),
-                        physics: const BouncingScrollPhysics(),
-                        children: attendShow.map((e) {
-                          return Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 8, bottom: 8, right: 15, left: 15),
-                              child: Container(
-                                  width: Get.width,
-                                  height: Get.height,
-                                  child: CardDetailPlayer()));
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                  idUser == userCreate
-                      ? Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 30),
-                              child: SizedBox(
-                                width: 120,
-                                child: PushableButton(
-                                  child: Text(
-                                    'เริ่มเกม',
-                                    style: textTheme.displayMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      fontSize: 20,
+                      idUser == userCreate
+                          ? Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 30),
+                                  child: SizedBox(
+                                    width: 120,
+                                    child: PushableButton(
+                                      child: Text(
+                                        'เริ่มเกม',
+                                        style:
+                                            textTheme.displayMedium?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                      height: 40,
+                                      elevation: 8,
+                                      hslColor: const HSLColor.fromAHSL(
+                                          1.0, 120, 1.0, 0.37),
+                                      onPressed: () {
+                                        showAlertDialog(context);
+                                      },
                                     ),
                                   ),
-                                  height: 40,
-                                  elevation: 8,
-                                  hslColor:const HSLColor.fromAHSL(1.0, 120, 1.0, 0.37),
-                                  onPressed: () {
-                                    showAlertDialog(context);
-                                  },
                                 ),
-                              ),
-                            ),
-                          
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            Container(
-                              width: Get.width,
-                              height: Get.height / 2,
-                              child: Center(child: Text("ยังไม่มีทีมเข้าร่วม")),
-                            ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  showAlertDialog(context);
-                                },
-                                child: Text('เริ่มเกม')),
-                          ],
-                        )
-                ]),
-              );
-            } else {
-              return const CircularProgressIndicator();
-            }
-          }),
-      )
-    );
+                              ],
+                            )
+                          : Column(
+                              children: [
+                                chkReadyBtn(context),
+                              ],
+                            )
+                    ]),
+                  );
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              }),
+        ));
   }
 }

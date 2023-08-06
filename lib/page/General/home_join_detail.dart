@@ -66,16 +66,17 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
     idAttend = context.read<AppData>().idAt;
     teamid = context.read<AppData>().idTeam;
     status = context.read<AppData>().status;
+
     raceStatus = context.read<AppData>().raceStatus;
 
     attendService =
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    log("status :${status}");
     log("id User is :$idUser");
     log("race id is $idrace");
     log("id Attend is $idAttend");
     log("id team is $teamid");
-    log("status  is $status");
 
     loadDataMethod = loadData();
   }
@@ -89,7 +90,6 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
     width = size.width;
     return WillPopScope(
       onWillPop: () async {
-        Get.to(() => const HomeAll());
         return true;
       },
       child: Scaffold(
@@ -120,7 +120,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                         children: [
                           IconButton(
                             onPressed: () {
-                              Get.to(() => HomeAll());
+                              Navigator.pop(context);
                             },
                             icon: FaIcon(
                               FontAwesomeIcons.circleChevronLeft,
