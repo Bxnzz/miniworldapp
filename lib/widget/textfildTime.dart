@@ -1,3 +1,7 @@
+
+
+import 'dart:developer';
+
 import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +10,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 class TextFieldTime extends StatefulWidget {
-   TextEditingController controller; String hintText; String labelText;
-   TextFieldTime({super.key,required this.controller, required this.hintText, required this.labelText});
+   TextEditingController controllers; String hintText; String labelText;TextEditingController times; 
+   TextFieldTime({super.key,required this.controllers, required this.hintText, required this.labelText,required this.times});
 
   @override
   State<TextFieldTime> createState() => _TextFieldTimeState();
@@ -22,7 +26,7 @@ class _TextFieldTimeState extends State<TextFieldTime> {
         SizedBox(
           height: 33,
           child: TextFormField(
-            controller: widget.controller,
+            controller: widget.controllers,
             decoration: InputDecoration(
               // enabled: false,
               labelText: widget.labelText,
@@ -31,7 +35,7 @@ class _TextFieldTimeState extends State<TextFieldTime> {
                 onPressed: () {
                   CupertinoRoundedDatePicker.show(
                     context,
-        
+                    locale: Locale('th','TH'),
                     era: EraMode.BUDDHIST_YEAR,
                    // minimumYear: DateTime.now().year + 20,
                    // maximumYear: 20,
@@ -45,7 +49,9 @@ class _TextFieldTimeState extends State<TextFieldTime> {
                       // var dateInBuddhistCalendarFormat =
                       //     formatter.formatInBuddhistCalendarThai(dateTime);
                       String formattedDate = DateFormat.Hm().format(newDateTime);
-                      widget.controller.text = formattedDate;
+                      widget.controllers.text = formattedDate;
+                       widget.times.text = newDateTime.toString();
+                      log(widget.times.text);
                     },
                   );
                 },
