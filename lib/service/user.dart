@@ -22,7 +22,7 @@ abstract class UserService {
   Future<HttpResponse<List<User>>> getUserAll();
 
   @GET("/user/")
-  Future<HttpResponse<List<User>>> getUserByID(@Query("userID") int userID);
+  Future<HttpResponse<List<User>>> getUserByID({@Query("userID") required int userID});
 
   @PUT("/user/{userID}")
   Future<HttpResponse<RaceResult>> updateUsers(

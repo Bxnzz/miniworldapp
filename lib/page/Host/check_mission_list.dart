@@ -322,8 +322,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
                   final textTheme = theme.textTheme;
                   var mcStatus = missionComs
                       .where((e) =>
-                          e.mission.misId == element.misId && e.mcStatus == 1)
-                      .length;
+                          e.mission.misId == element.misId && e.mcStatus == 1).length;
 
                   remainMC += mcStatus;
 
@@ -340,7 +339,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
                                 // disappearanceFadeAnimationDuration: Duration(milliseconds: 200),
                                 // curve: Curves.easeInCubic,
                                 ),
-                            //  showBadge: _showCartBadge,
+                            // showBadge: _showCartBadge,
                             badgeStyle: badges.BadgeStyle(
                               badgeColor: Colors.red,
                             ),

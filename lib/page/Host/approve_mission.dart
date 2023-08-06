@@ -2,7 +2,10 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:appinio_video_player/appinio_video_player.dart';
+import 'package:miniworldapp/service/user.dart';
+import 'package:uuid/uuid.dart';
 import 'package:circular_menu/circular_menu.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -23,10 +26,14 @@ import 'package:miniworldapp/service/missionComp.dart';
 import 'package:miniworldapp/widget/loadData.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:image_size_getter/image_size_getter.dart';
+import 'package:image_size_getter_http_input/image_size_getter_http_input.dart';
 
 import '../../model/Status/missionCompStatus.dart';
 import '../../model/mission.dart';
 import '../../model/missionComp.dart';
+import '../../model/user.dart';
 import '../../service/attend.dart';
 import '../../service/provider/appdata.dart';
 
@@ -46,13 +53,16 @@ class _ApproveMissionState extends State<ApproveMission> {
   late MissionCompService missionCompService;
   late AttendService attendService;
   late MissionService missionService;
+  late UserService userService;
   late List<MissionComplete> missionComp;
   late List<AttendRace> attend;
   late List<Mission> mission;
+  late List<User> users;
 
   late int CompmissionId;
   String dateTime = '';
   int idrace = 0;
+  int iduser = 0;
   String onesingnalId = '';
 
   String type = '';
@@ -64,6 +74,7 @@ class _ApproveMissionState extends State<ApproveMission> {
   String playerID = '';
   List<String> playerIds = [];
   String hostName = '';
+  String userName = '';
 
   TextEditingController anothor = TextEditingController();
   TextEditingController textMc = TextEditingController();
@@ -89,6 +100,7 @@ class _ApproveMissionState extends State<ApproveMission> {
   String teamName = '';
   String masseageMC = '';
   String mctext = '';
+  TextEditingController _discritionSpactator = TextEditingController();
 
   String mcID = '';
   Map<String, dynamic> mc = {};
@@ -139,9 +151,11 @@ class _ApproveMissionState extends State<ApproveMission> {
     super.initState();
     OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
     // IDmc = context.read<AppData>().mcID;
+    iduser = context.read<AppData>().idUser;
     idrace = context.read<AppData>().idrace;
 
     //  log('id' + IDmc.toString());
+    userService = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
     missionCompService =
         MissionCompService(Dio(), baseUrl: context.read<AppData>().baseurl);
     missionService =
@@ -154,6 +168,7 @@ class _ApproveMissionState extends State<ApproveMission> {
   Future<void> loadData() async {
     startLoading(context);
     try {
+      iduser = context.read<AppData>().idrace;
       // log('idddd'+IDmc.toString());
       var a = await missionCompService.missionCompBymcId(mcID: widget.IDmc);
       //var m = await missionService.missionAll();
@@ -182,7 +197,9 @@ class _ApproveMissionState extends State<ApproveMission> {
         playerIds.add(element.user.onesingnalId);
       }
       log('att ' + playerIds.toString());
-
+      var u = await userService.getUserByID(userID: iduser);
+      users = u.data;
+      userName = u.data.first.userName;
       // onesingnalId = mis.data.first.race.user.onesingnalId;
       // misName = a.data.first.mission.misName;
       // misDiscrip = a.data.first.mission.misDiscrip;
@@ -349,25 +366,6 @@ class _ApproveMissionState extends State<ApproveMission> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('หลักฐาน'),
-        actions: <Widget>[
-          Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: ElevatedButton.icon(
-                style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.amber)),
-                onPressed: () {},
-                icon: FaIcon(
-                  FontAwesomeIcons.solidPaperPlane,
-                  color: Get.theme.colorScheme.onPrimary,
-                  size: 15,
-                ),
-                label: Text(
-                  'ส่งให้ผู้ชม',
-                  style: Get.textTheme.bodyMedium!.copyWith(
-                      color: Get.theme.colorScheme.onPrimary,
-                      ),
-                ),
-              ))
-        ],
       ),
       body: FutureBuilder(
         future: loadDataMethod,
@@ -435,7 +433,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                             )),
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(left: 35, top: 15),
@@ -444,6 +442,68 @@ class _ApproveMissionState extends State<ApproveMission> {
                                     color: Get.theme.colorScheme.onBackground,
                                     fontWeight: FontWeight.bold)),
                           ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 35, top: 15),
+                            child: ElevatedButton.icon(
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStatePropertyAll(Colors.amber)),
+                              onPressed: () async {
+                                startLoading(context);
+                                dialogSpectator();
+                                // types.User _user = types.User(
+                                //     id: iduser.toString(), firstName: userName);
+                                // //textTeam
+                                // final message = types.TextMessage(
+                                //   author: _user,
+                                //   id: const Uuid().v4(),
+                                //   text: 'ชื่อทีม:$teamName\n ภารกิจ: $mcName' ,
+                                //   createdAt:
+                                //       DateTime.now().millisecondsSinceEpoch,
+                                // );
+                                // FirebaseFirestore.instance
+                                //     .collection('s' + idrace.toString())
+                                //     .add(message.toJson());
+                                // log('firebase ' +
+                                //     idrace.toString() +
+                                //     message.toJson().toString());
+
+                                // //image
+                                // log('imageeeeeeee'+urlImage);
+                                // final httpInput =
+                                //     await HttpInput.createHttpInput(urlImage);
+
+                                // final imageMessage = types.ImageMessage(
+                                //   author: _user,
+                                //   createdAt:
+                                //       DateTime.now().millisecondsSinceEpoch,
+                                //   id: const Uuid().v4(),
+                                //   name: 'image',
+                                //   size: 0,
+                                //   uri: urlImage,
+                                // );
+
+                                // FirebaseFirestore.instance
+                                //     .collection('s' + idrace.toString())
+                                //     .add(imageMessage.toJson());
+                                // log('firebaseImage ' +
+                                //     idrace.toString() +
+                                //     imageMessage.toJson().toString());
+                                stopLoading();
+                              },
+                              icon: FaIcon(
+                                FontAwesomeIcons.solidPaperPlane,
+                                color: Get.theme.colorScheme.onPrimary,
+                                size: 15,
+                              ),
+                              label: Text(
+                                'ส่งให้ผู้ชม',
+                                style: Get.textTheme.bodyMedium!.copyWith(
+                                  color: Get.theme.colorScheme.onPrimary,
+                                ),
+                              ),
+                            ),
+                          )
                         ],
                       ),
                       Expanded(
@@ -452,7 +512,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                             child: urlImage != ''
                                 ? Container(
                                     width: Get.width * 0.7,
-                                    height: double.infinity,
+                                    height: Get.height,
                                     decoration: BoxDecoration(
                                       border: Border.all(
                                           color:
@@ -565,6 +625,126 @@ class _ApproveMissionState extends State<ApproveMission> {
           }
         },
       ),
+    );
+  }
+
+  Future<void> dialogSpectator() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext contexts) {
+        return AlertDialog(
+          title: Text(
+            'ส่งหลักฐานให้ผู้ชม?',
+            textAlign: TextAlign.center,
+          ),
+          titleTextStyle: TextStyle(
+            fontSize: 16.0,
+            color: Get.theme.colorScheme.primary,
+            fontWeight: FontWeight.w800,
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'.toUpperCase()),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                types.User _user =
+                    types.User(id: iduser.toString(), firstName: userName);
+                //textTeam
+                final message = types.TextMessage(
+                  author: _user,
+                  id: const Uuid().v4(),
+                  text: 'ชื่อทีม:$teamName\n ภารกิจ: $mcName',
+                  createdAt: DateTime.now().millisecondsSinceEpoch,
+                );
+                FirebaseFirestore.instance
+                    .collection('s' + idrace.toString())
+                    .add(message.toJson());
+                log('firebase ' +
+                    idrace.toString() +
+                    message.toJson().toString());
+
+                //image
+                log('imageeeeeeee' + urlImage);
+                final httpInput = await HttpInput.createHttpInput(urlImage);
+
+                final imageMessage = types.ImageMessage(
+                  author: _user,
+                  createdAt: DateTime.now().millisecondsSinceEpoch,
+                  id: const Uuid().v4(),
+                  name: 'image',
+                  size: 0,
+                  uri: urlImage,
+                );
+                
+                FirebaseFirestore.instance
+                    .collection('s' + idrace.toString())
+                    .add(imageMessage.toJson());
+                log('firebaseImage ' +
+                    idrace.toString() +
+                    imageMessage.toJson().toString());
+
+              //textdisciption
+              final messageDiscription = types.TextMessage(
+                  author: _user,
+                  id: const Uuid().v4(),
+                  text: _discritionSpactator.text,
+                  createdAt: DateTime.now().millisecondsSinceEpoch,
+                );
+                if(_discritionSpactator.text != ''){
+                   FirebaseFirestore.instance
+                    .collection('s' + idrace.toString())
+                    .add(messageDiscription.toJson());
+                }else{
+                  
+                }
+               
+              },
+              child: Text('OK'.toUpperCase()),
+            ),
+          ],
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                  width: Get.width / 2,
+                  height: Get.height / 4,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Get.theme.colorScheme.onPrimary),
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      image: NetworkImage(urlImage),
+                      //  fit: BoxFit.cover,
+                    ),
+                    shape: BoxShape.rectangle,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _discritionSpactator,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 3,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      hintText: ' คำอธิบาย...',
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 3, color: Get.theme.colorScheme.primary)),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
