@@ -73,8 +73,8 @@ class _Home_joinState extends State<Home_join> {
                     final theme = Theme.of(context);
                     final textTheme = theme.textTheme;
                     return Padding(
-                      padding:
-                       const EdgeInsets.only(left: 2.5, right: 2.5, bottom: 5),
+                      padding: const EdgeInsets.only(
+                          left: 2.5, right: 2.5, bottom: 5),
                       child: Card(
                         shape: RoundedRectangleBorder(
                           side: const BorderSide(
@@ -93,8 +93,8 @@ class _Home_joinState extends State<Home_join> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        HomeJoinDetail()));
+                                    builder: (context) => HomeJoinDetail()));
+                            context.read<AppData>().status = e.status;
                             context.read<AppData>().idUser = e.userId;
                             context.read<AppData>().idTeam = e.teamId;
                             context.read<AppData>().idrace = e.team.raceId;
@@ -113,8 +113,7 @@ class _Home_joinState extends State<Home_join> {
                                 padding:
                                     const EdgeInsets.fromLTRB(10, 5, 10, 0),
                                 child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
                                       mainAxisAlignment:
@@ -123,18 +122,13 @@ class _Home_joinState extends State<Home_join> {
                                         Text(e.team.race.raceName,
                                             style: Get.textTheme.bodyMedium!
                                                 .copyWith(
-                                                    fontWeight:
-                                                        FontWeight.bold,
-                                                    color: Get
-                                                        .theme
-                                                        .colorScheme
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Get.theme.colorScheme
                                                         .onPrimary)),
                                         Text("# ${e.team.race.raceId}",
                                             style: Get.textTheme.bodySmall!
                                                 .copyWith(
-                                                    color: Get
-                                                        .theme
-                                                        .colorScheme
+                                                    color: Get.theme.colorScheme
                                                         .onPrimary)),
                                       ],
                                     ),
@@ -142,13 +136,11 @@ class _Home_joinState extends State<Home_join> {
                                     // Text("ปิดรับสมัคร: " +
                                     //     formatter.formatInBuddhistCalendarThai(
                                     //         element.raceTimeFn)),
-                                    Text(
-                                        "สถานที่: " +
-                                            e.team.race.raceLocation,
+                                    Text("สถานที่: " + e.team.race.raceLocation,
                                         style: Get.textTheme.bodySmall!
                                             .copyWith(
-                                                color: Get.theme.colorScheme
-                                                    .onPrimary
+                                                color: Get
+                                                    .theme.colorScheme.onPrimary
                                                     .withOpacity(0.8))),
                                     Container(height: 5),
                                   ],
@@ -164,61 +156,6 @@ class _Home_joinState extends State<Home_join> {
               }
             }),
       ),
-    );
-  }
-
-  void showDetailDialog(BuildContext context, AttendRace e) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('รายละเอียด'),
-            content: SizedBox(
-              height: 180,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'ชื่อ        ${e.team.race.raceName}',
-                  ),
-                  Text(
-                    'เริ่ม       ${'${f.format(e.team.race.raceTimeSt)}  ${formatter.formatInBuddhistCalendarThai(e.team.race.raceTimeSt)}'}',
-                  ),
-                  Text(
-                      'สิ้นสุด   ${'${f.format(e.team.race.raceTimeFn)}  ${formatter.formatInBuddhistCalendarThai(e.team.race.raceTimeFn)}'}'),
-                  Text('สถานที่ ${e.team.race.raceLocation}'),
-                  Text('ชื่อทีม ${e.team.teamName}'),
-                  const Gap(25),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepPurpleAccent),
-                      onPressed: () {
-                        context.read<AppData>().idrace = e.team.raceId;
-                        context.read<AppData>().idAt = e.atId;
-                        context.read<AppData>().idTeam = e.teamId;
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const Lobby(),
-                            ));
-                      },
-                      child: const Text('เข้าการแข่งขัน',
-                          style: TextStyle(color: Colors.white)))
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
-  Future<void> _dialogBuilder(BuildContext context) {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return Row(
-          children: [],
-        );
-      },
     );
   }
 

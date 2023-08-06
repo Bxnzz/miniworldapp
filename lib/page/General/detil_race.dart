@@ -70,7 +70,7 @@ class _DetailRaceState extends State<DetailRace> {
       team = a.data.first.raceLimitteam.toString();
       String formattedDate01 = DateFormat.Hm().format(a.data.first.raceTimeSt);
       raceTimeST = formattedDate01;
-      String formattedDate02 = DateFormat.Hm().format(a.data.first.raceTimeSt);
+      String formattedDate02 = DateFormat.Hm().format(a.data.first.raceTimeFn);
       raceTimeFN = formattedDate02;
       var formatter = DateFormat.yMMMMEEEEd();
       var dateFormat01 =
@@ -133,7 +133,6 @@ class _DetailRaceState extends State<DetailRace> {
                               FontAwesomeIcons.circleChevronLeft,
                               color: Colors.yellow,
                               size: 35,
-                              
                             ),
                           ),
                           // Container(
@@ -305,18 +304,17 @@ class _DetailRaceState extends State<DetailRace> {
                           const Divider(),
                           Center(
                               child: SizedBox(
-                                width: 200,
-                                child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => CeateTeam()));
-                                      context.read<AppData>().idrace = idrace;
-                                    },
-                                    child: Text('ลงทะเบียน')),
-                              )),
-                             
+                            width: 200,
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => CeateTeam()));
+                                  context.read<AppData>().idrace = idrace;
+                                },
+                                child: Text('ลงทะเบียน')),
+                          )),
                         ]),
                       ))
                 ],

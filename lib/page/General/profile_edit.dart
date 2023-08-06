@@ -384,7 +384,8 @@ class _Profile_editState extends State<Profile_edit> {
                                     return 'ใส่Pin.';
                                   }
                                   if (value !=
-                                      getTotp(users.first.userPassword)) {
+                                      getTotp(userMail.text +
+                                          users.first.userPassword)) {
                                     return 'ใส่ PIN ไม่ถูกต้อง.';
                                   }
 
@@ -405,7 +406,8 @@ class _Profile_editState extends State<Profile_edit> {
 
                               ElevatedButton(
                                   onPressed: () async {
-                                    log(getTotp(users.first.userPassword));
+                                    log(getTotp(userMail.text +
+                                        users.first.userPassword));
                                     //check app installed
                                     // AppInfo app = await InstalledApps.getAppInfo(
                                     //     'com.google.android.apps.authenticator2');
@@ -479,7 +481,7 @@ class _Profile_editState extends State<Profile_edit> {
   }
 
   String getGoogleAuthenticatorUri(String appname, String email, String key) {
-    List<int> list = utf8.encode(key);
+    List<int> list = utf8.encode(email + key);
     String hex = HEX.encode(list);
     String secret = base32.encodeHexString(hex);
     log('secret $secret');
