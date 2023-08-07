@@ -16,6 +16,7 @@ import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:miniworldapp/theme/default.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'firebase_options.dart';
 import 'package:flutter_facebook_keyhash/flutter_facebook_keyhash.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

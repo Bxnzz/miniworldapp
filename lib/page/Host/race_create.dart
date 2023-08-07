@@ -152,34 +152,35 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      Row(
+                        children: [
+                          Padding(
+                            padding:const EdgeInsets.only(left: 20, right: 5),
+                            child: Center(
+                              child: SizedBox(
+                                  width: 120,
+                                  child: TextFieldDate(
+                                      controller: singUpST,
+                                      hintText: '00/00/0000',
+                                      labelText: 'วันที่เปิดรับสมัคร',
+                                      dates: TexttimeST)),
+                            ),
+                          ),
+                           Padding(
+                       padding:const EdgeInsets.only(left:5, right: 10),
                         child: Center(
                           child: SizedBox(
-                              width: 240,
-                              child: SizedBox(
-                                child: TextFieldDate(
-                                    controller: singUpST,
-                                    hintText: '00/00/0000',
-                                    labelText: 'วันที่เปิดรับสมัคร',
-                                    dates: TexttimeST),
-                              )),
+                              width: 120,
+                              child: TextFieldDate(
+                                  controller: singUpFN,
+                                  hintText: '00/00/0000',
+                                  labelText: 'วันที่ปิดรับสมัคร',
+                                  dates: TexttimeFN)),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                          child: SizedBox(
-                              width: 240,
-                              child: SizedBox(
-                                child: TextFieldDate(
-                                    controller: singUpFN,
-                                    hintText: '00/00/0000',
-                                    labelText: 'วันที่ปิดรับสมัคร',
-                                    dates: TexttimeFN),
-                              )),
-                        ),
+                        ],
                       ),
+                     
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Center(
@@ -413,19 +414,6 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
     log(img.path);
   }
 
-  // Future selectFile() async {
-  //   final result = await FilePicker.platform.pickFiles();
-  //   File file;
-  //   PlatformFile platFile;
-  //   if (result == null) return;
-  //   platFile = result.files.single;
-  //   file = File(platFile.path!);
-  //   pickedFile = file;
-
-  //   log(result.files.single.toString());
-  //   log(platFile.extension.toString());
-  // }
-
   upImg() {
     return _image != null
         ? Stack(
@@ -486,22 +474,4 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                     ))),
           );
   }
-  // Widget uploadImage() {
-  //   return Stack(
-  //     children: const <Widget>[
-
-  //       CircleAvatar(
-  //         radius: 35.0,
-  //         backgroundColor: Colors.grey,
-  //         child: FaIcon(FontAwesomeIcons.camera, size: 25),
-  //       ),
-  //       Positioned(
-  //         bottom: 3.0,
-  //         right: 3.0,
-  //         child: FaIcon(FontAwesomeIcons.circlePlus,
-  //             size: 25, color: Colors.purpleAccent),
-  //       ),
-  //     ],
-  //   );
-  // }
 }

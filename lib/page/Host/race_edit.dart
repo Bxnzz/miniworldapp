@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/model/result/raceResult.dart';
+import 'package:miniworldapp/page/General/detil_race_host.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:provider/provider.dart';
 
@@ -141,7 +142,7 @@ class _EditRaceState extends State<EditRace> {
         TexttimeDate.text = r.data.first.eventDatetime.toString();
         TimeST.text = r.data.first.raceTimeSt.toString();
         TimeFN.text = r.data.first.raceTimeFn.toString();
-         
+
         formattedDate01 = DateFormat.Hm().format(r.data.first.raceTimeSt);
         raceTimeST.text = formattedDate01;
         formattedDate02 = DateFormat.Hm().format(r.data.first.raceTimeFn);
@@ -194,17 +195,17 @@ class _EditRaceState extends State<EditRace> {
                       clipBehavior: Clip.none,
                       children: [
                     Card(
-                      margin: EdgeInsets.fromLTRB(32, 95, 32, 32),
+                      margin: EdgeInsets.fromLTRB(20, 70, 20, 15),
                       color: Colors.white,
                       child: SingleChildScrollView(
                         child: Column(
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.only(top: 30),
+                              padding: const EdgeInsets.only(top: 25),
                               child: upImg(),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.only(top: 10,bottom: 10),
                               child: SizedBox(
                                 width: 240,
                                 child: textField(
@@ -215,7 +216,7 @@ class _EditRaceState extends State<EditRace> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.only(bottom: 10),
                               child: SizedBox(
                                 width: 240,
                                 child: textField(
@@ -226,7 +227,7 @@ class _EditRaceState extends State<EditRace> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.only(bottom: 10),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
@@ -240,200 +241,195 @@ class _EditRaceState extends State<EditRace> {
                                 ],
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                child: SizedBox(
-                                    width: 240,
-                                    child: SizedBox(
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 10, right: 5,bottom: 10),
+                                  child: SizedBox(
+                                      width: 140,
                                       child: TextFieldDate(
                                           controller: singUpST,
                                           hintText: '00/00/0000',
                                           labelText: 'วันที่เปิดรับสมัคร',
-                                          dates: TexttimeST),
-                                    )),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                child: SizedBox(
-                                    width: 240,
-                                    child: SizedBox(
+                                          dates: TexttimeST)),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                  right: 10, left: 5,bottom: 10),
+                                  child: SizedBox(
+                                      width: 140,
                                       child: TextFieldDate(
                                           controller: singUpFN,
                                           hintText: '00/00/0000',
                                           labelText: 'วันที่ปิดรับสมัคร',
-                                          dates: TexttimeFN),
-                                    )),
-                              ),
+                                          dates: TexttimeFN)),
+                                ),
+                              ],
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                child: SizedBox(
-                                    width: 240,
-                                    child: SizedBox(
-                                      child: TextFieldDate(
-                                        controller: eventDatetime,
-                                        hintText: '00/00/0000',
-                                        labelText: 'วันจัดการแข่งขัน',
-                                        dates: TexttimeDate,
-                                      ),
-                                    )),
-                              ),
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: SizedBox(
+                                  width: 285,
+                                  child: TextFieldDate(
+                                    controller: eventDatetime,
+                                    hintText: '00/00/0000',
+                                    labelText: 'วันจัดการแข่งขัน',
+                                    dates: TexttimeDate,
+                                  )),
                             ),
                             Row(
                               // mainAxisAlignment: MainAxisAlignment.,
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 25, right: 5, top: 8),
+                                      left: 10, right: 5,bottom: 10),
                                   child: SizedBox(
-                                      width: 115,
-                                      child: SizedBox(
-                                        child: TextFieldTime(
-                                            controllers: raceTimeST,
-                                            hintText: '00:00',
-                                            labelText: 'เริ่ม',
-                                            times: TimeST),
-                                      )),
+                                      width: 140,
+                                      child: TextFieldTime(
+                                          controllers: raceTimeST,
+                                          hintText: '00:00',
+                                          labelText: 'เริ่ม',
+                                          times: TimeST)),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      right: 10, left: 5, top: 8),
+                                      right: 10, left: 5,bottom: 10),
                                   child: SizedBox(
-                                      width: 120,
-                                      child: SizedBox(
-                                        child: TextFieldTime(
-                                            controllers: raceTimeFN,
-                                            hintText: '00:00',
-                                            labelText: 'สิ้นสุด',
-                                            times: TimeFN),
-                                      )),
+                                      width: 140,
+                                      child: TextFieldTime(
+                                          controllers: raceTimeFN,
+                                          hintText: '00:00',
+                                          labelText: 'สิ้นสุด',
+                                          times: TimeFN)),
                                 ),
                               ],
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ElevatedButton(
-                                  onPressed: () async {
-                                    //  if (keys.currentState!.validate()) {}
-                                   
-                                    log(TexttimeDate.text);
-                                    List<String> ddd =
-                                        TexttimeDate.text.split(' ');
-                                    //ddd [0] = date
-                                    List<String> st = TimeST.text.split(' ');
-                                    // st[1] = time
-                                    List<String> fn = TimeFN.text.split(' ');
-                                    // fn[1] = time
-                                    
-                                    
-                                    String timeST = '';
-                                   
-                                    String timeFN = '';
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: SizedBox(
+                                width: 250,
+                                child: FilledButton(
+                                    onPressed: () async {
+                                      //  if (keys.currentState!.validate()) {}
+                                      log(TexttimeDate.text);
+                                      List<String> ddd =
+                                          TexttimeDate.text.split('T');
 
-                                     timeST = '${ddd[0]}T${st[1]}Z';
-                                    timeFN = '${ddd[0]}T${fn[1]}Z';
-                                  if(timeST.contains('ZZ')||timeFN.contains('ZZ')){
-                                    log('aaaaaaa');
-                                     timeST = timeST.replaceAll('ZZ','Z');
-                                     timeFN = timeFN.replaceAll('ZZ','Z');
-                                  }else{
-                                    log('bbbbbb');
-                                  
-                                  }
-                                    log('time  $timeST'+timeST.contains('ZZ').toString());
-                                    log('time  $timeFN'+timeFN.contains('ZZ').toString()); 
+                                      if (TexttimeDate.text.contains(' ')) {
+                                        log('aaaaaaa');
+                                        ddd = TexttimeDate.text.split(' ');
+                                      }
+                                      //ddd [0] = date
+                                      List<String> st = TimeST.text.split(' ');
+                                      // st[1] = time
+                                      List<String> fn = TimeFN.text.split(' ');
+                                      // fn[1] = time
+                                      log('st' + st.toString());
+                                      log('fn' + fn.toString());
 
-                                    if (raceLimit.text == "") {
-                                      // log("team fail");
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                'กรุณากรอกข้อมูลให้ครบถ้วน...')),
+                                      String timeST = '';
+
+                                      String timeFN = '';
+
+                                      timeST = '${ddd[0]}T${st[1]}Z';
+                                      timeFN = '${ddd[0]}T${fn[1]}Z';
+                                      if (timeST.contains('ZZ') ||
+                                          timeFN.contains('ZZ')) {
+                                        log('aaaaaaa');
+                                        timeST = timeST.replaceAll('ZZ', 'Z');
+                                        timeFN = timeFN.replaceAll('ZZ', 'Z');
+                                      } else {
+                                        log('bbbbbb');
+                                      }
+                                      log('time  $timeST');
+                                      log('time  $timeFN' +
+                                          '' +
+                                          timeFN.contains('ZZ').toString());
+
+                                      if (raceLimit.text == "") {
+                                        // log("team fail");
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                              content: Text(
+                                                  'กรุณากรอกข้อมูลให้ครบถ้วน...')),
+                                        );
+
+                                        return;
+                                      }
+                                      log(UrlImg);
+                                      if (UrlImg != '') {
+                                        urlDownload = UrlImg;
+                                      } else {
+                                        final path =
+                                            'files/${_image?.path.split('/').last}';
+                                        final file = File(_image!.path);
+                                        final ref = FirebaseStorage.instance
+                                            .ref()
+                                            .child(path);
+                                        log(ref.toString());
+
+                                        setState(() {
+                                          uploadTask = ref.putFile(file);
+                                        });
+                                        final snapshot = await uploadTask!
+                                            .whenComplete(() {});
+
+                                        urlDownload =
+                                            await snapshot.ref.getDownloadURL();
+                                        log('Download Link:$urlDownload');
+
+                                        img = '';
+                                      }
+
+                                      log("allll " +
+                                          raceName.text +
+                                          ' ' +
+                                          raceLimit.text +
+                                          ' ' +
+                                          TimeST.text +
+                                          ' ' +
+                                          TexttimeDate.text);
+
+                                      RaceDto dto = RaceDto(
+                                        raceName: raceName.text,
+                                        raceLocation: raceLocation.text,
+                                        raceLimitteam:
+                                            int.parse(raceLimit.text),
+                                        raceImage: urlDownload,
+                                        signUpTimeSt:
+                                            DateTime.parse(TexttimeST.text),
+                                        eventDatetime:
+                                            DateTime.parse(TexttimeDate.text),
+                                        raceStatus: 1,
+                                        raceTimeFn: DateTime.parse(timeFN),
+                                        raceTimeSt: DateTime.parse(timeST),
+                                        userId: idUser,
+                                        signUpTimeFn:
+                                            DateTime.parse(TexttimeFN.text),
                                       );
+                                      var race = await raceservice.updateRaces(
+                                          dto, idR);
+                                      //   log('raceee'+race.response.statusCode.toString());
+                                      raceResult = race.data;
+                                      if (raceResult.result == '1') {
+                                        // log("race Successful");
+                                        Get.to(DetailHost());
+                                        Get.defaultDialog(title: 'แก้ไขสำเร็จ');
+                                        // context.read<AppData>().idrace =
+                                        //     race.data.raceId;
+                                        return;
+                                      } else {
+                                        // log("team fail");
+                                        Get.defaultDialog(
+                                            title: 'กรุณาตรวจสอบอีกครั้ง');
 
-                                      return;
-                                    }
-                                    log(UrlImg);
-                                    if (UrlImg != '') {
-                                      urlDownload = UrlImg;
-                                    } else {
-                                      final path =
-                                          'files/${_image?.path.split('/').last}';
-                                      final file = File(_image!.path);
-                                      final ref = FirebaseStorage.instance
-                                          .ref()
-                                          .child(path);
-                                      log(ref.toString());
-
-                                      setState(() {
-                                        uploadTask = ref.putFile(file);
-                                      });
-                                      final snapshot =
-                                          await uploadTask!.whenComplete(() {});
-
-                                      urlDownload =
-                                          await snapshot.ref.getDownloadURL();
-                                      log('Download Link:$urlDownload');
-
-                                      img = '';
-                                    }
-
-                                    log("allll " +
-                                        raceName.text +
-                                        ' ' +
-                                        raceLimit.text +
-                                        ' ' +
-                                        TimeST.text +
-                                        ' ' +
-                                        TexttimeDate.text);
-
-                                    RaceDto dto = RaceDto(
-                                      raceName: raceName.text,
-                                      raceLocation: raceLocation.text,
-                                      raceLimitteam:
-                                          int.parse(raceLimit.text),
-                                      raceImage: urlDownload,
-                                      signUpTimeSt:
-                                          DateTime.parse(TexttimeST.text),
-                                      eventDatetime:
-                                          DateTime.parse(TexttimeDate.text),
-                                      raceStatus: 1,
-                                      raceTimeFn: DateTime.parse(timeFN),
-                                      raceTimeSt: DateTime.parse(timeST),
-                                      userId: idUser,
-                                      signUpTimeFn:
-                                          DateTime.parse(TexttimeFN.text),
-                                    );
-                                    var race = await raceservice.updateRaces(
-                                        dto, idR);
-                                 //   log('raceee'+race.response.statusCode.toString());
-                                    raceResult = race.data;
-                                    if (raceResult.result == '1') {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('race Successful')),
-                                );
-                                // log("race Successful");
-                                Get.to(HomeAll());
-                                // context.read<AppData>().idrace =
-                                //     race.data.raceId;
-                                return;
-                              } else {
-                                // log("team fail");
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('race fail try agin!')),
-                                );
-
-                                return;
-                              }
-                                  },
-                                  child: const Text("แก้ไข")),
+                                        return;
+                                      }
+                                    },
+                                    child: const Text("แก้ไข")),
+                              ),
                             ),
                           ],
                         ),
@@ -441,9 +437,9 @@ class _EditRaceState extends State<EditRace> {
                     ),
                     Positioned(
                       child: Padding(
-                        padding: const EdgeInsets.all(50),
+                        padding: const EdgeInsets.only(top: 30),
                         child: Container(
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(13),
                           decoration: BoxDecoration(
                             color: Color.fromARGB(255, 222, 72, 249),
                             border: Border.all(color: Colors.white, width: 3),
@@ -478,13 +474,13 @@ class _EditRaceState extends State<EditRace> {
     return Form(
       //key: keys,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        //  crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           TextFormField(
             controller: controller,
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            decoration:
-                InputDecoration(hintText: hintText, labelText: labelText),
+            decoration: InputDecoration(
+                isDense: true, hintText: hintText, labelText: labelText),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return error;
