@@ -408,8 +408,11 @@ class _MissioncreateState extends State<Missioncreate> {
   Future<void> loadData() async {
     startLoading(context);
     try {
-      postion = await determinePosition();
+      log('aaaa');
+   //   postion = await determinePosition();
+      
       currentLatLng = LatLng(postion.latitude, postion.longitude);
+       log('aaaa');
       isLoaded = true;
       var r = await missionService.missionAll();
       fristMis = r.data.first.misSeq;

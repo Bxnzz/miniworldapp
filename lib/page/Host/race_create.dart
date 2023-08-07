@@ -107,239 +107,239 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
               Colors.purpleAccent,
               Colors.blue,
             ])),
-        child: SingleChildScrollView(
-          child: Center(
-              child: Stack(
-                  alignment: AlignmentDirectional.topCenter,
-                  clipBehavior: Clip.none,
-                  children: [
-                Card(
-                  margin: EdgeInsets.fromLTRB(32, 95, 32, 32),
-                  //   color: Theme.of(context).primaryColor,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(top: 30),
-                          child: upImg(),
+        child: Center(
+            child: Stack(
+                alignment: AlignmentDirectional.topCenter,
+                clipBehavior: Clip.none,
+                children: [
+              Card(
+                margin: EdgeInsets.fromLTRB(32, 95, 32, 32),
+                //   color: Theme.of(context).primaryColor,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 30),
+                        child: upImg(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: 240,
+                          child: textField(raceName, 'ชื่อการแข่งขัน...',
+                              'ชื่อการแข่งขัน', 'กรุณากรอกชื่อการแข่งขัน'),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            width: 240,
-                            child: textField(raceName, 'ชื่อการแข่งขัน...',
-                                'ชื่อการแข่งขัน', 'กรุณากรอกชื่อการแข่งขัน'),
-                          ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: 240,
+                          child: textField(raceLocation, 'สถานที่แข่งขัน...',
+                              'สถานที่', 'กรุณากรอกสถานที่'),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            width: 240,
-                            child: textField(raceLocation, 'สถานที่แข่งขัน...',
-                                'สถานที่', 'กรุณากรอกสถานที่'),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              SizedBox(
-                                width: 140,
-                                child: textFieldteam(raceLimit, 'จำนวนทีม...',
-                                    'จำนวนทีม', 'กรุณากรอกจำนวนทีม'),
-                              ),
-                              Text('ทีม')
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                            child: SizedBox(
-                                width: 240,
-                                child: SizedBox(
-                                  child: TextFieldDate(
-                                      controller: singUpST,
-                                      hintText: '00/00/0000',
-                                      labelText: 'วันที่เปิดรับสมัคร',
-                                      dates: TexttimeST),
-                                )),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                            child: SizedBox(
-                                width: 240,
-                                child: SizedBox(
-                                  child: TextFieldDate(
-                                      controller: singUpFN,
-                                      hintText: '00/00/0000',
-                                      labelText: 'วันที่ปิดรับสมัคร',
-                                      dates: TexttimeFN),
-                                )),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                            child: SizedBox(
-                                width: 240,
-                                child: SizedBox(
-                                  child: TextFieldDate(
-                                      controller: eventDatetime,
-                                      hintText: '00/00/0000',
-                                      labelText: 'วันจัดการแข่งขัน',
-                                      dates: TexttimeDate),
-                                )),
-                          ),
-                        ),
-                        Row(
-                          // mainAxisAlignment: MainAxisAlignment.,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 25, right: 5),
-                              child: SizedBox(
-                                  width: 115,
-                                  child: SizedBox(
-                                    child: TextFieldTime(
-                                        controllers: raceTimeST,
-                                        hintText: '00:00',
-                                        labelText: 'เริ่ม',
-                                        times: TimeST),
-                                  )),
+                            SizedBox(
+                              width: 140,
+                              child: textFieldteam(raceLimit, 'จำนวนทีม...',
+                                  'จำนวนทีม', 'กรุณากรอกจำนวนทีม'),
                             ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 10, left: 5),
-                              child: SizedBox(
-                                  width: 120,
-                                  child: SizedBox(
-                                    child: TextFieldTime(
-                                        controllers: raceTimeFN,
-                                        hintText: '00:00',
-                                        labelText: 'สิ้นสุด',
-                                        times: TimeFN),
-                                  )),
-                            ),
+                            Text('ทีม')
                           ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ElevatedButton(
-                              onPressed: () async {
-                                log('st ' + TexttimeST.text);
-                                log('fn ' + TexttimeFN.text);
-                                log('date ' + TexttimeDate.text);
-                                log('TS' + TimeST.text);
-                                log('TF' + TimeFN.text);
-                                List<String> ddd = TexttimeDate.text.split('T');
-                                //ddd [0] = date
-                                List<String> st = TimeST.text.split(' ');
-                                // st[1] = time
-                                List<String> fn = TimeFN.text.split(' ');
-                                // fn[1] = time
-                                String timeST = '${ddd[0]}T${st[1]}Z';
-                                log('time  ' + timeST);
-
-                                String timeFN = '${ddd[0]}T${fn[1]}Z';
-                                log('time  ' + timeFN);
-                                //    if (keys.currentState!.validate()) {}
-                                if (raceLimit.text == "") {
-                                  // log("team fail");
-
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            'กรุณากรอกข้อมูลให้ครบถ้วน...')),
-                                  );
-
-                                  return;
-                                }
-                                final path =
-                                    'files/${_image?.path.split('/').last}';
-                                final file = File(_image!.path);
-                                final ref =
-                                    FirebaseStorage.instance.ref().child(path);
-                                log(ref.toString());
-
-                                setState(() {
-                                  uploadTask = ref.putFile(file);
-                                });
-                                final snapshot =
-                                    await uploadTask!.whenComplete(() {});
-
-                                final urlDownload =
-                                    await snapshot.ref.getDownloadURL();
-                                log('Download Link:$urlDownload');
-
-                                img = urlDownload;
-                                RaceDto dto = RaceDto(
-                                  raceName: raceName.text,
-                                  raceLocation: raceLocation.text,
-                                  raceLimitteam: int.parse(raceLimit.text),
-                                  raceImage: urlDownload,
-                                  signUpTimeSt: DateTime.parse(TexttimeST.text),
-                                  eventDatetime:
-                                      DateTime.parse(TexttimeDate.text),
-                                  raceStatus: 1,
-                                  raceTimeFn: DateTime.parse(timeFN),
-                                  raceTimeSt: DateTime.parse(timeST),
-                                  userId: idUser,
-                                  signUpTimeFn: DateTime.parse(TexttimeFN.text),
-                                );
-                                var race = await raceservice.insertRaces(dto);
-                                race.data.raceName.toString();
-
-                                if (race.response.statusCode == 200) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('race Successful')),
-                                  );
-                                  // log("race Successful");
-                                  Get.to(Missioncreate());
-                                  context.read<AppData>().idrace =
-                                      race.data.raceId;
-                                  return;
-                                } else {
-                                  // log("team fail");
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text('race fail try agin!')),
-                                  );
-
-                                  return;
-                                }
-                              },
-                              child: const Text("ถัดไป")),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: SizedBox(
+                              width: 240,
+                              child: SizedBox(
+                                child: TextFieldDate(
+                                    controller: singUpST,
+                                    hintText: '00/00/0000',
+                                    labelText: 'วันที่เปิดรับสมัคร',
+                                    dates: TexttimeST),
+                              )),
                         ),
-                      ],
-                    ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: SizedBox(
+                              width: 240,
+                              child: SizedBox(
+                                child: TextFieldDate(
+                                    controller: singUpFN,
+                                    hintText: '00/00/0000',
+                                    labelText: 'วันที่ปิดรับสมัคร',
+                                    dates: TexttimeFN),
+                              )),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: SizedBox(
+                              width: 240,
+                              child: SizedBox(
+                                child: TextFieldDate(
+                                    controller: eventDatetime,
+                                    hintText: '00/00/0000',
+                                    labelText: 'วันจัดการแข่งขัน',
+                                    dates: TexttimeDate),
+                              )),
+                        ),
+                      ),
+                      Row(
+                        // mainAxisAlignment: MainAxisAlignment.,
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 25, right: 5),
+                            child: SizedBox(
+                                width: 115,
+                                child: SizedBox(
+                                  child: TextFieldTime(
+                                      controllers: raceTimeST,
+                                      hintText: '00:00',
+                                      labelText: 'เริ่ม',
+                                      times: TimeST),
+                                )),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(right: 10, left: 5),
+                            child: SizedBox(
+                                width: 120,
+                                child: SizedBox(
+                                  child: TextFieldTime(
+                                      controllers: raceTimeFN,
+                                      hintText: '00:00',
+                                      labelText: 'สิ้นสุด',
+                                      times: TimeFN),
+                                )),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
+                            onPressed: () async {
+                              log('st ' + TexttimeST.text);
+                              log('fn ' + TexttimeFN.text);
+                              log('date ' + TexttimeDate.text);
+                              log('TS' + TimeST.text);
+                              log('TF' + TimeFN.text);
+                              List<String> ddd = TexttimeDate.text.split('T');
+                              //ddd [0] = date
+                              List<String> st = TimeST.text.split(' ');
+                              // st[1] = time
+                              List<String> fn = TimeFN.text.split(' ');
+                              // fn[1] = time
+                              String timeST = '${ddd[0]}T${st[1]}Z';
+                              log('time  ' + timeST);
+
+                              String timeFN = '${ddd[0]}T${fn[1]}Z';
+                              log('time  ' + timeFN);
+                              //    if (keys.currentState!.validate()) {}
+                              if (raceLimit.text == "") {
+                                // log("team fail");
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'กรุณากรอกข้อมูลให้ครบถ้วน...')),
+                                );
+
+                                return;
+                              }
+                              final path =
+                                  'files/${_image?.path.split('/').last}';
+                              final file = File(_image!.path);
+                              final ref =
+                                  FirebaseStorage.instance.ref().child(path);
+                              log(ref.toString());
+
+                              setState(() {
+                                uploadTask = ref.putFile(file);
+                              });
+                              final snapshot =
+                                  await uploadTask!.whenComplete(() {});
+
+                              final urlDownload =
+                                  await snapshot.ref.getDownloadURL();
+                              log('Download Link:$urlDownload');
+
+                              img = urlDownload;
+                              log('testt'+raceName.text+raceLocation.text+TexttimeST.text);
+                              RaceDto dto = RaceDto(
+                                raceName: raceName.text,
+                                raceLocation: raceLocation.text,
+                                raceLimitteam: int.parse(raceLimit.text),
+                                raceImage: urlDownload,
+                                signUpTimeSt: DateTime.parse(TexttimeST.text),
+                                eventDatetime:
+                                    DateTime.parse(TexttimeDate.text),
+                                raceStatus: 1,
+                                raceTimeFn: DateTime.parse(timeFN),
+                                raceTimeSt: DateTime.parse(timeST),
+                                userId: idUser,
+                                signUpTimeFn: DateTime.parse(TexttimeFN.text),
+                              );
+                              
+                              var race = await raceservice.insertRaces(dto);
+                              race.data.raceName.toString();
+
+                              if (race.response.statusCode == 200) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('race Successful')),
+                                );
+                                // log("race Successful");
+                                Get.to(Missioncreate());
+                                context.read<AppData>().idrace =
+                                    race.data.raceId;
+                                return;
+                              } else {
+                                // log("team fail");
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('race fail try agin!')),
+                                );
+
+                                return;
+                              }
+                            },
+                            child: const Text("ถัดไป")),
+                      ),
+                    ],
                   ),
                 ),
-                Positioned(
-                  child: Padding(
-                    padding: const EdgeInsets.all(50),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 222, 72, 249),
-                        border: Border.all(color: Colors.white, width: 3),
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: Text('สร้างการแข่งขัน',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 18)),
+              ),
+              Positioned(
+                child: Padding(
+                  padding: const EdgeInsets.all(50),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 222, 72, 249),
+                      border: Border.all(color: Colors.white, width: 3),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(100),
                     ),
+                    child: Text('สร้างการแข่งขัน',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 18)),
                   ),
-                )
-              ])),
-        ),
+                ),
+              )
+            ])),
       ),
     );
   }
