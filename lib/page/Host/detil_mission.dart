@@ -193,6 +193,11 @@ class _DetailMissionState extends State<DetailMission> {
       stopLoading();
     }
   }
+  Future refresh() async {
+    setState(() {
+      loadDataMethod = loadData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -227,7 +232,7 @@ class _DetailMissionState extends State<DetailMission> {
               // Prevent the ListView from scrolling when an item is
               // currently being dragged.
               padding: const EdgeInsets.only(bottom: 24),
-
+                
               children: [
                 const Divider(height: 0),
                 const Padding(padding: EdgeInsets.only(bottom: 8)),
