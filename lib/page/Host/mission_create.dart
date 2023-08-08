@@ -35,8 +35,8 @@ class _MissioncreateState extends State<Missioncreate> {
   final List<String> items = [
     '10',
     '20',
-    '30',
-    '40'
+    '30'
+
   ];
   String? selectedValue;
   late Future<void> loadDataMethod;
@@ -293,7 +293,7 @@ class _MissioncreateState extends State<Missioncreate> {
                     //     });
                     //    log('num '+square.toString());
                     if (sqnum == 0) {
-                      sqnum = sqnum + 1;
+                      sqnum += sqnum ;
                     }
                     if (sqnum == sqnum) {
                       sqnum++;
@@ -330,6 +330,7 @@ class _MissioncreateState extends State<Missioncreate> {
                         const SnackBar(content: Text('mision Successful')),
                       );
                       log("race Successful");
+
                       if (fristMis == 0) {
                         Get.to(DetailMission());
                       } else {
