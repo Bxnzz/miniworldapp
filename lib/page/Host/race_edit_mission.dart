@@ -16,6 +16,7 @@ import '../../model/mission.dart';
 import '../../model/result/raceResult.dart';
 import '../../service/mission.dart';
 import '../../service/provider/appdata.dart';
+import '../../widget/loadData.dart';
 
 class EditMission extends StatefulWidget {
   const EditMission({super.key});
@@ -111,6 +112,7 @@ class _EditMissionState extends State<EditMission> {
   }
 
   Future<void> loadData() async {
+    startLoading(context);
     try {
       var r = await missionService.missionBymisID(misID: misID);
       missions = r.data;
@@ -176,6 +178,8 @@ class _EditMissionState extends State<EditMission> {
       // log('lat '+lat.toString() +'lng '+lng.toString());
     } catch (err) {
       log(err.toString());
+    }finally{
+      stopLoading();
     }
   }
 
@@ -195,20 +199,6 @@ class _EditMissionState extends State<EditMission> {
                   GoogleMap(
                     myLocationEnabled: true,
                     myLocationButtonEnabled: true,
-                    // onTap: (LatLng latlng) {
-                    //   Marker newmarker = Marker(
-                    //     markerId: MarkerId('$id'),
-                    //     position: LatLng(latlng.latitude, latlng.longitude),
-                    //     infoWindow: InfoWindow(title: 'New place'),
-                    //     icon: BitmapDescriptor.defaultMarkerWithHue(
-                    //         BitmapDescriptor.hueRose),
-                    //     onTap: () {},
-                    //   );
-                    //   markerss.add(newmarker);
-                    //   id = id + 1;
-                    //   setState(() {});
-                    //   log('Our lat and long is: $latlng');
-                    // },
                     mapType: MapType.hybrid,
                     initialCameraPosition: CameraPosition(
                       target: LatLng(lat, lng),

@@ -209,6 +209,7 @@ class _ApproveMissionState extends State<ApproveMission> {
       // mlng = a.data.first.mission.misLng;
       // teamID = a.data.first.team.teamId;
       // teamName = a.data.first.team.teamName;
+      log('vdeoooo '+urlVideo);
 
       videoPlayerController = VideoPlayerController.network(urlVideo)
         ..initialize().then((value) => setState(() {}));
@@ -374,249 +375,251 @@ class _ApproveMissionState extends State<ApproveMission> {
             return Padding(
               padding: const EdgeInsets.only(bottom: 10, left: 15, right: 15),
               child: Card(
-                child: InkWell(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 15),
-                        child: Text(
-                          'ทีม: $teamName',
-                          style: Get.textTheme.headlineSmall!.copyWith(
-                              color: Get.theme.colorScheme.primary,
-                              fontWeight: FontWeight.bold),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15),
+                      child: Text(
+                        'ทีม: $teamName',
+                        style: Get.textTheme.headlineSmall!.copyWith(
+                            color: Get.theme.colorScheme.primary,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8, top: 10),
+                      child: Container(
+                        height: 35,
+                        width: 200,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Get.theme.colorScheme.secondary,
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8, top: 10),
-                        child: Container(
-                          height: 35,
-                          width: 200,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            color: Get.theme.colorScheme.secondary,
-                          ),
-                          child: Center(
-                            child: Text(mcName,
-                                style: Get.textTheme.bodyLarge!.copyWith(
-                                    color: Get.theme.colorScheme.onPrimary,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 35, bottom: 8),
-                            child: Text('รายละเอียด',
-                                style: Get.textTheme.bodyMedium!.copyWith(
-                                    color: Get.theme.colorScheme.onBackground,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 15, left: 15),
-                        child: Container(
-                            width: Get.width,
-                            height: 80,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 3,
-                                    color: Get.theme.colorScheme.primary),
-                                borderRadius: BorderRadius.circular(40),
-                                color: Colors.white),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Text(mcDiscrip),
-                            )),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 35, top: 15),
-                            child: Text('หลักฐานที่ส่ง :',
-                                style: Get.textTheme.bodyMedium!.copyWith(
-                                    color: Get.theme.colorScheme.onBackground,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 35, top: 15),
-                            child: ElevatedButton.icon(
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStatePropertyAll(Colors.amber)),
-                              onPressed: () async {
-                                startLoading(context);
-                                dialogSpectator();
-                                // types.User _user = types.User(
-                                //     id: iduser.toString(), firstName: userName);
-                                // //textTeam
-                                // final message = types.TextMessage(
-                                //   author: _user,
-                                //   id: const Uuid().v4(),
-                                //   text: 'ชื่อทีม:$teamName\n ภารกิจ: $mcName' ,
-                                //   createdAt:
-                                //       DateTime.now().millisecondsSinceEpoch,
-                                // );
-                                // FirebaseFirestore.instance
-                                //     .collection('s' + idrace.toString())
-                                //     .add(message.toJson());
-                                // log('firebase ' +
-                                //     idrace.toString() +
-                                //     message.toJson().toString());
-
-                                // //image
-                                // log('imageeeeeeee'+urlImage);
-                                // final httpInput =
-                                //     await HttpInput.createHttpInput(urlImage);
-
-                                // final imageMessage = types.ImageMessage(
-                                //   author: _user,
-                                //   createdAt:
-                                //       DateTime.now().millisecondsSinceEpoch,
-                                //   id: const Uuid().v4(),
-                                //   name: 'image',
-                                //   size: 0,
-                                //   uri: urlImage,
-                                // );
-
-                                // FirebaseFirestore.instance
-                                //     .collection('s' + idrace.toString())
-                                //     .add(imageMessage.toJson());
-                                // log('firebaseImage ' +
-                                //     idrace.toString() +
-                                //     imageMessage.toJson().toString());
-                                stopLoading();
-                              },
-                              icon: FaIcon(
-                                FontAwesomeIcons.solidPaperPlane,
-                                color: Get.theme.colorScheme.onPrimary,
-                                size: 15,
-                              ),
-                              label: Text(
-                                'ส่งให้ผู้ชม',
-                                style: Get.textTheme.bodyMedium!.copyWith(
+                        child: Center(
+                          child: Text(mcName,
+                              style: Get.textTheme.bodyLarge!.copyWith(
                                   color: Get.theme.colorScheme.onPrimary,
-                                ),
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 35, bottom: 8),
+                          child: Text('รายละเอียด',
+                              style: Get.textTheme.bodyMedium!.copyWith(
+                                  color: Get.theme.colorScheme.onBackground,
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 15, left: 15),
+                      child: Container(
+                          width: Get.width,
+                          height: 80,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 3,
+                                  color: Get.theme.colorScheme.primary),
+                              borderRadius: BorderRadius.circular(40),
+                              color: Colors.white),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Text(mcDiscrip),
+                          )),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 35, top: 15),
+                          child: Text('หลักฐานที่ส่ง :',
+                              style: Get.textTheme.bodyMedium!.copyWith(
+                                  color: Get.theme.colorScheme.onBackground,
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 35, top: 15),
+                          child: ElevatedButton.icon(
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStatePropertyAll(Colors.amber)),
+                            onPressed: () async {
+                              startLoading(context);
+                              dialogSpectator();
+                              types.User _user = types.User(
+                                  id: iduser.toString(), firstName: userName);
+                              //textTeam
+                              final message = types.TextMessage(
+                                author: _user,
+                                id: const Uuid().v4(),
+                                text: 'ชื่อทีม:$teamName\n ภารกิจ: $mcName' ,
+                                createdAt:
+                                    DateTime.now().millisecondsSinceEpoch,
+                              );
+                              FirebaseFirestore.instance
+                                  .collection('s' + idrace.toString())
+                                  .add(message.toJson());
+                              log('firebase ' +
+                                  idrace.toString() +
+                                  message.toJson().toString());
+                            
+                              //image
+                              log('imageeeeeeee'+urlImage);
+                              final httpInput =
+                                  await HttpInput.createHttpInput(urlImage);
+                            
+                              final imageMessage = types.ImageMessage(
+                                author: _user,
+                                createdAt:
+                                    DateTime.now().millisecondsSinceEpoch,
+                                id: const Uuid().v4(),
+                                name: 'image',
+                                size: 0,
+                                uri: urlImage,
+                              );
+                            
+                              FirebaseFirestore.instance
+                                  .collection('s' + idrace.toString())
+                                  .add(imageMessage.toJson());
+                              log('firebaseImage ' +
+                                  idrace.toString() +
+                                  imageMessage.toJson().toString());
+                              stopLoading();
+                            },
+                            icon: FaIcon(
+                              FontAwesomeIcons.solidPaperPlane,
+                              color: Get.theme.colorScheme.onPrimary,
+                              size: 15,
+                            ),
+                            label: Text(
+                              'ส่งให้ผู้ชม',
+                              style: Get.textTheme.bodyMedium!.copyWith(
+                                color: Get.theme.colorScheme.onPrimary,
                               ),
                             ),
-                          )
-                        ],
-                      ),
-                      Expanded(
-                        child: Padding(
-                            padding: const EdgeInsets.only(top: 15, bottom: 8),
-                            child: urlImage != ''
-                                ? Container(
-                                    width: Get.width * 0.7,
-                                    height: Get.height,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color:
-                                              Get.theme.colorScheme.onPrimary),
-                                      borderRadius: BorderRadius.circular(10),
-                                      image: DecorationImage(
-                                        image: NetworkImage(urlImage),
-                                        //  fit: BoxFit.cover,
-                                      ),
-                                      shape: BoxShape.rectangle,
-                                    ),
-                                  )
-                                : (_customVideoPlayerController != null)
-                                    ? CustomVideoPlayer(
-                                        customVideoPlayerController:
-                                            _customVideoPlayerController!)
-                                    : Container()),
-                      ),
-
-                      // pickedFile != null
-                      //  Expanded(
-                      //     child: isImage == true
-                      //         ? Image.file(
-                      //             File(urlImage),
-                      //             width: Get.width * 0.3,
-                      //           )
-                      //         : (_customVideoPlayerController != null)
-                      //             ? CustomVideoPlayer(
-                      //                 customVideoPlayerController:
-                      //                     _customVideoPlayerController!)
-                      //             : Container(
-                      //                 child: Text("กรุณาเลือกไฟล์อื่น"),
-                      //               ),
-                      //   ),
-                      //: Container(),
-                      // buildProgress(),
-                      mcText != ''
-                          ? Padding(
-                              padding: const EdgeInsets.only(
-                                  right: 15, left: 15, bottom: 15),
-                              child: Container(
-                                  width: Get.width,
-                                  height: 80,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 3,
-                                          color: Get.theme.colorScheme.primary),
-                                      borderRadius: BorderRadius.circular(40),
-                                      color: Colors.white),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15),
-                                    child: Text(mcText),
-                                  )),
-                            )
-                          : Container(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 20),
-                            child: SizedBox(
-                              width: 120,
-                              child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green,
-                                  ),
-                                  onPressed: () async {
-                                    _CheckMisPass();
-                                    log(playerID.toString());
-
-                                    // if (pickedFile == null) {
-
-                                    // } else {}
-                                  },
-                                  child: Text('ผ่าน',
-                                      style: Get.textTheme.bodyLarge!.copyWith(
-                                          color:
-                                              Get.theme.colorScheme.background,
-                                          fontWeight: FontWeight.bold))),
-                            ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 20),
-                            child: SizedBox(
-                              width: 120,
-                              child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Get.theme.colorScheme.error,
+                        )
+                      ],
+                    ),
+                    Expanded(
+                      child: Padding(
+                          padding: const EdgeInsets.only(top: 15, bottom: 8),
+                          child: urlImage != ''
+                              ? Container(
+                                  width: Get.width * 0.7,
+                                  height: Get.height,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color:
+                                            Get.theme.colorScheme.onPrimary),
+                                    borderRadius: BorderRadius.circular(10),
+                                    image: DecorationImage(
+                                      image: NetworkImage(urlImage),
+                                      //  fit: BoxFit.cover,
+                                    ),
+                                    shape: BoxShape.rectangle,
                                   ),
-                                  onPressed: () {
-                                    _CheckMisUnPass();
-                                  },
-                                  child: Text('ไม่ผ่าน',
-                                      style: Get.textTheme.bodyLarge!.copyWith(
-                                          color:
-                                              Get.theme.colorScheme.onPrimary,
-                                          fontWeight: FontWeight.bold))),
-                            ),
+                                )
+                              :  (_customVideoPlayerController != null)
+                                   ? SizedBox(
+                                    width: double.infinity-10,
+                                    height: double.infinity,
+                                     child: CustomVideoPlayer(
+                                        customVideoPlayerController:
+                                            _customVideoPlayerController!),
+                                   )
+                                  : Container()),
+                    ),
+                            
+                    // pickedFile != null
+                    //  Expanded(
+                    //     child: isImage == true
+                    //         ? Image.file(
+                    //             File(urlImage),
+                    //             width: Get.width * 0.3,
+                    //           )
+                    //         : (_customVideoPlayerController != null)
+                    //             ? CustomVideoPlayer(
+                    //                 customVideoPlayerController:
+                    //                     _customVideoPlayerController!)
+                    //             : Container(
+                    //                 child: Text("กรุณาเลือกไฟล์อื่น"),
+                    //               ),
+                    //   ),
+                    //: Container(),
+                    // buildProgress(),
+                    mcText != ''
+                        ? Padding(
+                            padding: const EdgeInsets.only(
+                                right: 15, left: 15, bottom: 15),
+                            child: Container(
+                                width: Get.width,
+                                height: 80,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        width: 3,
+                                        color: Get.theme.colorScheme.primary),
+                                    borderRadius: BorderRadius.circular(40),
+                                    color: Colors.white),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Text(mcText),
+                                )),
                           )
-                        ],
-                      ),
-                    ],
-                  ),
+                        : Container(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: SizedBox(
+                            width: 120,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                ),
+                                onPressed: () async {
+                                  _CheckMisPass();
+                                  log(playerID.toString());
+                            
+                                  // if (pickedFile == null) {
+                            
+                                  // } else {}
+                                },
+                                child: Text('ผ่าน',
+                                    style: Get.textTheme.bodyLarge!.copyWith(
+                                        color:
+                                            Get.theme.colorScheme.background,
+                                        fontWeight: FontWeight.bold))),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: SizedBox(
+                            width: 120,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Get.theme.colorScheme.error,
+                                ),
+                                onPressed: () {
+                                  _CheckMisUnPass();
+                                },
+                                child: Text('ไม่ผ่าน',
+                                    style: Get.textTheme.bodyLarge!.copyWith(
+                                        color:
+                                            Get.theme.colorScheme.onPrimary,
+                                        fontWeight: FontWeight.bold))),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
                 ),
               ),
             );
