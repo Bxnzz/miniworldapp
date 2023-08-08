@@ -77,7 +77,6 @@ class _HomeAllState extends State<HomeAll> {
       length: 3,
       child: WillPopScope(
         onWillPop: () async {
-          Get.to(() => const HomeAll());
           return true;
         },
         child: Scaffold(
@@ -209,12 +208,12 @@ class _HomeAllState extends State<HomeAll> {
 
                       children: [
                         Container(
-                          height: 230,
+                          height: 215,
                           child: DrawerHeader(
                             decoration: BoxDecoration(),
                             child: Stack(children: [
                               Positioned(
-                                  bottom: 140,
+                                  bottom: 130,
                                   left: Get.width / 1.6,
                                   child: IconButton(
                                     onPressed: () {
@@ -241,7 +240,7 @@ class _HomeAllState extends State<HomeAll> {
                                               NetworkImage(userimg)),
                                     ),
                                   ),
-                                  Gap(20),
+                                  Gap(15),
                                   Align(
                                     heightFactor: 1,
                                     alignment: Alignment.bottomLeft,

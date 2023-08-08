@@ -8,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:hex/hex.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -22,6 +23,7 @@ import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:miniworldapp/service/user.dart';
 import 'package:otp/otp.dart';
+import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 import 'package:base32/base32.dart';
@@ -62,10 +64,12 @@ class _Profile_editState extends State<Profile_edit> {
   String uri = '';
   String uri2 = '';
   String value = '';
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     userservice = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
     userID = context.read<AppData>().idUser;
 
@@ -79,7 +83,7 @@ class _Profile_editState extends State<Profile_edit> {
     File? img = File(image.path!);
     // img = await _cropImage(imageFile: img);
     _image = img;
-
+    setState(() {});
     log(img.path);
   }
 
@@ -181,7 +185,7 @@ class _Profile_editState extends State<Profile_edit> {
       userFullName.text = users.first.userFullname;
       userDis.text = users.first.userDiscription;
       userMail.text = users.first.userMail;
-
+      oldPassword.text = users.first.userPassword;
       log("user name ${userName.text}");
     } catch (err) {
       log('Error:$err');
@@ -190,80 +194,102 @@ class _Profile_editState extends State<Profile_edit> {
     }
   }
 
+  Widget buildPinPut() {
+    final defaultPinTheme = PinTheme(
+      width: 40,
+      height: 40,
+      textStyle: TextStyle(
+          fontSize: 20,
+          color: Color.fromRGBO(30, 60, 87, 1),
+          fontWeight: FontWeight.w600),
+      decoration: BoxDecoration(
+        border: Border.all(color: Color.fromRGBO(255, 1, 191, 1)),
+        borderRadius: BorderRadius.circular(10),
+      ),
+    );
+    final focusedPinTheme = defaultPinTheme.copyDecorationWith(
+      border: Border.all(color: Color.fromRGBO(0, 0, 0, 1)),
+      borderRadius: BorderRadius.circular(8),
+    );
+
+    final submittedPinTheme = defaultPinTheme.copyWith(
+      decoration: defaultPinTheme.decoration?.copyWith(
+        color: Color.fromRGBO(255, 194, 247, 1),
+      ),
+    );
+
+    return Pinput(
+        controller: pin,
+        disabledPinTheme: defaultPinTheme,
+        length: 6,
+        focusedPinTheme: focusedPinTheme,
+        defaultPinTheme: defaultPinTheme,
+        submittedPinTheme: submittedPinTheme,
+        closeKeyboardWhenCompleted: true,
+        onCompleted: (pin) async {
+          if (await _formKey.currentState!.validate()) {
+            passwordRenew(context);
+          }
+        },
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'ใส่Pin.';
+          }
+          if (value != getTotp(userMail.text + users.first.userPassword)) {
+            return 'ใส่ PIN ไม่ถูกต้อง.';
+          }
+
+          return null;
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: FaIcon(
+            FontAwesomeIcons.circleChevronLeft,
+            color: Colors.yellow,
+            size: 35,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          "แก้ไขโปรไฟล์",
+          style: textTheme.displayMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Colors.purple,
+            fontSize: 20,
+          ),
+        ),
+        centerTitle: false,
+      ),
       body: FutureBuilder(
           future: loadDataMethod,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return ListView(
                 children: [
-                  Row(
+                  Column(
                     children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        icon: FaIcon(
-                          FontAwesomeIcons.circleChevronLeft,
-                          color: Colors.yellow,
-                          size: 35,
-                        ),
-                      ),
-                      Text(
-                        "โปรไฟล์",
-                        style: textTheme.displayMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.purple,
-                          fontSize: 20,
-                        ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                bottom:
+                                    MediaQuery.of(context).viewInsets.bottom,
+                                left: 20,
+                                right: 20),
+                            child: _editFrom(context),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                  Card(
-                    child: InkWell(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                              child: GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return Center(
-                                          child: CircleAvatar(
-                                            radius: 100,
-                                            backgroundImage: NetworkImage(
-                                              "${users.first.userImage}",
-                                            ),
-                                          ),
-                                        );
-                                      });
-                                },
-                                child: CircleAvatar(
-                                    radius: 50,
-                                    backgroundImage: NetworkImage(
-                                      "${users.first.userImage}",
-                                    )),
-                              ),
-                            ),
-                            Text("${userName.text}"),
-                            Text("${users.first.userFullname}"),
-                            Text("${users.first.userDiscription}"),
-                            SizedBox(
-                              width: Get.width - 50,
-                              child: editBTN(context),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               );
@@ -274,52 +300,52 @@ class _Profile_editState extends State<Profile_edit> {
     );
   }
 
-  ElevatedButton editBTN(BuildContext context) {
-    return ElevatedButton(
-        onPressed: () {
-          //EditProfile
-          showModalBottomSheet(
-              enableDrag: false,
-              context: context,
-              isScrollControlled: true,
-              builder: (context) {
-                return Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            icon: FaIcon(FontAwesomeIcons.xmark)),
-                        IconButton(
-                            onPressed: () async {
-                              await uploadFile();
+  // ElevatedButton editBTN(BuildContext context) {
+  //   return ElevatedButton(
+  //       onPressed: () {
+  //         //EditProfile
+  //         showModalBottomSheet(
+  //             enableDrag: false,
+  //             context: context,
+  //             isScrollControlled: true,
+  //             builder: (context) {
+  //               return Column(
+  //                 children: [
+  //                   Row(
+  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                     children: [
+  //                       IconButton(
+  //                           onPressed: () {
+  //                             Navigator.of(context).pop();
+  //                           },
+  //                           icon: FaIcon(FontAwesomeIcons.xmark)),
+  //                       IconButton(
+  //                           onPressed: () async {
+  //                             await uploadFile();
 
-                              Navigator.of(context).pop();
-                            },
-                            icon: FaIcon(FontAwesomeIcons.check))
-                      ],
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: showModalBottomSheetEdit(context),
-                      ),
-                    ),
-                  ],
-                );
-              });
-        },
-        child: Text("แก้ไขโปรไฟล์"));
-  }
+  //                             Navigator.of(context).pop();
+  //                           },
+  //                           icon: FaIcon(FontAwesomeIcons.check))
+  //                     ],
+  //                   ),
+  //                   Padding(
+  //                     padding: EdgeInsets.only(
+  //                         bottom: MediaQuery.of(context).viewInsets.bottom),
+  //                     child: Padding(
+  //                       padding: const EdgeInsets.all(10.0),
+  //                       child: _editFrom(context),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               );
+  //             });
+  //       },
+  //       child: Text("แก้ไขโปรไฟล์"));
+  // }
 
-  Column showModalBottomSheetEdit(BuildContext context) {
+  Column _editFrom(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
         GestureDetector(
             onTap: () {
@@ -335,104 +361,197 @@ class _Profile_editState extends State<Profile_edit> {
                     radius: 50,
                     backgroundImage: FileImage(_image!),
                   )),
+        const Gap(20),
         TextFormField(
           controller: userName,
-          decoration: InputDecoration(label: Text("ชื่อในระบบ")),
+          decoration: const InputDecoration(label: Text("ชื่อในระบบ")),
         ),
+        const Gap(20),
         TextFormField(
           controller: userMail,
-          decoration: InputDecoration(label: Text("อีเมล")),
+          decoration: const InputDecoration(label: Text("อีเมล")),
         ),
+        const Gap(20),
         TextFormField(
           controller: userFullName,
-          decoration: InputDecoration(label: Text(" ชื่อ-นามสกุล")),
+          decoration: const InputDecoration(label: Text(" ชื่อ-นามสกุล")),
         ),
+        const Gap(20),
         TextFormField(
           controller: userDis,
-          decoration: InputDecoration(label: Text("คำอธิบายตัวเอง")),
+          decoration: const InputDecoration(label: Text("คำอธิบายตัวเอง")),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(
+                onPressed: () async {
+                  getGoogleAuthenticatorUri(
+                      "mnrace", userMail.text, users.first.userPassword);
+                  log(getTotp(userMail.text + users.first.userPassword));
+                  regisOTP(context);
+                },
+                child: Text("ลงทะเบียน OTP")),
+            TextButton(
+                onPressed: () async {
+                  // getGoogleAuthenticatorUri(
+                  //     "mnrace", userMail.text, users.first.userPassword);
+                  // log(getTotp(userMail.text + users.first.userPassword));
+
+                  passwordRenew(context);
+                },
+                child: Text("เปลี่ยนรหัสผ่าน")),
+          ],
         ),
         SizedBox(
           width: 150,
           child: ElevatedButton(
               onPressed: () async {
-                uri = getGoogleAuthenticatorUri(
-                    "mnrace", userMail.text, users.first.userPassword);
-                // await launchUrl(Uri.parse(uri2));
-                showModalBottomSheet(
-                    isScrollControlled: true,
-                    context: context,
-                    builder: (context) {
-                      return Form(
-                        key: _formKey,
-                        child: Container(
-                          width: Get.width,
-                          height: Get.height,
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 200,
-                                child: Image.network(
-                                    "https://www.google.com/chart?chs=200x200&chld=M|0&cht=qr&chl=$uri)"),
-                              ),
-                              TextFormField(
-                                controller: pin,
-                                keyboardType: TextInputType.number,
-                                decoration:
-                                    InputDecoration(label: Text("ใส่ PIN")),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'ใส่Pin.';
-                                  }
-                                  if (value !=
-                                      getTotp(userMail.text +
-                                          users.first.userPassword)) {
-                                    return 'ใส่ PIN ไม่ถูกต้อง.';
-                                  }
+                await uploadFile();
 
-                                  return null;
-                                },
-                              ),
-                              // TextFormField(
-                              //   controller: oldPassword,
-                              //   decoration:
-                              //       InputDecoration(label: Text("รหัสผ่านเดิม")),
-                              //   validator: (value) {
-                              //     if (value != users.first.userPassword) {
-                              //       return 'ใส่รหัสผ่านเดิมไม่ถูกต้อง.';
-                              //     }
-                              //     return null;
-                              //   },
-                              // ),
-
-                              ElevatedButton(
-                                  onPressed: () async {
-                                    log(getTotp(userMail.text +
-                                        users.first.userPassword));
-                                    //check app installed
-                                    // AppInfo app = await InstalledApps.getAppInfo(
-                                    //     'com.google.android.apps.authenticator2');
-                                    // if (app.name!.isEmpty) {
-                                    //   log('Not installed. Show QR');
-                                    // } else {
-                                    //   log(app.name!);
-                                    //   await launchUrl(Uri.parse(uri));
-                                    // }
-                                    if (await _formKey.currentState!
-                                        .validate()) {
-                                      passwordRenew(context);
-                                    }
-                                  },
-                                  child: Text("ยืนยัน"))
-                            ],
-                          ),
-                        ),
-                      );
-                    });
+                Navigator.of(context).pop();
               },
-              child: Text("เปลี่ยนรหัสผ่าน")),
-        )
+              child: Text("แก้ไขโปรไฟล์")),
+        ),
       ],
     );
+  }
+
+  Future<dynamic> regisOTP(BuildContext context) {
+    return showModalBottomSheet(
+        useSafeArea: true,
+        isScrollControlled: true,
+        context: context,
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Form(
+              key: _formKey,
+              child: Container(
+                width: Get.width,
+                height: Get.height,
+                child: Column(
+                  children: [
+                    Gap(20),
+                    Text(
+                      "สแกน QRCODE\nแอบพลิเคชั่น \"Authenicator\"",
+                      textAlign: TextAlign.center,
+                      style: Get.theme.textTheme.displayMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.purple,
+                        fontSize: 20,
+                      ),
+                    ),
+                    Gap(20),
+                    Image.network(
+                        'https://www.google.com/chart?chs=200x200&chld=M|0&cht=qr&chl=$uri'),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 70),
+                      child: TextButton(
+                          onPressed: () async {
+                            AppInfo app = await InstalledApps.getAppInfo(
+                                'com.google.android.apps.authenticator2');
+                            if (app.name!.isEmpty) {
+                              log('Not installed. Show QR');
+                            } else {
+                              log(app.name!);
+                              await launchUrl(Uri.parse(uri2));
+                            }
+                            //  await launchUrl(Uri.parse(uri2));
+                          },
+                          child: Text("เปิด Authenicator")),
+                    ),
+
+                    Gap(20),
+
+                    // ElevatedButton(
+                    //     onPressed: () async {
+                    //       log(getTotp(userMail.text + users.first.userPassword));
+
+                    //       if (await _formKey.currentState!.validate()) {
+                    //         passwordRenew(context);
+                    //       }
+                    //     },
+                    //     child: Text("ยืนยัน"))
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  Future<dynamic> editpass(BuildContext context) {
+    return showModalBottomSheet(
+        useSafeArea: true,
+        isScrollControlled: true,
+        context: context,
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Form(
+              key: _formKey,
+              child: Container(
+                width: Get.width,
+                height: Get.height / 2,
+                child: Column(
+                  children: [
+                    Gap(20),
+                    Text(
+                      "ใส่รหัส PIN แอบพลิเคชั่น\n\"Authenicator \"",
+                      textAlign: TextAlign.center,
+                      style: Get.theme.textTheme.displayMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.purple,
+                        fontSize: 20,
+                      ),
+                    ),
+                    // Gap(20),
+                    // Image.network(
+                    //     'https://www.google.com/chart?chs=200x200&chld=M|0&cht=qr&chl=$uri'),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(left: 70),
+                    //   child: TextButton(
+                    //       onPressed: () async {
+                    //         AppInfo app = await InstalledApps.getAppInfo(
+                    //             'com.google.android.apps.authenticator2');
+                    //         if (app.name!.isEmpty) {
+                    //           log('Not installed. Show QR');
+                    //         } else {
+                    //           log(app.name!);
+                    //           await launchUrl(Uri.parse(uri2));
+                    //         }
+                    //         //  await launchUrl(Uri.parse(uri2));
+                    //       },
+                    //       child: Text("เปิด Authenicator")),
+                    // ),
+
+                    Gap(20),
+                    buildPinPut(),
+                    TextButton(
+                        onPressed: () {
+                          setState(() {
+                            pin.clear();
+                          });
+                        },
+                        child: Text("ล้างค่าPIN")),
+                    // ElevatedButton(
+                    //     onPressed: () async {
+                    //       log(getTotp(userMail.text + users.first.userPassword));
+
+                    //       if (await _formKey.currentState!.validate()) {
+                    //         passwordRenew(context);
+                    //       }
+                    //     },
+                    //     child: Text("ยืนยัน"))
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   Future<dynamic> passwordRenew(BuildContext context) {
@@ -444,36 +563,48 @@ class _Profile_editState extends State<Profile_edit> {
             height: Get.height,
             child: Form(
               key: _formKey2,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  TextFormField(
-                    controller: newPassword,
-                    decoration: InputDecoration(label: Text("รหัสผ่านใหม่")),
-                  ),
-                  TextFormField(
-                    controller: confirmnewPassword,
-                    decoration: InputDecoration(label: Text("ยืนยันรหัสผ่าน")),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'ยืนยันรหัสผ่าน.';
-                      }
-                      if (value != newPassword.text) {
-                        return 'รหัสยืนยันไม่ถูกต้อง.';
-                      }
-                      return null;
-                    },
-                  ),
-                  ElevatedButton(
-                      onPressed: () async {
-                        if (await _formKey2.currentState!.validate()) {
-                          setState(() {});
-                          await chengePassword();
-                          Get.to(() => Login());
+              child: Padding(
+                padding: const EdgeInsets.only(right: 20, left: 20, top: 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    TextFormField(
+                      controller: newPassword,
+                      decoration: InputDecoration(label: Text("รหัสผ่านใหม่")),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ใส่รหัสผ่าน.';
                         }
+
+                        return null;
                       },
-                      child: Text("รีเซ็ตรหัสผ่าน"))
-                ],
+                    ),
+                    Gap(20),
+                    TextFormField(
+                      controller: confirmnewPassword,
+                      decoration:
+                          InputDecoration(label: Text("ยืนยันรหัสผ่าน")),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ยืนยันรหัสผ่าน.';
+                        }
+                        if (value != newPassword.text) {
+                          return 'รหัสยืนยันไม่ถูกต้อง.';
+                        }
+                        return null;
+                      },
+                    ),
+                    ElevatedButton(
+                        onPressed: () async {
+                          if (await _formKey2.currentState!.validate()) {
+                            setState(() {});
+                            await chengePassword();
+                            Get.to(() => Login());
+                          }
+                        },
+                        child: Text("เปลี่ยนรหัสผ่าน"))
+                  ],
+                ),
               ),
             ),
           );
