@@ -14,6 +14,7 @@ import 'package:miniworldapp/model/DTO/missionDTO.dart';
 import 'package:miniworldapp/page/Host/detil_mission.dart';
 
 import 'package:miniworldapp/service/mission.dart';
+import 'package:miniworldapp/service/race.dart';
 import 'package:miniworldapp/widget/loadData.dart';
 import 'package:provider/provider.dart';
 
@@ -53,7 +54,9 @@ class _MissioncreateState extends State<Missioncreate> {
   int square = 0;
   int sqnum = 0;
   int lastNum = 0;
+  int raceID = 0;
   late MissionService missionService;
+  late RaceService raceService;
   List<Mission> missions = [];
   List<MissionDto> missionDtos = [];
 
@@ -80,11 +83,13 @@ class _MissioncreateState extends State<Missioncreate> {
 
     idrace = context.read<AppData>().idrace;
     log('id' + idrace.toString());
-
-    loadDataMethod = loadData();
-
     missionService =
-        MissionService(Dio(), baseUrl: context.read<AppData>().baseurl);
+        MissionService(Dio(), baseUrl: context.read<AppData>().baseurl); 
+
+     raceService =
+        RaceService(Dio(), baseUrl: context.read<AppData>().baseurl); 
+
+        loadDataMethod = loadData();
     // googleMap =
   }
 
@@ -295,6 +300,8 @@ class _MissioncreateState extends State<Missioncreate> {
                     //    sqnum = 0;
                     // }
                     //     });
+                   
+                    fristMis = lastNum;
                         log('numold '+fristMis.toString());
 
                     if (fristMis == 0) {
@@ -414,14 +421,26 @@ class _MissioncreateState extends State<Missioncreate> {
     startLoading(context);
     try {
       log('aaaa');
+      raceID = context.read<AppData>().idrace;
+     
+      
+      //log('lasttt '+misID.toString());
    //   postion = await determinePosition();
+     // lastNum = context.read<AppData>().sqnum; 
+    //  var r = await missionService.missionAll(raceID: misID);
+    //  missions = r.data;
+    //  log(r.data.length.toString());
+    //  for (var mislast in missions) {
+    //    log(mislast.misSeq.toString());
+    //  }
+    //   lastNum = r.data.last.misSeq;
+      
+    //   log('nummmm'+r.data.last.misSeq.toString());
       
       currentLatLng = LatLng(postion.latitude, postion.longitude);
        log('aaaa');
       isLoaded = true;
-     // var r = await missionService.missionBymisID(misID: );
-     // fristMis = r.data.first.misSeq;
-      log('nummmm'+fristMis.toString());
+    
 
     } catch (err) {
       currentLatLng = const LatLng(16.24922394827912, 103.2505221260871);
