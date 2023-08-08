@@ -331,13 +331,13 @@ class _HomeAllState extends State<HomeAll> {
   Widget bodyContainer() {
     switch (selectedPos) {
       case 0:
-        RaceAll();
+        
         break;
       case 1:
-        Home_join();
+        
         break;
       case 2:
-        Home_create();
+        
         break;
     }
 
@@ -354,11 +354,11 @@ class _HomeAllState extends State<HomeAll> {
                       ? Home_join()
                       : Container()),
       onTap: () {
-        if (_navigationController.value == tabItems.length - 1) {
-          _navigationController.value = 0;
-        } else {
-          _navigationController.value = _navigationController.value! + 1;
-        }
+        // if (_navigationController.value == tabItems.length - 1) {
+        //   _navigationController.value = 0;
+        // } else {
+        //   _navigationController.value = _navigationController.value! + 1;
+        // }
       },
     );
   }

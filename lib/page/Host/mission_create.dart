@@ -52,6 +52,7 @@ class _MissioncreateState extends State<Missioncreate> {
   int mType = 0;
   int square = 0;
   int sqnum = 0;
+  int lastNum = 0;
   late MissionService missionService;
   List<Mission> missions = [];
   List<MissionDto> missionDtos = [];
@@ -285,67 +286,70 @@ class _MissioncreateState extends State<Missioncreate> {
             Center(
               child: ElevatedButton(
                   child: const Text('สร้างภารกิจ'),
-                  onPressed: () async {
+                 
+                  onPressed: () async { 
+                  //  sqnum = 0;
+                 // fristMis == 0;
                     // setState(() {
                     // if(sqnum == 2){
                     //    sqnum = 0;
                     // }
                     //     });
-                    //    log('num '+square.toString());
-                    if (sqnum == 0) {
-                      sqnum += sqnum ;
+                        log('numold '+fristMis.toString());
+
+                    if (fristMis == 0) {
+                      fristMis = fristMis + 1 ;
+                    }else if (fristMis >= 1 ) {
+                       fristMis++;
                     }
-                    if (sqnum == sqnum) {
-                      sqnum++;
-                    }
-                    log('num ' + sqnum.toString());
+                    log('num ' + fristMis.toString());
 
-                    if (lats == '' && longs == '') {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('กรุณาหาจุดภารกิจ...')),
-                      );
-                    }
+                    // if (lats == '' && longs == '') {
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     const SnackBar(content: Text('กรุณาหาจุดภารกิจ...')),
+                    //   );
+                    // }
 
-                    cb = cb1 + cb2 + cb3;
-                    log('ch ' + cb);
-                    mType = int.parse(cb);
-                    log('ty: ' + mType.toString());
+                    // cb = cb1 + cb2 + cb3;
+                    // log('ch ' + cb);
+                    // mType = int.parse(cb);
+                    // log('ty: ' + mType.toString());
 
-                    MissionDto missionDto = MissionDto(
-                        misName: nameMission.text,
-                        misDiscrip: DescriptionMission.text,
-                        misDistance: int.parse(selectedValue!),
-                        misType: mType,
-                        misSeq: sqnum,
-                        misMediaUrl: '',
-                        misLat: double.parse(lats),
-                        misLng: double.parse(longs),
-                        raceId: idrace);
-                    log(lats);
-                    //print(double.parse('lat'+lats));
-                    var mission =
-                        await missionService.insertMissions(missionDto);
-                    if (mission.response.statusCode == 200) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('mision Successful')),
-                      );
-                      log("race Successful");
+                    // MissionDto missionDto = MissionDto(
+                    //     misName: nameMission.text,
+                    //     misDiscrip: DescriptionMission.text,
+                    //     misDistance: int.parse(selectedValue!),
+                    //     misType: mType,
+                    //     misSeq: sqnum,
+                    //     misMediaUrl: '',
+                    //     misLat: double.parse(lats),
+                    //     misLng: double.parse(longs),
+                    //     raceId: idrace);
+                    // log(lats);
+                    // //print(double.parse('lat'+lats));
+                    // var mission =
+                    //     await missionService.insertMissions(missionDto);
+                    // if (mission.response.statusCode == 200) {
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     const SnackBar(content: Text('mision Successful')),
+                    //   );
+                    //   log("race Successful");
 
-                      if (fristMis == 0) {
-                        Get.to(DetailMission());
-                      } else {
-                        Navigator.of(context).pop();
-                      }
-                      //  if()
-                      return;
-                    } else {
-                      // log("team fail");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('mission fail try agin!')),
-                      );
+                    //   if (fristMis == 0) {
+                    //     Get.to(DetailMission());
+                    //   } else {
+                    //     Navigator.of(context).pop();
+                    //   }
+                    //   //  if()
+                    //   return;
+                    // } else {
+                    //   // log("team fail");
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     const SnackBar(content: Text('mission fail try agin!')),
+                    //   );
 
-                      return;
-                    }
+                    //   return;
+                    // }
                   }),
             ),
           ],
@@ -415,8 +419,10 @@ class _MissioncreateState extends State<Missioncreate> {
       currentLatLng = LatLng(postion.latitude, postion.longitude);
        log('aaaa');
       isLoaded = true;
-      var r = await missionService.missionAll();
-      fristMis = r.data.first.misSeq;
+     // var r = await missionService.missionBymisID(misID: );
+     // fristMis = r.data.first.misSeq;
+      log('nummmm'+fristMis.toString());
+
     } catch (err) {
       currentLatLng = const LatLng(16.24922394827912, 103.2505221260871);
       isLoaded = false;
