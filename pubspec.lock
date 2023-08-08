@@ -33,6 +33,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  animated_check:
+    dependency: "direct main"
+    description:
+      name: animated_check
+      sha256: "1da103a44b6aeacbecec799343b7170e627f4af465ca642b430c1d94922868aa"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.5"
   animations:
     dependency: "direct main"
     description:
@@ -1403,6 +1411,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.14.0"
+  pinput:
+    dependency: "direct main"
+    description:
+      name: pinput
+      sha256: "92b60664eec437a53de7cf5472ed3e65edb2dc32d7070875887c4285a9c0a088"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   platform:
     dependency: transitive
     description:
@@ -1696,6 +1712,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  smart_auth:
+    dependency: transitive
+    description:
+      name: smart_auth
+      sha256: a25229b38c02f733d0a4e98d941b42bed91a976cb589e934895e60ccfa674cf6
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   source_gen:
     dependency: transitive
     description:
@@ -1856,6 +1880,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
+  universal_platform:
+    dependency: transitive
+    description:
+      name: universal_platform
+      sha256: d315be0f6641898b280ffa34e2ddb14f3d12b1a37882557869646e0cc363d0cc
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0+1"
   uri:
     dependency: transitive
     description:
