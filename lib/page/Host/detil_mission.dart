@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:implicitly_animated_reorderable_list_2/implicitly_animated_reorderable_list_2.dart';
 import 'package:implicitly_animated_reorderable_list_2/transitions.dart';
 import 'package:miniworldapp/model/result/raceResult.dart';
+import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/page/Host/race_edit_mission.dart';
 
@@ -161,30 +162,7 @@ class _DetailMissionState extends State<DetailMission> {
       var a = await missionService.missionByraceID(raceID: idrace);
       missions = a.data;
       mType = a.data.first.misType.toString();
-      // var splitT = mType.split('');
-      // // log('sp'+splitT.toString());
-      //  List<String> substrings = splitT.toString().split(",");
-      // // //substrings = splitT.toString().substring("[");
-      //  log('sub ' + splitT.contains('0').toString());
-      // // if(substrings[0] == '1'){
-      // //   _checkbox == true;
-      // // }
-      // if (splitT.contains('1') == true) {
-      //     type1 = 'ข้อความ';
-      //   log(type1);
-      // }
-      // if (splitT.contains('2') == true) {
-
-      //     type2 = 'สื่อ';
-      //    log(type1);
-      // }
-      // if (splitT.contains('3') == true) {
-
-      //     type3 = 'ไม่มีการส่ง';
-      //   log(type1);
-      // } else {
-      //   return;
-      // }
+   
       isLoaded = true;
     } catch (err) {
       isLoaded = false;
@@ -193,52 +171,68 @@ class _DetailMissionState extends State<DetailMission> {
       stopLoading();
     }
   }
+  Future refresh() async {
+    setState(() {
+      _buildVerticalLanguageList();
+      loadDataMethod = loadData();
+    //  onReorderFinished();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        // Overide the default Back button
-        automaticallyImplyLeading: false,
-        leadingWidth: 100,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: FaIcon(
-            FontAwesomeIcons.circleChevronLeft,
-            color: Colors.yellow,
-            size: 35,
+    return WillPopScope(
+       onWillPop: () async {
+          Get.to(() => const HomeAll());
+          return true;
+        },
+      child: Scaffold(
+        appBar: AppBar(
+          // Overide the default Back button
+          automaticallyImplyLeading: false,
+          leadingWidth: 100,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: FaIcon(
+              FontAwesomeIcons.circleChevronLeft,
+              color: Colors.yellow,
+              size: 35,
+            ),
+          ),
+          backgroundColor: const Color.fromARGB(255, 238, 145, 255),
+          // other stuff
+          title: Text(
+            'จัดการภารกิจ',
+            style: TextStyle(color: Colors.white),
           ),
         ),
-        backgroundColor: const Color.fromARGB(255, 238, 145, 255),
-        // other stuff
-        title: Text(
-          'จัดการภารกิจ',
-          style: TextStyle(color: Colors.white),
+        body: RefreshIndicator(
+          onRefresh: refresh,
+          child: FutureBuilder(
+            future: loadDataMethod,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return ListView(
+                  controller: scrollController,
+                  // Prevent the ListView from scrolling when an item is
+                  // currently being dragged.
+                  padding: const EdgeInsets.only(bottom: 24),
+                    
+                  children: [
+                    const Divider(height: 0),
+                    const Padding(padding: EdgeInsets.only(bottom: 8)),
+                    // _buildHeadline(),
+                    _buildVerticalLanguageList(),
+                  ],
+                );
+              } else {
+                return Container();
+              }
+            },
+          ),
         ),
-      ),
-      body: FutureBuilder(
-        future: loadDataMethod,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return ListView(
-              controller: scrollController,
-              // Prevent the ListView from scrolling when an item is
-              // currently being dragged.
-              padding: const EdgeInsets.only(bottom: 24),
-
-              children: [
-                const Divider(height: 0),
-                const Padding(padding: EdgeInsets.only(bottom: 8)),
-                // _buildHeadline(),
-                _buildVerticalLanguageList(),
-              ],
-            );
-          } else {
-            return Container();
-          }
-        },
       ),
     );
   }
@@ -267,13 +261,13 @@ class _DetailMissionState extends State<DetailMission> {
               ),
             ),
           );
-
+      
           return AnimatedBuilder(
             animation: dragAnimation,
             builder: (context, _) {
               final t = dragAnimation.value;
               final color = Color.lerp(Colors.white, Colors.grey.shade100, t);
-
+      
               return Material(
                 color: color,
                 elevation: lerpDouble(0, 8, t)!,
@@ -588,53 +582,6 @@ class _DetailMissionState extends State<DetailMission> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildHeadline() {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-
-    Widget buildDivider() => Container(
-          height: 2,
-          color: Colors.grey.shade300,
-        );
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const SizedBox(height: 16),
-        //  buildDivider(),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                'ลำดับ',
-                style: textTheme.bodyText1?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                'ชื่อภารกิจ',
-                style: textTheme.bodyText1?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                'เลื่อน',
-                style: textTheme.bodyText1?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              )
-            ],
-          ),
-        ),
-        //  buildDivider(),
-        const SizedBox(height: 16),
-      ],
     );
   }
 

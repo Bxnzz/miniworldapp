@@ -3,6 +3,8 @@ import 'dart:developer';
 
 import 'package:animations/animations.dart';
 import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
+import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
+import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
@@ -10,6 +12,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:miniworldapp/page/General/RaceAll.dart';
 import 'package:miniworldapp/page/General/detil_race.dart';
 import 'package:miniworldapp/page/General/home_join_detail.dart';
 
@@ -54,10 +57,43 @@ class _HomeAllState extends State<HomeAll> {
   TextEditingController textController = TextEditingController();
   List<Race> races = [];
   late RaceService raceService;
+  int selectedPos = 0;
+
+  double bottomNavBarHeight = 60;
+
+  List<TabItem> tabItems = List.of([
+    
+    TabItem( 
+      FontAwesomeIcons.houseFlag,
+      "ทั้งหมด",
+      Colors.blue,
+      labelStyle: TextStyle(
+
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    TabItem(
+      FontAwesomeIcons.userPlus,
+      "ที่สร้าง",
+      Colors.pink,
+      labelStyle: TextStyle(
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    TabItem(
+      FontAwesomeIcons.users,
+      "ที่เข้าร่วม",
+      Colors.amber,
+      circleStrokeColor: Colors.white,
+    ),
+  ]);
+
+  late CircularBottomNavigationController _navigationController;
 
   @override
   void initState() {
     super.initState();
+    _navigationController = CircularBottomNavigationController(selectedPos);
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
     Username = context.read<AppData>().Username;
@@ -71,6 +107,12 @@ class _HomeAllState extends State<HomeAll> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _navigationController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       // initialIndex: 1,
@@ -80,43 +122,47 @@ class _HomeAllState extends State<HomeAll> {
           return true;
         },
         child: Scaffold(
-          floatingActionButton: SpeedDial(
-            child: const Icon(Icons.add),
-            speedDialChildren: <SpeedDialChild>[
-              SpeedDialChild(
-                child: const FaIcon(FontAwesomeIcons.squarePlus),
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.pink,
-                label: 'สร้างการแข่งขัน',
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const RaceCreatePage()));
-                  setState(() {
-                    _text = 'สร้างการแข่งขัน';
-                  });
-                },
-              ),
-              SpeedDialChild(
-                child: const FaIcon(FontAwesomeIcons.eye),
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.blue,
-                label: 'เข้าชมการแข่งขัน',
-                onPressed: () {
-                  Get.to(ListSpactator());
-                  setState(() {
-                    _text = '"เข้าชมการแข่งขัน"';
-                  });
-                },
-              ),
-            ],
-            closedForegroundColor: Colors.black,
-            openForegroundColor: Colors.white,
-            closedBackgroundColor: Colors.white,
-            openBackgroundColor: Colors.black,
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.only(bottom: 90,right: 5),
+            child: SpeedDial(
+              child: const Icon(Icons.add),
+              speedDialChildren: <SpeedDialChild>[
+                SpeedDialChild(
+                  child: const FaIcon(FontAwesomeIcons.squarePlus),
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.pink,
+                  label: 'สร้างการแข่งขัน',
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const RaceCreatePage()));
+                    setState(() {
+                      _text = 'สร้างการแข่งขัน';
+                    });
+                  },
+                ),
+                SpeedDialChild(
+                  child: const FaIcon(FontAwesomeIcons.eye),
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue,
+                  label: 'เข้าชมการแข่งขัน',
+                  onPressed: () {
+                    Get.to(ListSpactator());
+                    setState(() {
+                      _text = '"เข้าชมการแข่งขัน"';
+                    });
+                  },
+                ),
+              ],
+              closedForegroundColor: Colors.black,
+              openForegroundColor: Colors.white,
+              closedBackgroundColor: Colors.white,
+              openBackgroundColor: Colors.black,
+            ),
           ),
           appBar: AppBar(
+            
             automaticallyImplyLeading: false,
             elevation: 0,
             flexibleSpace: Container(
@@ -135,6 +181,7 @@ class _HomeAllState extends State<HomeAll> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                
                 Builder(
                   builder: (context) => IconButton(
                     icon: FaIcon(FontAwesomeIcons.alignLeft,
@@ -143,6 +190,7 @@ class _HomeAllState extends State<HomeAll> {
                     onPressed: () => Scaffold.of(context).openDrawer(),
                   ),
                 ),
+            
               ],
             ),
             actions: [
@@ -159,41 +207,14 @@ class _HomeAllState extends State<HomeAll> {
             ],
             centerTitle: false,
             titleSpacing: 0,
-            //  actions: <Widget>[Text(Username)],
-            bottom: TabBar(
-              dividerColor: Colors.transparent,
-              indicatorPadding: EdgeInsets.zero,
-              indicatorWeight: double.minPositive,
-              labelColor: Get.theme.colorScheme.primary,
-              unselectedLabelColor: Get.theme.colorScheme.onPrimary,
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicator: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10)),
-                  color: Colors.white),
-              tabs: const <Widget>[
-                Tab(
-                  child: Text('ทั้งหมด'),
-                ),
-                Tab(
-                  child: Text('ที่สร้าง'),
-                ),
-                Tab(
-                  child: Text('ที่เข้าร่วม'),
-                ),
-              ],
-            ),
           ),
-          body: TabBarView(
+          body: Stack(
             children: <Widget>[
-              Center(child: RaceAll()),
-              Center(
-                child: Home_create(),
+              Padding(
+                child: bodyContainer(),
+                padding: EdgeInsets.only(bottom: bottomNavBarHeight),
               ),
-              Center(
-                child: Home_join(),
-              ),
+              Align(alignment: Alignment.bottomCenter, child: bottomNav())
             ],
           ),
           drawer: Container(
@@ -303,6 +324,62 @@ class _HomeAllState extends State<HomeAll> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget bodyContainer() {
+    switch (selectedPos) {
+      case 0:
+        RaceAll();
+        break;
+      case 1:
+        Home_join();
+        break;
+      case 2:
+        Home_create();
+        break;
+    }
+
+    return GestureDetector(
+      child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          // color: selectedColor,
+          child: selectedPos == 0
+              ? RaceAll()
+              : selectedPos == 1
+                  ? Home_create()
+                  : selectedPos == 2
+                      ? Home_join()
+                      : Container()),
+      onTap: () {
+        if (_navigationController.value == tabItems.length - 1) {
+          _navigationController.value = 0;
+        } else {
+          _navigationController.value = _navigationController.value! + 1;
+        }
+      },
+    );
+  }
+
+  Widget bottomNav() {
+    return CircularBottomNavigation(
+      tabItems,
+      controller: _navigationController,
+      selectedPos: selectedPos,
+      barHeight: bottomNavBarHeight,
+      barBackgroundColor: Colors.white,
+      iconsSize: 20,
+      backgroundBoxShadow: <BoxShadow>[
+        const BoxShadow(color: Colors.grey, blurRadius: 10.0),
+      ],
+      animationDuration: const Duration(milliseconds: 300),
+      selectedCallback: (int? selectedPos) {
+        setState(() {
+          this.selectedPos = selectedPos ?? 0;
+          print(_navigationController.value);
+        });
+      },
     );
   }
 }
@@ -536,180 +613,5 @@ class mySearchDelegate extends SearchDelegate {
         );
       },
     );
-  }
-}
-
-class RaceAll extends StatefulWidget {
-  const RaceAll({super.key});
-
-  @override
-  State<RaceAll> createState() => _RaceAllState();
-}
-
-class _RaceAllState extends State<RaceAll> {
-  // 1. กำหนดตัวแปร
-  List<Race> races = [];
-  int idUser = 0;
-  bool isLoaded = false;
-
-  late Future<void> loadDataMethod;
-  late RaceService raceService;
-
-  var formatter = DateFormat.yMEd();
-  // var dateInBuddhistCalendarFormat = formatter.formatInBuddhistCalendarThai(now);
-  final ScrollController _scrollController = ScrollController();
-  @override
-  void initState() {
-    super.initState();
-    // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย
-    raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
-    raceService.races().then((value) {
-      log(value.data.first.raceName);
-    });
-    idUser = context.read<AppData>().idUser;
-    log(idUser.toString());
-    // 2.2 async method
-    loadDataMethod = loadData();
-  }
-
-  Future refresh() async {
-    setState(() {
-      loadDataMethod = loadData();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      body: RefreshIndicator(
-        onRefresh: refresh,
-        child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  begin: FractionalOffset(0.0, 0.0),
-                  end: FractionalOffset(1.0, 0.0),
-                  stops: [0.0, 1.0],
-                  tileMode: TileMode.clamp,
-                  colors: [
-                    Colors.purpleAccent,
-                    Color.fromARGB(255, 144, 64, 255),
-                  ])),
-          child: FutureBuilder(
-              future: loadDataMethod,
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return GridView.count(
-                    crossAxisCount: 2,
-                    padding: EdgeInsets.only(top: 10),
-                    children: races.map((element) {
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                            left: 2.5, right: 2.5, bottom: 5),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 2,
-                              color: Colors.white,
-                            ),
-                            borderRadius:
-                                BorderRadius.circular(20.0), //<-- SEE HERE
-                          ),
-                          //  shadowColor: ,
-                          color: Colors.white,
-                          clipBehavior: Clip.hardEdge,
-
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(12.0),
-                            splashColor: Colors.blue.withAlpha(30),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => DetailRace()));
-                              context.read<AppData>().idrace = element.raceId;
-                            },
-                            child: GridTile(
-                                // crossAxisAlignment: CrossAxisAlignment.start,
-                                child: Image.network(element.raceImage,
-                                    //  width: Get.width,
-                                    //  height: Get.width*0.5625/2,
-                                    fit: BoxFit.cover),
-                                footer: Container(
-                                  color: Get.theme.colorScheme.onBackground
-                                      .withOpacity(0.5),
-                                  padding:
-                                      const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(element.raceName,
-                                              style: Get.textTheme.bodyMedium!
-                                                  .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Get
-                                                          .theme
-                                                          .colorScheme
-                                                          .onPrimary)),
-                                          Text("# ${element.raceId}",
-                                              style: Get.textTheme.bodySmall!
-                                                  .copyWith(
-                                                      color: Get
-                                                          .theme
-                                                          .colorScheme
-                                                          .onPrimary)),
-                                        ],
-                                      ),
-                                      Container(height: 5),
-                                      // Text("ปิดรับสมัคร: " +
-                                      //     formatter.formatInBuddhistCalendarThai(
-                                      //         element.raceTimeFn)),
-                                      Text("สถานที่: " + element.raceLocation,
-                                          style: Get.textTheme.bodySmall!
-                                              .copyWith(
-                                                  color: Get.theme.colorScheme
-                                                      .onPrimary
-                                                      .withOpacity(0.8))),
-                                      Container(height: 5),
-                                    ],
-                                  ),
-                                )),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  );
-                } else {
-                  return Container();
-                  // const CircularProgressIndicator();
-                }
-              }),
-        ),
-      ),
-    );
-  }
-
-  Paddingtop() {
-    return Padding(padding: EdgeInsets.only(bottom: 8));
-  }
-
-  Future<void> loadData() async {
-    startLoading(context);
-    try {
-      var a = await raceService.races();
-      races = a.data;
-      isLoaded = true;
-    } catch (err) {
-      isLoaded = false;
-      log('Error:$err');
-    } finally {
-      stopLoading();
-    }
   }
 }

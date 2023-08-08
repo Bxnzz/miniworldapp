@@ -269,16 +269,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
     var response1 = await OneSignal.shared.postNotification(notification1);
     stopLoading();
     Get.defaultDialog(title: mc.toString());
-    // videoPlayerController = VideoPlayerController.file(File(pickedFile!.path!))
-    //   ..initialize().then((_) {
-    //     log(videoPlayerController.toString());
-    //     _customVideoPlayerController = CustomVideoPlayerController(
-    //       context: context,
-    //       videoPlayerController: videoPlayerController!,
-    //     );
-    //     Image.file(File(pickedFile!.path!));
-    //     setState(() {});
-    //   });
+
   }
 
   GlobalKey<CircularMenuState> key = GlobalKey<CircularMenuState>();

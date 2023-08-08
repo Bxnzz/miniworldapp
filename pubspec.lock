@@ -248,6 +248,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.0"
+  circular_bottom_navigation:
+    dependency: "direct main"
+    description:
+      name: circular_bottom_navigation
+      sha256: "10889d8cf815f22d4b648588946326a6b4a2de462276e5be3b3f2ba5d8aa8960"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   circular_menu:
     dependency: "direct main"
     description:
