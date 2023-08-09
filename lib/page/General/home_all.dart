@@ -325,13 +325,13 @@ class _HomeAllState extends State<HomeAll> {
   Widget bodyContainer() {
     switch (selectedPos) {
       case 0:
-        RaceAll();
+        
         break;
       case 1:
-        Home_join();
+        
         break;
       case 2:
-        Home_create();
+        
         break;
     }
 

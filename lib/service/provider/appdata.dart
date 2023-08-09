@@ -33,6 +33,7 @@ class AppData with ChangeNotifier {
   int idTeam = 0;
   int idAt = 0;
   int status = 0;
+  int lastMis = 0;
   Timer updateLocationTimer = Timer(Duration(seconds: 10), () {});
 
   int raceStatus = 0;

@@ -14,6 +14,7 @@ import 'package:miniworldapp/model/DTO/missionDTO.dart';
 import 'package:miniworldapp/page/Host/detil_mission.dart';
 
 import 'package:miniworldapp/service/mission.dart';
+import 'package:miniworldapp/service/race.dart';
 import 'package:miniworldapp/widget/loadData.dart';
 import 'package:provider/provider.dart';
 
@@ -52,7 +53,10 @@ class _MissioncreateState extends State<Missioncreate> {
   int mType = 0;
   int square = 0;
   int sqnum = 0;
+  int lastNum = 0;
+  int raceID = 0;
   late MissionService missionService;
+  late RaceService raceService;
   List<Mission> missions = [];
   List<MissionDto> missionDtos = [];
 
@@ -79,11 +83,13 @@ class _MissioncreateState extends State<Missioncreate> {
 
     idrace = context.read<AppData>().idrace;
     log('id' + idrace.toString());
-
-    loadDataMethod = loadData();
-
     missionService =
-        MissionService(Dio(), baseUrl: context.read<AppData>().baseurl);
+        MissionService(Dio(), baseUrl: context.read<AppData>().baseurl); 
+
+     raceService =
+        RaceService(Dio(), baseUrl: context.read<AppData>().baseurl); 
+
+        loadDataMethod = loadData();
     // googleMap =
   }
 
@@ -285,67 +291,72 @@ class _MissioncreateState extends State<Missioncreate> {
             Center(
               child: ElevatedButton(
                   child: const Text('สร้างภารกิจ'),
-                  onPressed: () async {
+                 
+                  onPressed: () async { 
+                  //  sqnum = 0;
+                 // fristMis == 0;
                     // setState(() {
                     // if(sqnum == 2){
                     //    sqnum = 0;
                     // }
                     //     });
-                    //    log('num '+square.toString());
-                    if (sqnum == 0) {
-                      sqnum += sqnum ;
+                   
+                    fristMis = lastNum;
+                        log('numold '+fristMis.toString());
+
+                    if (fristMis == 0) {
+                      fristMis = fristMis + 1 ;
+                    }else if (fristMis >= 1 ) {
+                       fristMis++;
                     }
-                    if (sqnum == sqnum) {
-                      sqnum++;
-                    }
-                    log('num ' + sqnum.toString());
+                    log('num ' + fristMis.toString());
 
-                    if (lats == '' && longs == '') {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('กรุณาหาจุดภารกิจ...')),
-                      );
-                    }
+                    // if (lats == '' && longs == '') {
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     const SnackBar(content: Text('กรุณาหาจุดภารกิจ...')),
+                    //   );
+                    // }
 
-                    cb = cb1 + cb2 + cb3;
-                    log('ch ' + cb);
-                    mType = int.parse(cb);
-                    log('ty: ' + mType.toString());
+                    // cb = cb1 + cb2 + cb3;
+                    // log('ch ' + cb);
+                    // mType = int.parse(cb);
+                    // log('ty: ' + mType.toString());
 
-                    MissionDto missionDto = MissionDto(
-                        misName: nameMission.text,
-                        misDiscrip: DescriptionMission.text,
-                        misDistance: int.parse(selectedValue!),
-                        misType: mType,
-                        misSeq: sqnum,
-                        misMediaUrl: '',
-                        misLat: double.parse(lats),
-                        misLng: double.parse(longs),
-                        raceId: idrace);
-                    log(lats);
-                    //print(double.parse('lat'+lats));
-                    var mission =
-                        await missionService.insertMissions(missionDto);
-                    if (mission.response.statusCode == 200) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('mision Successful')),
-                      );
-                      log("race Successful");
+                    // MissionDto missionDto = MissionDto(
+                    //     misName: nameMission.text,
+                    //     misDiscrip: DescriptionMission.text,
+                    //     misDistance: int.parse(selectedValue!),
+                    //     misType: mType,
+                    //     misSeq: sqnum,
+                    //     misMediaUrl: '',
+                    //     misLat: double.parse(lats),
+                    //     misLng: double.parse(longs),
+                    //     raceId: idrace);
+                    // log(lats);
+                    // //print(double.parse('lat'+lats));
+                    // var mission =
+                    //     await missionService.insertMissions(missionDto);
+                    // if (mission.response.statusCode == 200) {
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     const SnackBar(content: Text('mision Successful')),
+                    //   );
+                    //   log("race Successful");
 
-                      if (fristMis == 0) {
-                        Get.to(DetailMission());
-                      } else {
-                        Navigator.of(context).pop();
-                      }
-                      //  if()
-                      return;
-                    } else {
-                      // log("team fail");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('mission fail try agin!')),
-                      );
+                    //   if (fristMis == 0) {
+                    //     Get.to(DetailMission());
+                    //   } else {
+                    //     Navigator.of(context).pop();
+                    //   }
+                    //   //  if()
+                    //   return;
+                    // } else {
+                    //   // log("team fail");
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     const SnackBar(content: Text('mission fail try agin!')),
+                    //   );
 
-                      return;
-                    }
+                    //   return;
+                    // }
                   }),
             ),
           ],
@@ -410,13 +421,27 @@ class _MissioncreateState extends State<Missioncreate> {
     startLoading(context);
     try {
       log('aaaa');
+      raceID = context.read<AppData>().idrace;
+     
+      
+      //log('lasttt '+misID.toString());
    //   postion = await determinePosition();
+     // lastNum = context.read<AppData>().sqnum; 
+    //  var r = await missionService.missionAll(raceID: misID);
+    //  missions = r.data;
+    //  log(r.data.length.toString());
+    //  for (var mislast in missions) {
+    //    log(mislast.misSeq.toString());
+    //  }
+    //   lastNum = r.data.last.misSeq;
+      
+    //   log('nummmm'+r.data.last.misSeq.toString());
       
       currentLatLng = LatLng(postion.latitude, postion.longitude);
        log('aaaa');
       isLoaded = true;
-      var r = await missionService.missionAll();
-      fristMis = r.data.first.misSeq;
+    
+
     } catch (err) {
       currentLatLng = const LatLng(16.24922394827912, 103.2505221260871);
       isLoaded = false;

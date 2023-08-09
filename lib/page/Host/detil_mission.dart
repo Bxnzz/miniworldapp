@@ -603,10 +603,13 @@ class _DetailMissionState extends State<DetailMission> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => Missioncreate(),
+
                     ),
                   );
+                  context.read<AppData>().lastMis = mis.last.misId;
                   context.read<AppData>().sqnum = missions.last.misSeq;
-                  log('last' + missions.last.misSeq.toString());
+                  log('last' + mis.last.misId.toString());
+                  
                   if (result != null && !missions.contains(result)) {
                     setState(() {
                       missions.add(result);
