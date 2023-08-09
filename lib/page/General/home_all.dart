@@ -62,13 +62,11 @@ class _HomeAllState extends State<HomeAll> {
   double bottomNavBarHeight = 60;
 
   List<TabItem> tabItems = List.of([
-    
-    TabItem( 
+    TabItem(
       FontAwesomeIcons.houseFlag,
       "ทั้งหมด",
       Colors.blue,
       labelStyle: TextStyle(
-
         fontWeight: FontWeight.bold,
       ),
     ),
@@ -123,7 +121,7 @@ class _HomeAllState extends State<HomeAll> {
         },
         child: Scaffold(
           floatingActionButton: Padding(
-            padding: const EdgeInsets.only(bottom: 90,right: 5),
+            padding: const EdgeInsets.only(bottom: 90, right: 5),
             child: SpeedDial(
               child: const Icon(Icons.add),
               speedDialChildren: <SpeedDialChild>[
@@ -162,7 +160,6 @@ class _HomeAllState extends State<HomeAll> {
             ),
           ),
           appBar: AppBar(
-            
             automaticallyImplyLeading: false,
             elevation: 0,
             flexibleSpace: Container(
@@ -181,7 +178,6 @@ class _HomeAllState extends State<HomeAll> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                
                 Builder(
                   builder: (context) => IconButton(
                     icon: FaIcon(FontAwesomeIcons.alignLeft,
@@ -190,7 +186,6 @@ class _HomeAllState extends State<HomeAll> {
                     onPressed: () => Scaffold.of(context).openDrawer(),
                   ),
                 ),
-            
               ],
             ),
             actions: [
@@ -353,11 +348,11 @@ class _HomeAllState extends State<HomeAll> {
                       ? Home_join()
                       : Container()),
       onTap: () {
-        if (_navigationController.value == tabItems.length - 1) {
-          _navigationController.value = 0;
-        } else {
-          _navigationController.value = _navigationController.value! + 1;
-        }
+        // if (_navigationController.value == tabItems.length - 1) {
+        //   _navigationController.value = 0;
+        // } else {
+        //   _navigationController.value = _navigationController.value! + 1;
+        // }
       },
     );
   }

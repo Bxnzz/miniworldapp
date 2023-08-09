@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:miniworldapp/page/General/home_join_detail.dart';
 import 'package:miniworldapp/page/Player/player_race_start_gps.dart';
@@ -41,12 +42,34 @@ class _PlayerRaceStartMenuState extends State<PlayerRaceStartMenu> {
         return true;
       },
       child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: Size(Get.width, Get.height),
+          child: SafeArea(
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  icon: const FaIcon(
+                    FontAwesomeIcons.circleChevronLeft,
+                    color: Colors.yellow,
+                    size: 35,
+                  ),
+                ),
+                Text(
+                  "การแข่งขัน",
+                  style: textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.purple,
+                      fontSize: 20),
+                )
+              ],
+            ),
+          ),
+        ),
         body: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 15, left: 10),
-              child: Topbar(context, textTheme),
-            ),
             Expanded(
               child: Center(
                 child: _widgetOptions.elementAt(_selectedIndex),
@@ -70,13 +93,6 @@ class _PlayerRaceStartMenuState extends State<PlayerRaceStartMenu> {
               ),
               label: 'ค้นหา',
             ),
-            BottomNavigationBarItem(
-              icon: FaIcon(
-                FontAwesomeIcons.mapLocationDot,
-                size: 20,
-              ),
-              label: 'ตำแหน่ง',
-            ),
           ],
           currentIndex: _selectedIndex,
           //selectedItemColor: Colors.amber[800],
@@ -86,36 +102,8 @@ class _PlayerRaceStartMenuState extends State<PlayerRaceStartMenu> {
     );
   }
 
-  Row Topbar(BuildContext context, TextTheme textTheme) {
-    return Row(
-      children: [
-        IconButton(
-          onPressed: () {
-            setState(() {
-              Navigator.pop(context);
-            });
-          },
-          icon: const FaIcon(
-            FontAwesomeIcons.circleChevronLeft,
-            color: Colors.yellow,
-            size: 35,
-          ),
-        ),
-        Text(
-          "การแข่งขัน",
-          style: textTheme.displayMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: Colors.purple,
-            fontSize: 20,
-          ),
-        )
-      ],
-    );
-  }
-
   final List<Widget> _widgetOptions = <Widget>[
     const PlayerRaceStartMis(),
     const PlayerRaceStartHint(),
-    const PlayerRaceStartGPS(),
   ];
 }
