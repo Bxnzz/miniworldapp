@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -16,6 +19,7 @@ import 'package:miniworldapp/page/Player/player_race_start_menu.dart';
 import 'package:miniworldapp/page/Player/player_race_start_mission.dart';
 import 'package:miniworldapp/service/mission.dart';
 import 'package:miniworldapp/widget/loadData.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/DTO/missionCompDTO.dart';
@@ -24,8 +28,9 @@ import '../../service/missionComp.dart';
 import '../../service/provider/appdata.dart';
 
 class PlayerRaceStartHint extends StatefulWidget {
-  const PlayerRaceStartHint({super.key});
+  const PlayerRaceStartHint({super.key, required this.controller});
 
+  final PersistentTabController controller;
   @override
   State<PlayerRaceStartHint> createState() => _PlayerRaceStartHintState();
 }
@@ -38,6 +43,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
   late int raceID;
   late int misID;
   late int misDistance = 0;
+  int indexpage = 1;
 
   late double lngDevice, latDevice;
   late double lat = 0;
@@ -61,6 +67,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
 
   bool servicestatus = false;
   bool haspermission = false;
+  bool disableGmap = true;
   late LocationPermission permission;
   late Position position;
   late Future loadDataMethod;
@@ -119,7 +126,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
 
   getLocation() async {
     position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best);
+        desiredAccuracy: LocationAccuracy.high);
     log('xxxxxxx' + position.longitude.toString()); //Output: 80.24599079
     log(position.latitude.toString()); //Output: 29.6593457
 
@@ -154,7 +161,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
   Future<void> LoadData() async {
     startLoading(context);
     try {
-      checkGps();
+      //  checkGps();
       var a = await missionCompService.missionCompByTeamId(teamID: teamID);
 
       var mis = await missionService.missionByraceID(raceID: raceID);
@@ -177,6 +184,12 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
     } finally {
       stopLoading();
     }
+  }
+
+  Future refresh() async {
+    setState(() {
+      loadDataMethod = LoadData();
+    });
   }
 
   @override
@@ -220,6 +233,10 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                     log("next ${mission[i].misId}");
 
                     lastmisComp = true;
+
+                    if (lastmisComp == true) {
+                      disableGmap = false;
+                    }
                     // showAlertDialog();
                   } else {
                     log("next ${mission[i + 1].misId}");
@@ -256,30 +273,42 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                 }
               }
             }
-            return Stack(
-              children: [
-                Column(children: [
-                  Text('แผนที่'),
-                  GMap(context),
-                  lastmisComp == false
-                      ? misType == '3'
-                          //mission type = 3
-                          ? btnMisType3(context)
-                          //mission type 1
-                          : btnMisType1_2(context)
-                      : Container()
-                ]),
-                lastmisComp == true
-                    ? Positioned(
-                        top: (Get.height / 2) - 125,
-                        left: 20,
-                        right: 20,
-                        child: AlertDialog(
-                          title: Text("ยินดีด้วย !!!"),
-                          content: Text("ทีมคุณผ่านภารกิจทั้งหมดแล้ว"),
-                        ))
-                    : Container()
-              ],
+            return RefreshIndicator(
+              onRefresh: refresh,
+              child: SafeArea(
+                child: Stack(
+                  children: [
+                    GMap(context),
+                    lastmisComp == false
+                        ? misType == '3'
+                            //mission type = 3
+                            ? Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                    padding: EdgeInsets.only(bottom: 20),
+                                    child: btnMisType3(context)))
+                            //mission type 1
+                            : Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                    padding: EdgeInsets.only(bottom: 20),
+                                    child: antBTN(context)))
+                        : Container(),
+                    lastmisComp == true
+                        ? Positioned(
+                            top: (Get.height / 2) - 125,
+                            left: 20,
+                            right: 20,
+                            child: AlertDialog(
+                              shadowColor: Colors.black,
+                              title: Text("ยินดีด้วย !!!"),
+                              content: Text("ทีมคุณผ่านภารกิจทั้งหมดแล้ว"),
+                            ),
+                          )
+                        : Container()
+                  ],
+                ),
+              ),
             );
           } else {
             return Container();
@@ -289,7 +318,57 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
     );
   }
 
-  ElevatedButton btnMisType1_2(BuildContext context) {
+  antBTN(BuildContext context) {
+    return Container(
+      height: 130,
+      padding: const EdgeInsets.only(right: 150, left: 150, bottom: 20),
+      child: AnimatedButton(
+          borderRadius: BorderRadius.circular(200),
+          text: "ค้นหา",
+          color: Colors.orange,
+          pressEvent: () {
+            dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
+            dis <= misDistance
+                ? AwesomeDialog(
+                    context: context,
+                    headerAnimationLoop: false,
+                    animType: AnimType.bottomSlide,
+                    dialogType: DialogType.infoReverse,
+                    title: 'เจอแล้ว !!!',
+                    desc:
+                        '#$misID\nชื่อภารกิจ : $misName \nรายละเอียด : $misDescrip \nประเภทภารกิจ : $type',
+                    btnOkText: 'ดูรายละเอียด',
+                    btnOkOnPress: () {
+                      context.read<AppData>().idMis = misID;
+                      context.read<AppData>().idTeam = teamID;
+
+                      widget.controller.index = 0;
+                      setState(() {
+                        PlayerRaceStartMis;
+                      });
+                    },
+                  ).show()
+                : AwesomeDialog(
+                    context: context,
+                    headerAnimationLoop: false,
+                    animType: AnimType.bottomSlide,
+                    dialogType: DialogType.question,
+                    title: 'ห่างจากภารกิจ ',
+                    desc: '${dis.toStringAsFixed(1)} เมตร',
+                    btnOkText: 'ตกลง',
+                    btnOkOnPress: () {
+                      setState(() {
+                        dis = Geolocator.distanceBetween(
+                            latDevice, lngDevice, lat, lng);
+                        loadDataMethod = LoadData();
+                      });
+                    },
+                  ).show();
+          }),
+    );
+  }
+
+  btnMisType1_2(BuildContext context) {
     return ElevatedButton(
         onPressed: () {
           dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
@@ -312,20 +391,18 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                       ],
                     ),
                     actions: <Widget>[
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            context.read<AppData>().idMis = misID;
-                            context.read<AppData>().idTeam = teamID;
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const PlayerRaceStartMenu(),
-                                ));
-                          },
-                          child: const Text('ดูรายละเอียด'),
-                        ),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.read<AppData>().idMis = misID;
+                          context.read<AppData>().idTeam = teamID;
+                          // Navigator.pushReplacement(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       builder: (context) =>
+                          //           const PlayerRaceStartMenu(),
+                          //     ));
+                        },
+                        child: const Text('ดูรายละเอียด'),
                       ),
                     ],
                   ),
@@ -359,7 +436,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
         child: FaIcon(FontAwesomeIcons.question));
   }
 
-  ElevatedButton btnMisType3(BuildContext context) {
+  btnMisType3(BuildContext context) {
     return ElevatedButton(
         onPressed: () {
           setState(() {
@@ -446,47 +523,33 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
         child: FaIcon(FontAwesomeIcons.question));
   }
 
-  Expanded GMap(BuildContext context) {
-    return Expanded(
-      child: SizedBox(
-        height: Get.height * 0.9,
-        child: Stack(
-          children: [
-            GoogleMap(
-              myLocationEnabled: true,
-              myLocationButtonEnabled: true,
-              initialCameraPosition: CameraPosition(
-                target: LatLng(lat, lng),
-                zoom: 16,
-              ),
-              // onMapCreated: (GoogleMapController controller) {
-              //   _controller.complete(controller);
-              // },
-              markers: markerss.map((e) => e).toSet(),
-              polylines: _polylines,
+  GMap(BuildContext context) {
+    return GoogleMap(
+      compassEnabled: true,
+      myLocationEnabled: true,
+      myLocationButtonEnabled: true,
 
-              onCameraMove: (position) {
-                // lat = position.target.latitude;
-                // lng = position.target.longitude;
-                log('lat' + position.target.latitude.toString());
-                log('lng' + position.target.longitude.toString());
-              },
-            ),
-            Positioned(
-                top: (Get.height / 2) - 125,
-                left: (Get.width / 2) - 10,
-                child: Column(
-                  children: [
-                    FaIcon(
-                      FontAwesomeIcons.locationDot,
-                      size: 32,
-                      color: Colors.yellowAccent,
-                    ),
-                  ],
-                )),
-          ],
-        ),
+      zoomGesturesEnabled: disableGmap,
+      scrollGesturesEnabled: disableGmap,
+      tiltGesturesEnabled: disableGmap,
+      rotateGesturesEnabled: disableGmap,
+      zoomControlsEnabled: disableGmap,
+
+      initialCameraPosition: CameraPosition(
+        target: LatLng(lat, lng),
+        zoom: 16,
       ),
+      // onMapCreated: (GoogleMapController controller) {
+      //   _controller.complete(controller);
+      // },
+      //  markers: markerss.map((e) => e).toSet(),
+
+      // onCameraMove: (position) {
+      //   // lat = position.target.latitude;
+      //   // lng = position.target.longitude;
+      //   log('lat' + position.target.latitude.toString());
+      //   log('lng' + position.target.longitude.toString());
+      // },
     );
   }
 }

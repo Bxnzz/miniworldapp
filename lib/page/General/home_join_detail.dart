@@ -312,7 +312,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const PlayerRaceStartMenu(),
+                                                      PlayerRaceStartMenu(),
                                                 ));
                                           })
                                         : setState(() {

@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
@@ -61,100 +60,105 @@ class _RaceAllState extends State<RaceAll> {
           onRefresh: refresh,
           child: Stack(
             children: [
-              Positioned(
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 60,
-                  child: Container(
-                     decoration: const BoxDecoration(
-                borderRadius: const BorderRadius.only(bottomLeft:Radius.circular(40),bottomRight: Radius.circular(40)),
-                  gradient: LinearGradient(
-                      begin: FractionalOffset(0.0, 0.0),
-                      end: FractionalOffset(1.0, 0.0),
-                      stops: [0.0, 1.0],
-                      tileMode: TileMode.clamp,
-                      colors: [
-                        Colors.purpleAccent,
-                        Color.fromARGB(255, 144, 64, 255),
-                      ])),
-                              ),
-                )),
-                // Positioned(
-                //   top: 0,
-                //   child: SizedBox(
-                //     width: Get.width,
-                //     height: Get.height,
-                //     child: Container(
-                //        decoration:  BoxDecoration(
-                //                    color:   Colors.grey[100]
-                //                 ),
-                //                   ),
-                //   ),),
+              // Positioned(
+              //     child:
+
+              //     SizedBox(
+              //   width: double.infinity,
+              //   height: 60,
+              //   child: Container(
+              //     decoration: const BoxDecoration(
+              //         borderRadius: const BorderRadius.only(
+              //             bottomLeft: Radius.circular(40),
+              //             bottomRight: Radius.circular(40)),
+              //         gradient: LinearGradient(
+              //             begin: FractionalOffset(0.0, 0.0),
+              //             end: FractionalOffset(1.0, 0.0),
+              //             stops: [0.0, 1.0],
+              //             tileMode: TileMode.clamp,
+              //             colors: [
+              //               Colors.purpleAccent,
+              //               Color.fromARGB(255, 144, 64, 255),
+              //             ])),
+              //   ),
+              // )),
+              // Positioned(
+              //   top: 0,
+              //   child: SizedBox(
+              //     width: Get.width,
+              //     height: Get.height,
+              //     child: Container(
+              //        decoration:  BoxDecoration(
+              //                    color:   Colors.grey[100]
+              //                 ),
+              //                   ),
+              //   ),),
               Column(
                 children: <Widget>[
-                  SizedBox(
-                    width: Get.width - 50,
-                    height: 85,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.white),
-                      child: Column(
-                        children: [
-                          Text('User'),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                      width: 30,
-                                      height: 30,
-                                      child:
-                                          Image.asset("assets/image/crown1.png")),
-                                  Text('0')
-                                ],
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 30, bottom: 8),
-                                child: const VerticalDivider(),
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: 30,
-                                    height: 30,
-                                    child: Image.asset("assets/image/crown2.png"),
-                                  ),
-                                  Text('2')
-                                ],
-                              ),
-                              const VerticalDivider(),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: 30,
-                                    height: 30,
-                                    child: Image.asset("assets/image/crown3.png"),
-                                  ),
-                                  Text('0')
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // SizedBox(
+                  //   width: Get.width - 50,
+                  //   height: 85,
+                  //   child: Container(
+                  //     decoration: BoxDecoration(
+                  //         borderRadius: BorderRadius.circular(20),
+                  //         color: Colors.white),
+                  //     child: Column(
+                  //       children: [
+                  //         Text('User'),
+                  //         Row(
+                  //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //           children: [
+                  //             Column(
+                  //               mainAxisAlignment: MainAxisAlignment.center,
+                  //               children: [
+                  //                 SizedBox(
+                  //                     width: 30,
+                  //                     height: 30,
+                  //                     child:
+                  //                         Image.asset("assets/image/crown1.png")),
+                  //                 Text('0')
+                  //               ],
+                  //             ),
+                  //             Padding(
+                  //               padding:
+                  //                   const EdgeInsets.only(top: 30, bottom: 8),
+                  //               child: const VerticalDivider(),
+                  //             ),
+                  //             Column(
+                  //               mainAxisAlignment: MainAxisAlignment.center,
+                  //               children: [
+                  //                 SizedBox(
+                  //                   width: 30,
+                  //                   height: 30,
+                  //                   child: Image.asset("assets/image/crown2.png"),
+                  //                 ),
+                  //                 Text('2')
+                  //               ],
+                  //             ),
+                  //             const VerticalDivider(),
+                  //             Column(
+                  //               mainAxisAlignment: MainAxisAlignment.center,
+                  //               children: [
+                  //                 SizedBox(
+                  //                   width: 30,
+                  //                   height: 30,
+                  //                   child: Image.asset("assets/image/crown3.png"),
+                  //                 ),
+                  //                 Text('0')
+                  //               ],
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   Expanded(
                     child: FutureBuilder(
                         future: loadDataMethod,
                         builder: (context, AsyncSnapshot snapshot) {
-                          if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
                             return GridView.count(
                               crossAxisCount: 2,
                               crossAxisSpacing: 10,
@@ -176,7 +180,7 @@ class _RaceAllState extends State<RaceAll> {
                                     //  shadowColor: ,
                                     color: Colors.white,
                                     clipBehavior: Clip.hardEdge,
-                          
+
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(12.0),
                                       splashColor: Colors.blue.withAlpha(30),
@@ -191,7 +195,8 @@ class _RaceAllState extends State<RaceAll> {
                                       },
                                       child: GridTile(
                                           // crossAxisAlignment: CrossAxisAlignment.start,
-                                          child: Image.network(element.raceImage,
+                                          child: Image.network(
+                                              element.raceImage,
                                               //  width: Get.width,
                                               //  height: Get.width*0.5625/2,
                                               fit: BoxFit.cover),
@@ -211,8 +216,8 @@ class _RaceAllState extends State<RaceAll> {
                                                           .spaceBetween,
                                                   children: [
                                                     Text(element.raceName,
-                                                        style: Get
-                                                            .textTheme.bodyMedium!
+                                                        style: Get.textTheme
+                                                            .bodyMedium!
                                                             .copyWith(
                                                                 fontWeight:
                                                                     FontWeight
@@ -222,8 +227,8 @@ class _RaceAllState extends State<RaceAll> {
                                                                     .colorScheme
                                                                     .onPrimary)),
                                                     Text("# ${element.raceId}",
-                                                        style: Get
-                                                            .textTheme.bodySmall!
+                                                        style: Get.textTheme
+                                                            .bodySmall!
                                                             .copyWith(
                                                                 color: Get
                                                                     .theme
@@ -270,8 +275,6 @@ class _RaceAllState extends State<RaceAll> {
       ),
     );
   }
-
- 
 
   Future<void> loadData() async {
     startLoading(context);

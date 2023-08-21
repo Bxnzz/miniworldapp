@@ -162,7 +162,7 @@ class _DetailMissionState extends State<DetailMission> {
       var a = await missionService.missionByraceID(raceID: idrace);
       missions = a.data;
       mType = a.data.first.misType.toString();
-   
+
       isLoaded = true;
     } catch (err) {
       isLoaded = false;
@@ -171,21 +171,22 @@ class _DetailMissionState extends State<DetailMission> {
       stopLoading();
     }
   }
+
   Future refresh() async {
     setState(() {
       _buildVerticalLanguageList();
       loadDataMethod = loadData();
-    //  onReorderFinished();
+      //  onReorderFinished();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-       onWillPop: () async {
-          Get.to(() => const HomeAll());
-          return true;
-        },
+      onWillPop: () async {
+        Get.to(() => const DetailMission());
+        return true;
+      },
       child: Scaffold(
         appBar: AppBar(
           // Overide the default Back button
@@ -219,7 +220,7 @@ class _DetailMissionState extends State<DetailMission> {
                   // Prevent the ListView from scrolling when an item is
                   // currently being dragged.
                   padding: const EdgeInsets.only(bottom: 24),
-                    
+
                   children: [
                     const Divider(height: 0),
                     const Padding(padding: EdgeInsets.only(bottom: 8)),
@@ -261,13 +262,13 @@ class _DetailMissionState extends State<DetailMission> {
               ),
             ),
           );
-      
+
           return AnimatedBuilder(
             animation: dragAnimation,
             builder: (context, _) {
               final t = dragAnimation.value;
               final color = Color.lerp(Colors.white, Colors.grey.shade100, t);
-      
+
               return Material(
                 color: color,
                 elevation: lerpDouble(0, 8, t)!,
@@ -603,13 +604,12 @@ class _DetailMissionState extends State<DetailMission> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => Missioncreate(),
-
                     ),
                   );
                   context.read<AppData>().lastMis = mis.last.misId;
                   context.read<AppData>().sqnum = missions.last.misSeq;
                   log('last' + mis.last.misId.toString());
-                  
+
                   if (result != null && !missions.contains(result)) {
                     setState(() {
                       missions.add(result);

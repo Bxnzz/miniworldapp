@@ -64,6 +64,7 @@ class _Profile_editState extends State<Profile_edit> {
   String uri = '';
   String uri2 = '';
   String value = '';
+  CroppedFile? croppedImage;
 
   @override
   void initState() {
@@ -83,15 +84,18 @@ class _Profile_editState extends State<Profile_edit> {
     File? img = File(image.path!);
     // img = await _cropImage(imageFile: img);
     _image = img;
+    croppedImage = await ImageCropper().cropImage(sourcePath: img.path);
+    if (croppedImage == null) return null;
+
+    _image = File(croppedImage!.path);
+
     setState(() {});
-    log(img.path);
   }
 
   Future<File?> _cropImage({required File imageFile}) async {
-    CroppedFile? croppedImage =
-        await ImageCropper().cropImage(sourcePath: imageFile.path);
+    croppedImage = await ImageCropper().cropImage(sourcePath: imageFile.path);
     if (croppedImage == null) return null;
-    return File(croppedImage.path);
+    return File(croppedImage!.path);
   }
 
   Future selectFile() async {
@@ -159,7 +163,7 @@ class _Profile_editState extends State<Profile_edit> {
     avata.currentWidget;
     setState(() {
       loadDataMethod = loadData();
-      Image.file(File(_image!.path));
+      // Image.file(File(_image!.path));
     });
     UserDto user = UserDto(
         userName: userName.text,
@@ -359,7 +363,7 @@ class _Profile_editState extends State<Profile_edit> {
                   )
                 : CircleAvatar(
                     radius: 50,
-                    backgroundImage: FileImage(_image!),
+                    backgroundImage: FileImage(File(_image!.path)),
                   )),
         const Gap(20),
         TextFormField(
