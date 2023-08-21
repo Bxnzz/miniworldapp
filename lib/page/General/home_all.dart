@@ -59,7 +59,7 @@ class _HomeAllState extends State<HomeAll> {
   late RaceService raceService;
   int selectedPos = 0;
 
-  double bottomNavBarHeight = 60;
+  double bottomNavBarHeight = 50;
 
   List<TabItem> tabItems = List.of([
     TabItem(
@@ -159,49 +159,63 @@ class _HomeAllState extends State<HomeAll> {
               openBackgroundColor: Colors.black,
             ),
           ),
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            elevation: 0,
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: FractionalOffset(0.0, 0.0),
-                      end: FractionalOffset(1.0, 0.0),
-                      stops: [0.0, 1.0],
-                      tileMode: TileMode.clamp,
-                      colors: [
-                        Colors.purpleAccent,
-                        Color.fromARGB(255, 144, 64, 255),
-                      ])),
-            ),
-            // backgroundColor: Theme.of(context).colorScheme.primary,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Builder(
-                  builder: (context) => IconButton(
-                    icon: FaIcon(FontAwesomeIcons.alignLeft,
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        size: 18),
-                    onPressed: () => Scaffold.of(context).openDrawer(),
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(50.0),
+            child: AppBar(
+              // BeveledRectangleBorder(
+              //     borderRadius: BorderRadius.circular(20)),
+              automaticallyImplyLeading: false,
+              elevation: 0,
+              flexibleSpace: Container(
+                decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: FractionalOffset(0.0, 0.0),
+                        end: FractionalOffset(1.0, 0.0),
+                        stops: [0.0, 1.0],
+                        tileMode: TileMode.clamp,
+                        colors: [
+                          Colors.purpleAccent,
+                          Color.fromARGB(255, 144, 64, 255),
+                        ])),
+              ),
+              // backgroundColor: Theme.of(context).colorScheme.primary,
+              title:
+                  // SafeArea(
+                  //   child: Column(
+                  //     children: [
+                  //       CircleAvatar(
+                  //         backgroundImage: NetworkImage("${userimg}"),
+                  //       )
+                  //     ],
+                  //   ),
+                  // ),
+                  Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Builder(
+                    builder: (context) => IconButton(
+                      icon: FaIcon(FontAwesomeIcons.alignLeft,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          size: 18),
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                CircleAvatar(
+                  backgroundColor: Colors.amber,
+                  child: IconButton(
+                    icon: const Icon(Icons.search_sharp),
+                    color: Colors.white,
+                    onPressed: () {
+                      showSearch(
+                          context: context, delegate: mySearchDelegate());
+                    },
                   ),
                 ),
               ],
             ),
-            actions: [
-              CircleAvatar(
-                backgroundColor: Colors.amber,
-                child: IconButton(
-                  icon: const Icon(Icons.search_sharp),
-                  color: Colors.white,
-                  onPressed: () {
-                    showSearch(context: context, delegate: mySearchDelegate());
-                  },
-                ),
-              ),
-            ],
-            centerTitle: false,
-            titleSpacing: 0,
           ),
           body: Stack(
             children: <Widget>[
@@ -212,111 +226,8 @@ class _HomeAllState extends State<HomeAll> {
               Align(alignment: Alignment.bottomCenter, child: bottomNav())
             ],
           ),
-          drawer: Container(
-            child: SizedBox(
-              width: Get.width / 1.2,
-              child: Drawer(
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Column(
-                      // Important: Remove any padding from the ListView.
-
-                      children: [
-                        Container(
-                          height: 215,
-                          child: DrawerHeader(
-                            decoration: BoxDecoration(),
-                            child: Stack(children: [
-                              Positioned(
-                                  bottom: 130,
-                                  left: Get.width / 1.6,
-                                  child: IconButton(
-                                    onPressed: () {
-                                      Get.to(() => Profile_edit());
-                                    },
-                                    icon: FaIcon(FontAwesomeIcons.edit),
-                                  )),
-                              Column(
-                                children: [
-                                  Gap(20),
-                                  Align(
-                                    heightFactor: 1,
-                                    alignment: Alignment.topLeft,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                              width: 5,
-                                              color: const Color.fromARGB(
-                                                  255, 255, 255, 255))),
-                                      child: CircleAvatar(
-                                          radius: 40,
-                                          backgroundImage:
-                                              NetworkImage(userimg)),
-                                    ),
-                                  ),
-                                  Gap(15),
-                                  Align(
-                                    heightFactor: 1,
-                                    alignment: Alignment.bottomLeft,
-                                    child: Container(
-                                      child: Text(Username,
-                                          style: Get
-                                              .theme.textTheme.titleMedium!
-                                              .copyWith(
-                                                  fontWeight: FontWeight.bold)),
-                                    ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Container(
-                                      child: Text(
-                                        userDescrip,
-                                        style: Get.theme.textTheme.bodySmall!
-                                            .copyWith(
-                                                color: Color.fromARGB(
-                                                    255, 104, 104, 104)),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ]),
-                          ),
-                        ),
-                        ListTile(
-                          leading: const FaIcon(FontAwesomeIcons.house),
-                          title: const Text('หน้าหลัก'),
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          leading: FaIcon(FontAwesomeIcons.chartSimple),
-                          title: const Text('สถิติการแข่งขัน'),
-                          onTap: () {
-                            Get.to(const Static());
-                          },
-                        ),
-                        ListTile(
-                          leading: FaIcon(FontAwesomeIcons.doorOpen),
-                          title: const Text('ออกจากระบบ'),
-                          onTap: () {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const Login(),
-                                ));
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+          drawer: drawer(
+              userimg: userimg, Username: Username, userDescrip: userDescrip),
         ),
       ),
     );
@@ -325,13 +236,10 @@ class _HomeAllState extends State<HomeAll> {
   Widget bodyContainer() {
     switch (selectedPos) {
       case 0:
-        
         break;
       case 1:
-        
         break;
       case 2:
-        
         break;
     }
 
@@ -375,6 +283,125 @@ class _HomeAllState extends State<HomeAll> {
           print(_navigationController.value);
         });
       },
+    );
+  }
+}
+
+class drawer extends StatelessWidget {
+  const drawer({
+    super.key,
+    required this.userimg,
+    required this.Username,
+    required this.userDescrip,
+  });
+
+  final String userimg;
+  final String Username;
+  final String userDescrip;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: SizedBox(
+        width: Get.width / 1.2,
+        child: Drawer(
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Column(
+                // Important: Remove any padding from the ListView.
+
+                children: [
+                  Container(
+                    height: 215,
+                    child: DrawerHeader(
+                      decoration: BoxDecoration(),
+                      child: Stack(children: [
+                        Positioned(
+                            bottom: 130,
+                            left: Get.width / 1.6,
+                            child: IconButton(
+                              onPressed: () {
+                                Get.to(() => Profile_edit());
+                              },
+                              icon: FaIcon(FontAwesomeIcons.edit),
+                            )),
+                        Column(
+                          children: [
+                            Gap(20),
+                            Align(
+                              heightFactor: 1,
+                              alignment: Alignment.topLeft,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        width: 5,
+                                        color: const Color.fromARGB(
+                                            255, 255, 255, 255))),
+                                child: CircleAvatar(
+                                    radius: 40,
+                                    backgroundImage: NetworkImage(userimg)),
+                              ),
+                            ),
+                            Gap(15),
+                            Align(
+                              heightFactor: 1,
+                              alignment: Alignment.bottomLeft,
+                              child: Container(
+                                child: Text(Username,
+                                    style: Get.theme.textTheme.titleMedium!
+                                        .copyWith(fontWeight: FontWeight.bold)),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Container(
+                                child: Text(
+                                  userDescrip,
+                                  style: Get.theme.textTheme.bodySmall!
+                                      .copyWith(
+                                          color: Color.fromARGB(
+                                              255, 104, 104, 104)),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      ]),
+                    ),
+                  ),
+                  ListTile(
+                    leading: const FaIcon(FontAwesomeIcons.house),
+                    title: const Text('หน้าหลัก'),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: FaIcon(FontAwesomeIcons.chartSimple),
+                    title: const Text('สถิติการแข่งขัน'),
+                    onTap: () {
+                      Get.to(const Static());
+                    },
+                  ),
+                  ListTile(
+                    leading: FaIcon(FontAwesomeIcons.doorOpen),
+                    title: const Text('ออกจากระบบ'),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Login(),
+                          ));
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

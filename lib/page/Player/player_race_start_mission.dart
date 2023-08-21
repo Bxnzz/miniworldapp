@@ -2,33 +2,41 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:appinio_video_player/appinio_video_player.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:circular_menu/circular_menu.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:miniworldapp/model/DTO/missionCompDTO.dart';
 import 'package:miniworldapp/model/missionComp.dart' as misComp;
 import 'package:miniworldapp/model/mission.dart';
 import 'package:flutter/rendering.dart';
+import 'package:miniworldapp/page/Player/player_race_start_hint.dart';
+import 'package:miniworldapp/page/Player/player_race_start_mission.detail.dart';
 
 import 'package:miniworldapp/service/mission.dart';
 import 'package:miniworldapp/service/missionComp.dart';
 import 'package:miniworldapp/widget/loadData.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
+import 'package:timeline_tile/timeline_tile.dart';
 
 import '../../model/mission.dart';
 import '../../model/missionComp.dart';
 import '../../service/provider/appdata.dart';
 
 class PlayerRaceStartMis extends StatefulWidget {
-  const PlayerRaceStartMis({super.key});
-
+  const PlayerRaceStartMis({super.key, required this.controller});
+  final PersistentTabController controller;
   @override
   State<PlayerRaceStartMis> createState() => _PlayerRaceStartMisState();
 }
@@ -78,12 +86,14 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
   double lng = 0.0;
   int misDistance = 0;
   String misDescrip = "";
-
+  bool isfd = false;
   late Future<void> loadDataMethod;
 
+  File? _image;
+  CroppedFile? croppedImage;
+  final keys = GlobalKey<FormState>();
   @override
   void initState() {
-    super.initState();
     OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
     teamID = context.read<AppData>().idTeam;
     idrace = context.read<AppData>().idrace;
@@ -94,6 +104,92 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
     missionService =
         MissionService(Dio(), baseUrl: context.read<AppData>().baseurl);
     loadDataMethod = loadData();
+    super.initState();
+  }
+
+  Future _pickImage(ImageSource source) async {
+    final image = await ImagePicker().pickImage(source: source);
+
+    if (image == null) {
+      return;
+    }
+    File? img = File(image.path!);
+    // img = await _cropImage(imageFile: img);
+    _image = img;
+    croppedImage = await ImageCropper().cropImage(sourcePath: img.path);
+    if (croppedImage == null) return null;
+    _image = File(croppedImage!.path);
+    setState(() {});
+  }
+
+  Future _pickVideo(ImageSource source) async {
+    final image = await ImagePicker().pickVideo(source: source);
+
+    if (image == null) {
+      return;
+    }
+    File? img = File(image.path!);
+    // img = await _cropImage(imageFile: img);
+    _image = img;
+    setState(() {});
+  }
+
+  Future _pickMedia(ImageSource source) async {
+    final image = await ImagePicker().pickMedia(imageQuality: 50);
+
+    if (image == null) {
+      return;
+    }
+    File? img = File(image.path!);
+    _image = img;
+    if (_image!.path.endsWith(".mp4") == true) {
+      log("isiamge = $isImage");
+      isImage = false;
+      log("path ${img.path}");
+      videoPlayerController = VideoPlayerController.file(File(_image!.path))
+        ..initialize().then((_) {
+          log(videoPlayerController.toString());
+          //SizedBox(child: ,)
+          _customVideoPlayerController = CustomVideoPlayerController(
+            context: context,
+            videoPlayerController: videoPlayerController!,
+          );
+          setState(() {});
+        });
+
+      return;
+    } else {
+      log("isiamge = $isImage");
+
+      isImage = true;
+
+      croppedImage = await ImageCropper().cropImage(sourcePath: img.path);
+      if (croppedImage == null) return null;
+      _image = File(croppedImage!.path);
+      // img = await _cropImage(imageFile: img);
+
+      setState(() {});
+    }
+  }
+
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          PlayerRaceStMisDetail(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 1.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
   }
 
   Future selectFile() async {
@@ -132,11 +228,14 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
                 setState(() {});
               });
       }
+      setState(() {});
     });
   }
 
   Future<void> loadData() async {
     try {
+      log("asdfasdfffffff");
+      misID = context.read<AppData>().idMis;
       var a = await missionCompService.missionCompByTeamId(teamID: teamID);
       log("idteam ====${teamID}");
       //  var mis = await missionService.missionByraceID(raceID: idrace);
@@ -149,7 +248,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
       missionComp = a.data;
       missions = mis2.data;
 
-      log("asdfasdfasdf${missionComp.first.mcId}");
+      log("asdfasdfasdf${mis3.data.length}");
       onesingnalId = mis2.data.first.race.user.onesingnalId;
       log("onesingnalId ====${onesingnalId}");
       misName = mis3.data.first.misName;
@@ -285,8 +384,6 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
     Get.defaultDialog(title: mc.toString());
   }
 
-  GlobalKey<CircularMenuState> key = GlobalKey<CircularMenuState>();
-
   Future refresh() async {
     setState(() {
       loadDataMethod = loadData();
@@ -298,137 +395,414 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
     OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: refresh,
-        child: FutureBuilder(
-          future: loadDataMethod,
-          builder: (context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              missionShow = [];
-              // String misId = '';
-              // List<MissionComplete> temp = [];
-              // for (var i = 0; i < missionComp.length; i++) {
-              //   if (missionComp[i].mcStatus != 2) {
-              //     if (temp.isNotEmpty) {
-              //       var mission = {misId: temp};
-              //       missionShow.add(mission);
-              //       temp = [];
-              //     }
-              //     misId = missions[i].misId.toString();
+      body: FutureBuilder(
+        future: loadData(),
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            missionShow = [];
+            // String misId = '';
+            // List<MissionComplete> temp = [];
+            // for (var i = 0; i < missionComp.length; i++) {
+            //   if (missionComp[i].mcStatus != 2) {
+            //     if (temp.isNotEmpty) {
+            //       var mission = {misId: temp};
+            //       missionShow.add(mission);
+            //       temp = [];
+            //     }
+            //     misId = missions[i].misId.toString();
+            //   }
+
+            //   temp.add(missionComp[i]);
+            // }
+            // if (temp.isNotEmpty) {
+            //   var mission = {misId: temp};
+            //   missionShow.add(mission);
+            // }
+            // log(missionShow.toString());
+            for (int i = 0; i < missions.length; i++) {
+              log("message");
+
+              //first mis
+              // if (i == 0) {
+              //   log("first Mis");
+              //   lat = missions[0].misLat;
+              //   lng = missions[0].misLng;
+
+              //   misID = missions[0].misId;
+              //   misName = missions[0].misName;
+              //   misDistance = missions[0].misDistance;
+              //   misDescrip = missions[0].misDiscrip;
+              //   misType = missions[0].misType.toString();
+              //   if (misType.contains('12')) {
+              //     type = 'ข้อความ,สื่อ';
               //   }
-
-              //   temp.add(missionComp[i]);
+              //   if (misType.contains('1')) {
+              //     type = 'ข้อความ';
+              //   } else if (misType.contains('2')) {
+              //     type = 'สื่อ';
+              //   } else if (misType.contains('3')) {
+              //     type = 'ไม่มีการส่ง';
+              //   }
               // }
-              // if (temp.isNotEmpty) {
-              //   var mission = {misId: temp};
-              //   missionShow.add(mission);
-              // }
-              // log(missionShow.toString());
-              for (int i = 0; i < missions.length; i++) {
-                log("message");
-                //first mis
-                // if (i == 0) {
-                //   log("first Mis");
-                //   lat = missions[0].misLat;
-                //   lng = missions[0].misLng;
 
-                //   misID = missions[0].misId;
-                //   misName = missions[0].misName;
-                //   misDistance = missions[0].misDistance;
-                //   misDescrip = missions[0].misDiscrip;
-                //   misType = missions[0].misType.toString();
-                //   if (misType.contains('12')) {
-                //     type = 'ข้อความ,สื่อ';
-                //   }
-                //   if (misType.contains('1')) {
-                //     type = 'ข้อความ';
-                //   } else if (misType.contains('2')) {
-                //     type = 'สื่อ';
-                //   } else if (misType.contains('3')) {
-                //     type = 'ไม่มีการส่ง';
-                //   }
-                // }
-
-                for (int j = 0; j < missionComp.length; j++) {
-                  if (missionComp[j].misId == missions[i].misId &&
-                      missionComp[j].mcStatus == 2) {
-                    log("pass ${missions[i].misId}");
-                    missionShow.add(missions[i]);
-
-                    for (int k = 0; k < missionShow.length; k++) {
-                      typeMisShow.add(missionShow[k].misType.toString());
-
-                      if (missionShow[k].misType.toString().contains('12')) {
-                        typeMisShow[k] = 'ข้อความ,สื่อ';
-                      }
-                      if (missionShow[k].misType.toString().contains('1')) {
-                        typeMisShow[k] = 'ข้อความ';
-                      } else if (missionShow[k]
-                          .misType
-                          .toString()
-                          .contains('2')) {
-                        typeMisShow[k] = 'สื่อ';
-                      } else if (missionShow[k]
-                          .misType
-                          .toString()
-                          .contains('3')) {
-                        typeMisShow[k] = 'ไม่มีการส่ง';
-                      }
-                    }
-
-                    log("MissionShow :$missionShow");
-                  } else {
-                    if (i + 1 > missions.length - 1) {
-                      log("next ${missions[i].misId}");
-
-                      lastmisComp = true;
-                      // showAlertDialog();
-                    }
-                    //else {
-                    //   log("next ${missions[i + 1].misId}");
-                    //   log("lat lng${missions[i + 1].misLat}${missions[i + 1].misLng}");
-
-                    //   lat = missions[i + 1].misLat;
-                    //   lng = missions[i + 1].misLng;
-
-                    //   log("lat $lat");
-                    //   log("lng $lng");
-                    //   misID = missions[i + 1].misId;
-                    //   misName = missions[i + 1].misName;
-                    //   misDistance = missions[i + 1].misDistance;
-                    //   misDescrip = missions[i + 1].misDiscrip;
-                    //   misType = missions[i + 1].misType.toString();
-                    //   if (misType.contains('12')) {
-                    //     type = 'ข้อความ,สื่อ';
-                    //   }
-                    //   if (misType.contains('1')) {
-                    //     type = 'ข้อความ';
-                    //   } else if (misType.contains('2')) {
-                    //     type = 'สื่อ';
-                    //   } else if (misType.contains('3')) {
-                    //     type = 'ไม่มีการส่ง';
-                    //   }
-
-                    //   log("mis id = ${misID}");
-                    //   log("distance = ${misDistance}");
-                    //   // if (i == mission.length) {
-                    //   //   log("message");
-                    //   // }
-                    // }
+              for (int j = 0; j < missionComp.length; j++) {
+                if (missionComp[j].misId == missions[i].misId &&
+                    missionComp[j].mcStatus == 2) {
+                  log("pass ${missions[i].misId}");
+                  missionShow.add(missions[i]);
+                  if (i + 1 > missions.length - 1) {
+                    lastmisComp = true;
+                    log("lastmis = $lastmisComp");
+                    // showAlertDialog();
                   }
+                  for (int k = 0; k < missionShow.length; k++) {
+                    typeMisShow.add(missionShow[k].misType.toString());
+
+                    if (missionShow[k].misType.toString().contains('12')) {
+                      typeMisShow[k] = 'ข้อความ,สื่อ';
+                    }
+                    if (missionShow[k].misType.toString().contains('1')) {
+                      typeMisShow[k] = 'ข้อความ';
+                    } else if (missionShow[k]
+                        .misType
+                        .toString()
+                        .contains('2')) {
+                      typeMisShow[k] = 'สื่อ';
+                    } else if (missionShow[k]
+                        .misType
+                        .toString()
+                        .contains('3')) {
+                      typeMisShow[k] = 'ไม่มีการส่ง';
+                    }
+                  }
+
+                  log("MissionShow :$missionShow");
+                } else {
+                  // if (i + 1 > missions.length - 1) {
+                  //   log("next ${missions[i].misId}");
+
+                  //   lastmisComp = true;
+                  //   // showAlertDialog();
+                  // }
+                  //else {
+                  //   log("next ${missions[i + 1].misId}");
+                  //   log("lat lng${missions[i + 1].misLat}${missions[i + 1].misLng}");
+
+                  //   lat = missions[i + 1].misLat;
+                  //   lng = missions[i + 1].misLng;
+
+                  //   log("lat $lat");
+                  //   log("lng $lng");
+                  //   misID = missions[i + 1].misId;
+                  //   misName = missions[i + 1].misName;
+                  //   misDistance = missions[i + 1].misDistance;
+                  //   misDescrip = missions[i + 1].misDiscrip;
+                  //   misType = missions[i + 1].misType.toString();
+                  //   if (misType.contains('12')) {
+                  //     type = 'ข้อความ,สื่อ';
+                  //   }
+                  //   if (misType.contains('1')) {
+                  //     type = 'ข้อความ';
+                  //   } else if (misType.contains('2')) {
+                  //     type = 'สื่อ';
+                  //   } else if (misType.contains('3')) {
+                  //     type = 'ไม่มีการส่ง';
+                  //   }
+
+                  //   log("mis id = ${misID}");
+                  //   log("distance = ${misDistance}");
+                  //   // if (i == mission.length) {
+                  //   //   log("message");
+                  //   // }
+                  // }
                 }
               }
-
-              return ListView(children: [
-                Container(height: 300, width: Get.width, child: misPass()),
-                Container(height: 500, width: Get.width, child: misfind()),
-              ]);
-            } else {
-              return Container();
             }
-          },
+
+            return RefreshIndicator(
+              onRefresh: refresh,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: ListView(children: [
+                  mission_pass_timeline(),
+                  lastmisComp == false
+                      ? misID == 0
+                          ? mission_wait_timeline()
+                          : mission_find_timeline()
+                      : mission_finish_timeline()
+                ]),
+              ),
+            );
+          } else {
+            return Container();
+          }
+        },
+      ),
+    );
+  }
+
+  Column mission_pass_timeline() {
+    return Column(
+        children: missionShow.map((e) {
+      if (missionShow.indexOf(e) == 0) {
+        isfd = true;
+      } else {
+        isfd = false;
+      }
+
+      return GestureDetector(
+        onTap: () {},
+        child: TimelineTile(
+          isFirst: isfd,
+          alignment: TimelineAlign.start,
+          beforeLineStyle: LineStyle(
+            thickness: 8,
+          ),
+          afterLineStyle: LineStyle(
+            thickness: 8,
+          ),
+          indicatorStyle: IndicatorStyle(
+              width: 40,
+              height: 40,
+              color: Colors.white,
+              iconStyle: IconStyle(
+                color: Colors.green,
+                iconData: Icons.check_circle,
+              )),
+          endChild: Container(
+            height: 100,
+            padding: EdgeInsets.only(left: 25, top: 25),
+            margin: EdgeInsets.only(top: 25, bottom: 25),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10), color: Colors.purple),
+            child: Text(
+              "${e.misName}",
+              style: TextStyle(
+                color: Colors.yellow,
+              ),
+            ),
+          ),
+        ),
+      );
+    }).toList());
+  }
+
+  TimelineTile mission_wait_timeline() {
+    return TimelineTile(
+      isLast: true,
+      beforeLineStyle: LineStyle(
+        thickness: 8,
+      ),
+      afterLineStyle: LineStyle(
+        thickness: 8,
+      ),
+      indicatorStyle: IndicatorStyle(
+          width: 40,
+          height: 40,
+          color: Colors.white,
+          iconStyle: IconStyle(
+            color: Colors.red,
+            iconData: Icons.question_mark,
+          )),
+      alignment: TimelineAlign.start,
+      endChild: Container(
+        padding: EdgeInsets.all(50),
+        margin: EdgeInsets.only(top: 25, bottom: 25),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10), color: Colors.grey),
+        child: Text(
+          "ค้นหาภารกิจ!",
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
       ),
+    );
+  }
+
+  TimelineTile mission_find_timeline() {
+    return TimelineTile(
+        isLast: true,
+        beforeLineStyle: LineStyle(
+          thickness: 8,
+        ),
+        afterLineStyle: LineStyle(
+          thickness: 8,
+        ),
+        indicatorStyle: IndicatorStyle(
+            width: 40,
+            height: 40,
+            color: Colors.white,
+            iconStyle: IconStyle(
+              color: Colors.red,
+              iconData: Icons.gps_fixed_rounded,
+            )),
+        alignment: TimelineAlign.start,
+        endChild: Container(
+          height: 100,
+          child: AnimatedButton(
+            borderRadius: BorderRadius.circular(10),
+            pressEvent: () {
+              Get.to(() => PlayerRaceStMisDetail(), fullscreenDialog: true);
+              // dialogShow();
+            },
+            text: "$misName (กำลังทำ)",
+            buttonTextStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+            color: Colors.amber,
+          ),
+        ));
+  }
+
+  Future<dynamic> dialogShow() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Center(child: Text("$misName")),
+        content: StatefulBuilder(
+          builder: (BuildContext context, setState) {
+            return Container(
+              height: Get.height,
+              width: Get.width,
+              child: Column(
+                children: [
+                  _image != null
+                      ? isImage == true
+                          ? Container(
+                              height: 100,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                border:
+                                    Border.all(color: Colors.white, width: 5),
+                              ),
+                              child: Image.file(
+                                _image!,
+                                fit: BoxFit.cover,
+                              ))
+                          : CustomVideoPlayer(
+                              customVideoPlayerController:
+                                  _customVideoPlayerController!)
+                      : Container(),
+                  misType.contains('2')
+                      ? Row(
+                          children: [
+                            Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.8),
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                child: IconButton(
+                                    onPressed: () async {
+                                      await _pickImage(ImageSource.camera);
+                                      setState(() {});
+                                      log('message');
+                                    },
+                                    icon: const FaIcon(
+                                      FontAwesomeIcons.camera,
+                                      size: 25,
+                                    ))),
+                            Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.8),
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                child: IconButton(
+                                    onPressed: () async {
+                                      await _pickVideo(ImageSource.camera);
+                                      setState(() {});
+                                      log('message');
+                                    },
+                                    icon: const FaIcon(
+                                      FontAwesomeIcons.video,
+                                      size: 25,
+                                    ))),
+                            Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.8),
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                child: IconButton(
+                                    onPressed: () async {
+                                      await _pickMedia(ImageSource.gallery);
+                                      setState(() {});
+                                      log('message');
+                                    },
+                                    icon: const FaIcon(
+                                      FontAwesomeIcons.photoFilm,
+                                      size: 25,
+                                    ))),
+                          ],
+                        )
+                      : Positioned(
+                          bottom: 10,
+                          right: 10,
+                          child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              child: IconButton(
+                                  onPressed: () {
+                                    _pickImage(ImageSource.gallery);
+                                    log('message');
+                                  },
+                                  icon: const FaIcon(
+                                    FontAwesomeIcons.camera,
+                                    size: 25,
+                                  ))),
+                        ),
+                ],
+              ),
+            );
+          },
+        ),
+        actions: <Widget>[
+          Center(
+            child: ElevatedButton(
+              onPressed: () async {},
+              child: const Text('สำเร็จ'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  TimelineTile mission_finish_timeline() {
+    return TimelineTile(
+      isLast: true,
+      beforeLineStyle: LineStyle(
+        thickness: 8,
+      ),
+      afterLineStyle: LineStyle(
+        thickness: 8,
+      ),
+      indicatorStyle: IndicatorStyle(
+          width: 40,
+          height: 40,
+          color: Colors.white,
+          iconStyle: IconStyle(
+            color: Colors.green,
+            iconData: Icons.check_circle,
+          )),
+      alignment: TimelineAlign.start,
+      endChild: Container(
+          padding: EdgeInsets.all(25),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10), color: Colors.green),
+          child: const Row(
+            children: [
+              Text(
+                "ภารกิจเสร็จสิ้น",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          )),
     );
   }
 
@@ -605,6 +979,21 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
 
   ListView misfind() {
     return ListView(children: [
+      // Container(
+      //     constraints: const BoxConstraints(maxHeight: 700),
+      //     color: Colors.white,
+      //     child: TimelineTile(
+      //       alignment: TimelineAlign.end,
+      //       startChild: Container(
+      //         color: Colors.amberAccent,
+      //       ),
+      //       endChild: Container(
+      //         constraints: const BoxConstraints(
+      //           minHeight: 120,
+      //         ),
+      //         color: Colors.lightGreenAccent,
+      //       ),
+      //     )),
       ExpansionTile(
         title: Padding(
           padding: const EdgeInsets.only(top: 15),
