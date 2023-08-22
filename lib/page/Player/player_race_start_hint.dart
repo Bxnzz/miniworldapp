@@ -330,6 +330,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
             dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
             dis <= misDistance
                 ? AwesomeDialog(
+                    transitionAnimationDuration: Duration(milliseconds: 100),
                     context: context,
                     headerAnimationLoop: false,
                     animType: AnimType.bottomSlide,
@@ -349,6 +350,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                     },
                   ).show()
                 : AwesomeDialog(
+                    transitionAnimationDuration: Duration(milliseconds: 100),
                     context: context,
                     headerAnimationLoop: false,
                     animType: AnimType.bottomSlide,

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -20,6 +21,7 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/DTO/missionCompDTO.dart';
 import '../../model/mission.dart';
 import '../../model/missionComp.dart';
 import '../../service/provider/appdata.dart';
@@ -39,7 +41,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
 
   List<MissionComplete> missionComp = [];
   List<Mission> missions = [];
-
+  Map<String, dynamic> mc = {};
   TextEditingController answerPass = TextEditingController();
 
   String onesingnalId = '';
@@ -48,17 +50,23 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
   String misType = '';
   String type = '';
   String misMediaUrl = '';
+  String dateTime = '';
+  String mcID = '';
+  String teamName = '';
 
   int teamID = 0;
   int idrace = 0;
   int misID = 0;
 
+  double mlat = 0.0;
+  double mlng = 0.0;
   bool isImage = false;
 
   File? _image;
   CroppedFile? croppedImage;
   VideoPlayerController? videoPlayerController;
   CustomVideoPlayerController? _customVideoPlayerController;
+  UploadTask? uploadTask;
 
   @override
   void initState() {
@@ -99,6 +107,9 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
       misDiscrip = mis3.data.first.misDiscrip;
       misType = mis3.data.first.misType.toString();
 
+      mlat = a.data.first.mission.misLat;
+      mlng = a.data.first.mission.misLng;
+      teamName = a.data.first.team.teamName;
       misMediaUrl = mis3.data.first.misMediaUrl;
 
       if (misType.contains('12')) {
@@ -202,6 +213,98 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
 
       setState(() {});
     }
+  }
+
+  Future uploadFile() async {
+    startLoading(context);
+    var deviceState = await OneSignal.shared.getDeviceState();
+    final now = DateTime.now();
+    dateTime = '${now.toIso8601String()}Z';
+    // log(dateTime);
+    //final berlinWallFell = DateTime.utc(now);
+
+    final path = 'files/${_image?.path.split('/').last}';
+
+    final file = File(_image!.path!);
+
+    final ref = FirebaseStorage.instance.ref().child(path);
+    log(ref.toString());
+
+    setState(() {
+      uploadTask = ref.putFile(file);
+    });
+    final snapshot = await uploadTask!.whenComplete(() {});
+
+    final urlDownload = await snapshot.ref.getDownloadURL();
+
+    log('Download Link:$urlDownload');
+    log('mid ' + mlat.toString());
+
+    if (isImage == true) {
+      //update image
+      MissionCompDto mdto = MissionCompDto(
+          mcDatetime: DateTime.parse(dateTime),
+          mcLat: mlat,
+          mcLng: mlng,
+          mcMasseage: '',
+          mcPhoto: urlDownload,
+          mcStatus: 1,
+          mcText: answerPass.text,
+          mcVideo: '',
+          misId: misID,
+          teamId: teamID);
+      debugPrint(missionCompDtoToJson(mdto));
+      var missionComp = await missionCompService.insertMissionComps(mdto);
+
+      missionComp.data;
+      mcID = missionComp.data.mcId.toString();
+
+      mc = {'notitype': 'mission', 'mcid': mcID, 'mission': misName};
+      log('img ${missionComp.data.misId}');
+    } else {
+      //update video
+      MissionCompDto mdto = MissionCompDto(
+          mcDatetime: DateTime.parse(dateTime),
+          mcLat: mlat,
+          mcLng: mlng,
+          mcMasseage: '',
+          mcPhoto: '',
+          mcStatus: 1,
+          mcText: answerPass.text,
+          mcVideo: urlDownload,
+          misId: misID,
+          teamId: teamID);
+      var missionComp = await missionCompService.insertMissionComps(mdto);
+      mcID = missionComp.data.mcId.toString();
+
+      mc = {'notitype': 'mission', 'mcid': mcID, 'mission': misName};
+      log('mcc$mc');
+      log('one $onesingnalId');
+    }
+    if (deviceState == null || deviceState.userId == null) return;
+
+    var playerId = deviceState.userId!;
+
+    var notification1 = OSCreateNotification(
+        //playerID
+        additionalData: mc,
+        playerIds: [
+          onesingnalId,
+
+          //'9556bafc-c68e-4ef2-a469-2a4b61d09168',
+        ],
+        content: 'ส่งจากทีม: $teamName',
+        heading: "หลักฐานภารกิจ: $misName",
+        //  iosAttachments: {"id1",urlImage},
+        // bigPicture: imUrlString,
+        buttons: [
+          OSActionButton(text: "ตกลง", id: "id1"),
+          OSActionButton(text: "ยกเลิก", id: "id2")
+        ]);
+
+    var response1 = await OneSignal.shared.postNotification(notification1);
+    stopLoading();
+    Get.defaultDialog(title: mc.toString());
   }
 
   @override
@@ -432,7 +535,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
                       Get.defaultDialog(title: 'กรุณาเลือกหลักฐาน');
                     } else {
                       setState(() {
-                        //uploadFile();
+                        uploadFile();
                       });
                     }
                   },

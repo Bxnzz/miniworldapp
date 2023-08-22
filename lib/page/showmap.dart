@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:miniworldapp/model/DTO/attendDTO.dart';
@@ -19,6 +23,7 @@ import 'package:provider/provider.dart';
 
 import '../service/provider/appdata.dart';
 import '../widget/loadData.dart';
+import 'package:http/http.dart' as http;
 
 class ShowMapPage extends StatefulWidget {
   const ShowMapPage({Key? key}) : super(key: key);
@@ -34,8 +39,9 @@ class ShowMapPageState extends State<ShowMapPage> {
   late Future<void> loadDataMethod;
   List<AttendRace> attends = [];
   late AttendService attendService;
-
+  String imgUser = '';
   Set<Marker> markers = {};
+  late BitmapDescriptor _markerIcon;
   late int atId;
   // late double lat;
   // late double lng;
@@ -64,6 +70,7 @@ class ShowMapPageState extends State<ShowMapPage> {
       attends = a.data;
       //  log('lat'+attends.first.lat.toString());
       // isLoaded = true;
+      imgUser = attends.first.user.userImage;
     } catch (err) {
       // isLoaded = false;
       log('Error:$err');
@@ -77,10 +84,23 @@ class ShowMapPageState extends State<ShowMapPage> {
 
     for (var latlng in latlngs.data) {
       var marker = Marker(
-        markerId: MarkerId(latlng.atId.toString()),
-        position: LatLng(latlng.lat.toDouble(), latlng.lng.toDouble()),
-         infoWindow:  InfoWindow(title: "ทีม", snippet: "สมาชิก",onTap: () => Get.defaultDialog(title:'ข้อมูลสมาชิก'))
-      );
+          markerId: MarkerId(latlng.atId.toString()),
+          position: LatLng(latlng.lat.toDouble(), latlng.lng.toDouble()),
+          visible: true,
+          infoWindow: InfoWindow(
+              title: "${latlngs.data.first.team.teamName}",
+              snippet: "${latlngs.data.first.user.userName}",
+              onTap: () {
+                SmartDialog.show(builder: (_) {
+                  return Dialog(
+                      child: Container(
+                    width: 150,
+                    height: 100,
+                    child: Text("ชื่อ: ${latlngs.data.first.user.userName}"),
+                  ));
+                });
+                // Get.defaultDialog(title: 'ข้อมูลสมาชิก');
+              }));
 
       markers.add(marker);
     }
@@ -107,8 +127,8 @@ class ShowMapPageState extends State<ShowMapPage> {
     }
     return WillPopScope(
       onWillPop: () async {
-         context.read<AppData>().updateLocationTimer.cancel();
-         return true;
+        context.read<AppData>().updateLocationTimer.cancel();
+        return true;
       },
       child: FutureBuilder(
           future: loadDataMethod,
@@ -119,7 +139,10 @@ class ShowMapPageState extends State<ShowMapPage> {
             return DefaultTabController(
               initialIndex: 1,
               length: 3,
-              child: Scaffold(     
+              child: Scaffold(
+                  appBar: AppBar(
+                    title: Text("ตำแหน่งผู้แข่งขัน"),
+                  ),
                   body: GoogleMap(
                     markers: markers,
                     mapType: MapType.normal,
