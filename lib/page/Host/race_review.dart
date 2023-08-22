@@ -116,7 +116,7 @@ class _raceReviewState extends State<raceReview> {
                                       const Color.fromARGB(255, 255, 255, 255),
                                 ),
                               ),
-                              Text("${avg}",
+                              Text("${avg.toStringAsFixed(1)}",
                                   style: textTheme.displaySmall?.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: const Color.fromARGB(
