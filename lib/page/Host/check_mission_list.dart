@@ -123,6 +123,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
       raceName = a.data.first.race.raceName;
       rStatus = a.data.first.race.raceStatus;
       // rStatus = a.
+      log('status '+rStatus.toString());
 
       var t = await teamService.teambyRaceID(raceID: idrace);
       teams = t.data;
@@ -143,6 +144,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
       log('att ' + playerIds.toString());
       var mcs = await missionCompService.missionCompByraceId(raceID: idrace);
       missionComs = mcs.data;
+      
       reMissions = missions.reversed.toList();
       log(reMissions.first.misSeq.toString());
       //    misStatus = mcs.data.where((element) => element.mcStatus == 1);
@@ -326,11 +328,13 @@ class _CheckMissionListState extends State<CheckMissionList> {
                   children: missions.map((element) {
                     final theme = Theme.of(context);
                     final textTheme = theme.textTheme;
-                    var mcStatus = missionComs
-                        .where((e) =>
-                            e.mission.misId == element.misId && e.mcStatus == 1).length;
-              
-                    remainMC += mcStatus;
+                    var mcStatus = missionComs.length;
+                        // .where((e) =>
+                        //     e.mission.misId == element.misId && e.mcStatus == 1);
+                    for (var mm in missionComs) {
+                      log(mm.misId.toString()+' '+mm.mcStatus.toString());
+                    }
+                    remainMC = mcStatus;
               
                     log('remain ' + remainMC.toString());
                     //  log('mcss ' + mcStatus.toString());
