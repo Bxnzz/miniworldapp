@@ -330,6 +330,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
             dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
             dis <= misDistance
                 ? AwesomeDialog(
+                    transitionAnimationDuration: Duration(milliseconds: 100),
                     context: context,
                     headerAnimationLoop: false,
                     animType: AnimType.bottomSlide,
@@ -349,6 +350,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                     },
                   ).show()
                 : AwesomeDialog(
+                    transitionAnimationDuration: Duration(milliseconds: 100),
                     context: context,
                     headerAnimationLoop: false,
                     animType: AnimType.bottomSlide,
@@ -357,11 +359,8 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                     desc: '${dis.toStringAsFixed(1)} เมตร',
                     btnOkText: 'ตกลง',
                     btnOkOnPress: () {
-                      setState(() {
-                        dis = Geolocator.distanceBetween(
-                            latDevice, lngDevice, lat, lng);
-                        loadDataMethod = LoadData();
-                      });
+                      dis = Geolocator.distanceBetween(
+                          latDevice, lngDevice, lat, lng);
                     },
                   ).show();
           }),
@@ -419,11 +418,9 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
-                            setState(() {
-                              dis = Geolocator.distanceBetween(
-                                  latDevice, lngDevice, lat, lng);
-                              loadDataMethod = LoadData();
-                            });
+                            dis = Geolocator.distanceBetween(
+                                latDevice, lngDevice, lat, lng);
+
                             Navigator.pop(context);
                           },
                           child: const Text('OK'),

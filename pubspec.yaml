@@ -80,7 +80,7 @@ dependencies:
   simple_speed_dial: ^0.1.7
   implicitly_animated_reorderable_list_2: ^0.5.1
   flutter_slidable: ^3.0.0
-  flutter_smart_dialog: ^4.9.1
+  flutter_smart_dialog: ^4.9.4
   loading_indicator: ^3.1.0
   animations: ^2.0.7
   expandable: ^5.0.1
