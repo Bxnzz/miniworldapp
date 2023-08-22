@@ -77,6 +77,7 @@ class _RankRaceState extends State<RankRace> {
     try {
       idrace = context.read<AppData>().idrace;
       idUser = context.read<AppData>().idUser;
+      log('race  ' + idrace.toString());
       var a = await missionService.missionByraceID(raceID: idrace);
       missions = a.data;
       // log(missions.length.toString());
@@ -99,15 +100,25 @@ class _RankRaceState extends State<RankRace> {
         }
       }
       //loop เรียงลำดับ
-      for (var i = 0; i < teams.length; i++) {
-        log('Rank: ${i + 1} ${teams[i].teamId} ${teams[i].team.teamName} ${teams[i].misId} ${teams[i].mcDatetime}');
+      // for (var i = 0; i < teams.length; i++) {
+      //   log('Rank: ${i + 1} ${teams[i].teamId} ${teams[i].team.teamName} ${teams[i].misId} ${teams[i].mcDatetime}');
+
+      // }
+      if (teams.length >= 1) {
         teamImage1 = teams[0].team.teamImage;
         teamName1 = teams[0].team.teamName;
+      }
+      if (teams.length >= 2) {
         teamImage2 = teams[1].team.teamImage;
         teamName2 = teams[1].team.teamName;
+      }
+      if (teams.length >= 3) {
         teamImage3 = teams[2].team.teamImage;
         teamName3 = teams[2].team.teamName;
       }
+
+      // teamImage3 = teams[2].team.teamImage;
+      // teamName3 = teams[2].team.teamName;
       log(teamImage1);
       log('name' + teamName1);
       debugPrint(teams.toString());
@@ -369,10 +380,13 @@ class _RankRaceState extends State<RankRace> {
                                                                 ? Container(
                                                                     width: 40,
                                                                     height: 40,
-                                                                    decoration:  BoxDecoration(
+                                                                    decoration: BoxDecoration(
                                                                         shape: BoxShape
                                                                             .circle,
-                                                                        color:Get.theme.colorScheme.primary),
+                                                                        color: Get
+                                                                            .theme
+                                                                            .colorScheme
+                                                                            .primary),
                                                                     child:
                                                                         Center(
                                                                       child: Text(
@@ -394,27 +408,29 @@ class _RankRaceState extends State<RankRace> {
                                             alignment: Alignment.center,
                                             children: <Widget>[
                                               // Stroked text as border.
-                                            if (attendShow.where((att) =>
+                                              if (attendShow.where((att) =>
                                                       att.keys.first ==
-                                                      e.teamId)  == attendShow.where((atts) =>
+                                                      e.teamId) ==
+                                                  attendShow.where((atts) =>
                                                       atts.keys.first ==
-                                                      idUser)) Text(
-                                                      e.team.teamName +
-                                                          '(ทีมคุณ)',
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          color:
-                                                              Colors.deepPurple,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ) else Text(
-                                                      e.team.teamName,
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
+                                                      idUser))
+                                                Text(
+                                                  e.team.teamName + '(ทีมคุณ)',
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: Colors.deepPurple,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              else
+                                                Text(
+                                                  e.team.teamName,
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
                                             ],
                                           ),
                                           children: attendShow
@@ -446,7 +462,8 @@ class _RankRaceState extends State<RankRace> {
                                                                             .width,
                                                                         child:
                                                                             Column(
-                                                                              mainAxisAlignment: MainAxisAlignment.start,
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.start,
                                                                           children: [
                                                                             Text(te.user.userName),
                                                                             CircleAvatar(
@@ -470,7 +487,9 @@ class _RankRaceState extends State<RankRace> {
                                                         children: [
                                                           Divider(),
                                                           Row(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
                                                             children: [
                                                               Padding(
                                                                 padding:
@@ -480,27 +499,27 @@ class _RankRaceState extends State<RankRace> {
                                                                 child:
                                                                     GestureDetector(
                                                                   child: CircleAvatar(
-                                                                      radius: 25,
-                                                                      backgroundImage:
-                                                                          NetworkImage(te
-                                                                              .user
-                                                                              .userImage)),
+                                                                      radius:
+                                                                          25,
+                                                                      backgroundImage: NetworkImage(te
+                                                                          .user
+                                                                          .userImage)),
                                                                 ),
                                                               ),
-                                                            
                                                               Padding(
                                                                 padding:
                                                                     const EdgeInsets
                                                                             .only(
                                                                         top: 5,
-                                                                        left: 5),
+                                                                        left:
+                                                                            5),
                                                                 child: Text(
-                                                                  te.user.userName,
+                                                                  te.user
+                                                                      .userName,
                                                                 ),
                                                               ),
                                                             ],
                                                           ),
-                                                         
                                                         ],
                                                       ),
                                                     );

@@ -167,7 +167,11 @@ class _CheckMissionListState extends State<CheckMissionList> {
       stopLoading();
     }
   }
-
+ Future refresh() async {
+    setState(() {
+      loadDataMethod = loadData();
+    });
+  }
   void _Endgame() async {
     raceStatus = 3;
     RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
@@ -315,102 +319,105 @@ class _CheckMissionListState extends State<CheckMissionList> {
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               remainMC = 0;
-              return ListView(
-                padding: EdgeInsets.only(top: 10),
-                children: missions.map((element) {
-                  final theme = Theme.of(context);
-                  final textTheme = theme.textTheme;
-                  var mcStatus = missionComs
-                      .where((e) =>
-                          e.mission.misId == element.misId && e.mcStatus == 1).length;
-
-                  remainMC += mcStatus;
-
-                  log('remain ' + remainMC.toString());
-                  //  log('mcss ' + mcStatus.toString());
-                  return Padding(
-                    padding:
-                        const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                    child: element.misType != 3
-                        ? badges.Badge(
-                            position:
-                                badges.BadgePosition.topEnd(top: -5, end: 5),
-                            badgeAnimation: badges.BadgeAnimation.slide(
-                                // disappearanceFadeAnimationDuration: Duration(milliseconds: 200),
-                                // curve: Curves.easeInCubic,
-                                ),
-                            // showBadge: _showCartBadge,
-                            badgeStyle: badges.BadgeStyle(
-                              badgeColor: Colors.red,
-                            ),
-                            badgeContent: Text(
-                              mcStatus.toString(),
-                              style: textTheme.bodyText2
-                                  ?.copyWith(fontSize: 16, color: Colors.white),
-                            ),
-                            child: element.misType != 3
-                                ? Card(
-                                    //  shadowColor: ,
-
-                                    clipBehavior: Clip.hardEdge,
-
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(12.0),
-                                      splashColor: Colors.blue.withAlpha(30),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Container(
-                                            alignment: Alignment.center,
-                                            // For testing different size item. You can comment this line
-                                            padding: element.misName ==
-                                                    element.misName
-                                                ? const EdgeInsets.symmetric(
-                                                    vertical: 16.0)
-                                                : EdgeInsets.zero,
-                                            child: ListTile(
-                                                title: Text(
-                                                  element.misName,
-                                                  style: textTheme.bodyText2
-                                                      ?.copyWith(
-                                                    fontSize: 16,
+              return RefreshIndicator(
+                onRefresh: refresh,
+                child: ListView(
+                  padding: EdgeInsets.only(top: 10),
+                  children: missions.map((element) {
+                    final theme = Theme.of(context);
+                    final textTheme = theme.textTheme;
+                    var mcStatus = missionComs
+                        .where((e) =>
+                            e.mission.misId == element.misId && e.mcStatus == 1).length;
+              
+                    remainMC += mcStatus;
+              
+                    log('remain ' + remainMC.toString());
+                    //  log('mcss ' + mcStatus.toString());
+                    return Padding(
+                      padding:
+                          const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                      child: element.misType != 3
+                          ? badges.Badge(
+                              position:
+                                  badges.BadgePosition.topEnd(top: -5, end: 5),
+                              badgeAnimation: badges.BadgeAnimation.slide(
+                                  // disappearanceFadeAnimationDuration: Duration(milliseconds: 200),
+                                  // curve: Curves.easeInCubic,
+                                  ),
+                              // showBadge: _showCartBadge,
+                              badgeStyle: badges.BadgeStyle(
+                                badgeColor: Colors.red,
+                              ),
+                              badgeContent: Text(
+                                mcStatus.toString(),
+                                style: textTheme.bodyText2
+                                    ?.copyWith(fontSize: 16, color: Colors.white),
+                              ),
+                              child: element.misType != 3
+                                  ? Card(
+                                      //  shadowColor: ,
+              
+                                      clipBehavior: Clip.hardEdge,
+              
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(12.0),
+                                        splashColor: Colors.blue.withAlpha(30),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Container(
+                                              alignment: Alignment.center,
+                                              // For testing different size item. You can comment this line
+                                              padding: element.misName ==
+                                                      element.misName
+                                                  ? const EdgeInsets.symmetric(
+                                                      vertical: 16.0)
+                                                  : EdgeInsets.zero,
+                                              child: ListTile(
+                                                  title: Text(
+                                                    element.misName,
+                                                    style: textTheme.bodyText2
+                                                        ?.copyWith(
+                                                      fontSize: 16,
+                                                    ),
                                                   ),
-                                                ),
-                                                leading: SizedBox(
-                                                  width: 36,
-                                                  height: 36,
-                                                  child: Center(
-                                                    child: Text(
-                                                      //int sortn = mis.misSeq,
-                                                      '${missions.indexOf(element) + 1}',
-                                                      style: textTheme.bodyLarge
-                                                          ?.copyWith(
-                                                        color: Colors.purple,
-                                                        fontSize: 16,
+                                                  leading: SizedBox(
+                                                    width: 36,
+                                                    height: 36,
+                                                    child: Center(
+                                                      child: Text(
+                                                        //int sortn = mis.misSeq,
+                                                        '${missions.indexOf(element) + 1}',
+                                                        style: textTheme.bodyLarge
+                                                            ?.copyWith(
+                                                          color: Colors.purple,
+                                                          fontSize: 16,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
-                                                ),
-                                                trailing: FilledButton(
-                                                  child: Text('ตรวจสอบภารกิจ'),
-                                                  onPressed: () {
-                                                    Get.to(ListApprove());
-                                                    context
-                                                        .read<AppData>()
-                                                        .misID = element.misId;
-                                                  },
-                                                )),
-                                          ),
-                                        ],
+                                                  trailing: FilledButton(
+                                                    child: Text('ตรวจสอบภารกิจ'),
+                                                    onPressed: () {
+                                                      Get.to(ListApprove());
+                                                      context
+                                                          .read<AppData>()
+                                                          .misID = element.misId;
+                                                    },
+                                                  )),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  )
-                                : Container(),
-                          )
-                        : Container(),
-                  );
-                }).toList(),
+                                    )
+                                  : Container(),
+                            )
+                          : Container(),
+                    );
+                  }).toList(),
+                ),
               );
             } else {
               return Container();

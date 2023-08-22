@@ -31,6 +31,7 @@ class _Home_joinState extends State<Home_join> {
   //variable etc.
   late int idUser;
   List<AttendRace> attends = [];
+  List<Race> races = [];
   final f = new DateFormat('Hm');
   late AttendService attendService;
   late RaceService raceService;
@@ -82,7 +83,7 @@ class _Home_joinState extends State<Home_join> {
                     return GridView.count(
                       crossAxisCount: 2,
                       padding: EdgeInsets.only(top: 10),
-                      children: attends.map((e) {
+                      children: attends.where((element) => element.team.race.raceStatus != 4).map((e) {
                         final theme = Theme.of(context);
                         final textTheme = theme.textTheme;
                         return Padding(
@@ -186,7 +187,8 @@ class _Home_joinState extends State<Home_join> {
   Future<void> loadData() async {
     startLoading(context);
     try {
-      // var r = await raceService.racesByID(userID: idUser);
+       var r = await raceService.races();
+       races = r.data;
       var a = await attendService.attendByUserID(userID: idUser);
       attends = a.data;
     } catch (err) {

@@ -128,7 +128,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                               size: 35,
                             ),
                           ),
-
+              
                           // )
                         ]),
                   ),
