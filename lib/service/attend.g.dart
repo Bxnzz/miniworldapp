@@ -204,6 +204,34 @@ class _AttendService implements AttendService {
     return httpResponse;
   }
 
+  @override
+  Future<HttpResponse<int>> updateLatLngattendByAtID(
+    attendLatLngDto,
+    atID,
+  ) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(attendLatLngDto.toJson());
+    final _result =
+        await _dio.fetch<int>(_setStreamType<HttpResponse<int>>(Options(
+      method: 'PUT',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/attend/${atID}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = _result.data!;
+    final httpResponse = HttpResponse(value, _result);
+    return httpResponse;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

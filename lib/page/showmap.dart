@@ -84,21 +84,26 @@ class ShowMapPageState extends State<ShowMapPage> {
 
     for (var latlng in latlngs.data) {
       var marker = Marker(
+          icon: BitmapDescriptor.defaultMarker,
           markerId: MarkerId(latlng.atId.toString()),
           position: LatLng(latlng.lat.toDouble(), latlng.lng.toDouble()),
-          visible: true,
           infoWindow: InfoWindow(
               title: "${latlngs.data.first.team.teamName}",
               snippet: "${latlngs.data.first.user.userName}",
               onTap: () {
-                SmartDialog.show(builder: (_) {
-                  return Dialog(
-                      child: Container(
-                    width: 150,
-                    height: 100,
-                    child: Text("ชื่อ: ${latlngs.data.first.user.userName}"),
-                  ));
-                });
+                attends.map(
+                  (e) {
+                    return SmartDialog.show(builder: (_) {
+                      return Dialog(
+                          child: Container(
+                        width: 150,
+                        height: 100,
+                        child: Text("ชื่อ: ${e.user.userName}"),
+                      ));
+                    });
+                  },
+                ).toList();
+
                 // Get.defaultDialog(title: 'ข้อมูลสมาชิก');
               }));
 
