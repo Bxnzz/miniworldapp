@@ -88,6 +88,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
     super.initState();
 
     // context.read<AppData>().remainMC = 0;
+  
     idrace = context.read<AppData>().idrace;
     log('id' + idrace.toString());
 
@@ -117,13 +118,14 @@ class _CheckMissionListState extends State<CheckMissionList> {
   Future<void> loadData() async {
     startLoading(context);
     try {
+      
       var a = await missionService.missionByraceID(raceID: idrace);
       missions = a.data;
       mType = a.data.first.misType.toString();
       raceName = a.data.first.race.raceName;
       rStatus = a.data.first.race.raceStatus;
       // rStatus = a.
-      log('status '+rStatus.toString());
+      //log('status ' + rStatus.toString());
 
       var t = await teamService.teambyRaceID(raceID: idrace);
       teams = t.data;
@@ -142,9 +144,11 @@ class _CheckMissionListState extends State<CheckMissionList> {
         }
       }
       log('att ' + playerIds.toString());
-      var mcs = await missionCompService.missionCompByraceId(raceID: idrace);
+      var mcs =
+          await missionCompService.missionCompByraceIdApprove(raceID: idrace);
       missionComs = mcs.data;
-      
+     // log('ms '+misID.toString());
+
       reMissions = missions.reversed.toList();
       log(reMissions.first.misSeq.toString());
       //    misStatus = mcs.data.where((element) => element.mcStatus == 1);
@@ -169,12 +173,15 @@ class _CheckMissionListState extends State<CheckMissionList> {
       stopLoading();
     }
   }
- Future refresh() async {
+
+  Future refresh() async {
     setState(() {
       loadDataMethod = loadData();
     });
   }
+
   void _Endgame() async {
+    startLoading(context);
     raceStatus = 3;
     RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
     var racestatus = await raceService.updateStatusRaces(racedto, idrace);
@@ -197,8 +204,11 @@ class _CheckMissionListState extends State<CheckMissionList> {
         ]);
     log('player ' + playerIds.toString());
     var response1 = await OneSignal.shared.postNotification(notification1);
-    Get.defaultDialog(title: 'จบการแข่งขันแล้ว')
-        .then((value) => Get.to(HomeAll()));
+    
+    // Get.defaultDialog(title: 'จบการแข่งขันแล้ว')
+    //     .then((value) => Get.to(HomeAll()));
+    stopLoading();
+ 
   }
 
   void _processGame() async {
@@ -251,14 +261,11 @@ class _CheckMissionListState extends State<CheckMissionList> {
           Padding(
             padding: const EdgeInsets.only(right: 10),
             child: IconButton(
-              icon: Image.asset(
-                "assets/image/target.png"
-              ),
+              icon: Image.asset("assets/image/target.png"),
               onPressed: () {
                 Get.to(ShowMapPage());
                 context.read<AppData>().idrace = idrace;
               },
-             
             ),
           )
         ],
@@ -279,7 +286,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
         // other stuff
         title: const Text('ภารกิจ'),
       ),
-      floatingActionButton: context.read<AppData>().raceStatus != 3
+      floatingActionButton: raceStatus != 3
           ? FloatingActionButton.extended(
               backgroundColor: Colors.pinkAccent,
               onPressed: () {
@@ -292,7 +299,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
                     fontWeight: FontWeight.bold),
               ),
             )
-          : context.read<AppData>().raceStatus == 3 && remainMC == 0
+          : raceStatus == 3 && remainMC == 0
               ? FloatingActionButton.extended(
                   backgroundColor: Colors.lightGreen,
                   onPressed: () {
@@ -328,14 +335,14 @@ class _CheckMissionListState extends State<CheckMissionList> {
                   children: missions.map((element) {
                     final theme = Theme.of(context);
                     final textTheme = theme.textTheme;
-                    var mcStatus = missionComs.length;
-                        // .where((e) =>
-                        //     e.mission.misId == element.misId && e.mcStatus == 1);
-                    for (var mm in missionComs) {
-                      log(mm.misId.toString()+' '+mm.mcStatus.toString());
-                    }
+                    var mcStatus = missionComs
+                        .where((e) =>
+                            e.mission.misId == element.misId && e.mcStatus == 1).length;
+                    // for (var mm in missionComs) {
+                    //   log(mm.misId.toString() + ' ' + mm.mcStatus.toString());
+                    // }
                     remainMC = mcStatus;
-              
+
                     log('remain ' + remainMC.toString());
                     //  log('mcss ' + mcStatus.toString());
                     return Padding(
@@ -355,17 +362,18 @@ class _CheckMissionListState extends State<CheckMissionList> {
                               ),
                               badgeContent: Text(
                                 mcStatus.toString(),
-                                style: textTheme.bodyText2
-                                    ?.copyWith(fontSize: 16, color: Colors.white),
+                                style: textTheme.bodyText2?.copyWith(
+                                    fontSize: 16, color: Colors.white),
                               ),
                               child: element.misType != 3
                                   ? Card(
                                       //  shadowColor: ,
-              
+
                                       clipBehavior: Clip.hardEdge,
-              
+
                                       child: InkWell(
-                                        borderRadius: BorderRadius.circular(12.0),
+                                        borderRadius:
+                                            BorderRadius.circular(12.0),
                                         splashColor: Colors.blue.withAlpha(30),
                                         child: Column(
                                           crossAxisAlignment:
@@ -394,7 +402,8 @@ class _CheckMissionListState extends State<CheckMissionList> {
                                                       child: Text(
                                                         //int sortn = mis.misSeq,
                                                         '${missions.indexOf(element) + 1}',
-                                                        style: textTheme.bodyLarge
+                                                        style: textTheme
+                                                            .bodyLarge
                                                             ?.copyWith(
                                                           color: Colors.purple,
                                                           fontSize: 16,
@@ -403,12 +412,14 @@ class _CheckMissionListState extends State<CheckMissionList> {
                                                     ),
                                                   ),
                                                   trailing: FilledButton(
-                                                    child: Text('ตรวจสอบภารกิจ'),
+                                                    child:
+                                                        Text('ตรวจสอบภารกิจ'),
                                                     onPressed: () {
                                                       Get.to(ListApprove());
                                                       context
-                                                          .read<AppData>()
-                                                          .misID = element.misId;
+                                                              .read<AppData>()
+                                                              .misID =
+                                                          element.misId;
                                                     },
                                                   )),
                                             ),

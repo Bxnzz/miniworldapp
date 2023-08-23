@@ -481,7 +481,7 @@ class _DetailHostState extends State<DetailHost> {
                                                 idrace;
                                             context.read<AppData>().idUser =
                                                 idUser;
-                                                Get.to(ChatRoomPage(raceID: idrace,raceName: Rname,userID: idUser,userName: userName,));
+                                                Get.to(CheckMissionList());
                                           },
                                           child:
                                               Text('กำลังประมวนผล')),

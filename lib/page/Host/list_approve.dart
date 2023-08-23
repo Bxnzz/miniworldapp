@@ -74,6 +74,11 @@ class _ListApproveState extends State<ListApprove> {
       stopLoading();
     }
   }
+    Future refresh() async {
+    setState(() {
+      loadDataMethod = loadData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,70 +90,73 @@ class _ListApproveState extends State<ListApprove> {
           future: loadDataMethod,
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              return ListView(
-                padding: EdgeInsets.only(top: 10),
-                children: missionComp.map((element) {
-                  final theme = Theme.of(context);
-                  final textTheme = theme.textTheme;
-                  return Padding(
-                    padding:
-                        const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                    child: element.mission.misType != 3 && element.mcStatus == 1
-                        ? Card(
-                          //  shadowColor: ,
-                          clipBehavior: Clip.hardEdge,
-
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(12.0),
-                            splashColor: Colors.blue.withAlpha(30),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Container(
-                                  alignment: Alignment.center,
-                                  // For testing different size item. You can comment this line
-                                  padding: element.misId == element.misId
-                                      ? const EdgeInsets.symmetric(
-                                          vertical: 16.0)
-                                      : EdgeInsets.zero,
-                                  child: ListTile(
-                                      title: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'ทีม : ${element.team.teamName}',
-                                            style: textTheme.bodyText2
-                                                ?.copyWith(
-                                              fontSize: 16,
+              return RefreshIndicator(
+                onRefresh: refresh,
+                child: ListView(
+                  padding: EdgeInsets.only(top: 10),
+                  children: missionComp.map((element) {
+                    final theme = Theme.of(context);
+                    final textTheme = theme.textTheme;
+                    return Padding(
+                      padding:
+                          const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                      child: element.mission.misType != 3 && element.mcStatus == 1
+                          ? Card(
+                            //  shadowColor: ,
+                            clipBehavior: Clip.hardEdge,
+              
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(12.0),
+                              splashColor: Colors.blue.withAlpha(30),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                    alignment: Alignment.center,
+                                    // For testing different size item. You can comment this line
+                                    padding: element.misId == element.misId
+                                        ? const EdgeInsets.symmetric(
+                                            vertical: 16.0)
+                                        : EdgeInsets.zero,
+                                    child: ListTile(
+                                        title: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'ทีม : ${element.team.teamName}',
+                                              style: textTheme.bodyText2
+                                                  ?.copyWith(
+                                                fontSize: 16,
+                                              ),
                                             ),
-                                          ),
-                                          Text(
-                                            'ประเภท : ${type}',
-                                            style: textTheme.bodyText2
-                                                ?.copyWith(
-                                              fontSize: 16,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      trailing: FilledButton(
-                                        child: Text('ตรวจสอบ'),
-                                        onPressed: () {
-                                          Get.to(ApproveMission(
-                                            IDmc: element.mcId,
-                                          ));
-                                          //  context.read<AppData>().misID = element.misId;
-                                        },
-                                      )),
-                                ),
-                              ],
+                                            Text(
+                                              'ประเภท : ${type}',
+                                              style: textTheme.bodyText2
+                                                  ?.copyWith(
+                                                fontSize: 16,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        trailing: FilledButton(
+                                          child: Text('ตรวจสอบ'),
+                                          onPressed: () {
+                                            Get.to(ApproveMission(
+                                              IDmc: element.mcId,
+                                            ));
+                                            //  context.read<AppData>().misID = element.misId;
+                                          },
+                                        )),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        )
-                        : Container(),
-                  );
-                }).toList(),
+                          )
+                          : Container(),
+                    );
+                  }).toList(),
+                ),
               );
             } else {
               return Container();

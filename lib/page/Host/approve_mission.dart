@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:appinio_video_player/appinio_video_player.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:miniworldapp/service/user.dart';
 import 'package:uuid/uuid.dart';
 import 'package:circular_menu/circular_menu.dart';
@@ -168,9 +169,10 @@ class _ApproveMissionState extends State<ApproveMission> {
   Future<void> loadData() async {
     startLoading(context);
     try {
-      iduser = context.read<AppData>().idrace;
+      iduser = context.read<AppData>().idUser;
       // log('idddd'+IDmc.toString());
       var a = await missionCompService.missionCompBymcId(mcID: widget.IDmc);
+      
       //var m = await missionService.missionAll();
       var mis = await missionService.missionByraceID(raceID: idrace);
 
@@ -192,14 +194,17 @@ class _ApproveMissionState extends State<ApproveMission> {
 
       var at = await attendService.attendByTeamID(teamID: teamID);
       attend = at.data;
+      
       playerIds.clear();
       for (var element in at.data) {
         playerIds.add(element.user.onesingnalId);
       }
       log('att ' + playerIds.toString());
+
       var u = await userService.getUserByID(userID: iduser);
       users = u.data;
       userName = u.data.first.userName;
+
       // onesingnalId = mis.data.first.race.user.onesingnalId;
       // misName = a.data.first.mission.misName;
       // misDiscrip = a.data.first.mission.misDiscrip;
@@ -209,7 +214,7 @@ class _ApproveMissionState extends State<ApproveMission> {
       // mlng = a.data.first.mission.misLng;
       // teamID = a.data.first.team.teamId;
       // teamName = a.data.first.team.teamName;
-      log('vdeoooo '+urlVideo);
+      // log('vdeoooo '+urlVideo);
 
       videoPlayerController = VideoPlayerController.network(urlVideo)
         ..initialize().then((value) => setState(() {}));
@@ -221,13 +226,16 @@ class _ApproveMissionState extends State<ApproveMission> {
       log('type ' + type);
       log(widget.IDmc.toString());
       log('t' + mcName);
-      stopLoading();
+      
     } catch (err) {
       log('Error:$err');
+    }finally{
+      stopLoading();
     }
   }
 
   void _CheckMisPass() async {
+    startLoading(context);
     //var deviceState = await OneSignal.shared.getDeviceState();
     masseageMC = 'ผ่าน';
     MissionCompStatus missionComDto = MissionCompStatus(
@@ -252,7 +260,8 @@ class _ApproveMissionState extends State<ApproveMission> {
         ]);
 
     var response1 = await OneSignal.shared.postNotification(notification1);
-    Get.defaultDialog(title: mc.toString());
+    stopLoading();
+     Navigator.of(context).pop();
   }
 
   void _CheckMisUnPass() {
@@ -268,6 +277,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                     backgroundColor: Colors.green,
                   ),
                   onPressed: () async {
+                  startLoading(context);
                     masseageMC = message[_selected].masseage;
                     MissionCompStatus missionComDto = MissionCompStatus(
                         mcMasseage: masseageMC,
@@ -296,6 +306,8 @@ class _ApproveMissionState extends State<ApproveMission> {
 
                     var response1 =
                         await OneSignal.shared.postNotification(notification1);
+                        stopLoading();
+                         Navigator.of(context).pop();
                   },
                   child: Text('ส่ง',
                       style: TextStyle(color: Get.theme.colorScheme.onPrimary)),
@@ -449,47 +461,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                                 backgroundColor:
                                     MaterialStatePropertyAll(Colors.amber)),
                             onPressed: () async {
-                              startLoading(context);
                               dialogSpectator();
-                              types.User _user = types.User(
-                                  id: iduser.toString(), firstName: userName);
-                              //textTeam
-                              final message = types.TextMessage(
-                                author: _user,
-                                id: const Uuid().v4(),
-                                text: 'ชื่อทีม:$teamName\n ภารกิจ: $mcName' ,
-                                createdAt:
-                                    DateTime.now().millisecondsSinceEpoch,
-                              );
-                              FirebaseFirestore.instance
-                                  .collection('s' + idrace.toString())
-                                  .add(message.toJson());
-                              log('firebase ' +
-                                  idrace.toString() +
-                                  message.toJson().toString());
-                            
-                              //image
-                              log('imageeeeeeee'+urlImage);
-                              final httpInput =
-                                  await HttpInput.createHttpInput(urlImage);
-                            
-                              final imageMessage = types.ImageMessage(
-                                author: _user,
-                                createdAt:
-                                    DateTime.now().millisecondsSinceEpoch,
-                                id: const Uuid().v4(),
-                                name: 'image',
-                                size: 0,
-                                uri: urlImage,
-                              );
-                            
-                              FirebaseFirestore.instance
-                                  .collection('s' + idrace.toString())
-                                  .add(imageMessage.toJson());
-                              log('firebaseImage ' +
-                                  idrace.toString() +
-                                  imageMessage.toJson().toString());
-                              stopLoading();
                             },
                             icon: FaIcon(
                               FontAwesomeIcons.solidPaperPlane,
@@ -515,8 +487,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                                   height: Get.height,
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                        color:
-                                            Get.theme.colorScheme.onPrimary),
+                                        color: Get.theme.colorScheme.onPrimary),
                                     borderRadius: BorderRadius.circular(10),
                                     image: DecorationImage(
                                       image: NetworkImage(urlImage),
@@ -525,34 +496,17 @@ class _ApproveMissionState extends State<ApproveMission> {
                                     shape: BoxShape.rectangle,
                                   ),
                                 )
-                              :  (_customVideoPlayerController != null)
-                                   ? SizedBox(
-                                    width: double.infinity-10,
-                                    height: double.infinity,
-                                     child: CustomVideoPlayer(
+                              : (_customVideoPlayerController != null)
+                                  ? SizedBox(
+                                    width: Get.width / 1.3,
+                                    height: Get.height,
+                                    child: CustomVideoPlayer(
                                         customVideoPlayerController:
                                             _customVideoPlayerController!),
-                                   )
+                                  )
                                   : Container()),
                     ),
-                            
-                    // pickedFile != null
-                    //  Expanded(
-                    //     child: isImage == true
-                    //         ? Image.file(
-                    //             File(urlImage),
-                    //             width: Get.width * 0.3,
-                    //           )
-                    //         : (_customVideoPlayerController != null)
-                    //             ? CustomVideoPlayer(
-                    //                 customVideoPlayerController:
-                    //                     _customVideoPlayerController!)
-                    //             : Container(
-                    //                 child: Text("กรุณาเลือกไฟล์อื่น"),
-                    //               ),
-                    //   ),
-                    //: Container(),
-                    // buildProgress(),
+
                     mcText != ''
                         ? Padding(
                             padding: const EdgeInsets.only(
@@ -586,15 +540,14 @@ class _ApproveMissionState extends State<ApproveMission> {
                                 onPressed: () async {
                                   _CheckMisPass();
                                   log(playerID.toString());
-                            
+
                                   // if (pickedFile == null) {
-                            
+
                                   // } else {}
                                 },
                                 child: Text('ผ่าน',
                                     style: Get.textTheme.bodyLarge!.copyWith(
-                                        color:
-                                            Get.theme.colorScheme.background,
+                                        color: Get.theme.colorScheme.background,
                                         fontWeight: FontWeight.bold))),
                           ),
                         ),
@@ -604,16 +557,14 @@ class _ApproveMissionState extends State<ApproveMission> {
                             width: 120,
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      Get.theme.colorScheme.error,
+                                  backgroundColor: Get.theme.colorScheme.error,
                                 ),
                                 onPressed: () {
                                   _CheckMisUnPass();
                                 },
                                 child: Text('ไม่ผ่าน',
                                     style: Get.textTheme.bodyLarge!.copyWith(
-                                        color:
-                                            Get.theme.colorScheme.onPrimary,
+                                        color: Get.theme.colorScheme.onPrimary,
                                         fontWeight: FontWeight.bold))),
                           ),
                         )
@@ -632,122 +583,141 @@ class _ApproveMissionState extends State<ApproveMission> {
   }
 
   Future<void> dialogSpectator() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext contexts) {
-        return AlertDialog(
-          title: Text(
-            'ส่งหลักฐานให้ผู้ชม?',
-            textAlign: TextAlign.center,
-          ),
-          titleTextStyle: TextStyle(
-            fontSize: 16.0,
-            color: Get.theme.colorScheme.primary,
-            fontWeight: FontWeight.w800,
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'.toUpperCase()),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                types.User _user =
-                    types.User(id: iduser.toString(), firstName: userName);
-                //textTeam
-                final message = types.TextMessage(
-                  author: _user,
-                  id: const Uuid().v4(),
-                  text: 'ชื่อทีม:$teamName\n ภารกิจ: $mcName',
-                  createdAt: DateTime.now().millisecondsSinceEpoch,
-                );
-                FirebaseFirestore.instance
-                    .collection('s' + idrace.toString())
-                    .add(message.toJson());
-                log('firebase ' +
-                    idrace.toString() +
-                    message.toJson().toString());
+    return urlImage != ''
+        ? showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext contexts) {
+              return AlertDialog(
+                title: const Text(
+                  'ส่งหลักฐานให้ผู้ชม?',
+                  textAlign: TextAlign.center,
+                ),
+                titleTextStyle: TextStyle(
+                  fontSize: 16.0,
+                  color: Get.theme.colorScheme.primary,
+                  fontWeight: FontWeight.w800,
+                ),
+                actions: <Widget>[
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('ยกเลิก'.toUpperCase()),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      startLoading(context);
+                      types.User _user = types.User(
+                          id: iduser.toString(), firstName: userName);
+                      //textTeam
+                      final message = types.TextMessage(
+                        author: _user,
+                        id: const Uuid().v4(),
+                        text: 'ชื่อทีม:$teamName\n ภารกิจ: $mcName',
+                        createdAt: DateTime.now().millisecondsSinceEpoch,
+                      );
+                      FirebaseFirestore.instance
+                          .collection('s' + idrace.toString())
+                          .add(message.toJson());
+                      log('firebase ' +
+                          idrace.toString() +
+                          message.toJson().toString());
 
-                //image
-                log('imageeeeeeee' + urlImage);
-                final httpInput = await HttpInput.createHttpInput(urlImage);
+                      //image
+                      log('imageeeeeeee' + urlImage);
+                      final httpInput =
+                          await HttpInput.createHttpInput(urlImage);
 
-                final imageMessage = types.ImageMessage(
-                  author: _user,
-                  createdAt: DateTime.now().millisecondsSinceEpoch,
-                  id: const Uuid().v4(),
-                  name: 'image',
-                  size: 0,
-                  uri: urlImage,
-                );
-                
-                FirebaseFirestore.instance
-                    .collection('s' + idrace.toString())
-                    .add(imageMessage.toJson());
-                log('firebaseImage ' +
-                    idrace.toString() +
-                    imageMessage.toJson().toString());
+                      final imageMessage = types.ImageMessage(
+                        author: _user,
+                        createdAt: DateTime.now().millisecondsSinceEpoch,
+                        id: const Uuid().v4(),
+                        name: 'image',
+                        size: 0,
+                        uri: urlImage,
+                      );
 
-              //textdisciption
-              final messageDiscription = types.TextMessage(
-                  author: _user,
-                  id: const Uuid().v4(),
-                  text: _discritionSpactator.text,
-                  createdAt: DateTime.now().millisecondsSinceEpoch,
-                );
-                if(_discritionSpactator.text != ''){
-                   FirebaseFirestore.instance
-                    .collection('s' + idrace.toString())
-                    .add(messageDiscription.toJson());
-                }else{
-                  
-                }
-               
-              },
-              child: Text('OK'.toUpperCase()),
-            ),
-          ],
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Container(
-                  width: Get.width / 2,
-                  height: Get.height / 4,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Get.theme.colorScheme.onPrimary),
-                    borderRadius: BorderRadius.circular(10),
-                    image: DecorationImage(
-                      image: NetworkImage(urlImage),
-                      //  fit: BoxFit.cover,
-                    ),
-                    shape: BoxShape.rectangle,
+                      FirebaseFirestore.instance
+                          .collection('s' + idrace.toString())
+                          .add(imageMessage.toJson());
+                      log('firebaseImage ' +
+                          idrace.toString() +
+                          imageMessage.toJson().toString());
+
+                      //textdisciption
+                      final messageDiscription = types.TextMessage(
+                        author: _user,
+                        id: const Uuid().v4(),
+                        text: _discritionSpactator.text,
+                        createdAt: DateTime.now().millisecondsSinceEpoch,
+                      );
+                      if (_discritionSpactator.text != '') {
+                        FirebaseFirestore.instance
+                            .collection('s' + idrace.toString())
+                            .add(messageDiscription.toJson());
+                      }
+
+                      stopLoading();
+                    },
+                    child: Text('OK'.toUpperCase()),
+                  ),
+                ],
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      urlImage != ''
+                          ? Container(
+                              width: Get.width / 2,
+                              height: Get.height / 4,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Get.theme.colorScheme.onPrimary),
+                                borderRadius: BorderRadius.circular(10),
+                                image: DecorationImage(
+                                  image: NetworkImage(urlImage),
+                                  //  fit: BoxFit.cover,
+                                ),
+                                shape: BoxShape.rectangle,
+                              ),
+                            )
+                          : const Center(
+                              child: Text('**ส่งได้เฉพาะรูปภาพบรรยากาศ**')),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          controller: _discritionSpactator,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 3,
+                          textInputAction: TextInputAction.done,
+                          decoration: InputDecoration(
+                            hintText: ' คำอธิบาย...',
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 3,
+                                    color: Get.theme.colorScheme.primary)),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: _discritionSpactator,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 3,
-                    textInputAction: TextInputAction.done,
-                    decoration: InputDecoration(
-                      hintText: ' คำอธิบาย...',
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              width: 3, color: Get.theme.colorScheme.primary)),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
+              );
+            },
+          )
+        : AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            animType: AnimType.rightSlide,
+            headerAnimationLoop: false,
+            title: 'ข้อมูลไม่ถูกต้อง',
+            desc:
+                'ส่งได้เฉพาะรูปภาพบรรยากาศเท่านั้น',
+            btnOkOnPress: () {},
+            btnOkIcon: Icons.cancel,
+            btnOkColor: Colors.red,
+          ).show();
   }
 }
