@@ -403,30 +403,18 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
                   ),
                 ),
               ),
-              SizedBox(
-                width: 80,
-                height: 50,
-                child: AnimatedButton(
-                  icon: FontAwesomeIcons.plus,
-                  color: Colors.orange,
-                  pressEvent: () async {
-                    SmartDialog.show(
-                        alignment: Alignment.centerRight,
-                        builder: (_) {
-                          return Container(
-                            padding: EdgeInsets.only(right: 40, top: 20),
-                            height: 250,
-                            width: Get.width,
-                            child: Card(
-                              child: Column(
-                                children: [],
-                              ),
-                            ),
-                          );
-                        });
-
-                    setState(() {});
-                  },
+              Padding(
+                padding: const EdgeInsets.only(right: 35.0),
+                child: SizedBox(
+                  width: 80,
+                  height: 50,
+                  child: AnimatedButton(
+                    icon: FontAwesomeIcons.plus,
+                    color: Colors.orange,
+                    pressEvent: () async {
+                      selectmedia();
+                    },
+                  ),
                 ),
               )
             ],
@@ -480,30 +468,14 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
               : Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Container(
-                      width: Get.width,
-                      height: 80,
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              width: 3, color: Get.theme.colorScheme.primary),
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.white),
-                      child: GestureDetector(
-                        onTap: () {
-                          selectmedia();
-                        },
-                        child: Center(
-                          child: Column(
-                            children: [
-                              FaIcon(
-                                FontAwesomeIcons.plus,
-                                size: 35,
-                              ),
-                              Text("เพิ่มหลักฐานภารกิจ")
-                            ],
-                          ),
-                        ),
-                      )),
-                ),
+                    width: Get.width,
+                    height: 80,
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            width: 3, color: Get.theme.colorScheme.primary),
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white),
+                  )),
 
           // buildProgress(),
           Padding(

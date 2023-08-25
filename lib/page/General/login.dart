@@ -2,6 +2,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -65,102 +66,113 @@ class _LoginState extends State<Login> {
         LoginService(Dio(), baseUrl: context.read<AppData>().baseurl);
     userService = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
     // 2.2 async method
-    //  loadDataMethod = addData(logins);
+    loadDataMethod = _online();
   }
 
   Future<void> _online() async {
-    var a = await userService.getUserAll();
-    a.data;
-    var userName = a.data.first.userName;
     startLoading(context);
-    OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
+    try {
+      var a = await userService.getUserAll();
+      a.data;
+      var userName = a.data.first.userName;
 
-    OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
-      log("Accepted permission: $accepted}");
-    });
+      OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
 
-    OneSignal.shared
-        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      var additionalData = result.notification.additionalData;
-      log('xxxxxxxxx ${additionalData.toString()}');
-      //  log('yyyyyy ${additionalData!['notitype'].toString()}');
-      if (additionalData!['notitype'] == 'mission') {
-        log('zzz');
-        additionalData['mcid'];
-        Get.to(() => ApproveMission(IDmc: int.parse(additionalData['mcid'])));
-      } else if (additionalData['notitype'].toString() == 'checkMis') {
-        Get.defaultDialog(title: additionalData['masseage']);
-      } else if (additionalData['notitype'].toString() == 'startgame') {
-        Get.defaultDialog(title: 'เริ่มการแข่งขัน');
-      } else if (additionalData['notitype'].toString() == 'endgame') {
-        Get.defaultDialog(title: additionalData['masseage']);
-      } else if (additionalData['notitype'].toString() == 'processgame') {
-        Get.defaultDialog(title: additionalData['masseage']);
+      OneSignal.shared
+          .promptUserForPushNotificationPermission()
+          .then((accepted) {
+        log("Accepted permission: $accepted}");
+      });
+
+      OneSignal.shared
+          .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
+        var additionalData = result.notification.additionalData;
+        log('xxxxxxxxx ${additionalData.toString()}');
+        //  log('yyyyyy ${additionalData!['notitype'].toString()}');
+        if (additionalData!['notitype'] == 'mission') {
+          log('zzz');
+          additionalData['mcid'];
+          Get.to(() => ApproveMission(IDmc: int.parse(additionalData['mcid'])));
+        } else if (additionalData['notitype'].toString() == 'checkMis') {
+          Get.defaultDialog(title: additionalData['masseage']);
+        } else if (additionalData['notitype'].toString() == 'startgame') {
+          Get.defaultDialog(title: 'เริ่มการแข่งขัน');
+        } else if (additionalData['notitype'].toString() == 'endgame') {
+          Get.defaultDialog(title: additionalData['masseage']);
+        } else if (additionalData['notitype'].toString() == 'processgame') {
+          Get.defaultDialog(title: additionalData['masseage']);
+        } else {
+          log('YYYY');
+        }
+      });
+
+      OneSignal.shared.setNotificationWillShowInForegroundHandler(
+          (OSNotificationReceivedEvent event) {
+        log('FOREGROUND HANDLER CALLED WITH: ${event}');
+
+        /// Display Notification, send null to not display
+        event.complete(null);
+
+        // Get.to(() => CheckMisNoti());
+        if (event.notification.additionalData!['notitype'] == 'mission') {
+          log('dddddd');
+          IDmc = int.parse(event.notification.additionalData!['mcid']);
+          log('qqqqqqqqqq');
+          Get.defaultDialog(
+            title: 'มีหลักฐานที่ต้องตรวจสอบ?',
+            content: Text(event.notification.additionalData!['mission']),
+            actions: <Widget>[
+              ElevatedButton(
+                child: const Text('ตรวจสอบหลักฐาน'),
+                onPressed: () => Get.to(ApproveMission(
+                    IDmc:
+                        int.parse(event.notification.additionalData!['mcid']))),
+              ),
+            ],
+          );
+
+          log('nnnnnnnnnnn');
+        } else if (event.notification.additionalData!['notitype'] ==
+            'checkMis') {
+          Get.defaultDialog(title: 'ส่งมาละจ้าา');
+        } else if (event.notification.additionalData!['notitype'] ==
+            'startgame') {
+          Get.defaultDialog(title: 'เริ่มการแข่งขัน')
+              .then((value) => Get.to(PlayerRaceStartMenu()));
+        } else if (event.notification.additionalData!['notitype'] ==
+            'endgame') {
+          raceName = event.notification.additionalData!['raceName'];
+          raceID = int.parse(event.notification.additionalData!['raceID']);
+          Get.defaultDialog(title: 'จบการแข่งขัน').then((value) {
+            Get.to(ChatRoomPage(
+                userID: userID,
+                raceID: raceID,
+                userName: userName,
+                raceName: raceName));
+          });
+        } else if (event.notification.additionalData!['notitype'] ==
+            'processgame') {
+          raceName = event.notification.additionalData!['raceName'];
+          raceID = int.parse(event.notification.additionalData!['raceID']);
+          Get.defaultDialog(title: 'ประมวลผลการแข่งขัน').then((value) {
+            Get.to(ReviewPage());
+          });
+        }
+      });
+      await OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");
+      var status = await OneSignal.shared.getDeviceState();
+
+      if (status != null) {
+        _externalUserId = status.userId!;
+        log('oneID ' + _externalUserId);
       } else {
-        log('YYYY');
+        log('NO');
       }
-    });
-
-    OneSignal.shared.setNotificationWillShowInForegroundHandler(
-        (OSNotificationReceivedEvent event) {
-      log('FOREGROUND HANDLER CALLED WITH: ${event}');
-
-      /// Display Notification, send null to not display
-      event.complete(null);
-
-      // Get.to(() => CheckMisNoti());
-      if (event.notification.additionalData!['notitype'] == 'mission') {
-        log('dddddd');
-        IDmc = int.parse(event.notification.additionalData!['mcid']);
-        log('qqqqqqqqqq');
-        Get.defaultDialog(
-          title: 'มีหลักฐานที่ต้องตรวจสอบ?',
-          content: Text(event.notification.additionalData!['mission']),
-          actions: <Widget>[
-            ElevatedButton(
-              child: const Text('ตรวจสอบหลักฐาน'),
-              onPressed: () => Get.to(ApproveMission(
-                  IDmc: int.parse(event.notification.additionalData!['mcid']))),
-            ),
-          ],
-        );
-
-        log('nnnnnnnnnnn');
-      } else if (event.notification.additionalData!['notitype'] == 'checkMis') {
-        Get.defaultDialog(title: 'ส่งมาละจ้าา');
-      } else if (event.notification.additionalData!['notitype'] ==
-          'startgame') {
-        Get.defaultDialog(title: 'เริ่มการแข่งขัน')
-            .then((value) => Get.to(PlayerRaceStartMenu()));
-      } else if (event.notification.additionalData!['notitype'] == 'endgame') {
-        raceName = event.notification.additionalData!['raceName'];
-        raceID = int.parse(event.notification.additionalData!['raceID']);
-        Get.defaultDialog(title: 'จบการแข่งขัน').then((value) {
-          Get.to(ChatRoomPage(
-              userID: userID,
-              raceID: raceID,
-              userName: userName,
-              raceName: raceName));
-        });
-      } else if (event.notification.additionalData!['notitype'] ==
-          'processgame') {
-        raceName = event.notification.additionalData!['raceName'];
-        raceID = int.parse(event.notification.additionalData!['raceID']);
-        Get.defaultDialog(title: 'ประมวลผลการแข่งขัน').then((value) {
-          Get.to(ReviewPage());
-        });
-      }
-    });
-    await OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");
-    var status = await OneSignal.shared.getDeviceState();
-
-    if (status != null) {
-      _externalUserId = status.userId!;
-      log('oneID ' + _externalUserId);
-    } else {
-      log('NO');
+    } catch (e) {
+      log("err:" + e.printError.toString());
+    } finally {
+      stopLoading();
     }
-    stopLoading();
   }
 
   @override
@@ -174,13 +186,12 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Get.to(() => const Login());
         return true;
       },
       child: Scaffold(
           body: SingleChildScrollView(
         child: FutureBuilder(
-          future: _online(),
+          future: loadDataMethod,
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return Container(
@@ -268,8 +279,7 @@ class _LoginState extends State<Login> {
                                         // padding: EdgeInsets.all(0),
                                         onPressed: () {
                                           setState(() {
-                                            _isHidden =
-                                                !_isHidden; // เมื่อกดก็เปลี่ยนค่าตรงกันข้าม
+                                            _isHidden = !_isHidden;
                                           });
                                         },
                                         icon: Icon(
@@ -373,7 +383,13 @@ class _LoginState extends State<Login> {
 
                                             return;
                                           } else {
-                                            log("login fail");
+                                            final snackBar = SnackBar(
+                                              content: const Text(
+                                                  'เข้าสู่ระบบล้มเหลว อีเมลหรือรหัสผ่านไม่ถูก'),
+                                            );
+
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(snackBar);
 
                                             return;
                                           }
@@ -387,14 +403,7 @@ class _LoginState extends State<Login> {
                                     const Text('ไม่มีบัญชีใช่หรือไม่?'),
                                     TextButton(
                                         onPressed: () {
-                                          Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const FontRegisterPage(),
-                                                settings: const RouteSettings(
-                                                    arguments: null),
-                                              ));
+                                          Get.to(() => FontRegisterPage());
                                         },
                                         child: const Text('คลิกที่นี้'))
                                   ],
@@ -442,4 +451,26 @@ class _LoginState extends State<Login> {
       )),
     );
   }
+
+  // void _dialogLocation() async {
+  //   locationDialog({
+  //     required AlignmentGeometry alignment,
+  //     double width = double.infinity,
+  //     double height = double.infinity,
+  //   }) async {
+  //     SmartDialog.show(
+  //         alignment: alignment,
+  //         builder: (context) {
+  //           return Container(
+  //             width: Get.width,
+  //             height: Get.height,
+  //             child: Text("asdfasdf"),
+  //           );
+  //         });
+  //     await Future.delayed(Duration(milliseconds: 500));
+  //   }
+
+  //   //top
+  //   await locationDialog(height: 70, alignment: Alignment.topCenter);
+  // }
 }

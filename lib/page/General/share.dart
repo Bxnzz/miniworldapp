@@ -88,12 +88,12 @@ class _ShareState extends State<Share> {
     startLoading(context);
     try {
       idrace = context.read<AppData>().idrace;
-       idUser = context.read<AppData>().idUser;
-       log('userrr'+ idUser.toString());
+      idUser = context.read<AppData>().idUser;
+      log('userrr' + idUser.toString());
       // var racehost = await raceService.racesByUserID(userID: idUser);
       // races = racehost.data;
 
-       var reall = await rewardService.rewardByRaceID(raceID: idrace);
+      var reall = await rewardService.rewardByRaceID(raceID: idrace);
       rewardAlls = reall.data;
       hostID = reall.data.first.race.userId;
       raceImage = reall.data.first.race.raceImage;
@@ -127,8 +127,6 @@ class _ShareState extends State<Share> {
       orderMe = re.data.first.reType;
 
       log(teamID.toString());
-      
-     
     } catch (err) {
       log('Error:$err');
     } finally {
@@ -139,6 +137,9 @@ class _ShareState extends State<Share> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("แชร์ผลการแข่งขัน"),
+      ),
       body: FutureBuilder(
           future: loadDataMethod,
           builder: (context, AsyncSnapshot snapshot) {
@@ -224,6 +225,7 @@ class _ShareState extends State<Share> {
                                     ),
                                   ),
                                 )
+                              //player
                               : idUser == playerID
                                   ? Screenshot(
                                       controller: screenshotController,
@@ -422,6 +424,7 @@ class _ShareState extends State<Share> {
           padding: const EdgeInsets.only(top: 15, right: 10, left: 10),
           child: Container(
             height: 200,
+            width: Get.width,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(16.0)),
               boxShadow: <BoxShadow>[

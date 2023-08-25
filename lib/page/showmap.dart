@@ -26,8 +26,8 @@ import '../widget/loadData.dart';
 import 'package:http/http.dart' as http;
 
 class ShowMapPage extends StatefulWidget {
-  const ShowMapPage({Key? key}) : super(key: key);
-
+  const ShowMapPage({super.key, required this.showAppbar});
+  final bool showAppbar;
   @override
   State<ShowMapPage> createState() => ShowMapPageState();
 }
@@ -50,11 +50,12 @@ class ShowMapPageState extends State<ShowMapPage> {
   int idrace = 0;
 
   late int range = 0;
-
+  bool showAppbar = true;
   @override
   void initState() {
     super.initState();
     idrace = context.read<AppData>().idrace;
+
     log('id' + idrace.toString());
     attendService =
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
@@ -145,9 +146,11 @@ class ShowMapPageState extends State<ShowMapPage> {
               initialIndex: 1,
               length: 3,
               child: Scaffold(
-                  appBar: AppBar(
-                    title: Text("ตำแหน่งผู้แข่งขัน"),
-                  ),
+                  appBar: widget.showAppbar == true
+                      ? AppBar(
+                          title: Text("ตำแหน่งผู้แข่งขัน"),
+                        )
+                      : null,
                   body: GoogleMap(
                     markers: markers,
                     mapType: MapType.normal,

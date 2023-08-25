@@ -245,14 +245,13 @@ class _CheckMissionListState extends State<CheckMissionList> {
           Padding(
             padding: const EdgeInsets.only(right: 10),
             child: IconButton(
-              icon: Image.asset(
-                "assets/image/target.png"
-              ),
+              icon: Image.asset("assets/image/target.png"),
               onPressed: () {
-                Get.to(ShowMapPage());
+                Get.to(() => ShowMapPage(
+                      showAppbar: true,
+                    ));
                 context.read<AppData>().idrace = idrace;
               },
-             
             ),
           )
         ],
@@ -322,7 +321,8 @@ class _CheckMissionListState extends State<CheckMissionList> {
                   final textTheme = theme.textTheme;
                   var mcStatus = missionComs
                       .where((e) =>
-                          e.mission.misId == element.misId && e.mcStatus == 1).length;
+                          e.mission.misId == element.misId && e.mcStatus == 1)
+                      .length;
 
                   remainMC += mcStatus;
 

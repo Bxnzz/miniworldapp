@@ -37,7 +37,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final avata = GlobalKey<FormState>();
   late RegisterService registerService;
-
+  bool _isHidden = false;
   File? pickedFile;
   UploadTask? uploadTask;
   bool isImage = true;
@@ -48,6 +48,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    bool _isHidden = true;
     registerService =
         RegisterService(Dio(), baseUrl: context.read<AppData>().baseurl);
   }
@@ -112,11 +113,25 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                 ),
                 Gap(15),
                 TextFormField(
-                  obscureText: true,
+                  obscureText: _isHidden,
                   enableSuggestions: false,
                   autocorrect: false,
                   controller: password,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _isHidden =
+                              !_isHidden; // เมื่อกดก็เปลี่ยนค่าตรงกันข้าม
+                        });
+                      },
+                      icon: Icon(
+                        _isHidden // เงื่อนไขการสลับ icon
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        size: 16,
+                      ),
+                    ),
                     labelText: 'รหัสผ่าน',
                     icon: Icon(Icons.password),
                   ),
@@ -197,12 +212,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                     Gap(50),
                     ElevatedButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Login(),
-                                settings: const RouteSettings(arguments: null),
-                              ));
+                          Navigator.pop(context);
                         },
                         child: Text('ยกเลิก'))
                   ],

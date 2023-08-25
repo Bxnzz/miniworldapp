@@ -96,6 +96,12 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
     log("$lat $lng");
     log("AttendID = $idAttend");
     //showAlertDialog();
+
+    context.read<AppData>().updateLocationTimerPlayer =
+        Timer.periodic(const Duration(seconds: 3), (timer) {
+      _updateLocation();
+    });
+    log('Start Timer');
     super.initState();
   }
 
@@ -202,28 +208,31 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
   }
 
   Future<void> _updateLocation() async {
+    log("LAT $latDevice");
     AttendLatLngDto atDto = AttendLatLngDto(lat: latDevice, lng: lngDevice);
 
-    await attendService.updateLatLngattendByAtID(atDto, idAttend);
+    try {
+      var a = await attendService.updateLatLngattendByAtID(atDto, idAttend);
+    } catch (e) {
+      log('abc ' + (e as DioError).response!.data.toString());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (context.read<AppData>().updateLocationTimer.isActive == false) {
-      log("attendddd$idAttend");
-      context.read<AppData>().updateLocationTimer =
-          Timer.periodic(Duration(seconds: 3), (timer) {
-        _updateLocation().then((value) {
-          log('aa');
-          setState(() {});
-          return null;
-        });
-      });
-    }
+    log("attendddd$idAttend");
+
     return WillPopScope(
       onWillPop: () async {
-        context.read<AppData>().updateLocationTimer.cancel();
-        return true;
+        log('On WillPop');
+        try {
+          context.read<AppData>().updateLocationTimerPlayer.cancel();
+
+          log('Timer Stopped1...');
+        } catch (e) {
+          log('ERRx ' + e.toString());
+        }
+        return false;
       },
       child: Scaffold(
         body: FutureBuilder(
@@ -317,7 +326,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                                   alignment: Alignment.bottomCenter,
                                   child: Padding(
                                       padding: EdgeInsets.only(bottom: 20),
-                                      child: btnMisType3(context)))
+                                      child: antBTN3(context)))
                               //mission type 1
                               : Align(
                                   alignment: Alignment.bottomCenter,
@@ -376,9 +385,67 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                       context.read<AppData>().idTeam = teamID;
 
                       widget.controller.index = 0;
-                      setState(() {
-                        PlayerRaceStartMis;
-                      });
+                    },
+                  ).show()
+                : AwesomeDialog(
+                    transitionAnimationDuration: Duration(milliseconds: 100),
+                    context: context,
+                    headerAnimationLoop: false,
+                    animType: AnimType.bottomSlide,
+                    dialogType: DialogType.question,
+                    title: 'ห่างจากภารกิจ ',
+                    desc: '${dis.toStringAsFixed(1)} เมตร',
+                    btnOkText: 'ตกลง',
+                    btnOkOnPress: () {
+                      dis = Geolocator.distanceBetween(
+                          latDevice, lngDevice, lat, lng);
+                    },
+                  ).show();
+          }),
+    );
+  }
+
+  antBTN3(BuildContext context) {
+    return Container(
+      height: 130,
+      padding: const EdgeInsets.only(right: 150, left: 150, bottom: 20),
+      child: AnimatedButton(
+          borderRadius: BorderRadius.circular(200),
+          text: "ค้นหา",
+          color: Colors.orange,
+          pressEvent: () {
+            dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
+            dis <= misDistance
+                ? AwesomeDialog(
+                    transitionAnimationDuration: Duration(milliseconds: 100),
+                    context: context,
+                    headerAnimationLoop: false,
+                    animType: AnimType.bottomSlide,
+                    dialogType: DialogType.infoReverse,
+                    title: 'เจอแล้ว !!!',
+                    desc:
+                        '#$misID\nชื่อภารกิจ : $misName \nรายละเอียด : $misDescrip \nประเภทภารกิจ : $type',
+                    btnOkText: 'สำเร็จ',
+                    btnOkOnPress: () async {
+                      final now = DateTime.now();
+                      dateTime = '${now.toIso8601String()}Z';
+                      MissionCompDto mdto = MissionCompDto(
+                          mcDatetime: DateTime.parse(dateTime),
+                          mcLat: latDevice,
+                          mcLng: lngDevice,
+                          mcMasseage: '',
+                          mcPhoto: '',
+                          mcStatus: 2,
+                          mcText: '',
+                          mcVideo: '',
+                          misId: misID,
+                          teamId: teamID);
+                      var missionComp =
+                          await missionCompService.insertMissionComps(mdto);
+                      loadDataMethod = LoadData();
+                      if (widget.controller == 1) {
+                        widget.controller.jumpToTab(1);
+                      }
                     },
                   ).show()
                 : AwesomeDialog(
@@ -476,7 +543,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
               ? showDialog<String>(
                   context: context,
                   builder: (BuildContext context) => AlertDialog(
-                    title: Center(child: const Text('เจอแล้ว ไปต่อได้!!!')),
+                    title: const Text('เจอแล้ว ไปต่อได้!!!'),
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
