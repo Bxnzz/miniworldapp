@@ -172,7 +172,7 @@ class _ApproveMissionState extends State<ApproveMission> {
       iduser = context.read<AppData>().idUser;
       // log('idddd'+IDmc.toString());
       var a = await missionCompService.missionCompBymcId(mcID: widget.IDmc);
-      
+
       //var m = await missionService.missionAll();
       var mis = await missionService.missionByraceID(raceID: idrace);
 
@@ -194,11 +194,14 @@ class _ApproveMissionState extends State<ApproveMission> {
 
       var at = await attendService.attendByTeamID(teamID: teamID);
       attend = at.data;
-      
+
       playerIds.clear();
       for (var element in at.data) {
-        playerIds.add(element.user.onesingnalId);
+        if(element.user.onesingnalId != ''){
+         playerIds.add(element.user.onesingnalId);
       }
+        }
+        
       log('att ' + playerIds.toString());
 
       var u = await userService.getUserByID(userID: iduser);
@@ -226,17 +229,17 @@ class _ApproveMissionState extends State<ApproveMission> {
       log('type ' + type);
       log(widget.IDmc.toString());
       log('t' + mcName);
-      
     } catch (err) {
       log('Error:$err');
-    }finally{
+    } finally {
       stopLoading();
     }
   }
 
-  void _CheckMisPass() async {
+  void checkMisPass() async {
     startLoading(context);
-    //var deviceState = await OneSignal.shared.getDeviceState();
+    var deviceState = await OneSignal.shared.getDeviceState();
+    log('players ' + playerIds.toString());
     masseageMC = 'ผ่าน';
     MissionCompStatus missionComDto = MissionCompStatus(
         mcMasseage: masseageMC, mcStatus: 2, misId: misID, teamId: teamID);
@@ -259,9 +262,10 @@ class _ApproveMissionState extends State<ApproveMission> {
           OSActionButton(text: "ยกเลิก", id: "id2")
         ]);
 
-    var response1 = await OneSignal.shared.postNotification(notification1);
+      var response1 = await OneSignal.shared.postNotification(notification1);
+
     stopLoading();
-     Navigator.of(context).pop();
+    // Navigator.of(context).pop();
   }
 
   void _CheckMisUnPass() {
@@ -277,7 +281,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                     backgroundColor: Colors.green,
                   ),
                   onPressed: () async {
-                  startLoading(context);
+                    startLoading(context);
                     masseageMC = message[_selected].masseage;
                     MissionCompStatus missionComDto = MissionCompStatus(
                         mcMasseage: masseageMC,
@@ -306,8 +310,8 @@ class _ApproveMissionState extends State<ApproveMission> {
 
                     var response1 =
                         await OneSignal.shared.postNotification(notification1);
-                        stopLoading();
-                         Navigator.of(context).pop();
+                    stopLoading();
+                    Navigator.of(context).pop();
                   },
                   child: Text('ส่ง',
                       style: TextStyle(color: Get.theme.colorScheme.onPrimary)),
@@ -498,15 +502,14 @@ class _ApproveMissionState extends State<ApproveMission> {
                                 )
                               : (_customVideoPlayerController != null)
                                   ? SizedBox(
-                                    width: Get.width / 1.3,
-                                    height: Get.height,
-                                    child: CustomVideoPlayer(
-                                        customVideoPlayerController:
-                                            _customVideoPlayerController!),
-                                  )
+                                      width: Get.width / 1.3,
+                                      height: Get.height,
+                                      child: CustomVideoPlayer(
+                                          customVideoPlayerController:
+                                              _customVideoPlayerController!),
+                                    )
                                   : Container()),
                     ),
-
                     mcText != ''
                         ? Padding(
                             padding: const EdgeInsets.only(
@@ -538,7 +541,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                                   backgroundColor: Colors.green,
                                 ),
                                 onPressed: () async {
-                                  _CheckMisPass();
+                                  checkMisPass();
                                   log(playerID.toString());
 
                                   // if (pickedFile == null) {
@@ -713,8 +716,7 @@ class _ApproveMissionState extends State<ApproveMission> {
             animType: AnimType.rightSlide,
             headerAnimationLoop: false,
             title: 'ข้อมูลไม่ถูกต้อง',
-            desc:
-                'ส่งได้เฉพาะรูปภาพบรรยากาศเท่านั้น',
+            desc: 'ส่งได้เฉพาะรูปภาพบรรยากาศเท่านั้น',
             btnOkOnPress: () {},
             btnOkIcon: Icons.cancel,
             btnOkColor: Colors.red,

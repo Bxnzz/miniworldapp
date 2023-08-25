@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:ffi';
 
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -232,7 +233,7 @@ class _MissioncreateState extends State<Missioncreate> {
               children: [
                 Checkbox(
                   value: _checkbox,
-                  onChanged: (value) {
+                  onChanged: _checkbox2 == true? null:(value) {
                     setState(() {
                       _checkbox = !_checkbox;
                       if (_checkbox == true) {
@@ -248,7 +249,7 @@ class _MissioncreateState extends State<Missioncreate> {
                 const Text('ข้อความ'),
                 Checkbox(
                   value: _checkbox1,
-                  onChanged: (value) {
+                  onChanged: _checkbox2 == true? null:(value) {
                     setState(() {
                       _checkbox1 = !_checkbox1;
 
@@ -265,19 +266,21 @@ class _MissioncreateState extends State<Missioncreate> {
                 const Text('สื่อ'),
                 Checkbox(
                   value: _checkbox2,
-                  onChanged: (value) {
+                  onChanged: _checkbox == true || _checkbox1 == true ? null :
+                  (value) {
                     setState(() {
                       _checkbox2 = !_checkbox2;
                       //   log(_checkbox2.toString());
                       if (_checkbox2 == true) {
                         cb3 = '3';
+                        
                       } else {
                         cb3 = '';
                         return;
                       }
                       log('cc3: ' + cb3.toString());
                     });
-                  },
+                   }
                 ),
                 const Text('ไม่มีการส่ง'),
               ],

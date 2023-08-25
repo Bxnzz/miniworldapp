@@ -83,7 +83,6 @@ class _DetailMissionState extends State<DetailMission> {
     scrollController.jumpTo(scrollController.offset);
     setState(() {
       inReorder = false;
-
       // missions
       //   ..clear()
       //   ..addAll(newItems);
@@ -176,7 +175,7 @@ class _DetailMissionState extends State<DetailMission> {
     setState(() {
       _buildVerticalLanguageList();
       loadDataMethod = loadData();
-      //  onReorderFinished();
+      // onReorderFinished(newItems);
     });
   }
 
@@ -184,7 +183,7 @@ class _DetailMissionState extends State<DetailMission> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Get.to(() => const DetailMission());
+        //Get.to(() => const DetailMission());
         return true;
       },
       child: Scaffold(
@@ -220,7 +219,7 @@ class _DetailMissionState extends State<DetailMission> {
                   // Prevent the ListView from scrolling when an item is
                   // currently being dragged.
                   padding: const EdgeInsets.only(bottom: 24),
-
+                
                   children: [
                     const Divider(height: 0),
                     const Padding(padding: EdgeInsets.only(bottom: 8)),
@@ -395,150 +394,150 @@ class _DetailMissionState extends State<DetailMission> {
           },
           icon: Icons.edit,
         ),
-        SlidableAction(
-          flex: 3,
-          label: 'ดู',
-          backgroundColor: Colors.blueAccent,
-          onPressed: (BuildContext context) {
-            setState(() {
-              mType = mis.misType.toString();
-              var splitT = mType.split('');
-              //   //   log(splitT.toString());
-              List<String> substrings = splitT.toString().split(",");
-              //   //   //substrings = splitT.toString().substring("[");
-              log('sub' + splitT.toString());
-              //   // if(substrings[0] == '1'){
-              //   //   _checkbox == true;
-              //   // }
-              if (splitT.contains('1') == true) {
-                type1 = 'ข้อความ';
-                log(type1);
-              }
-              if (splitT.contains('2') == true) {
-                type1 = 'สื่อ';
-                log(type1);
+        // SlidableAction(
+        //   flex: 3,
+        //   label: 'ดู',
+        //   backgroundColor: Colors.blueAccent,
+        //   onPressed: (BuildContext context) {
+        //     setState(() {
+        //       mType = mis.misType.toString();
+        //       var splitT = mType.split('');
+        //       //   //   log(splitT.toString());
+        //       List<String> substrings = splitT.toString().split(",");
+        //       //   //   //substrings = splitT.toString().substring("[");
+        //       log('sub' + splitT.toString());
+        //       //   // if(substrings[0] == '1'){
+        //       //   //   _checkbox == true;
+        //       //   // }
+        //       if (splitT.contains('1') == true) {
+        //         type1 = 'ข้อความ';
+        //         log(type1);
+        //       }
+        //       if (splitT.contains('2') == true) {
+        //         type1 = 'สื่อ';
+        //         log(type1);
 
-                ;
-              }
-              if (splitT.contains('3') == true) {
-                type1 = 'ไม่มีการส่ง';
-                log(type1);
-              } else {
-                return;
-              }
-            });
-            String tt = type1;
-            log('tt' + tt);
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                backgroundColor: Colors.white,
-                title: Center(
-                    child: Text(
-                  'รายละเอียดภารกิจ',
-                  style: textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                )),
-                content: SizedBox(
-                  height: 150,
-                  child: Column(
-                    children: [
-                      Center(
-                          child: Text(
-                        mis.misName,
-                        style: textTheme.bodyText1?.copyWith(),
-                      )),
-                      const Divider(),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8, bottom: 4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const FaIcon(
-                              FontAwesomeIcons.fileLines,
-                              size: 18,
-                              color: Colors.grey,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 13),
-                              child: Text(mis.misDiscrip),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Divider(),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8, bottom: 4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const FaIcon(
-                              FontAwesomeIcons.listCheck,
-                              size: 18,
-                              color: Colors.grey,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 13),
-                              //     child: Text(itemstr),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, 'Cancel'),
-                    child: const Text('ยกเลิก',
-                        style: TextStyle(color: Colors.black)),
-                  ),
-                  SizedBox(
-                      width: 120,
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.redAccent),
-                          onPressed: () async {
-                            log('misID' + mis.misId.toString());
+        //         ;
+        //       }
+        //       if (splitT.contains('3') == true) {
+        //         type1 = 'ไม่มีการส่ง';
+        //         log(type1);
+        //       } else {
+        //         return;
+        //       }
+        //     });
+        //     String tt = type1;
+        //     log('tt' + tt);
+        //     showDialog(
+        //       context: context,
+        //       builder: (context) => AlertDialog(
+        //         backgroundColor: Colors.white,
+        //         title: Center(
+        //             child: Text(
+        //           'รายละเอียดภารกิจ',
+        //           style: textTheme.headlineSmall?.copyWith(
+        //             fontWeight: FontWeight.bold,
+        //           ),
+        //         )),
+        //         content: SizedBox(
+        //           height: 150,
+        //           child: Column(
+        //             children: [
+        //               Center(
+        //                   child: Text(
+        //                 mis.misName,
+        //                 style: textTheme.bodyText1?.copyWith(),
+        //               )),
+        //               const Divider(),
+        //               Padding(
+        //                 padding: const EdgeInsets.only(right: 8, bottom: 4),
+        //                 child: Row(
+        //                   mainAxisAlignment: MainAxisAlignment.start,
+        //                   children: [
+        //                     const FaIcon(
+        //                       FontAwesomeIcons.fileLines,
+        //                       size: 18,
+        //                       color: Colors.grey,
+        //                     ),
+        //                     Padding(
+        //                       padding: const EdgeInsets.only(left: 13),
+        //                       child: Text(mis.misDiscrip),
+        //                     ),
+        //                   ],
+        //                 ),
+        //               ),
+        //               const Divider(),
+        //               Padding(
+        //                 padding: const EdgeInsets.only(right: 8, bottom: 4),
+        //                 child: Row(
+        //                   mainAxisAlignment: MainAxisAlignment.start,
+        //                   children: [
+        //                     const FaIcon(
+        //                       FontAwesomeIcons.listCheck,
+        //                       size: 18,
+        //                       color: Colors.grey,
+        //                     ),
+        //                     Padding(
+        //                       padding: const EdgeInsets.only(left: 13),
+        //                       //     child: Text(itemstr),
+        //                     ),
+        //                   ],
+        //                 ),
+        //               ),
+        //             ],
+        //           ),
+        //         ),
+        //         actions: <Widget>[
+        //           TextButton(
+        //             onPressed: () => Navigator.pop(context, 'Cancel'),
+        //             child: const Text('ยกเลิก',
+        //                 style: TextStyle(color: Colors.black)),
+        //           ),
+        //           SizedBox(
+        //               width: 120,
+        //               child: ElevatedButton(
+        //                   style: ElevatedButton.styleFrom(
+        //                       backgroundColor: Colors.redAccent),
+        //                   onPressed: () async {
+        //                     log('misID' + mis.misId.toString());
 
-                            var missionsD = await missionService
-                                .deleteMissons(mis.misId.toString());
-                            log(missionsD.toString());
-                            misRe = missionsD.data;
-                            if (misRe.result == '1') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('delete Successful')),
-                              );
-                              missions.removeWhere((element) {
-                                return element.misId == mis.misId;
-                              }); //go through the loop and match content to delete from list
+        //                     var missionsD = await missionService
+        //                         .deleteMissons(mis.misId.toString());
+        //                     log(missionsD.toString());
+        //                     misRe = missionsD.data;
+        //                     if (misRe.result == '1') {
+        //                       ScaffoldMessenger.of(context).showSnackBar(
+        //                         const SnackBar(
+        //                             content: Text('delete Successful')),
+        //                       );
+        //                       missions.removeWhere((element) {
+        //                         return element.misId == mis.misId;
+        //                       }); //go through the loop and match content to delete from list
 
-                              setState(() {});
-                              Navigator.pop(context);
-                              // log("race Successful");
-                              return;
-                            } else {
-                              // log("team fail");
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('delete fail try agin!')),
-                              );
+        //                       setState(() {});
+        //                       Navigator.pop(context);
+        //                       // log("race Successful");
+        //                       return;
+        //                     } else {
+        //                       // log("team fail");
+        //                       ScaffoldMessenger.of(context).showSnackBar(
+        //                         const SnackBar(
+        //                             content: Text('delete fail try agin!')),
+        //                       );
 
-                              return;
-                            }
-                          },
-                          child: const Text(
-                            'ลบ',
-                            style: TextStyle(color: Colors.white),
-                          )))
-                ],
-              ),
-            );
-          },
-          icon: Icons.remove_red_eye,
-        ),
+        //                       return;
+        //                     }
+        //                   },
+        //                   child: const Text(
+        //                     'ลบ',
+        //                     style: TextStyle(color: Colors.white),
+        //                   )))
+        //         ],
+        //       ),
+        //     );
+        //   },
+        //   icon: Icons.remove_red_eye,
+        // ),
       ]),
       child: Container(
         alignment: Alignment.center,
