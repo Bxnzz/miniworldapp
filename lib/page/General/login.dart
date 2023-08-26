@@ -20,6 +20,7 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'dart:developer';
 
+import '../../main.dart';
 import '../../model/DTO/loginDTO.dart';
 import '../../service/login.dart';
 import '../Host/approve_mission.dart';
@@ -56,6 +57,7 @@ class _LoginState extends State<Login> {
   String end = "e";
   String userName = '';
   int userID = 0;
+  String oneID = '';
 
   @override
   void initState() {
@@ -77,97 +79,11 @@ class _LoginState extends State<Login> {
       var userName = a.data.first.userName;
 
       OneSignal.shared.setLogLevel(OSLogLevel.debug, OSLogLevel.none);
-
-      OneSignal.shared
-          .promptUserForPushNotificationPermission()
-          .then((accepted) {
-        log("Accepted permission: $accepted}");
-      });
-
-      OneSignal.shared
-          .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-        var additionalData = result.notification.additionalData;
-        log('xxxxxxxxx ${additionalData.toString()}');
-        //  log('yyyyyy ${additionalData!['notitype'].toString()}');
-        if (additionalData!['notitype'] == 'mission') {
-          log('zzz');
-          additionalData['mcid'];
-          Get.to(() => ApproveMission(IDmc: int.parse(additionalData['mcid'])));
-        } else if (additionalData['notitype'].toString() == 'checkMis') {
-          Get.defaultDialog(title: additionalData['masseage']);
-        } else if (additionalData['notitype'].toString() == 'startgame') {
-          Get.defaultDialog(title: 'เริ่มการแข่งขัน');
-        } else if (additionalData['notitype'].toString() == 'endgame') {
-          Get.defaultDialog(title: additionalData['masseage']);
-        } else if (additionalData['notitype'].toString() == 'processgame') {
-          Get.defaultDialog(title: additionalData['masseage']);
-        } else {
-          log('YYYY');
-        }
-      });
-
-      OneSignal.shared.setNotificationWillShowInForegroundHandler(
-          (OSNotificationReceivedEvent event) {
-        log('FOREGROUND HANDLER CALLED WITH: ${event}');
-
-        /// Display Notification, send null to not display
-        event.complete(null);
-
-        // Get.to(() => CheckMisNoti());
-        if (event.notification.additionalData!['notitype'] == 'mission') {
-          log('dddddd');
-          IDmc = int.parse(event.notification.additionalData!['mcid']);
-          log('qqqqqqqqqq');
-          Get.defaultDialog(
-            title: 'มีหลักฐานที่ต้องตรวจสอบ?',
-            content: Text(event.notification.additionalData!['mission']),
-            actions: <Widget>[
-              ElevatedButton(
-                child: const Text('ตรวจสอบหลักฐาน'),
-                onPressed: () => Get.to(ApproveMission(
-                    IDmc:
-                        int.parse(event.notification.additionalData!['mcid']))),
-              ),
-            ],
-          );
-
-          log('nnnnnnnnnnn');
-        } else if (event.notification.additionalData!['notitype'] ==
-            'checkMis') {
-          Get.defaultDialog(title: 'ส่งมาละจ้าา');
-        } else if (event.notification.additionalData!['notitype'] ==
-            'startgame') {
-          Get.defaultDialog(title: 'เริ่มการแข่งขัน')
-              .then((value) => Get.to(PlayerRaceStartMenu()));
-        } else if (event.notification.additionalData!['notitype'] ==
-            'endgame') {
-          raceName = event.notification.additionalData!['raceName'];
-          raceID = int.parse(event.notification.additionalData!['raceID']);
-          Get.defaultDialog(title: 'จบการแข่งขัน').then((value) {
-            Get.to(ChatRoomPage(
-                userID: userID,
-                raceID: raceID,
-                userName: userName,
-                raceName: raceName));
-          });
-        } else if (event.notification.additionalData!['notitype'] ==
-            'processgame') {
-          raceName = event.notification.additionalData!['raceName'];
-          raceID = int.parse(event.notification.additionalData!['raceID']);
-          Get.defaultDialog(title: 'ประมวลผลการแข่งขัน').then((value) {
-            Get.to(ReviewPage());
-          });
-        }
-      });
-      await OneSignal.shared.setAppId("9670ea63-3a61-488a-afcf-8e1be833f631");
-      var status = await OneSignal.shared.getDeviceState();
-
-      if (status != null) {
-        _externalUserId = status.userId!;
-        log('oneID ' + _externalUserId);
-      } else {
-        log('NO');
-      }
+     oneID = await connectOneSignal();
+      log('User ID: $oneID');
+    
+      var one = await userService.updateOneID(oneID);  
+   
     } catch (e) {
       log("err:" + e.printError.toString());
     } finally {
@@ -328,7 +244,162 @@ class _LoginState extends State<Login> {
                                           var login =
                                               await loginService.loginser(dto);
 
-                                          UserDto userDto = UserDto(
+                                         
+                                          if (login.data.userId != 0) {
+                                            OneSignal.shared
+                                                .setNotificationOpenedHandler(
+                                                    (OSNotificationOpenedResult
+                                                        result) {
+                                              var additionalData = result
+                                                  .notification.additionalData;
+                                              log('xxxxxxxxx ${additionalData.toString()}');
+                                              //  log('yyyyyy ${additionalData!['notitype'].toString()}');
+                                              if (additionalData!['notitype'] ==
+                                                  'mission') {
+                                                log('zzz');
+                                                additionalData['mcid'];
+                                                Get.to(() => ApproveMission(
+                                                    IDmc: int.parse(
+                                                        additionalData[
+                                                            'mcid'])));
+                                              } else if (additionalData[
+                                                          'notitype']
+                                                      .toString() ==
+                                                  'checkMis') {
+                                                Get.defaultDialog(
+                                                    title: additionalData[
+                                                        'masseage']);
+                                              } else if (additionalData[
+                                                          'notitype']
+                                                      .toString() ==
+                                                  'startgame') {
+                                                Get.defaultDialog(
+                                                    title: 'เริ่มการแข่งขัน');
+                                              } else if (additionalData[
+                                                          'notitype']
+                                                      .toString() ==
+                                                  'endgame') {
+                                                Get.defaultDialog(
+                                                    title: additionalData[
+                                                        'masseage']);
+                                              } else if (additionalData[
+                                                          'notitype']
+                                                      .toString() ==
+                                                  'processgame') {
+                                                Get.defaultDialog(
+                                                    title: additionalData[
+                                                        'masseage']);
+                                              } else {
+                                                log('YYYY');
+                                              }
+                                            });
+
+                                            OneSignal.shared
+                                                .setNotificationWillShowInForegroundHandler(
+                                                    (OSNotificationReceivedEvent
+                                                        event) {
+                                              log('FOREGROUND HANDLER CALLED WITH: ${event}');
+
+                                              /// Display Notification, send null to not display
+                                              event.complete(null);
+
+                                              // Get.to(() => CheckMisNoti());
+                                              if (event.notification
+                                                          .additionalData![
+                                                      'notitype'] ==
+                                                  'mission') {
+                                                log('dddddd');
+                                                IDmc = int.parse(event
+                                                    .notification
+                                                    .additionalData!['mcid']);
+                                                log('qqqqqqqqqq');
+                                                Get.defaultDialog(
+                                                  title:
+                                                      'มีหลักฐานที่ต้องตรวจสอบ?',
+                                                  content: Text(event
+                                                          .notification
+                                                          .additionalData![
+                                                      'mission']),
+                                                  actions: <Widget>[
+                                                    ElevatedButton(
+                                                      child: const Text(
+                                                          'ตรวจสอบหลักฐาน'),
+                                                      onPressed: () => Get.to(
+                                                          ApproveMission(
+                                                              IDmc: int.parse(event
+                                                                      .notification
+                                                                      .additionalData![
+                                                                  'mcid']))),
+                                                    ),
+                                                  ],
+                                                );
+
+                                                log('nnnnnnnnnnn');
+                                              } else if (event.notification
+                                                          .additionalData![
+                                                      'notitype'] ==
+                                                  'checkMis') {
+                                                Get.defaultDialog(
+                                                    title: 'ส่งมาละจ้าา');
+                                              } else if (event.notification
+                                                          .additionalData![
+                                                      'notitype'] ==
+                                                  'startgame') {
+                                                Get.defaultDialog(
+                                                        title:
+                                                            'เริ่มการแข่งขัน')
+                                                    .then((value) => Get.to(
+                                                        PlayerRaceStartMenu()));
+                                              } else if (event.notification
+                                                          .additionalData![
+                                                      'notitype'] ==
+                                                  'endgame') {
+                                                raceName = event.notification
+                                                        .additionalData![
+                                                    'raceName'];
+                                                raceID = int.parse(event
+                                                    .notification
+                                                    .additionalData!['raceID']);
+                                                Get.defaultDialog(
+                                                        title: 'จบการแข่งขัน')
+                                                    .then((value) {
+                                                  Get.to(ChatRoomPage(
+                                                      userID: userID,
+                                                      raceID: raceID,
+                                                      userName: userName,
+                                                      raceName: raceName));
+                                                });
+                                              } else if (event.notification
+                                                          .additionalData![
+                                                      'notitype'] ==
+                                                  'processgame') {
+                                                raceName = event.notification
+                                                        .additionalData![
+                                                    'raceName'];
+                                                raceID = int.parse(event
+                                                    .notification
+                                                    .additionalData!['raceID']);
+                                                Get.defaultDialog(
+                                                        title:
+                                                            'ประมวลผลการแข่งขัน')
+                                                    .then((value) {
+                                                  Get.to(ReviewPage());
+                                                });
+                                              }
+                                            });
+                                            var deviceState = await OneSignal
+                                                .shared
+                                                .getDeviceState();
+                                            if (deviceState != null &&
+                                                deviceState.userId != null) {
+                                              //   _externalUserId = status.userId!;
+                                            
+                                              _externalUserId = deviceState.userId!;
+                                              log('oneID ' + _externalUserId);
+                                            }
+
+                                            OneSignal.shared.disablePush(false);
+                                             UserDto userDto = UserDto(
                                             userName: login.data.userName,
                                             userDiscription:
                                                 login.data.userDiscription,
@@ -338,15 +409,15 @@ class _LoginState extends State<Login> {
                                             onesingnalId: _externalUserId,
                                             userMail: login.data.userMail,
                                           );
-                                          var updateOnesignal =
-                                              await userService.updateUsers(
-                                                  userDto,
-                                                  login.data.userId.toString());
-                                          // log(jsonEncode(updateOnesignal));
-                                          userResult = updateOnesignal.data;
-                                          //  log(userResult.toString());
 
-                                          if (login.data.userId != 0) {
+                                            var updateOnesignal =
+                                                await userService.updateUsers(
+                                                    userDto,
+                                                    login.data.userId
+                                                        .toString());
+                                            // log(jsonEncode(updateOnesignal));
+                                            userResult = updateOnesignal.data;
+                                            //  log(userResult.toString());
                                             // ScaffoldMessenger.of(context).showSnackBar(
                                             //   const SnackBar(
                                             //       content: Text('Login Successful')),
@@ -380,7 +451,8 @@ class _LoginState extends State<Login> {
                                                     .read<AppData>()
                                                     .userDescrip =
                                                 login.data.userDiscription;
-
+                                            
+                                             context.read<AppData>().oneID =_externalUserId;
                                             return;
                                           } else {
                                             final snackBar = SnackBar(
