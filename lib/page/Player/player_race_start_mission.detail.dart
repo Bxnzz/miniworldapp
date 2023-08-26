@@ -403,30 +403,24 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
                   ),
                 ),
               ),
-              SizedBox(
-                width: 80,
-                height: 50,
-                child: AnimatedButton(
-                  icon: FontAwesomeIcons.plus,
-                  color: Colors.orange,
-                  pressEvent: () async {
-                    SmartDialog.show(
-                        alignment: Alignment.centerRight,
-                        builder: (_) {
-                          return Container(
-                            padding: EdgeInsets.only(right: 40, top: 20),
-                            height: 250,
-                            width: Get.width,
-                            child: Card(
-                              child: Column(
-                                children: [],
-                              ),
-                            ),
-                          );
-                        });
-
+              Padding(
+                padding: const EdgeInsets.only(right: 35, bottom: 8),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orangeAccent,
+                    shape: CircleBorder(), //<-- SEE HERE
+                    padding: EdgeInsets.all(15),
+                  ),
+                  onPressed: () async {
+                    await _pickImage(ImageSource.camera);
                     setState(() {});
                   },
+                  child: FaIcon(
+                    //<-- SEE HERE
+                    FontAwesomeIcons.plus,
+                    color: Colors.white,
+                    size: 35,
+                  ),
                 ),
               )
             ],
@@ -459,51 +453,14 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
                         ),
                       ),
                     ])
-                  : _customVideoPlayerController != null
-                      ? SizedBox(
-                          width: Get.width,
-                          height: Get.height / 3,
-                          child: GestureDetector(
-                            onLongPress: () {
-                              selectmedia();
-                            },
-                            child: CustomVideoPlayer(
-                                customVideoPlayerController:
-                                    _customVideoPlayerController!),
-                          ),
-                        )
-                      : SizedBox(
-                          width: 200,
-                          height: 150,
-                          child:
-                              LoadingIndicator(indicatorType: Indicator.pacman))
-              : Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Container(
+                  : SizedBox(
                       width: Get.width,
-                      height: 80,
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              width: 3, color: Get.theme.colorScheme.primary),
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.white),
-                      child: GestureDetector(
-                        onTap: () {
-                          selectmedia();
-                        },
-                        child: Center(
-                          child: Column(
-                            children: [
-                              FaIcon(
-                                FontAwesomeIcons.plus,
-                                size: 35,
-                              ),
-                              Text("เพิ่มหลักฐานภารกิจ")
-                            ],
-                          ),
-                        ),
-                      )),
-                ),
+                      height: Get.height / 3,
+                      child: CustomVideoPlayer(
+                          customVideoPlayerController:
+                              _customVideoPlayerController!),
+                    )
+              : Text("ยังไม่ได้เพิ่มไฟล์"),
 
           // buildProgress(),
           Padding(

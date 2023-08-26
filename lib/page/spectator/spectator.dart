@@ -37,7 +37,7 @@ class _SpectatorState extends State<Spectator> {
   List<Race> races = [];
   List<User> users = [];
   List<AttendRace> teamAttends = [];
-
+//  bool showAppbar = false;
   late Future<void> loadDataMethod;
   late RaceService raceService;
   late AttendService attendService;
@@ -54,7 +54,7 @@ class _SpectatorState extends State<Spectator> {
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
     userService = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
-
+    //context.read<AppData>().showAppbar = showAppbar;
     // 2.2 async method
     loadDataMethod = loadData();
   }
@@ -108,11 +108,10 @@ class _SpectatorState extends State<Spectator> {
                   SizedBox(
                       height: Get.height / 3,
                       child: Stack(
-                        children: [ShowMapPage()],
+                        children: [
+                          ShowMapPage(showAppbar: false),
+                        ],
                       )),
-                
-                      
-                
                   Expanded(
                       child: RealtimeChat(
                     raceID: idrace,

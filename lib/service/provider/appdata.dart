@@ -35,6 +35,8 @@ class AppData with ChangeNotifier {
   int status = 0;
   int lastMis = 0;
   Timer updateLocationTimer = Timer(Duration(seconds: 10), () {});
+  Timer updateLocationTimerPlayer = Timer(Duration(seconds: 10), () {});
+  bool showAppbar = false;
 
   int raceStatus = 0;
 }

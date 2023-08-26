@@ -263,7 +263,9 @@ class _CheckMissionListState extends State<CheckMissionList> {
             child: IconButton(
               icon: Image.asset("assets/image/target.png"),
               onPressed: () {
-                Get.to(ShowMapPage());
+                Get.to(() => ShowMapPage(
+                      showAppbar: true,
+                    ));
                 context.read<AppData>().idrace = idrace;
               },
             ),

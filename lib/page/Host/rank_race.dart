@@ -10,7 +10,7 @@ import 'package:miniworldapp/model/DTO/rewardDTO.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';
 import 'package:miniworldapp/model/reward.dart';
 import 'package:miniworldapp/model/team.dart';
-import 'package:miniworldapp/page/Host/share.dart';
+import 'package:miniworldapp/page/General/share.dart';
 import 'package:miniworldapp/service/attend.dart';
 import 'package:miniworldapp/service/mission.dart';
 import 'package:miniworldapp/service/missionComp.dart';
