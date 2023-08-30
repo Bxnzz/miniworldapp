@@ -290,7 +290,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                         teamId: teamID);
                     //log(lats);
                     //print(double.parse('lat'+lats));
-                    mc = {'notitype': 'checkMis', 'masseage': masseageMC};
+                    mc = {'notitype': 'checkUnMis', 'masseage': masseageMC};
                     var missionComp =
                         await missionCompService.updateStatusMisCom(
                             missionComDto, widget.IDmc.toString());
@@ -300,7 +300,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                         additionalData: mc,
                         playerIds: playerIds,
                         content: 'ส่งจากผู้สร้างการแข่งขัน: $hostName',
-                        heading: "หลักฐานภารกิจ: ผ่าน",
+                        heading: "หลักฐานภารกิจ: ไม่ผ่าน",
                         //  iosAttachments: {"id1",urlImage},
                         // bigPicture: imUrlString,
                         buttons: [

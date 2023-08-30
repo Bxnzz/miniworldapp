@@ -189,6 +189,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
       'notitype': 'endgame',
       'mcid': raceStatus,
       'raceID': idrace,
+      'raceName': raceName
     };
     var notification1 = OSCreateNotification(
         //playerID
@@ -230,6 +231,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
       'notitype': 'processgame',
       'mcid': raceStatus,
       'raceID': idrace,
+      'raceName': raceName
     };
     var notification1 = OSCreateNotification(
         //playerID
@@ -288,7 +290,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
         // other stuff
         title: const Text('ภารกิจ'),
       ),
-      floatingActionButton: raceStatus != 3
+      floatingActionButton: raceStatus == 2
           ? FloatingActionButton.extended(
               backgroundColor: Colors.pinkAccent,
               onPressed: () {
@@ -301,7 +303,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
                     fontWeight: FontWeight.bold),
               ),
             )
-          : raceStatus == 3 && remainMC == 0
+          : raceStatus == 3 
               ? FloatingActionButton.extended(
                   backgroundColor: Colors.lightGreen,
                   onPressed: () {

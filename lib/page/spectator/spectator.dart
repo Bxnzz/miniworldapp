@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:miniworldapp/page/Host/rank_race.dart';
+import 'package:miniworldapp/page/spectator/rank_spectator.dart';
 import 'package:miniworldapp/page/spectator/realtimeChat.dart';
 import 'package:miniworldapp/service/user.dart';
 import 'package:provider/provider.dart';
@@ -91,7 +92,7 @@ class _SpectatorState extends State<Spectator> {
                 "assets/image/rank.png",
               ),
               onPressed: () {
-                Get.to(RankRace());
+                Get.to(RankSpectator());
                 context.read<AppData>().idrace = idrace;
                 log('raceeeeeeee' + idrace.toString());
               },
