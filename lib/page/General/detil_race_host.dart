@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/page/Host/host_race_start.dart';
+import 'package:miniworldapp/page/Player/chat_room.dart';
 import 'package:miniworldapp/page/Player/lobby.dart';
 import 'package:miniworldapp/widget/loadData.dart';
 
@@ -37,6 +38,7 @@ class _DetailHostState extends State<DetailHost> {
   int idrace = 0;
   int idAttend = 0;
   int idTeam = 0;
+  String userName = '';
   String UrlImg = '';
   String Rname = '';
   String team = '';
@@ -83,6 +85,7 @@ class _DetailHostState extends State<DetailHost> {
       var a = await raceService.racesByraceID(raceID: idrace);
       races = a.data;
       Rname = a.data.first.raceName;
+      userName = a.data.first.user.userName;
       log(Rname);
       Rlocation = a.data.first.raceLocation;
       team = a.data.first.raceLimitteam.toString();
@@ -438,10 +441,6 @@ class _DetailHostState extends State<DetailHost> {
                                       width: 200,
                                       child: ElevatedButton(
                                           onPressed: () {
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const Lobby()));
                                             context.read<AppData>().idrace =
                                                 idrace;
                                             context.read<AppData>().idUser =
@@ -450,17 +449,16 @@ class _DetailHostState extends State<DetailHost> {
                                                 idAttend;
                                             context.read<AppData>().idTeam =
                                                 idTeam;
+                                            Get.to(const Lobby());
                                           },
                                           child: Text('เข้าล็อบบี้')),
                                     )
-                                  : races.first.raceStatus == 4
-                                      ? Container()
-                                      : SizedBox(
+                                  : races.first.raceStatus == 2
+                                      ? SizedBox(
                                           width: 200,
                                           child: ElevatedButton(
                                               onPressed: () {
-                                                Get.to(
-                                                    () => CheckMissionList());
+                                                Get.to(CheckMissionList());
                                                 context.read<AppData>().idrace =
                                                     idrace;
                                                 context.read<AppData>().idUser =
@@ -476,7 +474,23 @@ class _DetailHostState extends State<DetailHost> {
                                               },
                                               child: Text(
                                                   'การแข่งขันกำลังดำเนินการ')),
-                                        ))
+                                        )
+                                      : races.first.raceStatus == 3
+                                          ? SizedBox(
+                                              width: 200,
+                                              child: ElevatedButton(
+                                                  onPressed: () {
+                                                    context
+                                                        .read<AppData>()
+                                                        .idrace = idrace;
+                                                    context
+                                                        .read<AppData>()
+                                                        .idUser = idUser;
+                                                    Get.to(CheckMissionList());
+                                                  },
+                                                  child: Text('กำลังประมวนผล')),
+                                            )
+                                          : Container())
                         ]),
                       ))
                 ],

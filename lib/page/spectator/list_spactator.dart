@@ -46,8 +46,7 @@ class _ListSpactatorState extends State<ListSpactator> {
     // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
-    attendService =
-        AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    attendService = AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
     // 2.2 async method
     loadDataMethod = loadData();
@@ -58,6 +57,7 @@ class _ListSpactatorState extends State<ListSpactator> {
     try {
       idUser = context.read<AppData>().idUser;
       log('user ' + idUser.toString());
+      
       var r = await raceService.races();
       races = r.data;
       for (var re in races) {

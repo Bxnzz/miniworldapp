@@ -131,7 +131,12 @@ class _LobbyState extends State<Lobby> {
           OSActionButton(text: "ยกเลิก", id: "id2")
         ]);
     log('player ' + playerIds.toString());
+    try {
     var response1 = await OneSignal.shared.postNotification(notification1);
+    } catch (e) {
+    
+    }
+   
     // Get.defaultDialog(title: mc.toString());
     Get.to(DetailHost());
   }
@@ -455,14 +460,18 @@ class _LobbyState extends State<Lobby> {
     try {
       log("LoadData");
       log(idRace.toString());
-      // var r = await raceService.racesByID(userID: idUser);
+
+       var r = await raceService.racesByraceID(raceID: idRace);
+      userCreate = r.data.first.user.userId;
+      raceName = r.data.first.raceName;
 
       var a = await attendService.attendByRaceID(raceID: idRace);
-
       attends = a.data;
       status = a.data.first.status;
-      userCreate = a.data.first.team.race.userId;
-      raceName = a.data.first.team.race.raceName;
+       
+     
+     
+      log('userCreate  '+userCreate.toString());
 
       playerIds.clear();
       for (var element in a.data) {
@@ -696,7 +705,13 @@ class _LobbyState extends State<Lobby> {
                                       hslColor: const HSLColor.fromAHSL(
                                           1.0, 120, 1.0, 0.37),
                                       onPressed: () {
-                                        showAlertDialog(context);
+                                       // log(attendShow.length.toString());
+                                        if(attendShow.isEmpty){
+                                           Get.defaultDialog(title: 'ยังไม่มีทีมที่เข้าร่วม');
+                                        }else{
+                                          showAlertDialog(context);
+                                        }
+                                        
                                       },
                                     ),
                                   ),

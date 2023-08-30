@@ -32,6 +32,10 @@ abstract class MissionCompService {
   Future<HttpResponse<List<MissionComplete>>> missionCompByraceId(
       {@Query("raceID") required int raceID});
 
+    @GET("/missionComp/")
+  Future<HttpResponse<List<MissionComplete>>> missionCompByraceIdApprove(
+      {@Query("raceID2") required int raceID});
+
 
   @POST("/missionComp")
   Future<HttpResponse<MissionComplete>> insertMissionComps(

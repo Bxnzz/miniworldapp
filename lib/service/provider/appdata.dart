@@ -14,6 +14,7 @@ class AppData with ChangeNotifier {
   late List<Team> teams;
   Map<String, dynamic> userFacebook = {};
   int idrace = 0;
+   String oneID = '';
   String Username = '';
   String userImage = '';
   String userDescrip = '';

@@ -11,6 +11,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
+import 'package:miniworldapp/page/Player/chat_room.dart';
 import 'package:miniworldapp/page/Player/lobby.dart';
 import 'package:miniworldapp/page/Player/player_race_start_menu.dart';
 import 'package:miniworldapp/page/Player/review.dart';
@@ -43,6 +44,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
   late int raceStatus;
   String UrlImg = '';
   String Rname = '';
+  String Uname = '';
   String team = '';
   String Rlocation = '';
   String raceTimeST = '';
@@ -71,6 +73,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
 
     attendService =
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
     log("status :${status}");
     log("id User is :$idUser");
@@ -292,10 +295,29 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                           Center(
                             child: SizedBox(
                               width: 200,
-                              child: ElevatedButton(
-                                  onPressed: () {
-                                    status == 2 && raceStatus == 2
-                                        ? setState(() {
+                              child: raceStatus == 1
+                                  ? ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          context.read<AppData>().idAt =
+                                              idAttend;
+                                          context.read<AppData>().idUser =
+                                              idUser;
+                                          context.read<AppData>().idrace =
+                                              idrace;
+                                          context.read<AppData>().idAt =
+                                              idAttend;
+                                          context.read<AppData>().idTeam =
+                                              teamid;
+                                          context.read<AppData>().status =
+                                              status;
+                                          Get.to(Lobby());
+                                        });
+                                      },
+                                      child: const Text('เข้าการแข่งขัน'))
+                                  : status == 2 && raceStatus == 2
+                                      ? ElevatedButton(
+                                          onPressed: () {
                                             context.read<AppData>().idAt =
                                                 idAttend;
                                             context.read<AppData>().idUser =
@@ -308,39 +330,23 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                                 teamid;
                                             context.read<AppData>().status =
                                                 status;
-                                            Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PlayerRaceStartMenu(),
-                                                ));
-                                          })
-                                        : setState(() {
-                                            context.read<AppData>().idAt =
-                                                idAttend;
-                                            context.read<AppData>().idUser =
+                                            Get.to(PlayerRaceStartMenu());
+                                          },
+                                          child: const Text('เข้าการแข่งขัน'))
+                                      : raceStatus == 3
+                                          ? ElevatedButton(
+                                              onPressed: () {
+                                                  context.read<AppData>().idUser =
                                                 idUser;
-                                            context.read<AppData>().idrace =
-                                                idrace;
-                                            context.read<AppData>().idAt =
-                                                idAttend;
-                                            context.read<AppData>().idTeam =
-                                                teamid;
-                                            context.read<AppData>().status =
-                                                status;
-                                            Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const Lobby(),
-                                                ));
-                                          });
-                                  },
-                                  child: Text('เข้าการแข่งขัน')),
+                                                Get.to(ChatRoomPage(userID: idUser, raceID: idrace, userName: context.read<AppData>().Username, raceName: Rname));
+                                              },
+                                              child: Text('รอประมวลผล...'))
+                                          : Container(),
                             ),
                           ),
                           ElevatedButton(
                               onPressed: () {
+                              //  log('username'+ context.read<AppData>().Username);
                                 Get.to(() => const ReviewPage());
                               },
                               child: Text("Review")),
@@ -371,7 +377,6 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
       var a = await raceService.racesByraceID(raceID: idrace);
       races = a.data;
       idrace = a.data.first.raceId;
-
       Rname = a.data.first.raceName;
       log(Rname);
       Rlocation = a.data.first.raceLocation;

@@ -220,141 +220,126 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
 
   @override
   Widget build(BuildContext context) {
-    log("attendddd$idAttend");
+    return Scaffold(
+      body: FutureBuilder(
+        future: loadDataMethod,
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            log("dis ${dis}");
+            for (int i = 0; i < mission.length; i++) {
+              //first mis
+              if (i == 0) {
+                log("first Mis");
+                lat = mission[0].misLat;
+                lng = mission[0].misLng;
 
-    return WillPopScope(
-      onWillPop: () async {
-        log('On WillPop');
-        try {
-          context.read<AppData>().updateLocationTimerPlayer.cancel();
-
-          log('Timer Stopped1...');
-        } catch (e) {
-          log('ERRx ' + e.toString());
-        }
-        return false;
-      },
-      child: Scaffold(
-        body: FutureBuilder(
-          future: loadDataMethod,
-          builder: (context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              log("dis ${dis}");
-              for (int i = 0; i < mission.length; i++) {
-                //first mis
-                if (i == 0) {
-                  log("first Mis");
-                  lat = mission[0].misLat;
-                  lng = mission[0].misLng;
-
-                  misID = mission[0].misId;
-                  misName = mission[0].misName;
-                  misDistance = mission[0].misDistance;
-                  misDescrip = mission[0].misDiscrip;
-                  misType = mission[0].misType.toString();
-                  if (misType.contains('12')) {
-                    type = 'ข้อความ,สื่อ';
-                  }
-                  if (misType.contains('1')) {
-                    type = 'ข้อความ';
-                  } else if (misType.contains('2')) {
-                    type = 'สื่อ';
-                  } else if (misType.contains('3')) {
-                    type = 'ไม่มีการส่ง';
-                  }
+                misID = mission[0].misId;
+                misName = mission[0].misName;
+                misDistance = mission[0].misDistance;
+                misDescrip = mission[0].misDiscrip;
+                misType = mission[0].misType.toString();
+                if (misType.contains('12')) {
+                  type = 'ข้อความ,สื่อ';
                 }
-
-                for (int j = 0; j < missionComp.length; j++) {
-                  if (missionComp[j].misId == mission[i].misId &&
-                      missionComp[j].mcStatus == 2) {
-                    log("pass ${mission[i].misId}");
-
-                    if (i + 1 > mission.length - 1) {
-                      log("next ${mission[i].misId}");
-
-                      lastmisComp = true;
-
-                      if (lastmisComp == true) {
-                        disableGmap = false;
-                      }
-                      // showAlertDialog();
-                    } else {
-                      log("next ${mission[i + 1].misId}");
-                      log("lat lng${mission[i + 1].misLat}${mission[i + 1].misLng}");
-
-                      lat = mission[i + 1].misLat;
-                      lng = mission[i + 1].misLng;
-
-                      log("lat $lat");
-                      log("lng $lng");
-                      misID = mission[i + 1].misId;
-                      misName = mission[i + 1].misName;
-                      misDistance = mission[i + 1].misDistance;
-                      misDescrip = mission[i + 1].misDiscrip;
-                      misType = mission[i + 1].misType.toString();
-                      if (misType.contains('12')) {
-                        type = 'ข้อความ,สื่อ';
-                      }
-                      if (misType.contains('1')) {
-                        type = 'ข้อความ';
-                      } else if (misType.contains('2')) {
-                        type = 'สื่อ';
-                      } else if (misType.contains('3')) {
-                        type = 'ไม่มีการส่ง';
-                      }
-                      log("mis id = ${misID}");
-                      log("distance = ${misDistance}");
-                      // if (i == mission.length) {
-                      //   log("message");
-                      // }
-                    }
-                  } else {
-                    log("not match;");
-                  }
+                if (misType.contains('1')) {
+                  type = 'ข้อความ';
+                } else if (misType.contains('2')) {
+                  type = 'สื่อ';
+                } else if (misType.contains('3')) {
+                  type = 'ไม่มีการส่ง';
                 }
               }
-              return RefreshIndicator(
-                onRefresh: refresh,
-                child: SafeArea(
-                  child: Stack(
-                    children: [
-                      GMap(context),
-                      lastmisComp == false
-                          ? misType == '3'
-                              //mission type = 3
-                              ? Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Padding(
-                                      padding: EdgeInsets.only(bottom: 20),
-                                      child: antBTN3(context)))
-                              //mission type 1
-                              : Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Padding(
-                                      padding: EdgeInsets.only(bottom: 20),
-                                      child: antBTN(context)))
-                          : Container(),
-                      lastmisComp == true
-                          ? Positioned(
-                              top: (Get.height / 2) - 125,
-                              left: 20,
-                              right: 20,
-                              child: AlertDialog(
-                                shadowColor: Colors.black,
-                                title: Text("ยินดีด้วย !!!"),
-                                content: Text("ทีมคุณผ่านภารกิจทั้งหมดแล้ว"),
-                              ),
-                            )
-                          : Container()
-                    ],
-                  ),
-                ),
-              );
-            } else {
-              return Container();
+
+              for (int j = 0; j < missionComp.length; j++) {
+                if (missionComp[j].misId == mission[i].misId &&
+                    missionComp[j].mcStatus == 2) {
+                  log("pass ${mission[i].misId}");
+
+                  if (i + 1 > mission.length - 1) {
+                    log("next ${mission[i].misId}");
+
+                    lastmisComp = true;
+
+                    if (lastmisComp == true) {
+                      disableGmap = false;
+                    }
+                    // showAlertDialog();
+                  } else {
+                    log("next ${mission[i + 1].misId}");
+                    log("lat lng${mission[i + 1].misLat}${mission[i + 1].misLng}");
+
+                    lat = mission[i + 1].misLat;
+                    lng = mission[i + 1].misLng;
+
+                    log("lat $lat");
+                    log("lng $lng");
+                    misID = mission[i + 1].misId;
+                    misName = mission[i + 1].misName;
+                    misDistance = mission[i + 1].misDistance;
+                    misDescrip = mission[i + 1].misDiscrip;
+                    misType = mission[i + 1].misType.toString();
+                    if (misType.contains('12')) {
+                      type = 'ข้อความ,สื่อ';
+                    }
+                    if (misType.contains('1')) {
+                      type = 'ข้อความ';
+                    } else if (misType.contains('2')) {
+                      type = 'สื่อ';
+                    } else if (misType.contains('3')) {
+                      type = 'ไม่มีการส่ง';
+                    }
+                    log("mis id = ${misID}");
+                    log("distance = ${misDistance}");
+                    // if (i == mission.length) {
+                    //   log("message");
+                    // }
+                  }
+                } else {
+                  log("not match;");
+                }
+              }
             }
-          },
-        ),
+            return RefreshIndicator(
+              onRefresh: refresh,
+              child: SafeArea(
+                child: Stack(
+                  children: [
+                    GMap(context),
+                    lastmisComp == false
+                        ? misType == '3'
+                            //mission type = 3
+                            ? Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                    padding: EdgeInsets.only(bottom: 20),
+                                    child: antBTN3(context)))
+                            //mission type 1
+                            : Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                    padding: EdgeInsets.only(bottom: 20),
+                                    child: antBTN(context)))
+                        : Container(),
+                    lastmisComp == true
+                        ? Positioned(
+                            top: (Get.height / 2) - 125,
+                            left: 20,
+                            right: 20,
+                            child: AlertDialog(
+                              shadowColor: Colors.black,
+                              title: Text("ยินดีด้วย !!!"),
+                              content: Text("ทีมคุณผ่านภารกิจทั้งหมดแล้ว"),
+                            ),
+                          )
+                        : Container()
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return Container();
+          }
+        },
       ),
     );
   }
