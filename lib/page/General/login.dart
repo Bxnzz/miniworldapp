@@ -13,7 +13,7 @@ import 'package:get/get.dart';
 import 'package:miniworldapp/model/DTO/userDTO.dart';
 import 'package:miniworldapp/model/result/raceResult.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
-import 'package:miniworldapp/page/Host/rank_race.dart';
+import 'package:miniworldapp/page/General/rank_race.dart';
 
 import 'package:miniworldapp/page/Player/chat_room.dart';
 import 'package:miniworldapp/page/Player/lobby.dart';
