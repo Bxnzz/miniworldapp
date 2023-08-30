@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:miniworldapp/model/review.dart';
 import 'package:miniworldapp/service/review.dart';
+import 'package:miniworldapp/widget/ratingBar.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/provider/appdata.dart';
@@ -122,11 +123,18 @@ class _raceReviewState extends State<raceReview> {
                                     color: const Color.fromARGB(
                                         255, 255, 255, 255),
                                   )),
-                              ratingBar(avg, 30.0)
+                              //  ratingBarStar(avg, 30.0)
                             ],
                           )),
                     ],
                   ),
+                  ratingBar(
+                      point: avg,
+                      size: 30.0,
+                      faIcon: FaIcon(
+                        FontAwesomeIcons.solidStar,
+                        color: Colors.amber,
+                      )),
                   SizedBox(
                     width: Get.width,
                     height: Get.height / 1.4,
@@ -186,7 +194,8 @@ class _raceReviewState extends State<raceReview> {
                             Positioned(
                                 top: 10,
                                 right: 15,
-                                child: ratingBar(e.revPoint.toDouble(), 20.0)),
+                                child:
+                                    ratingBarStar(e.revPoint.toDouble(), 20.0)),
                             Positioned(
                               top: 10,
                               right: 115,
@@ -208,7 +217,7 @@ class _raceReviewState extends State<raceReview> {
     );
   }
 
-  RatingBar ratingBar(point, size) {
+  RatingBar ratingBarStar(point, size) {
     return RatingBar.builder(
       glowColor: Colors.yellowAccent,
       glowRadius: 5,

@@ -15,7 +15,7 @@ import 'package:miniworldapp/page/General/detil_race_host.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/home_create.dart';
 import 'package:miniworldapp/page/Host/list_approve.dart';
-import 'package:miniworldapp/page/Host/rank_race.dart';
+import 'package:miniworldapp/page/General/rank_race.dart';
 import 'package:miniworldapp/page/showmap.dart';
 import 'package:miniworldapp/service/missionComp.dart';
 import 'package:miniworldapp/service/race.dart';
@@ -232,7 +232,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
     Get.defaultDialog(title: 'ประมวลผลการแข่งขันแล้ว');
 
     Get.to(
-      RankRace(),
+      () => RankRace(),
     );
     context.read<AppData>().idrace = idrace;
   }

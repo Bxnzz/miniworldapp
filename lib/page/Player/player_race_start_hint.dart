@@ -366,7 +366,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
       child: AnimatedButton(
           borderRadius: BorderRadius.circular(200),
           text: "ค้นหา",
-          color: Colors.orange,
+          color: Colors.amber,
           pressEvent: () {
             dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
             dis <= misDistance
@@ -412,7 +412,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
       child: AnimatedButton(
           borderRadius: BorderRadius.circular(200),
           text: "ค้นหา",
-          color: Colors.orange,
+          color: Colors.amber,
           pressEvent: () {
             dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
             dis <= misDistance

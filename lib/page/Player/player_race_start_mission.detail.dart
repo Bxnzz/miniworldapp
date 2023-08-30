@@ -41,6 +41,8 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
 
   List<MissionComplete> missionComp = [];
   List<Mission> missions = [];
+  List<Mission> missionbyID = [];
+
   Map<String, dynamic> mc = {};
   TextEditingController answerPass = TextEditingController();
 
@@ -61,6 +63,8 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
   double mlat = 0.0;
   double mlng = 0.0;
   bool isImage = false;
+  bool isSubmit = true;
+  String imageInProcess = '';
 
   File? _image;
   CroppedFile? croppedImage;
@@ -99,6 +103,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
       //log("${mc.data.length}");
       missionComp = a.data;
       missions = mis2.data;
+      missionbyID = mis3.data;
 
       log("asdfasdfasdf${mis3.data.length}");
       onesingnalId = mis2.data.first.race.user.onesingnalId;
@@ -130,6 +135,14 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
       log('name ' + misName);
       log('type ' + type);
       log(teamID.toString());
+
+      missionComp.map((e) async {
+        if (e.misId == misID && e.mcStatus == 1) {
+          isSubmit = false;
+          imageInProcess = e.mcPhoto;
+          log("mc photo " + imageInProcess.toString());
+        }
+      }).toList();
     } catch (err) {
       log('Error:$err');
     } finally {
@@ -303,8 +316,9 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
         ]);
 
     var response1 = await OneSignal.shared.postNotification(notification1);
+
+    //Get.defaultDialog(title: mc.toString());
     stopLoading();
-    Get.defaultDialog(title: mc.toString());
   }
 
   @override
@@ -322,9 +336,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              body: Container(
-                child: misfind(),
-              ),
+              body: misfind(),
             );
           } else {
             return Scaffold();
@@ -419,63 +431,74 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
               )
             ],
           ),
-
-          _image != null
-              ? isImage == true
-                  ? Stack(children: [
-                      GestureDetector(
-                        onLongPress: () {
-                          selectmedia();
-                        },
-                        onTap: () {
-                          SmartDialog.show(builder: (_) {
-                            return Container(
-                                alignment: Alignment.center,
-                                child: PhotoView(
-
-                                    //  enablePanAlways: true,
-                                    tightMode: true,
-                                    imageProvider: FileImage(_image!)));
-                          });
-                        },
-                        child: SizedBox(
+          //chk mission sending and status == 1(process)
+          isSubmit == true
+              ? _image != null
+                  ? isImage == true
+                      ? SizedBox(
                           width: Get.width / 2,
                           height: Get.height / 3,
-                          child: Positioned.fill(
-                            child: Image.file(_image!),
-                          ),
-                        ),
-                      ),
-                    ])
-                  : _customVideoPlayerController != null
-                      ? SizedBox(
-                          width: Get.width,
-                          height: Get.height / 3,
                           child: GestureDetector(
-                            onLongPress: () {
-                              selectmedia();
-                            },
-                            child: CustomVideoPlayer(
-                                customVideoPlayerController:
-                                    _customVideoPlayerController!),
-                          ),
+                              onTap: () {
+                                SmartDialog.show(builder: (_) {
+                                  return Container(
+                                      alignment: Alignment.center,
+                                      child: PhotoView(
+
+                                          //  enablePanAlways: true,
+                                          tightMode: true,
+                                          imageProvider: FileImage(_image!)));
+                                });
+                              },
+                              child: Image.file(_image!)),
                         )
-                      : SizedBox(
-                          width: 200,
-                          height: 150,
-                          child:
-                              LoadingIndicator(indicatorType: Indicator.pacman))
-              : Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Container(
-                    width: Get.width,
-                    height: 80,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            width: 3, color: Get.theme.colorScheme.primary),
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.white),
-                  )),
+                      : _customVideoPlayerController != null
+                          ? SizedBox(
+                              width: Get.width,
+                              height: Get.height / 3,
+                              child: GestureDetector(
+                                onLongPress: () {
+                                  selectmedia();
+                                },
+                                child: CustomVideoPlayer(
+                                    customVideoPlayerController:
+                                        _customVideoPlayerController!),
+                              ),
+                            )
+                          : SizedBox(
+                              width: 200,
+                              height: 150,
+                              child: LoadingIndicator(
+                                  indicatorType: Indicator.pacman))
+                  : Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Container(
+                        width: Get.width,
+                        height: 80,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 3, color: Get.theme.colorScheme.primary),
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white),
+                      ))
+              //oldmission
+              : SizedBox(
+                  width: Get.width / 2,
+                  height: Get.height / 3,
+                  child: GestureDetector(
+                      onTap: () {
+                        SmartDialog.show(builder: (_) {
+                          return Container(
+                              alignment: Alignment.center,
+                              child: PhotoView(
+
+                                  //  enablePanAlways: true,
+                                  tightMode: true,
+                                  imageProvider: NetworkImage(imageInProcess)));
+                        });
+                      },
+                      child: Image.network(imageInProcess)),
+                ),
 
           // buildProgress(),
           Padding(
@@ -493,30 +516,38 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 50),
-            child: SizedBox(
-              width: 200,
-              child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Get.theme.colorScheme.primary,
-                  ),
-                  onPressed: () {
-                    //  _handleSendNotification();
-                    if (_image == null) {
-                      Get.defaultDialog(title: 'กรุณาเลือกหลักฐาน');
-                    } else {
-                      setState(() {
-                        uploadFile();
-                      });
-                    }
-                  },
-                  child: Text('ส่งหลักฐาน',
-                      style: Get.textTheme.bodyLarge!.copyWith(
-                          color: Get.theme.colorScheme.onPrimary,
-                          fontWeight: FontWeight.bold))),
-            ),
-          )
+
+          SizedBox(
+            width: 200,
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Get.theme.colorScheme.primary,
+                ),
+                onPressed: isSubmit == true
+                    ? () async {
+                        //  _handleSendNotification();
+
+                        if (_image == null) {
+                          Get.defaultDialog(title: 'กรุณาเลือกหลักฐาน');
+                        } else {
+                          await uploadFile();
+
+                          setState(() {
+                            loadDataMethod = loadData();
+                          });
+                        }
+                      }
+                    : null,
+                child: isSubmit == true
+                    ? Text('ส่งหลักฐาน',
+                        style: Get.textTheme.bodyLarge!.copyWith(
+                            color: Get.theme.colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold))
+                    : Text('กำลังประมวลผล',
+                        style: Get.textTheme.bodyLarge!.copyWith(
+                            color: Get.theme.colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold))),
+          ),
         ],
       ),
     ]);

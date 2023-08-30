@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:miniworldapp/page/Host/rank_race.dart';
+import 'package:miniworldapp/page/General/rank_race.dart';
 import 'package:miniworldapp/page/spectator/realtimeChat.dart';
 import 'package:miniworldapp/service/user.dart';
 import 'package:provider/provider.dart';

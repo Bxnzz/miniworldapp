@@ -38,6 +38,7 @@ class ShowMapPageState extends State<ShowMapPage> {
 //  List<LatlngDto> latlngDtos = [];
   late Future<void> loadDataMethod;
   List<AttendRace> attends = [];
+  List<AttendRace> attendLatLng = [];
   late AttendService attendService;
   String imgUser = '';
   Set<Marker> markers = {};
@@ -82,34 +83,40 @@ class ShowMapPageState extends State<ShowMapPage> {
 
   Future<void> _updateLocation() async {
     var latlngs = await attendService.attendByRaceID(raceID: idrace);
-
-    for (var latlng in latlngs.data) {
+    attendLatLng = latlngs.data;
+    debugPrint(attendLatLng.toList().toString());
+    attendLatLng.map((e) {
       var marker = Marker(
           icon: BitmapDescriptor.defaultMarker,
-          markerId: MarkerId(latlng.atId.toString()),
-          position: LatLng(latlng.lat.toDouble(), latlng.lng.toDouble()),
+          markerId: MarkerId(e.atId.toString()),
+          position: LatLng(e.lat.toDouble(), e.lng.toDouble()),
           infoWindow: InfoWindow(
-              title: "${latlngs.data.first.team.teamName}",
-              snippet: "${latlngs.data.first.user.userName}",
+              title: "${e.team.teamName}",
+              snippet: "${e.user.userName}",
               onTap: () {
-                attends.map(
-                  (e) {
-                    return SmartDialog.show(builder: (_) {
-                      return Dialog(
-                          child: Container(
-                        width: 150,
-                        height: 100,
-                        child: Text("ชื่อ: ${e.user.userName}"),
-                      ));
-                    });
-                  },
-                ).toList();
+                SmartDialog.show(builder: (_) {
+                  return Dialog(
+                      child: Container(
+                    height: 200,
+                    width: 200,
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage("${e.user.userImage}"),
+                        ),
+                        Text("ชื่อ: ${e.user.userName}"),
+                      ],
+                    ),
+                  ));
+                });
 
                 // Get.defaultDialog(title: 'ข้อมูลสมาชิก');
               }));
 
       markers.add(marker);
-    }
+    }).toList();
+
     log('ma ' + markers.first.position.latitude.toString());
     //  setState(() {});
 
@@ -155,7 +162,7 @@ class ShowMapPageState extends State<ShowMapPage> {
                     markers: markers,
                     mapType: MapType.normal,
                     initialCameraPosition: CameraPosition(
-                      target: centerMap,
+                      target: LatLng(attends.first.lat, attends.first.lng),
                       zoom: 16,
                     ),
                     onMapCreated: (GoogleMapController controller) {

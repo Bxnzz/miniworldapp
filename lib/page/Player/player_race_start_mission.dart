@@ -172,26 +172,6 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
     }
   }
 
-  Route _createRoute() {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) =>
-          PlayerRaceStMisDetail(),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        const begin = Offset(0.0, 1.0);
-        const end = Offset.zero;
-        const curve = Curves.ease;
-
-        var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-        return SlideTransition(
-          position: animation.drive(tween),
-          child: child,
-        );
-      },
-    );
-  }
-
   Future selectFile() async {
     final result = await FilePicker.platform.pickFiles();
     File file;
@@ -400,55 +380,19 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             missionShow = [];
-            // String misId = '';
-            // List<MissionComplete> temp = [];
-            // for (var i = 0; i < missionComp.length; i++) {
-            //   if (missionComp[i].mcStatus != 2) {
-            //     if (temp.isNotEmpty) {
-            //       var mission = {misId: temp};
-            //       missionShow.add(mission);
-            //       temp = [];
-            //     }
-            //     misId = missions[i].misId.toString();
-            //   }
 
-            //   temp.add(missionComp[i]);
-            // }
-            // if (temp.isNotEmpty) {
-            //   var mission = {misId: temp};
-            //   missionShow.add(mission);
-            // }
-            // log(missionShow.toString());
             for (int i = 0; i < missions.length; i++) {
               log("message");
-
-              //first mis
-              // if (i == 0) {
-              //   log("first Mis");
-              //   lat = missions[0].misLat;
-              //   lng = missions[0].misLng;
-
-              //   misID = missions[0].misId;
-              //   misName = missions[0].misName;
-              //   misDistance = missions[0].misDistance;
-              //   misDescrip = missions[0].misDiscrip;
-              //   misType = missions[0].misType.toString();
-              //   if (misType.contains('12')) {
-              //     type = 'ข้อความ,สื่อ';
-              //   }
-              //   if (misType.contains('1')) {
-              //     type = 'ข้อความ';
-              //   } else if (misType.contains('2')) {
-              //     type = 'สื่อ';
-              //   } else if (misType.contains('3')) {
-              //     type = 'ไม่มีการส่ง';
-              //   }
-              // }
+              log("i" + i.toString());
+              if (i == 0) {
+                missionShow.add(missions[0]);
+              }
 
               for (int j = 0; j < missionComp.length; j++) {
                 if (missionComp[j].misId == missions[i].misId &&
                     missionComp[j].mcStatus == 2) {
                   log("pass ${missions[i].misId}");
+
                   missionShow.add(missions[i]);
                   if (i + 1 > missions.length - 1) {
                     lastmisComp = true;
@@ -477,44 +421,6 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
                   }
 
                   log("MissionShow :$missionShow");
-                } else {
-                  // if (i + 1 > missions.length - 1) {
-                  //   log("next ${missions[i].misId}");
-
-                  //   lastmisComp = true;
-                  //   // showAlertDialog();
-                  // }
-                  //else {
-                  //   log("next ${missions[i + 1].misId}");
-                  //   log("lat lng${missions[i + 1].misLat}${missions[i + 1].misLng}");
-
-                  //   lat = missions[i + 1].misLat;
-                  //   lng = missions[i + 1].misLng;
-
-                  //   log("lat $lat");
-                  //   log("lng $lng");
-                  //   misID = missions[i + 1].misId;
-                  //   misName = missions[i + 1].misName;
-                  //   misDistance = missions[i + 1].misDistance;
-                  //   misDescrip = missions[i + 1].misDiscrip;
-                  //   misType = missions[i + 1].misType.toString();
-                  //   if (misType.contains('12')) {
-                  //     type = 'ข้อความ,สื่อ';
-                  //   }
-                  //   if (misType.contains('1')) {
-                  //     type = 'ข้อความ';
-                  //   } else if (misType.contains('2')) {
-                  //     type = 'สื่อ';
-                  //   } else if (misType.contains('3')) {
-                  //     type = 'ไม่มีการส่ง';
-                  //   }
-
-                  //   log("mis id = ${misID}");
-                  //   log("distance = ${misDistance}");
-                  //   // if (i == mission.length) {
-                  //   //   log("message");
-                  //   // }
-                  // }
                 }
               }
             }

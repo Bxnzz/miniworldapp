@@ -1,5 +1,7 @@
 //import 'dart:convert';
 
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -26,6 +28,7 @@ import '../Host/approve_mission.dart';
 import '../Newhome.dart';
 import '../Player/player_race_start_menu.dart';
 import 'fontpage_register.dart';
+import 'package:crypto/crypto.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -55,8 +58,10 @@ class _LoginState extends State<Login> {
   String start = "s";
   String end = "e";
   String userName = '';
+  String passwordINDB = '';
   int userID = 0;
-
+  var bytes;
+  var digest;
   @override
   void initState() {
     super.initState();
@@ -313,7 +318,13 @@ class _LoginState extends State<Login> {
                                   child: ElevatedButton(
                                       onPressed: () async {
                                         // เปลี่ยนสถานะเป็นกำลังล็อกอิน
+                                        passwordINDB = password.text;
+                                        bytes = utf8.encode(
+                                            passwordINDB); // data being hashed
+                                        log("byte $bytes");
+                                        digest = sha256.convert(bytes);
 
+                                        log(digest.toString());
                                         // อ้างอิงฟอร์มที่กำลังใช้งาน ตรวจสอบความถูกต้องข้อมูลในฟอร์ม
                                         if (_formKey.currentState!.validate()) {
                                           //หากผ่าน
@@ -321,7 +332,7 @@ class _LoginState extends State<Login> {
                                               .unfocus(); // ยกเลิดโฟกัส ให้แป้นพิมพ์ซ่อนไป
                                           LoginDto dto = LoginDto(
                                               email: email.text,
-                                              password: password.text);
+                                              password: digest.toString());
 
                                           //log(jsonEncode(dto));
 
