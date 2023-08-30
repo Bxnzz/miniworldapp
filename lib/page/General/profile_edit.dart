@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -351,20 +352,32 @@ class _Profile_editState extends State<Profile_edit> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        GestureDetector(
-            onTap: () {
-              //Select gallery or camera
-              showModalBottomSheet_photo_or_camera(context);
-            },
-            child: _image == null
-                ? CircleAvatar(
-                    radius: 50,
-                    backgroundImage: NetworkImage("${users.first.userImage}"),
-                  )
-                : CircleAvatar(
-                    radius: 50,
-                    backgroundImage: FileImage(File(_image!.path)),
-                  )),
+        users.first.userImage.contains("<svg")
+            ? GestureDetector(
+                onTap: () {
+                  showModalBottomSheet_photo_or_camera(context);
+                },
+                child: _image != null
+                    ? CircleAvatar(
+                        radius: 50,
+                        backgroundImage: FileImage(File(_image!.path)),
+                      )
+                    : SvgPicture.string(users.first.userImage))
+            : GestureDetector(
+                onTap: () {
+                  //Select gallery or camera
+                  showModalBottomSheet_photo_or_camera(context);
+                },
+                child: _image == null
+                    ? CircleAvatar(
+                        radius: 50,
+                        backgroundImage:
+                            NetworkImage("${users.first.userImage}"),
+                      )
+                    : CircleAvatar(
+                        radius: 50,
+                        backgroundImage: FileImage(File(_image!.path)),
+                      )),
         const Gap(20),
         TextFormField(
           controller: userName,

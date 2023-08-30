@@ -453,27 +453,30 @@ class _DetailHostState extends State<DetailHost> {
                                           },
                                           child: Text('เข้าล็อบบี้')),
                                     )
-                                  :races.first.raceStatus == 4 ?
-                                   Container()
-                                    : SizedBox(
-                                      width: 200,
-                                      child: ElevatedButton(
-                                          onPressed: () {
-                                           Get.to(CheckMissionList());
-                                            context.read<AppData>().idrace =
-                                                idrace;
-                                            context.read<AppData>().idUser =
-                                                idUser;
-                                            context.read<AppData>().idAt =
-                                                idAttend;
-                                            context.read<AppData>().idTeam =
-                                                idTeam;
-                                             context.read<AppData>().raceStatus =
-                                                races.first.raceStatus;
-                                          },
-                                          child:
-                                              Text('การแข่งขันกำลังดำเนินการ')),
-                                    ))
+                                  : races.first.raceStatus == 4
+                                      ? Container()
+                                      : SizedBox(
+                                          width: 200,
+                                          child: ElevatedButton(
+                                              onPressed: () {
+                                                Get.to(
+                                                    () => CheckMissionList());
+                                                context.read<AppData>().idrace =
+                                                    idrace;
+                                                context.read<AppData>().idUser =
+                                                    idUser;
+                                                context.read<AppData>().idAt =
+                                                    idAttend;
+                                                context.read<AppData>().idTeam =
+                                                    idTeam;
+                                                context
+                                                        .read<AppData>()
+                                                        .raceStatus =
+                                                    races.first.raceStatus;
+                                              },
+                                              child: Text(
+                                                  'การแข่งขันกำลังดำเนินการ')),
+                                        ))
                         ]),
                       ))
                 ],

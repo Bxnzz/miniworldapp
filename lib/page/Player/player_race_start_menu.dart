@@ -13,7 +13,9 @@ import 'package:miniworldapp/page/General/home_join_detail.dart';
 import 'package:miniworldapp/page/Player/player_race_start_gps.dart';
 import 'package:miniworldapp/page/Player/player_race_start_hint.dart';
 import 'package:miniworldapp/page/Player/player_race_start_mission.dart';
+import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:provider/provider.dart';
 
 class PlayerRaceStartMenu extends StatefulWidget {
   const PlayerRaceStartMenu({super.key});
@@ -90,7 +92,18 @@ class _PlayerRaceStartMenuState extends State<PlayerRaceStartMenu> {
               children: [
                 IconButton(
                   onPressed: () {
-                    Get.to(() => HomeAll());
+                    try {
+                      context
+                          .read<AppData>()
+                          .updateLocationTimerPlayer
+                          .cancel();
+
+                      log('Timer Stopped1...');
+                    } catch (e) {
+                      log('ERRx ' + e.toString());
+                    }
+
+                    Navigator.of(context).pop();
                   },
                   icon: const FaIcon(
                     FontAwesomeIcons.circleChevronLeft,

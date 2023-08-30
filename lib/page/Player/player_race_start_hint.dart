@@ -12,6 +12,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:miniworldapp/model/DTO/attendLatLngDTO.dart';
 import 'package:miniworldapp/model/missionComp.dart' as misComp;
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/home_join_detail.dart';
@@ -24,6 +25,7 @@ import 'package:provider/provider.dart';
 
 import '../../model/DTO/missionCompDTO.dart';
 import '../../model/mission.dart';
+import '../../service/attend.dart';
 import '../../service/missionComp.dart';
 import '../../service/provider/appdata.dart';
 
@@ -38,12 +40,14 @@ class PlayerRaceStartHint extends StatefulWidget {
 class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
   late MissionCompService missionCompService;
   late MissionService missionService;
+  late AttendService attendService;
 
   late int teamID;
   late int raceID;
   late int misID;
   late int misDistance = 0;
   int indexpage = 1;
+  int idAttend = 0;
 
   late double lngDevice, latDevice;
   late double lat = 0;
@@ -79,14 +83,25 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
     teamID = context.read<AppData>().idTeam;
     raceID = context.read<AppData>().idrace;
     misID = context.read<AppData>().idMis;
+    idAttend = context.read<AppData>().idAt;
     missionCompService =
         MissionCompService(Dio(), baseUrl: context.read<AppData>().baseurl);
     missionService =
         MissionService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
+    attendService =
+        AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
     loadDataMethod = LoadData();
     log("team id = $teamID");
     log("$lat $lng");
+    log("AttendID = $idAttend");
     //showAlertDialog();
+
+    context.read<AppData>().updateLocationTimerPlayer =
+        Timer.periodic(const Duration(seconds: 3), (timer) {
+      _updateLocation();
+    });
+    log('Start Timer');
     super.initState();
   }
 
@@ -192,128 +207,154 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
     });
   }
 
+  Future<void> _updateLocation() async {
+    log("LAT $latDevice");
+    AttendLatLngDto atDto = AttendLatLngDto(lat: latDevice, lng: lngDevice);
+
+    try {
+      var a = await attendService.updateLatLngattendByAtID(atDto, idAttend);
+    } catch (e) {
+      log('abc ' + (e as DioError).response!.data.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder(
-        future: loadDataMethod,
-        builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            log("dis ${dis}");
-            for (int i = 0; i < mission.length; i++) {
-              //first mis
-              if (i == 0) {
-                log("first Mis");
-                lat = mission[0].misLat;
-                lng = mission[0].misLng;
+    log("attendddd$idAttend");
 
-                misID = mission[0].misId;
-                misName = mission[0].misName;
-                misDistance = mission[0].misDistance;
-                misDescrip = mission[0].misDiscrip;
-                misType = mission[0].misType.toString();
-                if (misType.contains('12')) {
-                  type = 'ข้อความ,สื่อ';
-                }
-                if (misType.contains('1')) {
-                  type = 'ข้อความ';
-                } else if (misType.contains('2')) {
-                  type = 'สื่อ';
-                } else if (misType.contains('3')) {
-                  type = 'ไม่มีการส่ง';
-                }
-              }
+    return WillPopScope(
+      onWillPop: () async {
+        log('On WillPop');
+        try {
+          context.read<AppData>().updateLocationTimerPlayer.cancel();
 
-              for (int j = 0; j < missionComp.length; j++) {
-                if (missionComp[j].misId == mission[i].misId &&
-                    missionComp[j].mcStatus == 2) {
-                  log("pass ${mission[i].misId}");
+          log('Timer Stopped1...');
+        } catch (e) {
+          log('ERRx ' + e.toString());
+        }
+        return false;
+      },
+      child: Scaffold(
+        body: FutureBuilder(
+          future: loadDataMethod,
+          builder: (context, AsyncSnapshot snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              log("dis ${dis}");
+              for (int i = 0; i < mission.length; i++) {
+                //first mis
+                if (i == 0) {
+                  log("first Mis");
+                  lat = mission[0].misLat;
+                  lng = mission[0].misLng;
 
-                  if (i + 1 > mission.length - 1) {
-                    log("next ${mission[i].misId}");
-
-                    lastmisComp = true;
-
-                    if (lastmisComp == true) {
-                      disableGmap = false;
-                    }
-                    // showAlertDialog();
-                  } else {
-                    log("next ${mission[i + 1].misId}");
-                    log("lat lng${mission[i + 1].misLat}${mission[i + 1].misLng}");
-
-                    lat = mission[i + 1].misLat;
-                    lng = mission[i + 1].misLng;
-
-                    log("lat $lat");
-                    log("lng $lng");
-                    misID = mission[i + 1].misId;
-                    misName = mission[i + 1].misName;
-                    misDistance = mission[i + 1].misDistance;
-                    misDescrip = mission[i + 1].misDiscrip;
-                    misType = mission[i + 1].misType.toString();
-                    if (misType.contains('12')) {
-                      type = 'ข้อความ,สื่อ';
-                    }
-                    if (misType.contains('1')) {
-                      type = 'ข้อความ';
-                    } else if (misType.contains('2')) {
-                      type = 'สื่อ';
-                    } else if (misType.contains('3')) {
-                      type = 'ไม่มีการส่ง';
-                    }
-                    log("mis id = ${misID}");
-                    log("distance = ${misDistance}");
-                    // if (i == mission.length) {
-                    //   log("message");
-                    // }
+                  misID = mission[0].misId;
+                  misName = mission[0].misName;
+                  misDistance = mission[0].misDistance;
+                  misDescrip = mission[0].misDiscrip;
+                  misType = mission[0].misType.toString();
+                  if (misType.contains('12')) {
+                    type = 'ข้อความ,สื่อ';
                   }
-                } else {
-                  log("not match;");
+                  if (misType.contains('1')) {
+                    type = 'ข้อความ';
+                  } else if (misType.contains('2')) {
+                    type = 'สื่อ';
+                  } else if (misType.contains('3')) {
+                    type = 'ไม่มีการส่ง';
+                  }
+                }
+
+                for (int j = 0; j < missionComp.length; j++) {
+                  if (missionComp[j].misId == mission[i].misId &&
+                      missionComp[j].mcStatus == 2) {
+                    log("pass ${mission[i].misId}");
+
+                    if (i + 1 > mission.length - 1) {
+                      log("next ${mission[i].misId}");
+
+                      lastmisComp = true;
+
+                      if (lastmisComp == true) {
+                        disableGmap = false;
+                      }
+                      // showAlertDialog();
+                    } else {
+                      log("next ${mission[i + 1].misId}");
+                      log("lat lng${mission[i + 1].misLat}${mission[i + 1].misLng}");
+
+                      lat = mission[i + 1].misLat;
+                      lng = mission[i + 1].misLng;
+
+                      log("lat $lat");
+                      log("lng $lng");
+                      misID = mission[i + 1].misId;
+                      misName = mission[i + 1].misName;
+                      misDistance = mission[i + 1].misDistance;
+                      misDescrip = mission[i + 1].misDiscrip;
+                      misType = mission[i + 1].misType.toString();
+                      if (misType.contains('12')) {
+                        type = 'ข้อความ,สื่อ';
+                      }
+                      if (misType.contains('1')) {
+                        type = 'ข้อความ';
+                      } else if (misType.contains('2')) {
+                        type = 'สื่อ';
+                      } else if (misType.contains('3')) {
+                        type = 'ไม่มีการส่ง';
+                      }
+                      log("mis id = ${misID}");
+                      log("distance = ${misDistance}");
+                      // if (i == mission.length) {
+                      //   log("message");
+                      // }
+                    }
+                  } else {
+                    log("not match;");
+                  }
                 }
               }
-            }
-            return RefreshIndicator(
-              onRefresh: refresh,
-              child: SafeArea(
-                child: Stack(
-                  children: [
-                    GMap(context),
-                    lastmisComp == false
-                        ? misType == '3'
-                            //mission type = 3
-                            ? Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Padding(
-                                    padding: EdgeInsets.only(bottom: 20),
-                                    child: btnMisType3(context)))
-                            //mission type 1
-                            : Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Padding(
-                                    padding: EdgeInsets.only(bottom: 20),
-                                    child: antBTN(context)))
-                        : Container(),
-                    lastmisComp == true
-                        ? Positioned(
-                            top: (Get.height / 2) - 125,
-                            left: 20,
-                            right: 20,
-                            child: AlertDialog(
-                              shadowColor: Colors.black,
-                              title: Text("ยินดีด้วย !!!"),
-                              content: Text("ทีมคุณผ่านภารกิจทั้งหมดแล้ว"),
-                            ),
-                          )
-                        : Container()
-                  ],
+              return RefreshIndicator(
+                onRefresh: refresh,
+                child: SafeArea(
+                  child: Stack(
+                    children: [
+                      GMap(context),
+                      lastmisComp == false
+                          ? misType == '3'
+                              //mission type = 3
+                              ? Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Padding(
+                                      padding: EdgeInsets.only(bottom: 20),
+                                      child: antBTN3(context)))
+                              //mission type 1
+                              : Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Padding(
+                                      padding: EdgeInsets.only(bottom: 20),
+                                      child: antBTN(context)))
+                          : Container(),
+                      lastmisComp == true
+                          ? Positioned(
+                              top: (Get.height / 2) - 125,
+                              left: 20,
+                              right: 20,
+                              child: AlertDialog(
+                                shadowColor: Colors.black,
+                                title: Text("ยินดีด้วย !!!"),
+                                content: Text("ทีมคุณผ่านภารกิจทั้งหมดแล้ว"),
+                              ),
+                            )
+                          : Container()
+                    ],
+                  ),
                 ),
-              ),
-            );
-          } else {
-            return Container();
-          }
-        },
+              );
+            } else {
+              return Container();
+            }
+          },
+        ),
       ),
     );
   }
@@ -325,11 +366,12 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
       child: AnimatedButton(
           borderRadius: BorderRadius.circular(200),
           text: "ค้นหา",
-          color: Colors.orange,
+          color: Colors.amber,
           pressEvent: () {
             dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
             dis <= misDistance
                 ? AwesomeDialog(
+                    transitionAnimationDuration: Duration(milliseconds: 100),
                     context: context,
                     headerAnimationLoop: false,
                     animType: AnimType.bottomSlide,
@@ -343,12 +385,10 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                       context.read<AppData>().idTeam = teamID;
 
                       widget.controller.index = 0;
-                      setState(() {
-                        PlayerRaceStartMis;
-                      });
                     },
                   ).show()
                 : AwesomeDialog(
+                    transitionAnimationDuration: Duration(milliseconds: 100),
                     context: context,
                     headerAnimationLoop: false,
                     animType: AnimType.bottomSlide,
@@ -357,11 +397,69 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                     desc: '${dis.toStringAsFixed(1)} เมตร',
                     btnOkText: 'ตกลง',
                     btnOkOnPress: () {
-                      setState(() {
-                        dis = Geolocator.distanceBetween(
-                            latDevice, lngDevice, lat, lng);
-                        loadDataMethod = LoadData();
-                      });
+                      dis = Geolocator.distanceBetween(
+                          latDevice, lngDevice, lat, lng);
+                    },
+                  ).show();
+          }),
+    );
+  }
+
+  antBTN3(BuildContext context) {
+    return Container(
+      height: 130,
+      padding: const EdgeInsets.only(right: 150, left: 150, bottom: 20),
+      child: AnimatedButton(
+          borderRadius: BorderRadius.circular(200),
+          text: "ค้นหา",
+          color: Colors.amber,
+          pressEvent: () {
+            dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
+            dis <= misDistance
+                ? AwesomeDialog(
+                    transitionAnimationDuration: Duration(milliseconds: 100),
+                    context: context,
+                    headerAnimationLoop: false,
+                    animType: AnimType.bottomSlide,
+                    dialogType: DialogType.infoReverse,
+                    title: 'เจอแล้ว !!!',
+                    desc:
+                        '#$misID\nชื่อภารกิจ : $misName \nรายละเอียด : $misDescrip \nประเภทภารกิจ : $type',
+                    btnOkText: 'สำเร็จ',
+                    btnOkOnPress: () async {
+                      final now = DateTime.now();
+                      dateTime = '${now.toIso8601String()}Z';
+                      MissionCompDto mdto = MissionCompDto(
+                          mcDatetime: DateTime.parse(dateTime),
+                          mcLat: latDevice,
+                          mcLng: lngDevice,
+                          mcMasseage: '',
+                          mcPhoto: '',
+                          mcStatus: 2,
+                          mcText: '',
+                          mcVideo: '',
+                          misId: misID,
+                          teamId: teamID);
+                      var missionComp =
+                          await missionCompService.insertMissionComps(mdto);
+                      loadDataMethod = LoadData();
+                      if (widget.controller == 1) {
+                        widget.controller.jumpToTab(1);
+                      }
+                    },
+                  ).show()
+                : AwesomeDialog(
+                    transitionAnimationDuration: Duration(milliseconds: 100),
+                    context: context,
+                    headerAnimationLoop: false,
+                    animType: AnimType.bottomSlide,
+                    dialogType: DialogType.question,
+                    title: 'ห่างจากภารกิจ ',
+                    desc: '${dis.toStringAsFixed(1)} เมตร',
+                    btnOkText: 'ตกลง',
+                    btnOkOnPress: () {
+                      dis = Geolocator.distanceBetween(
+                          latDevice, lngDevice, lat, lng);
                     },
                   ).show();
           }),
@@ -419,11 +517,9 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
-                            setState(() {
-                              dis = Geolocator.distanceBetween(
-                                  latDevice, lngDevice, lat, lng);
-                              loadDataMethod = LoadData();
-                            });
+                            dis = Geolocator.distanceBetween(
+                                latDevice, lngDevice, lat, lng);
+
                             Navigator.pop(context);
                           },
                           child: const Text('OK'),
@@ -447,7 +543,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
               ? showDialog<String>(
                   context: context,
                   builder: (BuildContext context) => AlertDialog(
-                    title: Center(child: const Text('เจอแล้ว ไปต่อได้!!!')),
+                    title: const Text('เจอแล้ว ไปต่อได้!!!'),
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,

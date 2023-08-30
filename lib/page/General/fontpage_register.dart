@@ -1,20 +1,25 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:miniworldapp/page/General/login.dart';
+import 'package:miniworldapp/service/user.dart';
 import 'package:provider/provider.dart';
+import 'package:crypto/crypto.dart';
 
 import '../../model/DTO/registerDTO.dart';
 import '../../service/Register.dart';
 import '../../service/provider/appdata.dart';
+import 'package:random_avatar/random_avatar.dart';
 
 class FontRegisterPage extends StatefulWidget {
   const FontRegisterPage({super.key});
@@ -37,24 +42,43 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final avata = GlobalKey<FormState>();
   late RegisterService registerService;
-
+  late UserService _userService;
+  bool _isHidden = false;
   File? pickedFile;
   UploadTask? uploadTask;
   bool isImage = true;
 
   String img = '';
+  String passwordINDB = '';
+  String passwordDecode = '';
+  String svg = '';
+  late String svgInDB;
+  late var bytes;
+  late var digest;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    bool _isHidden = true;
     registerService =
         RegisterService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
+    _userService = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
+    svg = RandomAvatarString(
+      DateTime.now().toIso8601String(),
+      trBackground: false,
+    );
+
+    svgInDB = svg;
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size * 0.20;
+    final TextEditingController _controller = TextEditingController();
+    final List<Widget> _painters = <Widget>[];
 
     return Scaffold(
       appBar: AppBar(title: Text('Register')),
@@ -62,9 +86,32 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
         child: Form(
           key: _formKey,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
+            padding: EdgeInsets.symmetric(vertical: 10),
             child: Column(
               children: [
+                // FloatingActionButton(
+                //   onPressed: () async {
+                //     svg = RandomAvatarString(
+                //       DateTime.now().toIso8601String(),
+                //       trBackground: false,
+                //     );
+                //     log(svgInDB);
+                //     //log(svg);
+
+                //     _painters.add(
+                //       RandomAvatar(
+                //         DateTime.now().toIso8601String(),
+                //         height: 50,
+                //         width: 52,
+                //       ),
+                //     );
+                //     _controller.text = svg;
+                //     setState(() {});
+                //   },
+                //   tooltip: 'Generate',
+                //   child: const Icon(Icons.gesture),
+                // ),
+                //RandomAvatar(svg, trBackground: false),
                 GestureDetector(
                     onTap: () {
                       selectFile();
@@ -82,10 +129,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                                 selectFile();
                                 log('message');
                               },
-                              child: Icon(
-                                Icons.add_photo_alternate,
-                                size: MediaQuery.of(context).size.width * 0.15,
-                              ),
+                              child: SvgPicture.string('''$svgInDB'''),
                             ),
                           )),
                 Gap(20),
@@ -96,27 +140,41 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                 TextFormField(
                   controller: email,
                   decoration: const InputDecoration(
-                    labelText: 'อีเมลล์',
+                    labelText: 'อีเมล',
                     icon: Icon(Icons.email_outlined),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'กรุณาใส่อีเมลล์.';
+                      return 'กรุณาใส่อีเมล.';
                     }
                     if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
-                      return "กรุณาใส่อีเมลล์ให้ถูกต้อง";
+                      return "กรุณาใส่อีเมลให้ถูกต้อง";
                     }
                     return null;
                   },
                 ),
                 Gap(15),
                 TextFormField(
-                  obscureText: true,
+                  obscureText: _isHidden,
                   enableSuggestions: false,
                   autocorrect: false,
                   controller: password,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _isHidden =
+                              !_isHidden; // เมื่อกดก็เปลี่ยนค่าตรงกันข้าม
+                        });
+                      },
+                      icon: Icon(
+                        _isHidden // เงื่อนไขการสลับ icon
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        size: 16,
+                      ),
+                    ),
                     labelText: 'รหัสผ่าน',
                     icon: Icon(Icons.password),
                   ),
@@ -173,6 +231,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                           if (await _formKey.currentState!.validate()) {
                             setState(() {
                               uploadFile();
+                              log("password =  $digest");
                             });
 
                             // RegisterDto dto = RegisterDto(
@@ -197,12 +256,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                     Gap(50),
                     ElevatedButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Login(),
-                                settings: const RouteSettings(arguments: null),
-                              ));
+                          Navigator.pop(context);
                         },
                         child: Text('ยกเลิก'))
                   ],
@@ -268,49 +322,106 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
       );
     }
 
-    final path = 'files/${pickedFile?.path.split('/').last}';
-    final file = File(pickedFile!.path);
-    final ref = FirebaseStorage.instance.ref().child(path);
-    log(ref.toString());
+    ///upload SVG
+    if (pickedFile == null) {
+      log("Pickfile Null ");
+      passwordINDB = password.text;
+      bytes = utf8.encode(passwordINDB); // data being hashed
 
-    setState(() {
-      uploadTask = ref.putFile(file);
-    });
-    final snapshot = await uploadTask!.whenComplete(() {});
+      digest = sha256.convert(bytes);
 
-    final urlDownload = await snapshot.ref.getDownloadURL();
-    log('Download Link:$urlDownload');
-    img = urlDownload;
-    RegisterDto dto = RegisterDto(
-        userName: userName.text,
-        userMail: email.text,
-        userPassword: password.text,
-        userFullname: fullname.text,
-        userDiscription: description.text,
-        userFacebookId: idFacebook,
-        userImage: urlDownload);
-    var register = await registerService.registers(dto);
-    log(jsonEncode(register.data));
-    log(jsonEncode(dto));
+      // log("encode =" + EncryptData.encryptAES("abc"));
 
-    avata.currentWidget;
-    setState(() {
-      Image.file(File(pickedFile!.path));
-    });
-    userName.clear();
-    email.clear();
-    password.clear();
-    confirmpassword.clear();
-    fullname.clear();
-    description.clear();
+      // log("decode =" + EncryptData.decryptAES(" 21dd8abc6894bdf6946f2fb8045f4890b74951d7a62b7068cf61eeed4d29d68f"));
+      RegisterDto dto = RegisterDto(
+          userName: userName.text,
+          userMail: email.text,
+          userPassword: digest.toString(),
+          userFullname: fullname.text,
+          userDiscription: description.text,
+          userFacebookId: idFacebook,
+          userImage: svgInDB);
+      var register = await registerService.registers(dto);
 
-    return showAlertDialog(context);
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Login(),
-          settings: const RouteSettings(arguments: null),
-        ));
+      var userRegis = await _userService.getUserAll();
+      if (register.data.massage == "Register failed") {
+        log("already email $email");
+        log(jsonEncode(register.data));
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('ลงทะเบียนล้มเหลว !!')),
+        );
+      } else {
+        // avata.currentWidget;
+        // setState(() {
+        //   Image.file(File(pickedFile!.path));
+        // });
+
+        userName.clear();
+        email.clear();
+        password.clear();
+        confirmpassword.clear();
+        fullname.clear();
+        description.clear();
+        return showAlertDialog(context);
+      }
+    }
+
+    //upload image
+    else {
+      passwordINDB = password.toString();
+      bytes = utf8.encode(passwordINDB); // data being hashed
+      digest = sha256.convert(bytes);
+
+      final path = 'files/${pickedFile?.path.split('/').last}';
+      final file = File(pickedFile!.path);
+      final ref = FirebaseStorage.instance.ref().child(path);
+      log(ref.toString());
+
+      setState(() {
+        uploadTask = ref.putFile(file);
+      });
+      final snapshot = await uploadTask!.whenComplete(() {});
+
+      final urlDownload = await snapshot.ref.getDownloadURL();
+      log('Download Link:$urlDownload');
+      img = urlDownload;
+
+      log("Digest as bytes: ${digest.bytes}");
+      log("Digest as hex string: $digest");
+      RegisterDto dto = RegisterDto(
+          userName: userName.text,
+          userMail: email.text,
+          userPassword: digest.toString(),
+          userFullname: fullname.text,
+          userDiscription: description.text,
+          userFacebookId: idFacebook,
+          userImage: urlDownload);
+      var register = await registerService.registers(dto);
+
+      var userRegis = await _userService.getUserAll();
+      if (register.data.massage == "Register failed") {
+        log("already email $email");
+        log(jsonEncode(register.data));
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('ลงทะเบียนล้มเหลว !!')),
+        );
+      } else {
+        avata.currentWidget;
+        setState(() {
+          Image.file(File(pickedFile!.path));
+        });
+
+        userName.clear();
+        email.clear();
+        password.clear();
+        confirmpassword.clear();
+        fullname.clear();
+        description.clear();
+        return showAlertDialog(context);
+      }
+    }
   }
 
   textField(final TextEditingController controller, String hintText,

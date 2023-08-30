@@ -10,7 +10,7 @@ import 'package:miniworldapp/model/DTO/rewardDTO.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';
 import 'package:miniworldapp/model/reward.dart';
 import 'package:miniworldapp/model/team.dart';
-import 'package:miniworldapp/page/Host/share.dart';
+import 'package:miniworldapp/page/General/share.dart';
 import 'package:miniworldapp/service/attend.dart';
 import 'package:miniworldapp/service/mission.dart';
 import 'package:miniworldapp/service/missionComp.dart';
@@ -369,10 +369,13 @@ class _RankRaceState extends State<RankRace> {
                                                                 ? Container(
                                                                     width: 40,
                                                                     height: 40,
-                                                                    decoration:  BoxDecoration(
+                                                                    decoration: BoxDecoration(
                                                                         shape: BoxShape
                                                                             .circle,
-                                                                        color:Get.theme.colorScheme.primary),
+                                                                        color: Get
+                                                                            .theme
+                                                                            .colorScheme
+                                                                            .primary),
                                                                     child:
                                                                         Center(
                                                                       child: Text(
@@ -394,27 +397,29 @@ class _RankRaceState extends State<RankRace> {
                                             alignment: Alignment.center,
                                             children: <Widget>[
                                               // Stroked text as border.
-                                            if (attendShow.where((att) =>
+                                              if (attendShow.where((att) =>
                                                       att.keys.first ==
-                                                      e.teamId)  == attendShow.where((atts) =>
+                                                      e.teamId) ==
+                                                  attendShow.where((atts) =>
                                                       atts.keys.first ==
-                                                      idUser)) Text(
-                                                      e.team.teamName +
-                                                          '(ทีมคุณ)',
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          color:
-                                                              Colors.deepPurple,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ) else Text(
-                                                      e.team.teamName,
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
+                                                      idUser))
+                                                Text(
+                                                  e.team.teamName + '(ทีมคุณ)',
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: Colors.deepPurple,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              else
+                                                Text(
+                                                  e.team.teamName,
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
                                             ],
                                           ),
                                           children: attendShow
@@ -446,7 +451,8 @@ class _RankRaceState extends State<RankRace> {
                                                                             .width,
                                                                         child:
                                                                             Column(
-                                                                              mainAxisAlignment: MainAxisAlignment.start,
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.start,
                                                                           children: [
                                                                             Text(te.user.userName),
                                                                             CircleAvatar(
@@ -470,7 +476,9 @@ class _RankRaceState extends State<RankRace> {
                                                         children: [
                                                           Divider(),
                                                           Row(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
                                                             children: [
                                                               Padding(
                                                                 padding:
@@ -480,27 +488,27 @@ class _RankRaceState extends State<RankRace> {
                                                                 child:
                                                                     GestureDetector(
                                                                   child: CircleAvatar(
-                                                                      radius: 25,
-                                                                      backgroundImage:
-                                                                          NetworkImage(te
-                                                                              .user
-                                                                              .userImage)),
+                                                                      radius:
+                                                                          25,
+                                                                      backgroundImage: NetworkImage(te
+                                                                          .user
+                                                                          .userImage)),
                                                                 ),
                                                               ),
-                                                            
                                                               Padding(
                                                                 padding:
                                                                     const EdgeInsets
                                                                             .only(
                                                                         top: 5,
-                                                                        left: 5),
+                                                                        left:
+                                                                            5),
                                                                 child: Text(
-                                                                  te.user.userName,
+                                                                  te.user
+                                                                      .userName,
                                                                 ),
                                                               ),
                                                             ],
                                                           ),
-                                                         
                                                         ],
                                                       ),
                                                     );

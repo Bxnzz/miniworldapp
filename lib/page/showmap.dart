@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:miniworldapp/model/DTO/attendDTO.dart';
@@ -19,10 +23,11 @@ import 'package:provider/provider.dart';
 
 import '../service/provider/appdata.dart';
 import '../widget/loadData.dart';
+import 'package:http/http.dart' as http;
 
 class ShowMapPage extends StatefulWidget {
-  const ShowMapPage({Key? key}) : super(key: key);
-
+  const ShowMapPage({super.key, required this.showAppbar});
+  final bool showAppbar;
   @override
   State<ShowMapPage> createState() => ShowMapPageState();
 }
@@ -33,9 +38,11 @@ class ShowMapPageState extends State<ShowMapPage> {
 //  List<LatlngDto> latlngDtos = [];
   late Future<void> loadDataMethod;
   List<AttendRace> attends = [];
+  List<AttendRace> attendLatLng = [];
   late AttendService attendService;
-
+  String imgUser = '';
   Set<Marker> markers = {};
+  late BitmapDescriptor _markerIcon;
   late int atId;
   // late double lat;
   // late double lng;
@@ -44,11 +51,12 @@ class ShowMapPageState extends State<ShowMapPage> {
   int idrace = 0;
 
   late int range = 0;
-
+  bool showAppbar = true;
   @override
   void initState() {
     super.initState();
     idrace = context.read<AppData>().idrace;
+
     log('id' + idrace.toString());
     attendService =
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
@@ -64,6 +72,7 @@ class ShowMapPageState extends State<ShowMapPage> {
       attends = a.data;
       //  log('lat'+attends.first.lat.toString());
       // isLoaded = true;
+      imgUser = attends.first.user.userImage;
     } catch (err) {
       // isLoaded = false;
       log('Error:$err');
@@ -74,16 +83,40 @@ class ShowMapPageState extends State<ShowMapPage> {
 
   Future<void> _updateLocation() async {
     var latlngs = await attendService.attendByRaceID(raceID: idrace);
-
-    for (var latlng in latlngs.data) {
+    attendLatLng = latlngs.data;
+    debugPrint(attendLatLng.toList().toString());
+    attendLatLng.map((e) {
       var marker = Marker(
-        markerId: MarkerId(latlng.atId.toString()),
-        position: LatLng(latlng.lat.toDouble(), latlng.lng.toDouble()),
-         infoWindow:  InfoWindow(title: "ทีม", snippet: "สมาชิก",onTap: () => Get.defaultDialog(title:'ข้อมูลสมาชิก'))
-      );
+          icon: BitmapDescriptor.defaultMarker,
+          markerId: MarkerId(e.atId.toString()),
+          position: LatLng(e.lat.toDouble(), e.lng.toDouble()),
+          infoWindow: InfoWindow(
+              title: "${e.team.teamName}",
+              snippet: "${e.user.userName}",
+              onTap: () {
+                SmartDialog.show(builder: (_) {
+                  return Dialog(
+                      child: Container(
+                    height: 200,
+                    width: 200,
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage("${e.user.userImage}"),
+                        ),
+                        Text("ชื่อ: ${e.user.userName}"),
+                      ],
+                    ),
+                  ));
+                });
+
+                // Get.defaultDialog(title: 'ข้อมูลสมาชิก');
+              }));
 
       markers.add(marker);
-    }
+    }).toList();
+
     log('ma ' + markers.first.position.latitude.toString());
     //  setState(() {});
 
@@ -107,8 +140,8 @@ class ShowMapPageState extends State<ShowMapPage> {
     }
     return WillPopScope(
       onWillPop: () async {
-         context.read<AppData>().updateLocationTimer.cancel();
-         return true;
+        context.read<AppData>().updateLocationTimer.cancel();
+        return true;
       },
       child: FutureBuilder(
           future: loadDataMethod,
@@ -119,12 +152,17 @@ class ShowMapPageState extends State<ShowMapPage> {
             return DefaultTabController(
               initialIndex: 1,
               length: 3,
-              child: Scaffold(     
+              child: Scaffold(
+                  appBar: widget.showAppbar == true
+                      ? AppBar(
+                          title: Text("ตำแหน่งผู้แข่งขัน"),
+                        )
+                      : null,
                   body: GoogleMap(
                     markers: markers,
                     mapType: MapType.normal,
                     initialCameraPosition: CameraPosition(
-                      target: centerMap,
+                      target: LatLng(attends.first.lat, attends.first.lng),
                       zoom: 16,
                     ),
                     onMapCreated: (GoogleMapController controller) {
