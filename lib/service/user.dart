@@ -28,6 +28,10 @@ abstract class UserService {
   Future<HttpResponse<RaceResult>> updateUsers(
       @Body() UserDto userDto, @Path("userID") String userID);
 
+   @PUT("/user/oneID/{oneID}")
+  Future<HttpResponse<RaceResult>> updateOneID(
+       @Path("oneID") String oneID);
+
   @PUT("/user/{userID}")
   Future<HttpResponse<RaceResult>> chengePassword(
       @Body() PasswordChengeDto chengePassDto, @Path("userID") String userID);

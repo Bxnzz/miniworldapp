@@ -95,7 +95,7 @@ class _Home_createState extends State<Home_create> {
                   return GridView.count(
                     crossAxisCount: 2,
                     padding: EdgeInsets.only(top: 10),
-                    children: race.map((element) {
+                    children: race.where((e) => e.raceStatus != 4).map((element) {
                       //IDrace = element.raceId;
                       final theme = Theme.of(context);
                       final textTheme = theme.textTheme;

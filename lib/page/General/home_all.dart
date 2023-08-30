@@ -25,6 +25,8 @@ import 'package:miniworldapp/page/Host/start_list_mission.dart';
 import 'package:miniworldapp/page/spectator/list_spactator.dart';
 import 'package:miniworldapp/page/uploadImage,video.dart';
 import 'package:miniworldapp/page/uploadImage,video.dart';
+import 'package:miniworldapp/service/user.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import 'package:provider/provider.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
@@ -51,12 +53,14 @@ class _HomeAllState extends State<HomeAll> {
   String Username = '';
   String _text = '';
   int userID = 0;
+  String oneID = '';
   String userimg = '';
   String userDescrip = '';
   String userFullName = '';
   TextEditingController textController = TextEditingController();
   List<Race> races = [];
   late RaceService raceService;
+  late UserService userService;
   int selectedPos = 0;
 
   double bottomNavBarHeight = 50;
@@ -93,6 +97,7 @@ class _HomeAllState extends State<HomeAll> {
     super.initState();
     _navigationController = CircularBottomNavigationController(selectedPos);
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    userService = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
     Username = context.read<AppData>().Username;
     userID = context.read<AppData>().idUser;
@@ -298,9 +303,13 @@ class drawer extends StatelessWidget {
   final String userimg;
   final String Username;
   final String userDescrip;
+  
 
   @override
   Widget build(BuildContext context) {
+    String oneID = '';
+    late UserService userService;
+    userService = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
     return Container(
       child: SizedBox(
         width: Get.width / 1.2,
@@ -388,7 +397,10 @@ class drawer extends StatelessWidget {
                   ListTile(
                     leading: FaIcon(FontAwesomeIcons.doorOpen),
                     title: const Text('ออกจากระบบ'),
-                    onTap: () {
+                    onTap: () async {
+                      OneSignal.shared.disablePush(true);
+                      oneID = context.read<AppData>().oneID;
+                      var one = await userService.updateOneID(oneID);
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

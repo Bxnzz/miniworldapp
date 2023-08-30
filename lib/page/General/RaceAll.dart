@@ -4,10 +4,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:miniworldapp/model/attend.dart';
 import 'package:miniworldapp/page/General/detil_race.dart';
+import 'package:miniworldapp/service/attend.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/race.dart';
+import '../../model/result/attendRaceResult.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
 import '../../widget/loadData.dart';
@@ -24,13 +27,17 @@ class _RaceAllState extends State<RaceAll> {
   List<Race> races = [];
   int idUser = 0;
   bool isLoaded = false;
+  List<AttendRace> teamAttends = [];
+  Set<int> teamMe = {};
 
   late Future<void> loadDataMethod;
   late RaceService raceService;
+  late AttendService attendService;
 
   var formatter = DateFormat.yMEd();
   // var dateInBuddhistCalendarFormat = formatter.formatInBuddhistCalendarThai(now);
   final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -41,6 +48,7 @@ class _RaceAllState extends State<RaceAll> {
     });
     idUser = context.read<AppData>().idUser;
     log(idUser.toString());
+    attendService = AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
     // 2.2 async method
     loadDataMethod = loadData();
   }
@@ -60,99 +68,8 @@ class _RaceAllState extends State<RaceAll> {
           onRefresh: refresh,
           child: Stack(
             children: [
-              // Positioned(
-              //     child:
-
-              //     SizedBox(
-              //   width: double.infinity,
-              //   height: 60,
-              //   child: Container(
-              //     decoration: const BoxDecoration(
-              //         borderRadius: const BorderRadius.only(
-              //             bottomLeft: Radius.circular(40),
-              //             bottomRight: Radius.circular(40)),
-              //         gradient: LinearGradient(
-              //             begin: FractionalOffset(0.0, 0.0),
-              //             end: FractionalOffset(1.0, 0.0),
-              //             stops: [0.0, 1.0],
-              //             tileMode: TileMode.clamp,
-              //             colors: [
-              //               Colors.purpleAccent,
-              //               Color.fromARGB(255, 144, 64, 255),
-              //             ])),
-              //   ),
-              // )),
-              // Positioned(
-              //   top: 0,
-              //   child: SizedBox(
-              //     width: Get.width,
-              //     height: Get.height,
-              //     child: Container(
-              //        decoration:  BoxDecoration(
-              //                    color:   Colors.grey[100]
-              //                 ),
-              //                   ),
-              //   ),),
               Column(
                 children: <Widget>[
-                  // SizedBox(
-                  //   width: Get.width - 50,
-                  //   height: 85,
-                  //   child: Container(
-                  //     decoration: BoxDecoration(
-                  //         borderRadius: BorderRadius.circular(20),
-                  //         color: Colors.white),
-                  //     child: Column(
-                  //       children: [
-                  //         Text('User'),
-                  //         Row(
-                  //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //           children: [
-                  //             Column(
-                  //               mainAxisAlignment: MainAxisAlignment.center,
-                  //               children: [
-                  //                 SizedBox(
-                  //                     width: 30,
-                  //                     height: 30,
-                  //                     child:
-                  //                         Image.asset("assets/image/crown1.png")),
-                  //                 Text('0')
-                  //               ],
-                  //             ),
-                  //             Padding(
-                  //               padding:
-                  //                   const EdgeInsets.only(top: 30, bottom: 8),
-                  //               child: const VerticalDivider(),
-                  //             ),
-                  //             Column(
-                  //               mainAxisAlignment: MainAxisAlignment.center,
-                  //               children: [
-                  //                 SizedBox(
-                  //                   width: 30,
-                  //                   height: 30,
-                  //                   child: Image.asset("assets/image/crown2.png"),
-                  //                 ),
-                  //                 Text('2')
-                  //               ],
-                  //             ),
-                  //             const VerticalDivider(),
-                  //             Column(
-                  //               mainAxisAlignment: MainAxisAlignment.center,
-                  //               children: [
-                  //                 SizedBox(
-                  //                   width: 30,
-                  //                   height: 30,
-                  //                   child: Image.asset("assets/image/crown3.png"),
-                  //                 ),
-                  //                 Text('0')
-                  //               ],
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
                   Expanded(
                     child: FutureBuilder(
                         future: loadDataMethod,
@@ -164,7 +81,7 @@ class _RaceAllState extends State<RaceAll> {
                               crossAxisSpacing: 10,
                               mainAxisSpacing: 10,
                               //padding: EdgeInsets.only(top: 10),
-                              children: races.map((element) {
+                              children: races.where((element) => element.raceStatus != 4 && element.userId != idUser && teamMe.contains(element.raceId)==false).map((e) {
                                 return Padding(
                                   padding: const EdgeInsets.only(
                                       left: 2.5, right: 2.5, bottom: 5),
@@ -191,12 +108,12 @@ class _RaceAllState extends State<RaceAll> {
                                                 builder: (context) =>
                                                     DetailRace()));
                                         context.read<AppData>().idrace =
-                                            element.raceId;
+                                            e.raceId;
                                       },
                                       child: GridTile(
                                           // crossAxisAlignment: CrossAxisAlignment.start,
                                           child: Image.network(
-                                              element.raceImage,
+                                              e.raceImage,
                                               //  width: Get.width,
                                               //  height: Get.width*0.5625/2,
                                               fit: BoxFit.cover),
@@ -215,7 +132,7 @@ class _RaceAllState extends State<RaceAll> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    Text(element.raceName,
+                                                    Text(e.raceName,
                                                         style: Get.textTheme
                                                             .bodyMedium!
                                                             .copyWith(
@@ -226,7 +143,7 @@ class _RaceAllState extends State<RaceAll> {
                                                                     .theme
                                                                     .colorScheme
                                                                     .onPrimary)),
-                                                    Text("# ${element.raceId}",
+                                                    Text("# ${e.raceId}",
                                                         style: Get.textTheme
                                                             .bodySmall!
                                                             .copyWith(
@@ -242,7 +159,7 @@ class _RaceAllState extends State<RaceAll> {
                                                 //         element.raceTimeFn)),
                                                 Text(
                                                     "สถานที่: " +
-                                                        element.raceLocation,
+                                                        e.raceLocation,
                                                     style: Get
                                                         .textTheme.bodySmall!
                                                         .copyWith(
@@ -279,9 +196,24 @@ class _RaceAllState extends State<RaceAll> {
   Future<void> loadData() async {
     startLoading(context);
     try {
+      idUser = context.read<AppData>().idUser;
+      log('user ' + idUser.toString());
+
       var a = await raceService.races();
       races = a.data;
       isLoaded = true;
+
+     var t = await attendService.attendByUserID(userID: idUser);
+      teamAttends = t.data;
+    //  hostID = t.data.first
+    
+      for (var tm in teamAttends) {
+        log(tm.team.raceId.toString());
+        teamMe.add(tm.team.raceId);
+      }
+      log('raceteams '+teamMe.toString());
+
+
     } catch (err) {
       isLoaded = false;
       log('Error:$err');

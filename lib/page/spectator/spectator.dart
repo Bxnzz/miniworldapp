@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:miniworldapp/page/Host/rank_race.dart';
+import 'package:miniworldapp/page/spectator/rank_spectator.dart';
 import 'package:miniworldapp/page/spectator/realtimeChat.dart';
 import 'package:miniworldapp/service/user.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +38,7 @@ class _SpectatorState extends State<Spectator> {
   List<Race> races = [];
   List<User> users = [];
   List<AttendRace> teamAttends = [];
-
+//  bool showAppbar = false;
   late Future<void> loadDataMethod;
   late RaceService raceService;
   late AttendService attendService;
@@ -54,7 +55,7 @@ class _SpectatorState extends State<Spectator> {
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
     userService = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
-
+    //context.read<AppData>().showAppbar = showAppbar;
     // 2.2 async method
     loadDataMethod = loadData();
   }
@@ -91,7 +92,7 @@ class _SpectatorState extends State<Spectator> {
                 "assets/image/rank.png",
               ),
               onPressed: () {
-                Get.to(RankRace());
+                Get.to(RankSpectator());
                 context.read<AppData>().idrace = idrace;
                 log('raceeeeeeee' + idrace.toString());
               },
@@ -108,11 +109,10 @@ class _SpectatorState extends State<Spectator> {
                   SizedBox(
                       height: Get.height / 3,
                       child: Stack(
-                        children: [ShowMapPage()],
+                        children: [
+                          ShowMapPage(showAppbar: false),
+                        ],
                       )),
-                
-                      
-                
                   Expanded(
                       child: RealtimeChat(
                     raceID: idrace,
