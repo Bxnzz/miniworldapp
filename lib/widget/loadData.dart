@@ -15,17 +15,19 @@ Widget loadingIndicator(BuildContext context) => Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              width: 80,
-              height: 80,
-              child: LoadingIndicator(
-                indicatorType: Indicator.pacman,
-                colors: [
-                  Get.theme.colorScheme.primary,
-                  Colors.amber,
-                  Colors.green,
-                ],
-                strokeWidth: 2.0,
+            Expanded(
+              child: SizedBox(
+                width: 80,
+                height: 80,
+                child: LoadingIndicator(
+                  indicatorType: Indicator.pacman,
+                  colors: [
+                    Get.theme.colorScheme.primary,
+                    Colors.amber,
+                    Colors.green,
+                  ],
+                  strokeWidth: 2.0,
+                ),
               ),
             ),
             Padding(

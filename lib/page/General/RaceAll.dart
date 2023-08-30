@@ -81,7 +81,7 @@ class _RaceAllState extends State<RaceAll> {
                               crossAxisSpacing: 10,
                               mainAxisSpacing: 10,
                               //padding: EdgeInsets.only(top: 10),
-                              children: races.where((element) => element.raceStatus != 4 && element.userId != idUser && teamMe.contains(element.raceId)==false).map((e) {
+                              children: races.where((element) =>element.raceStatus != 3  && element.raceStatus != 2  && element.raceStatus != 4 && element.userId != idUser && teamMe.contains(element.raceId)==false).map((e) {
                                 return Padding(
                                   padding: const EdgeInsets.only(
                                       left: 2.5, right: 2.5, bottom: 5),

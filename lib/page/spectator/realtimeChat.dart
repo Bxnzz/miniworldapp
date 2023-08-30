@@ -237,7 +237,7 @@ class _RealtimeChatState extends State<RealtimeChat> {
                     const CircularProgressIndicator(),
                     Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: const Text('Loading chat messages...'),
+                      child: const Text('กำลังโหลด...'),
                     ),
                   ],
                 ),

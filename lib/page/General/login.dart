@@ -368,25 +368,19 @@ class _LoginState extends State<Login> {
                                                 Get.defaultDialog(
                                                         title:
                                                             'ทำภารกิจสำเร็จ!!!')
-                                                    .then((value) => Get.to(
-                                                        PlayerRaceStartHint(
-                                                            controller: 1
-                                                                as PersistentTabController)));
+                                                    .then((value) => Get.to(() =>
+                                                        PlayerRaceStartMenu()));
                                               } else if (event.notification
                                                           .additionalData![
                                                       'notitype'] ==
                                                   'checkUnMis') {
                                                 Get.defaultDialog(
                                                         title:
-                                                            'ทำภารกิจสำเร็จ!!!',
-                                                        content: event
-                                                                .notification
-                                                                .additionalData![
-                                                            'masseage'])
-                                                    .then((value) => Get.to(
-                                                        PlayerRaceStartHint(
-                                                            controller: 1
-                                                                as PersistentTabController)));
+                                                            'ทำภารกิจไม่สำเร็จ!!!',
+                                                        content: Text(
+                                                            'เพราะ ${event.notification.additionalData!['masseage']}'))
+                                                    .then((value) => Get.to(() =>
+                                                        PlayerRaceStartMenu()));
                                               } else if (event.notification
                                                           .additionalData![
                                                       'notitype'] ==
@@ -394,10 +388,8 @@ class _LoginState extends State<Login> {
                                                 Get.defaultDialog(
                                                         title:
                                                             'เริ่มการแข่งขัน')
-                                                    .then(
-                                                  (value) => Get.to(
-                                                      PlayerRaceStartMenu()),
-                                                );
+                                                    .then((value) => Get.to(() =>
+                                                        PlayerRaceStartMenu()));
 
                                                 // AwesomeDialog(
                                                 //   context: context,
@@ -411,18 +403,20 @@ class _LoginState extends State<Login> {
                                                           .additionalData![
                                                       'notitype'] ==
                                                   'endgame') {
-                                                log('aaaaaa');
                                                 raceName = event.notification
                                                         .additionalData![
                                                     'raceName'];
+
                                                 raceID = int.parse(event
                                                     .notification
-                                                    .additionalData!['raceID']);
+                                                    .additionalData!['raceID']
+                                                    .toString());
 
                                                 Get.defaultDialog(
-                                                        title: 'จบการแข่งขัน')
+                                                        title: 'จบการแข่งขัน',
+                                                        content: Text('รอการประมวลผล'))
                                                     .then((value) {
-                                                  Get.to(ChatRoomPage(
+                                                  Get.to(() => ChatRoomPage(
                                                       userID: userID,
                                                       raceID: raceID,
                                                       userName: userName,
@@ -437,11 +431,13 @@ class _LoginState extends State<Login> {
                                                     'raceName'];
                                                 raceID = int.parse(event
                                                     .notification
-                                                    .additionalData!['raceID']);
+                                                    .additionalData!['raceID']
+                                                    .toString());
                                                 Get.defaultDialog(
                                                   title: 'จบการแข่งขัน',
+                                                  content: Text('ประมวลผลเสร็จสิ้น')
                                                 ).then((value) =>
-                                                    Get.to(RankRace()));
+                                                    Get.to(()=>RankRace()));
                                                 // AwesomeDialog(
                                                 //   context: context,
                                                 //   dialogType:
