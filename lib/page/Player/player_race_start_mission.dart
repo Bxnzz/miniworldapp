@@ -87,6 +87,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
   int misDistance = 0;
   String misDescrip = "";
   bool isfd = false;
+  bool next = false;
   late Future<void> loadDataMethod;
 
   File? _image;
@@ -234,6 +235,15 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
       misName = mis3.data.first.misName;
       misDiscrip = mis3.data.first.misDiscrip;
       misType = mis3.data.first.misType.toString();
+      log("misID COMP" + misID.toString());
+      log("provider=  " + context.read<AppData>().misID.toString());
+      missionComp.map((e) {
+        if (e.misId == context.read<AppData>().idMis && e.mcStatus == 2) {
+          log("Set 0");
+          context.read<AppData>().idMis = 0;
+          misID = 0;
+        }
+      }).toList();
 
       // misStatus = a.data.first.mcStatus.toString();
       // mlat = a.data.first.mission.misLat;
@@ -384,15 +394,16 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
             for (int i = 0; i < missions.length; i++) {
               log("message");
               log("i" + i.toString());
-              if (i == 0) {
-                missionShow.add(missions[0]);
-              }
+              // if (i == 0) {
+              //   missionShow.add(missions[0]);
+              // }
 
               for (int j = 0; j < missionComp.length; j++) {
                 if (missionComp[j].misId == missions[i].misId &&
                     missionComp[j].mcStatus == 2) {
                   log("pass ${missions[i].misId}");
-
+                  log("next ${missions[i + 1].misId}");
+                  next = true;
                   missionShow.add(missions[i]);
                   if (i + 1 > missions.length - 1) {
                     lastmisComp = true;
@@ -432,7 +443,7 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
                 child: ListView(children: [
                   mission_pass_timeline(),
                   lastmisComp == false
-                      ? misID == 0
+                      ? context.read<AppData>().idMis == 0
                           ? mission_wait_timeline()
                           : mission_find_timeline()
                       : mission_finish_timeline()

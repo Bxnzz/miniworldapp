@@ -14,7 +14,7 @@ class AppData with ChangeNotifier {
   late List<Team> teams;
   Map<String, dynamic> userFacebook = {};
   int idrace = 0;
-   String oneID = '';
+  String oneID = '';
   String Username = '';
   String userImage = '';
   String userDescrip = '';
@@ -40,4 +40,7 @@ class AppData with ChangeNotifier {
   bool showAppbar = false;
 
   int raceStatus = 0;
+
+  double latMiscomp = 0;
+  double lngMiscomp = 0;
 }

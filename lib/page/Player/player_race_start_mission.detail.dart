@@ -9,13 +9,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:miniworldapp/service/attend.dart';
 import 'package:miniworldapp/service/mission.dart';
 import 'package:miniworldapp/service/missionComp.dart';
+import 'package:miniworldapp/service/team.dart';
 import 'package:miniworldapp/widget/loadData.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:photo_view/photo_view.dart';
@@ -36,7 +39,7 @@ class PlayerRaceStMisDetail extends StatefulWidget {
 class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
   late MissionCompService missionCompService;
   late MissionService missionService;
-
+  late AttendService _attendService;
   late Future loadDataMethod;
 
   List<MissionComplete> missionComp = [];
@@ -60,8 +63,8 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
   int idrace = 0;
   int misID = 0;
 
-  double mlat = 0.0;
-  double mlng = 0.0;
+  double latDevice = 0.0;
+  double lngDevice = 0.0;
   bool isImage = false;
   bool isSubmit = true;
   String imageInProcess = '';
@@ -80,11 +83,16 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
     teamID = context.read<AppData>().idTeam;
     idrace = context.read<AppData>().idrace;
     misID = context.read<AppData>().idMis;
+    latDevice = context.read<AppData>().latMiscomp;
+    lngDevice = context.read<AppData>().lngMiscomp;
     log('id' + idrace.toString());
     missionCompService =
         MissionCompService(Dio(), baseUrl: context.read<AppData>().baseurl);
     missionService =
         MissionService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
+    _attendService =
+        AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
     loadDataMethod = loadData();
   }
 
@@ -96,6 +104,8 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
       log("idteam ====${teamID}");
       //  var mis = await missionService.missionByraceID(raceID: idrace);
       var mis2 = await missionService.missionByraceID(raceID: idrace);
+      var teambyid = await _attendService.attendByTeamID(teamID: teamID);
+      teamName = teambyid.data.first.team.teamName;
 
       var mis3 = await missionService.missionBymisID(misID: misID);
       //var mc = await missionCompService.missionCompBymisId(misID: misID);
@@ -105,17 +115,17 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
       missions = mis2.data;
       missionbyID = mis3.data;
 
-      log("asdfasdfasdf${mis3.data.length}");
+      log("LENTH OF MISSION${mis3.data.length}");
       onesingnalId = mis2.data.first.race.user.onesingnalId;
       log("onesingnalId ====${onesingnalId}");
       misName = mis3.data.first.misName;
+      log("misName =$misName");
       misDiscrip = mis3.data.first.misDiscrip;
+      log("misDiscrip =$misDiscrip");
       misType = mis3.data.first.misType.toString();
+      log("misType =$misType");
 
-      mlat = a.data.first.mission.misLat;
-      mlng = a.data.first.mission.misLng;
-      teamName = a.data.first.team.teamName;
-      misMediaUrl = mis3.data.first.misMediaUrl;
+      misMediaUrl = missionbyID.first.misMediaUrl;
 
       if (misType.contains('12')) {
         type = 'ข้อความ,สื่อ';
@@ -135,6 +145,8 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
       log('name ' + misName);
       log('type ' + type);
       log(teamID.toString());
+      log("latdevice = $latDevice");
+      log("lngdevice = $lngDevice");
 
       missionComp.map((e) async {
         if (e.misId == misID && e.mcStatus == 1) {
@@ -251,14 +263,14 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
     final urlDownload = await snapshot.ref.getDownloadURL();
 
     log('Download Link:$urlDownload');
-    log('mid ' + mlat.toString());
+    log('mid ' + latDevice.toString());
 
     if (isImage == true) {
       //update image
       MissionCompDto mdto = MissionCompDto(
           mcDatetime: DateTime.parse(dateTime),
-          mcLat: mlat,
-          mcLng: mlng,
+          mcLat: latDevice,
+          mcLng: lngDevice,
           mcMasseage: '',
           mcPhoto: urlDownload,
           mcStatus: 1,
@@ -278,8 +290,8 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
       //update video
       MissionCompDto mdto = MissionCompDto(
           mcDatetime: DateTime.parse(dateTime),
-          mcLat: mlat,
-          mcLng: mlng,
+          mcLat: latDevice,
+          mcLng: lngDevice,
           mcMasseage: '',
           mcPhoto: '',
           mcStatus: 1,

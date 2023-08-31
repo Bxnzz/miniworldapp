@@ -101,7 +101,7 @@ dependencies:
   image_cropper: ^4.0.1
   screenshot: ^2.1.0
   appinio_social_share: ^0.2.4
-  path_provider: ^2.0.15
+  path_provider: ^2.1.1
   pushable_button: ^0.0.2
   otp: ^3.1.4
   base32: ^2.1.3

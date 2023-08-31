@@ -93,6 +93,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
     width = size.width;
     return WillPopScope(
       onWillPop: () async {
+        Get.to(() => HomeAll());
         return true;
       },
       child: Scaffold(
@@ -336,9 +337,15 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                       : raceStatus == 3
                                           ? ElevatedButton(
                                               onPressed: () {
-                                                  context.read<AppData>().idUser =
-                                                idUser;
-                                                Get.to(ChatRoomPage(userID: idUser, raceID: idrace, userName: context.read<AppData>().Username, raceName: Rname));
+                                                context.read<AppData>().idUser =
+                                                    idUser;
+                                                Get.to(ChatRoomPage(
+                                                    userID: idUser,
+                                                    raceID: idrace,
+                                                    userName: context
+                                                        .read<AppData>()
+                                                        .Username,
+                                                    raceName: Rname));
                                               },
                                               child: Text('รอประมวลผล...'))
                                           : Container(),
@@ -346,7 +353,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                           ),
                           ElevatedButton(
                               onPressed: () {
-                              //  log('username'+ context.read<AppData>().Username);
+                                //  log('username'+ context.read<AppData>().Username);
                                 Get.to(() => const ReviewPage());
                               },
                               child: Text("Review")),

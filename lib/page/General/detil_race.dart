@@ -4,6 +4,7 @@ import 'package:buddhist_datetime_dateformat/buddhist_datetime_dateformat.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/widget/loadData.dart';
 
@@ -307,11 +308,8 @@ class _DetailRaceState extends State<DetailRace> {
                             width: 200,
                             child: ElevatedButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => CeateTeam()));
                                   context.read<AppData>().idrace = idrace;
+                                  Get.to(() => CeateTeam());
                                 },
                                 child: Text('ลงทะเบียน')),
                           )),

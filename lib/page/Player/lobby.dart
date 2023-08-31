@@ -12,6 +12,7 @@ import 'package:miniworldapp/model/DTO/raceStatusDTO.dart';
 import 'package:miniworldapp/model/attend.dart';
 import 'package:miniworldapp/model/result/teamResult.dart';
 import 'package:miniworldapp/page/General/detil_race_host.dart';
+import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/home_join.dart';
 import 'package:miniworldapp/page/General/home_join_detail.dart';
 
@@ -132,11 +133,9 @@ class _LobbyState extends State<Lobby> {
         ]);
     log('player ' + playerIds.toString());
     try {
-    var response1 = await OneSignal.shared.postNotification(notification1);
-    } catch (e) {
-    
-    }
-   
+      var response1 = await OneSignal.shared.postNotification(notification1);
+    } catch (e) {}
+
     // Get.defaultDialog(title: mc.toString());
     Get.to(DetailHost());
   }
@@ -461,17 +460,15 @@ class _LobbyState extends State<Lobby> {
       log("LoadData");
       log(idRace.toString());
 
-       var r = await raceService.racesByraceID(raceID: idRace);
+      var r = await raceService.racesByraceID(raceID: idRace);
       userCreate = r.data.first.user.userId;
       raceName = r.data.first.raceName;
 
       var a = await attendService.attendByRaceID(raceID: idRace);
       attends = a.data;
       status = a.data.first.status;
-       
-     
-     
-      log('userCreate  '+userCreate.toString());
+
+      log('userCreate  ' + userCreate.toString());
 
       playerIds.clear();
       for (var element in a.data) {
@@ -573,6 +570,7 @@ class _LobbyState extends State<Lobby> {
     final textTheme = theme.textTheme;
     return WillPopScope(
         onWillPop: () async {
+          Get.to(() => HomeAll());
           return true;
         },
         child: Scaffold(
@@ -630,7 +628,7 @@ class _LobbyState extends State<Lobby> {
                             children: [
                               IconButton(
                                 onPressed: () {
-                                  Navigator.of(context).pop();
+                                  Navigator.pop(context);
                                 },
                                 icon: FaIcon(
                                   FontAwesomeIcons.circleChevronLeft,
@@ -705,13 +703,13 @@ class _LobbyState extends State<Lobby> {
                                       hslColor: const HSLColor.fromAHSL(
                                           1.0, 120, 1.0, 0.37),
                                       onPressed: () {
-                                       // log(attendShow.length.toString());
-                                        if(attendShow.isEmpty){
-                                           Get.defaultDialog(title: 'ยังไม่มีทีมที่เข้าร่วม');
-                                        }else{
+                                        // log(attendShow.length.toString());
+                                        if (attendShow.isEmpty) {
+                                          Get.defaultDialog(
+                                              title: 'ยังไม่มีทีมที่เข้าร่วม');
+                                        } else {
                                           showAlertDialog(context);
                                         }
-                                        
                                       },
                                     ),
                                   ),
