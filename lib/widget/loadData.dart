@@ -7,11 +7,11 @@ import 'package:loading_indicator/loading_indicator.dart';
 
 Widget loadingIndicator(BuildContext context) => Container(
       decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
+          color: Theme.of(context).colorScheme.surface.withOpacity(0.6),
           borderRadius: const BorderRadius.all(Radius.circular(8))),
       child: SizedBox(
-        width: Get.width / 3 + 20,
-        height: Get.height / 4 - 60,
+        width: 150,
+        height: 150,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -31,7 +31,7 @@ Widget loadingIndicator(BuildContext context) => Container(
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 8.0),
+              padding: const EdgeInsets.only(bottom: 20),
               child: Text(
                 'กำลังประมวลผล',
                 style: TextStyle(color: Get.theme.colorScheme.primary),

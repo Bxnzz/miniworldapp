@@ -127,6 +127,8 @@ dependencies:
   loading_animation_widget: ^1.2.0+4
   percent_indicator: ^4.2.3
   in_app_notification: ^1.1.2
+  toast_notification: ^1.0.0
+  fluttertoast: ^8.2.2
   
 
   

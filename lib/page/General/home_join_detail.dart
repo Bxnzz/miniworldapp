@@ -8,6 +8,7 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:in_app_notification/in_app_notification.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
@@ -23,6 +24,7 @@ import '../../model/race.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
 import '../Host/race_review.dart';
+import '../../widget/notiInApp.dart';
 
 class HomeJoinDetail extends StatefulWidget {
   const HomeJoinDetail({super.key});
@@ -336,20 +338,27 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                       : raceStatus == 3
                                           ? ElevatedButton(
                                               onPressed: () {
-                                                  context.read<AppData>().idUser =
-                                                idUser;
-                                                Get.to(ChatRoomPage(userID: idUser, raceID: idrace, userName: context.read<AppData>().Username, raceName: Rname));
+                                                context.read<AppData>().idUser =
+                                                    idUser;
+                                                Get.to(ChatRoomPage(
+                                                    userID: idUser,
+                                                    raceID: idrace,
+                                                    userName: context
+                                                        .read<AppData>()
+                                                        .Username,
+                                                    raceName: Rname));
                                               },
                                               child: Text('รอประมวลผล...'))
                                           : Container(),
                             ),
                           ),
-                          ElevatedButton(
-                              onPressed: () {
-                              //  log('username'+ context.read<AppData>().Username);
-                                Get.to(() => const ReviewPage());
-                              },
-                              child: Text("Review")),
+                          
+                          // ElevatedButton(
+                          //     onPressed: () {
+                          //     //  log('username'+ context.read<AppData>().Username);
+                          //       Get.to(() => const ReviewPage());
+                          //     },
+                          //     child: Text("Review")),
                           ElevatedButton(
                               onPressed: () {
                                 Get.to(() => const raceReview());

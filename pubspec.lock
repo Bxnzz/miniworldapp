@@ -835,6 +835,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  fluttertoast:
+    dependency: "direct main"
+    description:
+      name: fluttertoast
+      sha256: "474f7d506230897a3cd28c965ec21c5328ae5605fc9c400cd330e9e9d6ac175c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "8.2.2"
   font_awesome_flutter:
     dependency: "direct main"
     description:
@@ -1944,6 +1952,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  toast_notification:
+    dependency: "direct main"
+    description:
+      name: toast_notification
+      sha256: "50cfd4503726fb7228492c58956430039e2c62f13bd3f024866febb5c83455ce"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   tuple:
     dependency: transitive
     description:
@@ -2169,5 +2185,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.0.0 <4.0.0"
+  dart: ">=3.0.5 <4.0.0"
   flutter: ">=3.10.0"

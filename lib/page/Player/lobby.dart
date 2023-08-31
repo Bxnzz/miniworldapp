@@ -683,6 +683,7 @@ class _LobbyState extends State<Lobby> {
                           ),
                         ),
                       ),
+                      
                       idUser == userCreate
                           ? Column(
                               children: [

@@ -78,12 +78,11 @@ class _Static_createState extends State<Static_create> {
                 return GridView.count(
                   crossAxisCount: 2,
                   padding: EdgeInsets.only(top: 10),
-                  children: races.map((element) {
+                  children: races.where((e) => e.raceStatus == 4).map((element) {
                     return Padding(
                       padding: const EdgeInsets.only(
                           left: 2.5, right: 2.5, bottom: 5),
-                      child: element.raceStatus == 4
-                          ? Card(
+                      child:  Card(
                               shape: RoundedRectangleBorder(
                                 side: BorderSide(
                                   width: 2,
@@ -164,7 +163,6 @@ class _Static_createState extends State<Static_create> {
                                     )),
                               ),
                             )
-                          : Container(),
                     );
                   }).toList(),
                 );

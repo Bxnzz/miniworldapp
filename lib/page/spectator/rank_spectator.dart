@@ -99,7 +99,7 @@ class _RankSpectatorState extends State<RankSpectator> {
       for (var i = 0; i < teams.length; i++) {
         log('Rank: ${i + 1} ${teams[i].teamId} ${teams[i].team.teamName} ${teams[i].misId} ${teams[i].mcDatetime} ${teams[i].mission.misSeq}');
       }
-      
+
       if (teams.length >= 1) {
         teamImage1 = teams[0].team.teamImage;
         teamName1 = teams[0].team.teamName;
@@ -212,12 +212,14 @@ class _RankSpectatorState extends State<RankSpectator> {
                                   right: 10,
                                   child: Column(
                                     children: [
-                                    teamImage1 != '' ?  SizedBox(
-                                        width: 50,
-                                        height: 50,
-                                        child: Image.asset(
-                                            "assets/image/crown1.png"),
-                                      ):Container(),
+                                      teamImage1 != ''
+                                          ? SizedBox(
+                                              width: 50,
+                                              height: 50,
+                                              child: Image.asset(
+                                                  "assets/image/crown1.png"),
+                                            )
+                                          : Container(),
                                       Container(
                                         width: 100,
                                         height: 100,
@@ -247,12 +249,14 @@ class _RankSpectatorState extends State<RankSpectator> {
                                     children: [
                                       Column(
                                         children: [
-                                         teamImage2 != '' ? SizedBox(
-                                            width: 50,
-                                            height: 50,
-                                            child: Image.asset(
-                                                "assets/image/crown2.png"),
-                                          ):Container(),
+                                          teamImage2 != ''
+                                              ? SizedBox(
+                                                  width: 50,
+                                                  height: 50,
+                                                  child: Image.asset(
+                                                      "assets/image/crown2.png"),
+                                                )
+                                              : Container(),
                                           Container(
                                             width: 100,
                                             height: 100,
@@ -277,12 +281,14 @@ class _RankSpectatorState extends State<RankSpectator> {
                                       ),
                                       Column(
                                         children: [
-                                         teamImage3 != ''? SizedBox(
-                                            width: 50,
-                                            height: 50,
-                                            child: Image.asset(
-                                                "assets/image/crown3.png"),
-                                          ):Container(),
+                                          teamImage3 != ''
+                                              ? SizedBox(
+                                                  width: 50,
+                                                  height: 50,
+                                                  child: Image.asset(
+                                                      "assets/image/crown3.png"),
+                                                )
+                                              : Container(),
                                           Container(
                                             width: 100,
                                             height: 100,
@@ -493,23 +499,35 @@ class _RankSpectatorState extends State<RankSpectator> {
                                                               FontWeight.bold),
                                                     ),
                                                     Padding(
-                                                      padding: const EdgeInsets.only(
-                                                          left: 55),
-                                                      child:
-                                                           LinearPercentIndicator(
-                                                        barRadius:
-                                                            const Radius.circular(50),
-                                                        width: 250,
-                                                        animation: true,
-                                                        lineHeight: 20.0,
-                                                        animationDuration: 2500,
-                                                        percent: e.mission.misSeq/lastMis,
-                                                        center: Text(e.mission.misSeq.toString()+'/'+lastMis.toString()),
-                                                        linearStrokeCap:
-                                                            LinearStrokeCap
-                                                                .roundAll,
-                                                        progressColor:
-                                                            Colors.amber,
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 55),
+                                                      child: Expanded(
+                                                        child:
+                                                            LinearPercentIndicator(
+                                                          barRadius:
+                                                              const Radius
+                                                                  .circular(50),
+                                                          width: 200,
+                                                          animation: true,
+                                                          lineHeight: 20.0,
+                                                          animationDuration:
+                                                              2500,
+                                                          percent:
+                                                              e.mission.misSeq /
+                                                                  lastMis,
+                                                          center: Text(e.mission
+                                                                  .misSeq
+                                                                  .toString() +
+                                                              '/' +
+                                                              lastMis
+                                                                  .toString()),
+                                                          linearStrokeCap:
+                                                              LinearStrokeCap
+                                                                  .roundAll,
+                                                          progressColor:
+                                                              Colors.amber,
+                                                        ),
                                                       ),
                                                     ),
                                                   ],
