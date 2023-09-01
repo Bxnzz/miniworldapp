@@ -91,7 +91,7 @@ class _DetailHostState extends State<DetailHost> {
       team = a.data.first.raceLimitteam.toString();
       String formattedDate01 = DateFormat.Hm().format(a.data.first.raceTimeSt);
       raceTimeST = formattedDate01;
-      String formattedDate02 = DateFormat.Hm().format(a.data.first.raceTimeSt);
+      String formattedDate02 = DateFormat.Hm().format(a.data.first.raceTimeFn);
       raceTimeFN = formattedDate02;
       var formatter = DateFormat.yMMMMEEEEd();
       var dateFormat01 =

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -132,11 +133,9 @@ class _LobbyState extends State<Lobby> {
         ]);
     log('player ' + playerIds.toString());
     try {
-    var response1 = await OneSignal.shared.postNotification(notification1);
-    } catch (e) {
-    
-    }
-   
+      var response1 = await OneSignal.shared.postNotification(notification1);
+    } catch (e) {}
+
     // Get.defaultDialog(title: mc.toString());
     Get.to(DetailHost());
   }
@@ -461,17 +460,15 @@ class _LobbyState extends State<Lobby> {
       log("LoadData");
       log(idRace.toString());
 
-       var r = await raceService.racesByraceID(raceID: idRace);
+      var r = await raceService.racesByraceID(raceID: idRace);
       userCreate = r.data.first.user.userId;
       raceName = r.data.first.raceName;
 
       var a = await attendService.attendByRaceID(raceID: idRace);
       attends = a.data;
       status = a.data.first.status;
-       
-     
-     
-      log('userCreate  '+userCreate.toString());
+
+      log('userCreate  ' + userCreate.toString());
 
       playerIds.clear();
       for (var element in a.data) {
@@ -683,7 +680,6 @@ class _LobbyState extends State<Lobby> {
                           ),
                         ),
                       ),
-                      
                       idUser == userCreate
                           ? Column(
                               children: [
@@ -706,13 +702,22 @@ class _LobbyState extends State<Lobby> {
                                       hslColor: const HSLColor.fromAHSL(
                                           1.0, 120, 1.0, 0.37),
                                       onPressed: () {
-                                       // log(attendShow.length.toString());
-                                        if(attendShow.isEmpty){
-                                           Get.defaultDialog(title: 'ยังไม่มีทีมที่เข้าร่วม');
-                                        }else{
+                                        // log(attendShow.length.toString());
+                                        if (attendShow.isEmpty) {
+                                          AwesomeDialog(
+                                            context: context,
+                                            dialogType: DialogType.warning,
+                                            animType: AnimType.bottomSlide,
+                                            headerAnimationLoop: false,
+                                            title: 'ยังไม่มีทีมที่เข้าร่วม',
+                                            desc:
+                                                'กรุณารอให้มีทีมเข้าร่วมก่อน',
+                                           
+                                          ).show();
+                                          
+                                        } else {
                                           showAlertDialog(context);
                                         }
-                                        
                                       },
                                     ),
                                   ),

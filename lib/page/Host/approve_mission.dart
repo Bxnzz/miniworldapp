@@ -716,7 +716,7 @@ class _ApproveMissionState extends State<ApproveMission> {
         : AwesomeDialog(
             context: context,
             dialogType: DialogType.error,
-            animType: AnimType.rightSlide,
+            animType: AnimType.bottomSlide,
             headerAnimationLoop: false,
             title: 'ข้อมูลไม่ถูกต้อง',
             desc: 'ส่งได้เฉพาะรูปภาพบรรยากาศเท่านั้น',

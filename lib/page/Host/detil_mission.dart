@@ -599,12 +599,7 @@ class _DetailMissionState extends State<DetailMission> {
               child: Box(
                 color: const Color.fromARGB(255, 233, 117, 253),
                 onTap: () async {
-                  final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Missioncreate(),
-                    ),
-                  );
+                  final result = await Get.to(()=>Missioncreate());
                   context.read<AppData>().lastMis = mis.last.misId;
                   context.read<AppData>().sqnum = missions.last.misSeq;
                   log('last' + mis.last.misId.toString());
