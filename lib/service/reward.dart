@@ -25,4 +25,7 @@ abstract class RewardService {
     @GET("/reward/")
   Future<HttpResponse<List<RewardResult>>> rewardByTeamID(
       {@Query("teamID") required int teamID});
+
+  @GET("/reward/")
+  Future<HttpResponse<List<RewardResult>>> rewardAll();
 }

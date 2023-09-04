@@ -1,12 +1,16 @@
 import 'dart:developer';
 
+
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/model/attend.dart';
+import 'package:miniworldapp/model/result/rewardResult.dart';
 import 'package:miniworldapp/page/General/detil_race.dart';
 import 'package:miniworldapp/service/attend.dart';
+import 'package:miniworldapp/service/reward.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/race.dart';
@@ -25,14 +29,20 @@ class RaceAll extends StatefulWidget {
 class _RaceAllState extends State<RaceAll> {
   // 1. กำหนดตัวแปร
   List<Race> races = [];
+  List<RewardResult> rewards= [];
   int idUser = 0;
   bool isLoaded = false;
   List<AttendRace> teamAttends = [];
   Set<int> teamMe = {};
+  Set<int> teamAllRegis = {};
+  Set<int> teamRe = {};
+  Set<int> all = {};
+  
 
   late Future<void> loadDataMethod;
   late RaceService raceService;
   late AttendService attendService;
+  late RewardService rewardService;
 
   var formatter = DateFormat.yMEd();
   // var dateInBuddhistCalendarFormat = formatter.formatInBuddhistCalendarThai(now);
@@ -48,7 +58,10 @@ class _RaceAllState extends State<RaceAll> {
     });
     idUser = context.read<AppData>().idUser;
     log(idUser.toString());
-    attendService = AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    attendService =
+        AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    rewardService =
+        RewardService(Dio(), baseUrl: context.read<AppData>().baseurl);
     // 2.2 async method
     loadDataMethod = loadData();
   }
@@ -70,6 +83,15 @@ class _RaceAllState extends State<RaceAll> {
             children: [
               Column(
                 children: <Widget>[
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Image.asset(
+                          "assets/image/crown1.png",
+                          width: 50,
+                        ),
+                        Text('1'),
+                      ]),
                   Expanded(
                     child: FutureBuilder(
                         future: loadDataMethod,
@@ -81,7 +103,14 @@ class _RaceAllState extends State<RaceAll> {
                               crossAxisSpacing: 10,
                               mainAxisSpacing: 10,
                               //padding: EdgeInsets.only(top: 10),
-                              children: races.where((element) =>element.raceStatus != 3  && element.raceStatus != 2  && element.raceStatus != 4 && element.userId != idUser && teamMe.contains(element.raceId)==false).map((e) {
+                              children: races
+                                  .where((element) =>
+                                      element.raceStatus != 3 &&
+                                      element.raceStatus != 2 &&
+                                      element.raceStatus != 4 &&
+                                      element.userId != idUser &&
+                                      teamMe.contains(element.raceId) == false)
+                                  .map((e) {
                                 return Padding(
                                   padding: const EdgeInsets.only(
                                       left: 2.5, right: 2.5, bottom: 5),
@@ -112,8 +141,7 @@ class _RaceAllState extends State<RaceAll> {
                                       },
                                       child: GridTile(
                                           // crossAxisAlignment: CrossAxisAlignment.start,
-                                          child: Image.network(
-                                              e.raceImage,
+                                          child: Image.network(e.raceImage,
                                               //  width: Get.width,
                                               //  height: Get.width*0.5625/2,
                                               fit: BoxFit.cover),
@@ -203,16 +231,46 @@ class _RaceAllState extends State<RaceAll> {
       races = a.data;
       isLoaded = true;
 
-     var t = await attendService.attendByUserID(userID: idUser);
+      var t = await attendService.attendByUserID(userID: idUser);
       teamAttends = t.data;
-    //  hostID = t.data.first
-    
+      //  hostID = t.data.first
+      
+
+
       for (var tm in teamAttends) {
         log(tm.team.raceId.toString());
         teamMe.add(tm.team.raceId);
+        //log('teamAll'+ tm.teamId.toString());
+        teamAllRegis.add(tm.teamId);
       }
-      log('raceteams '+teamMe.toString());
+      log('teamAll'+ teamAllRegis.toString());
+      log('raceteams ' + teamMe.toString());
+    
+    var re = await rewardService.rewardAll();
+    rewards = re.data;
+   
+    for (var element in rewards) {
+    //  log('RewardTeam'+element.teamId.toString());
+      teamRe.add(element.teamId);  
+      var all = teamAllRegis.intersection(teamRe);
+      log('all$all'); 
 
+      if(all.contains(element.teamId)){
+        log('Name '+element.team.teamName + ' no. '+element.reType.toString());
+        if (element.reType == 1) {
+          log('sum '+all.length.toString());
+        }
+        if(element.reType == 2) {
+          log('sum2 '+all.length.toString());
+        }
+        if(element.reType == 3) {
+          log('sum3 '+all.length.toString());
+        }
+      }
+    }
+   
+
+    
 
     } catch (err) {
       isLoaded = false;

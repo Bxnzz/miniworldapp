@@ -40,7 +40,7 @@ import '../Player/player_race_start_menu.dart';
 import 'fontpage_register.dart';
 import 'package:crypto/crypto.dart';
 
-import '../../widget/notiInApp.dart';
+
 
 class Login extends StatefulWidget {
   const Login({super.key});

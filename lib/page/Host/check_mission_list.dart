@@ -245,12 +245,14 @@ class _CheckMissionListState extends State<CheckMissionList> {
           OSActionButton(text: "ยกเลิก", id: "id2")
         ]);
     log('player ' + playerIds.toString());
-    var response1 = await OneSignal.shared.postNotification(notification1);
-    Get.defaultDialog(title: 'ประมวลผลการแข่งขันแล้ว');
+    try {} catch (e) {
+      var response1 = await OneSignal.shared.postNotification(notification1);
+    }
 
-    Get.to(
-      () => RankRace(),
-    );
+    Get.defaultDialog(title: 'ประมวลผลการแข่งขันแล้ว').then((value) => Get.to(
+          () => RankRace(),
+        ));
+
     context.read<AppData>().idrace = idrace;
   }
 
@@ -306,13 +308,13 @@ class _CheckMissionListState extends State<CheckMissionList> {
               ? FloatingActionButton.extended(
                   backgroundColor: Colors.lightGreen,
                   onPressed: () {
-                    // log();
+                    log('remain ' + remainMC.toString());
+
                     if (remainMC != 0) {
                       Get.defaultDialog(
                           title: 'กรุณาตรวจสอบภารกิจให้เสร็จสิ้น');
                     } else {
                       //loop เรียงลำดับ
-
                       _processGame();
                       context.read<AppData>().idrace = idrace;
                     }
@@ -348,18 +350,18 @@ class _CheckMissionListState extends State<CheckMissionList> {
                             e.mission.misId == element.misId && e.mcStatus == 1)
                         .length;
 
-                        log(element.misId.toString());
-                         log(missionComs.length.toString());
+                    log(element.misId.toString());
+                    log(missionComs.length.toString());
 
-                    for (var e in missionComs.where((element) => element.mcStatus == 1)) {
+                    for (var e in missionComs
+                        .where((element) => element.mcStatus == 1)) {
                       if (e.mission.misId == element.misId) {
-                        log('FFFF ' +e.mission.misId .toString());
+                        log('FFFF ' + e.mission.misId.toString());
                         remainMC += 1;
                       }
-                      
                     }
 
-                    log('remain ' + remainMC.toString());
+                    //log('remain ' + remainMC.toString());
 
                     //  log('mcss ' + mcStatus.toString());
                     return Padding(
@@ -462,31 +464,33 @@ class _CheckMissionListState extends State<CheckMissionList> {
     startLoading(context);
     raceStatus = 3;
     log(remainMC.toString());
-    // RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
-    // var racestatus = await raceService.updateStatusRaces(racedto, idrace);
-    // mc = {
-    //   'notitype': 'endgame',
-    //   'mcid': raceStatus,
-    //   'raceID': idrace,
-    //   'raceName': raceName
-    // };
-    // var notification1 = OSCreateNotification(
-    //     //playerID
-    //     additionalData: mc,
-    //     playerIds: playerIds,
-    //     content: raceName,
-    //     heading: "จบการแข่งขัน",
-    //     //  iosAttachments: {"id1",urlImage},
-    //     // bigPicture: imUrlString,
-    //     buttons: [
-    //       OSActionButton(text: "ตกลง", id: "id1"),
-    //       OSActionButton(text: "ยกเลิก", id: "id2")
-    //     ]);
-    // log('player ' + playerIds.toString());
-    // var response1 = await OneSignal.shared.postNotification(notification1);
+    RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
+    var racestatus = await raceService.updateStatusRaces(racedto, idrace);
+    mc = {
+      'notitype': 'endgame',
+      'mcid': raceStatus,
+      'raceID': idrace,
+      'raceName': raceName
+    };
+    var notification1 = OSCreateNotification(
+        //playerID
+        additionalData: mc,
+        playerIds: playerIds,
+        content: raceName,
+        heading: "จบการแข่งขัน",
+        //  iosAttachments: {"id1",urlImage},
+        // bigPicture: imUrlString,
+        buttons: [
+          OSActionButton(text: "ตกลง", id: "id1"),
+          OSActionButton(text: "ยกเลิก", id: "id2")
+        ]);
+    log('player ' + playerIds.toString());
+    try {} catch (e) {
+      var response1 = await OneSignal.shared.postNotification(notification1);
+    }
 
-    // Get.defaultDialog(title: 'จบการแข่งขันแล้ว')
-    //     .then((value) => Get.to(HomeAll()));
+    Navigator.of(context).pop();
+
     stopLoading();
   }
 }

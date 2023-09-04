@@ -24,7 +24,7 @@ import '../../model/race.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
 import '../Host/race_review.dart';
-import '../../widget/notiInApp.dart';
+
 
 class HomeJoinDetail extends StatefulWidget {
   const HomeJoinDetail({super.key});

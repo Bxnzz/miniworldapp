@@ -7,7 +7,7 @@ import 'package:loading_indicator/loading_indicator.dart';
 
 Widget loadingIndicator(BuildContext context) => Container(
       decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface.withOpacity(0.6),
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: const BorderRadius.all(Radius.circular(8))),
       child: SizedBox(
         width: 150,
