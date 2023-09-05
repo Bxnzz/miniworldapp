@@ -37,6 +37,9 @@ class _RaceAllState extends State<RaceAll> {
   Set<int> teamAllRegis = {};
   Set<int> teamRe = {};
   Set<int> all = {};
+  int sum1 = 0;
+  int sum2 = 0;
+  int sum3 = 0;
   
 
   late Future<void> loadDataMethod;
@@ -79,143 +82,149 @@ class _RaceAllState extends State<RaceAll> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: refresh,
-          child: Stack(
+          child: FutureBuilder(
+              future: loadDataMethod,
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState ==
+                    ConnectionState.done) {
+                  return Column(
+                    children: <Widget>[
+                       Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Column(
-                children: <Widget>[
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Image.asset(
-                          "assets/image/crown1.png",
-                          width: 50,
-                        ),
-                        Text('1'),
-                      ]),
-                  Expanded(
-                    child: FutureBuilder(
-                        future: loadDataMethod,
-                        builder: (context, AsyncSnapshot snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            return GridView.count(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
-                              //padding: EdgeInsets.only(top: 10),
-                              children: races
-                                  .where((element) =>
-                                      element.raceStatus != 3 &&
-                                      element.raceStatus != 2 &&
-                                      element.raceStatus != 4 &&
-                                      element.userId != idUser &&
-                                      teamMe.contains(element.raceId) == false)
-                                  .map((e) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 2.5, right: 2.5, bottom: 5),
-                                  child: Card(
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 2,
-                                        color: Colors.white,
-                                      ),
-                                      borderRadius: BorderRadius.circular(
-                                          20.0), //<-- SEE HERE
-                                    ),
-                                    //  shadowColor: ,
+              Image.asset(
+                "assets/image/crown1.png",
+                width: 50,
+              ),
+              Text(sum1.toString()),
+               Image.asset(
+                "assets/image/crown2.png",
+                width: 50,
+              ),
+              Text(sum2.toString()),
+              Image.asset(
+                "assets/image/crown3.png",
+                width: 50,
+              ),
+              Text(sum3.toString()),
+            ]),
+                      Expanded(
+                        child: GridView.count(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          //padding: EdgeInsets.only(top: 10),
+                          children: races
+                              .where((element) =>
+                                  element.raceStatus != 3 &&
+                                  element.raceStatus != 2 &&
+                                  element.raceStatus != 4 &&
+                                  element.userId != idUser &&
+                                  teamMe.contains(element.raceId) == false)
+                              .map((e) {
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 2.5, right: 2.5, bottom: 5),
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    width: 2,
                                     color: Colors.white,
-                                    clipBehavior: Clip.hardEdge,
-
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(12.0),
-                                      splashColor: Colors.blue.withAlpha(30),
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    DetailRace()));
-                                        context.read<AppData>().idrace =
-                                            e.raceId;
-                                      },
-                                      child: GridTile(
-                                          // crossAxisAlignment: CrossAxisAlignment.start,
-                                          child: Image.network(e.raceImage,
-                                              //  width: Get.width,
-                                              //  height: Get.width*0.5625/2,
-                                              fit: BoxFit.cover),
-                                          footer: Container(
-                                            color: Get
-                                                .theme.colorScheme.onBackground
-                                                .withOpacity(0.5),
-                                            padding: const EdgeInsets.fromLTRB(
-                                                10, 5, 10, 0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                  ),
+                                  borderRadius: BorderRadius.circular(
+                                      20.0), //<-- SEE HERE
+                                ),
+                                //  shadowColor: ,
+                                color: Colors.white,
+                                clipBehavior: Clip.hardEdge,
+                      
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  splashColor: Colors.blue.withAlpha(30),
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                DetailRace()));
+                                    context.read<AppData>().idrace =
+                                        e.raceId;
+                                  },
+                                  child: GridTile(
+                                      // crossAxisAlignment: CrossAxisAlignment.start,
+                                      child: Image.network(e.raceImage,
+                                          //  width: Get.width,
+                                          //  height: Get.width*0.5625/2,
+                                          fit: BoxFit.cover),
+                                      footer: Container(
+                                        color: Get
+                                            .theme.colorScheme.onBackground
+                                            .withOpacity(0.5),
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10, 5, 10, 0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(e.raceName,
-                                                        style: Get.textTheme
-                                                            .bodyMedium!
-                                                            .copyWith(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Get
-                                                                    .theme
-                                                                    .colorScheme
-                                                                    .onPrimary)),
-                                                    Text("# ${e.raceId}",
-                                                        style: Get.textTheme
-                                                            .bodySmall!
-                                                            .copyWith(
-                                                                color: Get
-                                                                    .theme
-                                                                    .colorScheme
-                                                                    .onPrimary)),
-                                                  ],
-                                                ),
-                                                Container(height: 5),
-                                                // Text("ปิดรับสมัคร: " +
-                                                //     formatter.formatInBuddhistCalendarThai(
-                                                //         element.raceTimeFn)),
-                                                Text(
-                                                    "สถานที่: " +
-                                                        e.raceLocation,
-                                                    style: Get
-                                                        .textTheme.bodySmall!
+                                                Text(e.raceName,
+                                                    style: Get.textTheme
+                                                        .bodyMedium!
+                                                        .copyWith(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold,
+                                                            color: Get
+                                                                .theme
+                                                                .colorScheme
+                                                                .onPrimary)),
+                                                Text("# ${e.raceId}",
+                                                    style: Get.textTheme
+                                                        .bodySmall!
                                                         .copyWith(
                                                             color: Get
                                                                 .theme
                                                                 .colorScheme
-                                                                .onPrimary
-                                                                .withOpacity(
-                                                                    0.8))),
-                                                Container(height: 5),
+                                                                .onPrimary)),
                                               ],
                                             ),
-                                          )),
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
+                                            Container(height: 5),
+                                            // Text("ปิดรับสมัคร: " +
+                                            //     formatter.formatInBuddhistCalendarThai(
+                                            //         element.raceTimeFn)),
+                                            Text(
+                                                "สถานที่: " +
+                                                    e.raceLocation,
+                                                style: Get
+                                                    .textTheme.bodySmall!
+                                                    .copyWith(
+                                                        color: Get
+                                                            .theme
+                                                            .colorScheme
+                                                            .onPrimary
+                                                            .withOpacity(
+                                                                0.8))),
+                                            Container(height: 5),
+                                          ],
+                                        ),
+                                      )),
+                                ),
+                              ),
                             );
-                          } else {
-                            return Container();
-                            // const CircularProgressIndicator();
-                          }
-                        }),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return Container();
+                  // const CircularProgressIndicator();
+                }
+              }),
         ),
       ),
     );
@@ -248,26 +257,31 @@ class _RaceAllState extends State<RaceAll> {
     
     var re = await rewardService.rewardAll();
     rewards = re.data;
-   
+   sum1 = 0; sum2 = 0; sum3 = 0;
     for (var element in rewards) {
     //  log('RewardTeam'+element.teamId.toString());
       teamRe.add(element.teamId);  
       var all = teamAllRegis.intersection(teamRe);
       log('all$all'); 
-
+     
       if(all.contains(element.teamId)){
         log('Name '+element.team.teamName + ' no. '+element.reType.toString());
         if (element.reType == 1) {
           log('sum '+all.length.toString());
+          sum1 += all.length;
         }
-        if(element.reType == 2) {
+         if(element.reType == 2) {
           log('sum2 '+all.length.toString());
+           sum2 += all.length;
         }
-        if(element.reType == 3) {
+         if(element.reType == 3) {
           log('sum3 '+all.length.toString());
+           sum3 += all.length;
+        }else{
+
         }
       }
-    }
+   }
    
 
     

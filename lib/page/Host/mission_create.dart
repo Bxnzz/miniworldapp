@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,6 +13,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:miniworldapp/model/DTO/missionDTO.dart';
 import 'package:miniworldapp/page/Host/detil_mission.dart';
 
@@ -56,6 +59,7 @@ class _MissioncreateState extends State<Missioncreate> {
   late RaceService raceService;
   List<Mission> missions = [];
   List<MissionDto> missionDtos = [];
+  final keys = GlobalKey<FormState>();
 
   List<Marker> markerss = [];
   int idrace = 0;
@@ -68,6 +72,14 @@ class _MissioncreateState extends State<Missioncreate> {
   bool isLoaded = false;
   Set<Polyline> _polylines = Set<Polyline>();
   List<LatLng> polylineCoordinates = [];
+  TextEditingController discripText = TextEditingController();
+
+  File? _image;
+  UploadTask? uploadTask;
+  bool isImage = true;
+  String image = '';
+
+  String img = '';
   //LatLng centerMap = const LatLng(16.245916, 103.252182);
   // late GoogleMap googleMap;
 
@@ -169,8 +181,9 @@ class _MissioncreateState extends State<Missioncreate> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: 15,
+            Padding(
+              padding: const EdgeInsets.only(top: 15),
+              child: upImg(),
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -181,7 +194,7 @@ class _MissioncreateState extends State<Missioncreate> {
                   child: Text('ชื่อภารกิจ'),
                 ),
                 SizedBox(
-                  width: 150,
+                  width: 250,
                   child: TextFormField(
                     controller: nameMission,
                     decoration: const InputDecoration(
@@ -202,20 +215,19 @@ class _MissioncreateState extends State<Missioncreate> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
-                    width: 150,
+                    width: 250,
                     child: TextFormField(
-                      controller: DescriptionMission,
-                      decoration: const InputDecoration(
-                        hintText: 'คำอธิบาย...',
-                      ),
+                      controller: discripText,
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(15),
+                          hintText: 'คำอธิบาย...'),
+                      keyboardType: TextInputType.multiline,
+                      minLines: 3,
+                      maxLines: 4,
                     ),
                   ),
                 ),
               ],
-            ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text('กรุณาเลือกประเภทภารกิจ'),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -224,64 +236,70 @@ class _MissioncreateState extends State<Missioncreate> {
                   padding: EdgeInsets.all(8.0),
                   child: Text('รัศมีแจ้งเตือนภารกิจ'),
                 ),
-                Padding(
-                    padding: const EdgeInsets.all(8.0), child: dropdownRadius())
+                dropdownRadius()
               ],
+            ),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text('กรุณาเลือกประเภทภารกิจ'),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Checkbox(
                   value: _checkbox,
-                  onChanged: _checkbox2 == true? null:(value) {
-                    setState(() {
-                      _checkbox = !_checkbox;
-                      if (_checkbox == true) {
-                        cb1 = '1';
-                      } else {
-                        cb1 = '';
-                        return;
-                      }
-                      log('cc1: ' + cb1);
-                    });
-                  },
+                  onChanged: _checkbox2 == true
+                      ? null
+                      : (value) {
+                          setState(() {
+                            _checkbox = !_checkbox;
+                            if (_checkbox == true) {
+                              cb1 = '1';
+                            } else {
+                              cb1 = '';
+                              return;
+                            }
+                            log('cc1: ' + cb1);
+                          });
+                        },
                 ),
                 const Text('ข้อความ'),
                 Checkbox(
                   value: _checkbox1,
-                  onChanged: _checkbox2 == true? null:(value) {
-                    setState(() {
-                      _checkbox1 = !_checkbox1;
+                  onChanged: _checkbox2 == true
+                      ? null
+                      : (value) {
+                          setState(() {
+                            _checkbox1 = !_checkbox1;
 
-                      if (_checkbox1 == true) {
-                        cb2 = '2';
-                      } else {
-                        cb2 = '';
-                        return;
-                      }
-                      log('cc2: ' + cb2.toString());
-                    });
-                  },
+                            if (_checkbox1 == true) {
+                              cb2 = '2';
+                            } else {
+                              cb2 = '';
+                              return;
+                            }
+                            log('cc2: ' + cb2.toString());
+                          });
+                        },
                 ),
                 const Text('สื่อ'),
                 Checkbox(
-                  value: _checkbox2,
-                  onChanged: _checkbox == true || _checkbox1 == true ? null :
-                  (value) {
-                    setState(() {
-                      _checkbox2 = !_checkbox2;
-                      //   log(_checkbox2.toString());
-                      if (_checkbox2 == true) {
-                        cb3 = '3';
-                        
-                      } else {
-                        cb3 = '';
-                        return;
-                      }
-                      log('cc3: ' + cb3.toString());
-                    });
-                   }
-                ),
+                    value: _checkbox2,
+                    onChanged: _checkbox == true || _checkbox1 == true
+                        ? null
+                        : (value) {
+                            setState(() {
+                              _checkbox2 = !_checkbox2;
+                              //   log(_checkbox2.toString());
+                              if (_checkbox2 == true) {
+                                cb3 = '3';
+                              } else {
+                                cb3 = '';
+                                return;
+                              }
+                              log('cc3: ' + cb3.toString());
+                            });
+                          }),
                 const Text('ไม่มีการส่ง'),
               ],
             ),
@@ -296,6 +314,27 @@ class _MissioncreateState extends State<Missioncreate> {
                         sqnum = 0;
                       }
                     });
+                    if (_image == null) {
+                      // log("team fail");
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('กรุณาใส่รูปภาพ...')),
+                      );
+                      return;
+                    }
+                    final path = 'files/${_image?.path.split('/').last}';
+                    final file = File(_image!.path);
+                    final ref = FirebaseStorage.instance.ref().child(path);
+                    log(ref.toString());
+
+                    setState(() {
+                      uploadTask = ref.putFile(file);
+                    });
+                    final snapshot = await uploadTask!.whenComplete(() {});
+
+                    final urlDownload = await snapshot.ref.getDownloadURL();
+                    log('Download Link:$urlDownload');
+
+                    img = urlDownload;
 
                     fristMis = lastNum;
                     log('numold ' + fristMis.toString());
@@ -324,7 +363,7 @@ class _MissioncreateState extends State<Missioncreate> {
                         misDistance: int.parse(selectedValue!),
                         misType: mType,
                         misSeq: sqMis,
-                        misMediaUrl: '',
+                        misMediaUrl: urlDownload,
                         misLat: double.parse(lats),
                         misLng: double.parse(longs),
                         raceId: idrace);
@@ -364,6 +403,78 @@ class _MissioncreateState extends State<Missioncreate> {
     );
   }
 
+  Future _pickImage(ImageSource source) async {
+    final image = await ImagePicker().pickImage(source: source);
+    if (image == null) return;
+    File? img = File(image.path!);
+
+    // img = await _cropImage(imageFile: img);
+    _image = img;
+    setState(() {});
+    log(img.path);
+  }
+
+  upImg() {
+    return _image != null
+        ? Stack(
+            children: [
+              SizedBox(
+                width: 320,
+                height: 200,
+                child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(color: Colors.white, width: 5),
+                    ),
+                    key: keys,
+                    child: Image.file(
+                      _image!,
+                      fit: BoxFit.cover,
+                    )),
+              ),
+              Positioned(
+                bottom: 10,
+                right: 10,
+                child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: IconButton(
+                        onPressed: () {
+                          _pickImage(ImageSource.gallery);
+                          log('message');
+                        },
+                        icon: const FaIcon(
+                          FontAwesomeIcons.camera,
+                          size: 25,
+                        ))),
+              )
+            ],
+          )
+        : SizedBox(
+            width: 250,
+            height: 150,
+            child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: Colors.white, width: 5),
+                  color: Colors.purpleAccent,
+                ),
+                key: keys,
+                child: IconButton(
+                    onPressed: () async {
+                      _pickImage(ImageSource.gallery);
+                      log('message');
+                    },
+                    icon: FaIcon(
+                      FontAwesomeIcons.camera,
+                      size: 30,
+                      color: Get.theme.colorScheme.onPrimary,
+                    ))),
+          );
+  }
+
   Widget dropdownRadius() {
     return SingleChildScrollView(
       child: DropdownButtonHideUnderline(
@@ -380,11 +491,13 @@ class _MissioncreateState extends State<Missioncreate> {
           items: items
               .map((item) => DropdownMenuItem<String>(
                     value: item,
-                    child: Text(
-                      item,
-                      style: const TextStyle(
-                          //  fontSize: 14,
-                          ),
+                    child: Center(
+                      child: Text(
+                        item,
+                        style: const TextStyle(
+                            //  fontSize: 14,
+                            ),
+                      ),
                     ),
                   ))
               .toList(),
@@ -398,14 +511,14 @@ class _MissioncreateState extends State<Missioncreate> {
           },
           buttonStyleData: ButtonStyleData(
               height: 30,
-              width: 70,
+              width: 100,
               // padding: const EdgeInsets.only(left: 14, right: 14),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(5),
                   border: Border.all(color: Colors.purpleAccent))),
           dropdownStyleData: DropdownStyleData(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(5),
             ),
           ),
           menuItemStyleData: const MenuItemStyleData(
