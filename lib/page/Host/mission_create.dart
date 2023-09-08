@@ -307,6 +307,7 @@ class _MissioncreateState extends State<Missioncreate> {
               child: ElevatedButton(
                   child: const Text('สร้างภารกิจ'),
                   onPressed: () async {
+                    
                     sqnum = 0;
                     fristMis == 0;
                     setState(() {
@@ -356,7 +357,8 @@ class _MissioncreateState extends State<Missioncreate> {
                     log('ch ' + cb);
                     mType = int.parse(cb);
                     log('ty: ' + mType.toString());
-
+                    
+                    startLoading(context);
                     MissionDto missionDto = MissionDto(
                         misName: nameMission.text,
                         misDiscrip: discripText.text,
@@ -371,6 +373,7 @@ class _MissioncreateState extends State<Missioncreate> {
                     //print(double.parse('lat'+lats));
                     var mission =
                         await missionService.insertMissions(missionDto);
+                     stopLoading();
                     if (mission.response.statusCode == 200) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('mision Successful')),
@@ -378,6 +381,7 @@ class _MissioncreateState extends State<Missioncreate> {
                       setState(() {
                         Get.to(DetailMission());
                       });
+                     
                       log("race Successful");
 
                       // if (fristMis == 0) {
@@ -394,8 +398,12 @@ class _MissioncreateState extends State<Missioncreate> {
                       );
 
                       return;
+                      
                     }
-                  }),
+                    
+                    
+                  }
+                  ),
             ),
           ],
         ),
