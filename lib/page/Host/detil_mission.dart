@@ -133,20 +133,7 @@ class _DetailMissionState extends State<DetailMission> {
       newoder = newoder + 1;
       log(misResults.result);
 
-      // if (misResults.result == "1") {
-      //   // ScaffoldMessenger.of(context).showSnackBar(
-      //   //   const SnackBar(content: Text('update Successful')),
-      //   // );
-      //   // log("mission Successful");
-
-      // } else {
-      //   // log("team fail");
-      //   // ScaffoldMessenger.of(context).showSnackBar(
-      //   //   const SnackBar(content: Text('mission fail try agin!')),
-      //   // );
-
-      //   return;
-      // }
+   
     }
     setState(() {
       startLoading(context);
