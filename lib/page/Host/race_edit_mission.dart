@@ -1,13 +1,16 @@
 import 'dart:async';
 
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:miniworldapp/page/Host/detil_mission.dart';
 import 'package:provider/provider.dart';
 
@@ -29,11 +32,7 @@ class _EditMissionState extends State<EditMission> {
   Completer<GoogleMapController> _controller = Completer();
   TextEditingController nameMission = TextEditingController();
   TextEditingController DescriptionMission = TextEditingController();
-  final List<String> items = [
-    '5',
-    '10',
-    '15',
-  ];
+  final List<String> items = ['10', '20', '30'];
   String? selectedValue;
 
   bool _checkbox = false;
@@ -44,6 +43,7 @@ class _EditMissionState extends State<EditMission> {
   String longs = '';
   String mType = '';
   int mTypeCast = 0;
+  final keys = GlobalKey<FormState>();
 
   late MissionService missionService;
   List<Mission> missions = [];
@@ -57,6 +57,7 @@ class _EditMissionState extends State<EditMission> {
   int misID = 0;
   double lat = 0.0;
   double lng = 0.0;
+  String UrlImg = '';
   String dd = '';
   String cb = '';
   String cb1 = '';
@@ -69,6 +70,12 @@ class _EditMissionState extends State<EditMission> {
 //  LatLng centerMap = const LatLng(16.245916, 103.252182);
   late RaceResult misResults;
   late Future<void> loadDataMethod;
+  File? _image;
+  UploadTask? uploadTask;
+  bool isImage = true;
+  String image = '';
+
+  String img = '';
 
   @override
   void initState() {
@@ -123,6 +130,7 @@ class _EditMissionState extends State<EditMission> {
       // log(idM.toString());
       mType = r.data.first.misType.toString();
       dd = r.data.first.misDistance.toString();
+      UrlImg = r.data.first.misMediaUrl;
       lat = r.data.first.misLat;
       lng = r.data.first.misLng;
       sq = r.data.first.misSeq;
@@ -178,7 +186,7 @@ class _EditMissionState extends State<EditMission> {
       // log('lat '+lat.toString() +'lng '+lng.toString());
     } catch (err) {
       log(err.toString());
-    }finally{
+    } finally {
       stopLoading();
     }
   }
@@ -229,7 +237,7 @@ class _EditMissionState extends State<EditMission> {
                       left: (MediaQuery.of(context).size.width / 2) - 16,
                       child: Column(
                         children: [
-                            Image.asset("assets/image/target.png"),
+                          Image.asset("assets/image/target.png"),
                         ],
                       )),
                 ]),
@@ -245,8 +253,9 @@ class _EditMissionState extends State<EditMission> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: 10,
+            Padding(
+              padding: const EdgeInsets.only(top: 15),
+              child: upImg(),
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -310,32 +319,37 @@ class _EditMissionState extends State<EditMission> {
               children: [
                 Checkbox(
                     value: _checkbox,
-                    onChanged: (value) {
-                      setState(() {
-                        _checkbox = !_checkbox;
-
-                        //  _checkbox = true;
-                      });
-                    }),
+                    onChanged: _checkbox2 == true
+                        ? null
+                        : (value) {
+                            setState(() {
+                              _checkbox = !_checkbox;
+                              //  _checkbox = true;
+                            });
+                          }),
                 Text('ข้อความ'),
                 Checkbox(
                   value: _checkbox1,
-                  onChanged: (value) {
-                    setState(() {
-                      _checkbox1 = !_checkbox1;
+                  onChanged: _checkbox2 == true
+                      ? null
+                      : (value) {
+                          setState(() {
+                            _checkbox1 = !_checkbox1;
 
-                      log(_checkbox1.toString());
-                    });
-                  },
+                            log(_checkbox1.toString());
+                          });
+                        },
                 ),
                 Text('สื่อ'),
                 Checkbox(
                   value: _checkbox2,
-                  onChanged: (value) {
-                    setState(() {
-                      _checkbox2 = !_checkbox2;
-                    });
-                  },
+                  onChanged: _checkbox == true || _checkbox1 == true
+                      ? null
+                      : (value) {
+                          setState(() {
+                            _checkbox2 = !_checkbox2;
+                          });
+                        },
                 ),
                 Text('ไม่มีการส่ง'),
               ],
@@ -375,7 +389,7 @@ class _EditMissionState extends State<EditMission> {
                         const SnackBar(content: Text('update Successful')),
                       );
                       log("mission Successful");
-                     Navigator.of(context).pop();
+                      Navigator.of(context).pop();
                       return;
                     } else {
                       // log("team fail");
@@ -391,6 +405,110 @@ class _EditMissionState extends State<EditMission> {
         ),
       ),
     );
+  }
+
+  Future _pickImage(ImageSource source) async {
+    final image = await ImagePicker().pickImage(source: source);
+    if (image == null) return;
+    File? img = File(image.path!);
+
+    // img = await _cropImage(imageFile: img);
+    _image = img;
+    setState(() {});
+    log(img.path);
+  }
+
+  upImg() {
+    return _image != null
+        ? Stack(
+            children: [
+              SizedBox(
+                width: 250,
+                height: 150,
+                child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(color: Colors.white, width: 5),
+                    ),
+                    key: keys,
+                    child: Image.file(
+                      _image!,
+                      fit: BoxFit.cover,
+                    )),
+              ),
+              Positioned(
+                bottom: 10,
+                right: 10,
+                child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: IconButton(
+                        onPressed: () {
+                          _pickImage(ImageSource.gallery);
+                          log('message');
+                        },
+                        icon: const FaIcon(
+                          FontAwesomeIcons.camera,
+                          size: 25,
+                        ))),
+              )
+            ],
+          )
+        : Stack(
+            children: [
+              SizedBox(
+                width: 250,
+                height: 150,
+                child: UrlImg != ''
+                    ? Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(color: Colors.white, width: 5),
+                        ),
+                        key: keys,
+                        child: Image.network(
+                          UrlImg,
+                          fit: BoxFit.cover,
+                        ))
+                    : Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: Colors.white, width: 5),
+                            color: Colors.purpleAccent),
+                        key: keys,
+                        child: IconButton(
+                            onPressed: () {
+                              _pickImage(ImageSource.gallery);
+                              log('message');
+                            },
+                            icon: const FaIcon(
+                              FontAwesomeIcons.camera,
+                              size: 25,
+                              color: Colors.white,
+                            ))),
+              ),
+              Positioned(
+                bottom: 10,
+                right: 10,
+                child: UrlImg != '' ?Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: IconButton(
+                        onPressed: () {
+                          _pickImage(ImageSource.gallery);
+                          log('message');
+                        },
+                        icon: const FaIcon(
+                          FontAwesomeIcons.camera,
+                          size: 25,
+                        ))):Container(),
+              )
+            ],
+          );
   }
 
   Widget dropdownRadius(String radius) {
