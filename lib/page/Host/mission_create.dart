@@ -314,13 +314,13 @@ class _MissioncreateState extends State<Missioncreate> {
                         sqnum = 0;
                       }
                     });
-                    // if (_image == null) {
-                    //   // log("team fail");
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //     const SnackBar(content: Text('กรุณาใส่รูปภาพ...')),
-                    //   );
-                    //   return;
-                    // }
+                    if (_image == null) {
+                      // log("team fail");
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('กรุณาใส่รูปภาพ...')),
+                      );
+                      return;
+                    }
                     final path = 'files/${_image?.path.split('/').last}';
                     final file = File(_image!.path);
                     final ref = FirebaseStorage.instance.ref().child(path);
