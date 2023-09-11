@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:miniworldapp/model/DTO/reviewDTO.dart';
 import 'package:miniworldapp/model/result/reviewResult.dart';
+import 'package:miniworldapp/page/General/Home.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/service/attend.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
@@ -182,7 +183,7 @@ class _ReviewPageState extends State<ReviewPage> {
                                                         content: Text(
                                                             'รีวิวสำเร็จ :)')),
                                                   );
-                                                  Get.to(() => HomeAll());
+                                                  Get.to(() => Home());
                                                   return;
                                                 } else {
                                                   ScaffoldMessenger.of(context)

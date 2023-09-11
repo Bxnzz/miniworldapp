@@ -14,6 +14,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/model/race.dart';
+import 'package:miniworldapp/page/General/Home.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/service/race.dart';
@@ -80,7 +81,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Get.to(() => const HomeAll());
+        Get.to(() => const Home());
         return true;
       },
       child: Scaffold(

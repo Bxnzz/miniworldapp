@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:miniworldapp/page/General/testtt.dart';
+import 'package:miniworldapp/page/General/Home.dart';
 import 'package:miniworldapp/widget/loadData.dart';
 
 import 'package:provider/provider.dart';
@@ -322,7 +322,7 @@ class _DetailRaceState extends State<DetailRace> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => NavigationBarApp2()));
+                                              builder: (context) => Home()));
                                       context.read<AppData>().idrace = idrace;
                                     },
                                     child: Text('test')),
