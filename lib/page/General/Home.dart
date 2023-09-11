@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -97,8 +98,6 @@ import 'home_join.dart';
 //   }
 // }
 
-
-
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -116,10 +115,10 @@ class _HomeState extends State<Home> {
   String userimg = '';
   String userDescrip = '';
   String userFullName = '';
-   List<Race> races = [];
+  List<Race> races = [];
   late RaceService raceService;
   late UserService userService;
-  
+
   @override
   void initState() {
     super.initState();
@@ -132,7 +131,7 @@ class _HomeState extends State<Home> {
     userFullName = context.read<AppData>().userFullName;
     userDescrip = context.read<AppData>().userDescrip;
 
-    log(Username);
+    log("userimg $userimg");
     log("${userID}");
   }
 
@@ -294,7 +293,6 @@ class drawer extends StatelessWidget {
   final String userimg;
   final String Username;
   final String userDescrip;
-  
 
   @override
   Widget build(BuildContext context) {
@@ -329,21 +327,36 @@ class drawer extends StatelessWidget {
                         Column(
                           children: [
                             Gap(20),
-                            Align(
-                              heightFactor: 1,
-                              alignment: Alignment.topLeft,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                        width: 5,
-                                        color: const Color.fromARGB(
-                                            255, 255, 255, 255))),
-                                child: CircleAvatar(
-                                    radius: 40,
-                                    backgroundImage: NetworkImage(userimg)),
-                              ),
-                            ),
+                            userimg.contains('svg')
+                                ? Align(
+                                    heightFactor: 1,
+                                    alignment: Alignment.topLeft,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                              width: 5,
+                                              color: const Color.fromARGB(
+                                                  255, 255, 255, 255))),
+                                      child: SvgPicture.network(
+                                          width: 80, height: 80, userimg),
+                                    ),
+                                  )
+                                : Align(
+                                    heightFactor: 1,
+                                    alignment: Alignment.topLeft,
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                                width: 5,
+                                                color: const Color.fromARGB(
+                                                    255, 255, 255, 255))),
+                                        child: CircleAvatar(
+                                            radius: 40,
+                                            backgroundImage:
+                                                NetworkImage(userimg))),
+                                  ),
                             Gap(15),
                             Align(
                               heightFactor: 1,
