@@ -42,6 +42,33 @@ Widget loadingIndicator(BuildContext context) => Container(
       ),
     );
 
+Widget loading(BuildContext context) => SizedBox(
+  width: 150,
+  height: 150,
+  child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Expanded(
+        child: SizedBox(
+          width: 80,
+          height: 80,
+          child: LoadingIndicator(
+            indicatorType: Indicator.ballBeat,
+            colors: [
+              Get.theme.colorScheme.primary,
+              Colors.amber,
+              Colors.green,
+            ],
+            strokeWidth: 2.0,
+          ),
+        ),
+      ),
+      
+    ],
+  ),
+);
+
+
 void startLoading(BuildContext context) {
   SmartDialog.showLoading(
     builder: (_) => loadingIndicator(context),
@@ -52,4 +79,12 @@ void startLoading(BuildContext context) {
 
 void stopLoading() {
   SmartDialog.dismiss();
+}
+
+void loadImg(BuildContext context){
+  SmartDialog.showLoading(
+    builder: (_) => loading(context),
+    animationType: SmartAnimationType.fade,
+    maskColor: Colors.transparent,
+  );
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:ffi';
 import 'dart:io';
@@ -307,7 +308,6 @@ class _MissioncreateState extends State<Missioncreate> {
               child: ElevatedButton(
                   child: const Text('สร้างภารกิจ'),
                   onPressed: () async {
-                    
                     sqnum = 0;
                     fristMis == 0;
                     setState(() {
@@ -357,7 +357,7 @@ class _MissioncreateState extends State<Missioncreate> {
                     log('ch ' + cb);
                     mType = int.parse(cb);
                     log('ty: ' + mType.toString());
-                    
+
                     startLoading(context);
                     MissionDto missionDto = MissionDto(
                         misName: nameMission.text,
@@ -369,11 +369,12 @@ class _MissioncreateState extends State<Missioncreate> {
                         misLat: double.parse(lats),
                         misLng: double.parse(longs),
                         raceId: idrace);
+
                     log(lats);
                     //print(double.parse('lat'+lats));
                     var mission =
                         await missionService.insertMissions(missionDto);
-                     stopLoading();
+                    stopLoading();
                     if (mission.response.statusCode == 200) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('mision Successful')),
@@ -381,7 +382,7 @@ class _MissioncreateState extends State<Missioncreate> {
                       setState(() {
                         Get.to(DetailMission());
                       });
-                     
+
                       log("race Successful");
 
                       // if (fristMis == 0) {
@@ -398,12 +399,8 @@ class _MissioncreateState extends State<Missioncreate> {
                       );
 
                       return;
-                      
                     }
-                    
-                    
-                  }
-                  ),
+                  }),
             ),
           ],
         ),

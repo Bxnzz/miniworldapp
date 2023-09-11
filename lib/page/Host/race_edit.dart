@@ -313,6 +313,7 @@ class _EditRaceState extends State<EditRace> {
                                 child: FilledButton(
                                     onPressed: () async {
                                       //  if (keys.currentState!.validate()) {}
+                                      startLoading(context);
                                       log(TexttimeDate.text);
                                       List<String> ddd =
                                           TexttimeDate.text.split('T');
@@ -412,8 +413,10 @@ class _EditRaceState extends State<EditRace> {
                                       );
                                       var race = await raceservice.updateRaces(
                                           dto, idR);
+                                      
                                       //   log('raceee'+race.response.statusCode.toString());
                                       raceResult = race.data;
+                                      stopLoading();
                                       if (raceResult.result == '1') {
                                         // log("race Successful");
                                         Get.to(DetailHost());
