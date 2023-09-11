@@ -249,12 +249,15 @@ class _CeateTeamState extends State<CeateTeam> {
                                                         true) {
                                                   isJoin = true;
                                                   log("isjoin = $isJoin ");
+                                                  break;
                                                 }
 
                                                 if (isJoin == true) {
                                                   log("Can join Chk loop");
                                                   uploadFile();
                                                   break;
+                                                } else {
+                                                  uploadFile();
                                                 }
                                               }
                                             }
@@ -412,6 +415,7 @@ class _CeateTeamState extends State<CeateTeam> {
   }
 
   Future uploadFile() async {
+    startLoading(context);
     final path = 'files/${pickedFile?.path.split('/').last}';
     if (pickedFile == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -482,6 +486,7 @@ class _CeateTeamState extends State<CeateTeam> {
         return;
       }
     }
+    stopLoading();
   }
 }
 
