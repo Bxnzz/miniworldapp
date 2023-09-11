@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_picker/file_picker.dart';
@@ -11,9 +12,14 @@ import 'package:miniworldapp/model/DTO/attendDTO.dart';
 import 'package:miniworldapp/model/attend.dart';
 import 'package:miniworldapp/model/race.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';
+import 'package:miniworldapp/page/General/Home.dart';
+import 'package:miniworldapp/page/General/home_all.dart';
+import 'package:miniworldapp/page/General/home_join.dart';
+import 'package:miniworldapp/page/General/home_join_detail.dart';
 import 'package:miniworldapp/page/Player/lobby.dart';
 import 'package:miniworldapp/service/attend.dart';
 import 'package:miniworldapp/service/race.dart';
+import 'package:miniworldapp/widget/loadData.dart';
 
 import 'package:provider/provider.dart';
 import 'package:textfield_search/textfield_search.dart';
@@ -75,12 +81,15 @@ class _CeateTeamState extends State<CeateTeam> {
   String img = '';
   late DateTime raceST;
   late DateTime raceFN;
-
+  String attendDateTime = '';
   // 2. สร้าง initState เพื่อสร้าง object ของ service
   // และ async method ที่จะใช้กับ FutureBuilder
   late Future<void> loadDataMethods;
+  // late CircularBottomNavigationController _navigationController;
+
   @override
   void initState() {
+    //   _navigationController.value = 2;
     super.initState();
     // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วยR
     attendService =
@@ -99,8 +108,12 @@ class _CeateTeamState extends State<CeateTeam> {
     Username = context.read<AppData>().Username;
     idUser = context.read<AppData>().idUser;
     status = context.read<AppData>().status;
+
     log("race id is " + idrace.toString());
     log("user is " + idUser.toString());
+
+    attendDateTime = DateTime.now().toIso8601String();
+    //context.read<AppData>().attendDateTime = attendDateTime;
 
     nameMember1.text = Username;
     loadDataMethods = loadDatas();
@@ -117,111 +130,148 @@ class _CeateTeamState extends State<CeateTeam> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      //backgroundColor: Color.fromARGB(255, 234, 112, 255),
+    return WillPopScope(
+      onWillPop: () async {
+        return true;
+      },
+      child: FutureBuilder(
+          future: loadDataMethods,
+          builder: (context, AsyncSnapshot snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return Scaffold(
+                  //backgroundColor: Color.fromARGB(255, 234, 112, 255),
+                  appBar: AppBar(title: Text("${races.first.raceName}")),
+                  body: SingleChildScrollView(
+                    child: Form(
+                      key: _formKey,
+                      child: Center(
+                          child: Stack(
+                              alignment: AlignmentDirectional.topCenter,
+                              clipBehavior: Clip.none,
+                              children: [
+                            Card(
+                              margin: EdgeInsets.fromLTRB(32, 100, 32, 32),
+                              color: Colors.purple.shade50,
+                              child: Column(
+                                children: [
+                                  GestureDetector(
+                                      onTap: () {
+                                        selectFile();
+                                      },
+                                      child: pickedFile != null
+                                          ? CircleAvatar(
+                                              key: avata,
+                                              radius: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.15,
+                                              backgroundImage:
+                                                  FileImage(pickedFile!))
+                                          : CircleAvatar(
+                                              radius: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.15,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  selectFile();
+                                                  log('message');
+                                                },
+                                                child: Icon(
+                                                  Icons.add_photo_alternate,
+                                                  size: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.15,
+                                                ),
+                                              ),
+                                            )),
+                                  Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          32, 50, 32, 32),
+                                      child: textField(nameTeam, '', 'ชื่อทีม',
+                                          'กรุณาใส่ชื่อทีม', false)),
+                                  Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          32, 20, 32, 32),
+                                      child: textField(nameMember1, '',
+                                          'ตัวฉันเอง', '', true)),
+                                  SelectAndSearchmember(),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                        onPressed: () async {
+                                          log("message");
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            log("message2");
+                                            //regis race  first team
+                                            // var b = await attendService
+                                            //     .attendByUserID(userID: idUser);
+                                            // attends = b.data;
+                                            //  log("asdfasdf  ${attends.first.atId}");
+                                            if (attends.isEmpty) {
+                                              isJoin = true;
+                                              log("Can join first attend");
+                                              setState(() {
+                                                uploadFile();
+                                              });
+                                            }
+                                            if (attends.isNotEmpty) {
+                                              for (var j in attends) {
+                                                log("message1");
+                                                log("${j.atId}");
+                                                // log("attend${j.datetime}");
+                                                log("ST${raceST}");
+                                                log("FN${raceFN}");
+                                                log("stJoin${j.team.race.raceTimeSt}");
+                                                log("fnJoin${j.team.race.raceTimeFn}");
+                                                if (raceST.isBefore(j.team.race
+                                                        .raceTimeFn) &&
+                                                    raceFN.isAfter(j.team.race
+                                                        .raceTimeSt)) {
+                                                  log("Can not join");
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    SnackBar(
+                                                        content: Text(
+                                                            'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
+                                                  );
+                                                  isJoin = false;
+                                                  break;
+                                                } else if (raceST.isBefore(j
+                                                            .team
+                                                            .race
+                                                            .raceTimeFn) !=
+                                                        true &&
+                                                    raceFN.isAfter(j.team.race
+                                                            .raceTimeSt) !=
+                                                        true) {
+                                                  isJoin = true;
+                                                  log("isjoin = $isJoin ");
+                                                }
 
-      body: SingleChildScrollView(
-        child: FutureBuilder(
-            future: loadDataMethods,
-            builder: (context, AsyncSnapshot snapshot) {
-              return Form(
-                key: _formKey,
-                child: Center(
-                    child: Stack(
-                        alignment: AlignmentDirectional.topCenter,
-                        clipBehavior: Clip.none,
-                        children: [
-                      Card(
-                        margin: EdgeInsets.fromLTRB(32, 100, 32, 32),
-                        color: Colors.purple.shade50,
-                        child: Column(
-                          children: [
-                            GestureDetector(
-                                onTap: () {
-                                  selectFile();
-                                },
-                                child: pickedFile != null
-                                    ? CircleAvatar(
-                                        key: avata,
-                                        radius:
-                                            MediaQuery.of(context).size.width *
-                                                0.15,
-                                        backgroundImage: FileImage(pickedFile!))
-                                    : CircleAvatar(
-                                        radius:
-                                            MediaQuery.of(context).size.width *
-                                                0.15,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            selectFile();
-                                            log('message');
-                                          },
-                                          child: Icon(
-                                            Icons.add_photo_alternate,
-                                            size: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.15,
-                                          ),
-                                        ),
-                                      )),
-                            Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(32, 50, 32, 32),
-                                child: textField(nameTeam, '', 'ชื่อทีม',
-                                    'กรุณาใส่ชื่อทีม', false)),
-                            Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(32, 20, 32, 32),
-                                child: textField(
-                                    nameMember1, '', 'ตัวฉันเอง', '', true)),
-                            SelectAndSearchmember(),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  if (await _formKey.currentState!.validate()) {
-                                    for (var j in attends) {
-                                      log("${j.atId}");
-                                      // log("attend${j.datetime}");
-                                      log("ST${raceST}");
-                                      log("FN${raceFN}");
-                                      log("stJoin${j.team.race.raceTimeSt}");
-                                      log("fnJoin${j.team.race.raceTimeFn}");
-                                      if (raceST.isBefore(
-                                              j.team.race.raceTimeFn) &&
-                                          raceFN.isAfter(
-                                              j.team.race.raceTimeSt)) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                              content: Text(
-                                                  'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
-                                        );
-                                        break;
-                                        log(isJoin.toString());
-                                      } else {
-                                        isJoin = true;
-                                        uploadFile();
-                                        break;
-                                        log(isJoin.toString());
-                                      }
-                                    }
-                                    if (isJoin == true) {
-                                    } else {}
-                                  }
-                                },
-                                child: Text('สร้างทีม'),
+                                                if (isJoin == true) {
+                                                  log("Can join Chk loop");
+                                                  // uploadFile();
+                                                  // break;
+                                                }
+                                              }
+                                            }
+                                          }
+                                        },
+                                        child: Text('สร้างทีม')),
+                                  )
+                                ],
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                      textRegisterRace()
-                    ])),
-              );
-            }),
-      ),
+                            ),
+                          ])),
+                    ),
+                  ));
+            } else {
+              return Scaffold();
+            }
+          }),
     );
   }
 
@@ -306,12 +356,14 @@ class _CeateTeamState extends State<CeateTeam> {
   }
 
   Future<void> loadDatas() async {
+    startLoading(context);
     try {
       var a = await userService.getUserAll();
       items = a.data;
-
+      log("messageload");
       var b = await attendService.attendByUserID(userID: idUser);
-      attends = b.data;
+      attends = b.data!;
+      // log("asdfasdf  ${attends.first.atId}");
 
       var r = await raceService.racesByraceID(raceID: idrace);
       races = r.data;
@@ -331,6 +383,8 @@ class _CeateTeamState extends State<CeateTeam> {
       log("FN${raceFN}");
     } catch (err) {
       log('Error:$err');
+    } finally {
+      stopLoading();
     }
   }
 
@@ -386,7 +440,7 @@ class _CeateTeamState extends State<CeateTeam> {
       AttendDto attendDto = AttendDto(
           lat: 0.1,
           lng: 0.1,
-          datetime: DateTime.now().toIso8601String(),
+          datetime: attendDateTime,
           userId: idUser,
           teamId: team.data.teamId,
           status: 1);
@@ -395,7 +449,7 @@ class _CeateTeamState extends State<CeateTeam> {
       AttendDto attendDto2 = AttendDto(
           lat: 0.1,
           lng: 0.1,
-          datetime: DateTime.now().toIso8601String(),
+          datetime: attendDateTime,
           userId: idUser2,
           teamId: team.data.teamId,
           status: 1);
@@ -408,7 +462,14 @@ class _CeateTeamState extends State<CeateTeam> {
           const SnackBar(content: Text('team Successful')),
         );
         log("team success");
-        Get.to(() => Lobby());
+        context.read<AppData>().idUser = idUser;
+        context.read<AppData>().attendDateTime = attendDateTime;
+        log("attendDateTime Provider = ${context.read<AppData>().attendDateTime}");
+
+        // Get.to(() => Home_join(
+        //       navigationController: CircularBottomNavigationController(2),
+        //     ));
+        Get.to(() => Home());
         return;
       } else {
         log("team fail");
@@ -421,30 +482,6 @@ class _CeateTeamState extends State<CeateTeam> {
         return;
       }
     }
-  }
-}
-
-class textRegisterRace extends StatelessWidget {
-  const textRegisterRace({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      child: Padding(
-        padding: const EdgeInsets.all(50),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Colors.purple.shade50, width: 3),
-            shape: BoxShape.rectangle,
-          ),
-          child: const Text('ลงทะเบียนเข้าร่วม'),
-        ),
-      ),
-    );
   }
 }
 

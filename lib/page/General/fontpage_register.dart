@@ -11,8 +11,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/service/user.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:crypto/crypto.dart';
 
@@ -45,6 +47,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
   late UserService _userService;
   bool _isHidden = false;
   File? pickedFile;
+  File? svgFile;
   UploadTask? uploadTask;
   bool isImage = true;
 
@@ -52,9 +55,10 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
   String passwordINDB = '';
   String passwordDecode = '';
   String svg = '';
-  late String svgInDB;
+  late String svgInDB = '';
   late var bytes;
   late var digest;
+  late Future readSvg;
 
   @override
   void initState() {
@@ -65,21 +69,23 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
         RegisterService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
     _userService = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
-
     svg = RandomAvatarString(
       DateTime.now().toIso8601String(),
       trBackground: false,
     );
+  }
 
-    svgInDB = svg;
+  _write(String text) async {
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final File file = File('${directory.path}/my_file.svg');
+    svgFile = await file.writeAsString(text);
+    log("Text = $text");
+    //  log("svgInDB = " + svgFile!.path);
   }
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size * 0.20;
-    final TextEditingController _controller = TextEditingController();
-    final List<Widget> _painters = <Widget>[];
-
+    _write(svg);
     return Scaffold(
       appBar: AppBar(title: Text('Register')),
       body: SingleChildScrollView(
@@ -129,7 +135,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                                 selectFile();
                                 log('message');
                               },
-                              child: SvgPicture.string('''$svgInDB'''),
+                              child: SvgPicture.string('''$svg'''),
                             ),
                           )),
                 Gap(20),
@@ -229,10 +235,9 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                     ElevatedButton(
                         onPressed: () async {
                           if (await _formKey.currentState!.validate()) {
-                            setState(() {
-                              uploadFile();
-                              log("password =  $digest");
-                            });
+                            await _write(svg);
+                            uploadFile();
+                            log("password =  $digest");
 
                             // RegisterDto dto = RegisterDto(
                             //     userName: userName.text,
@@ -255,12 +260,31 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                         child: Text('ลงทะเบียน')),
                     Gap(50),
                     ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           Navigator.pop(context);
                         },
-                        child: Text('ยกเลิก'))
+                        child: Text('ยกเลิก')),
+                    ElevatedButton(
+                        onPressed: () async {
+                          svg = RandomAvatarString(
+                            DateTime.now().toIso8601String(),
+                            trBackground: false,
+                          );
+                          await _write(svg);
+                          log(svgFile!.path);
+                          setState(() {});
+                        },
+                        child: Text("Test"))
                   ],
-                )
+                ),
+                // CircleAvatar(
+                //     radius: MediaQuery.of(context).size.width * 0.15,
+                //     child: svgFile != null
+                //         ? GestureDetector(
+                //             child: SvgPicture.file(
+                //             File(svgFile!.path),
+                //           ))
+                //         : widget),
               ],
             ),
           ),
@@ -322,13 +346,33 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
       );
     }
 
+    log("before upload");
+
     ///upload SVG
     if (pickedFile == null) {
       log("Pickfile Null ");
       passwordINDB = password.text;
       bytes = utf8.encode(passwordINDB); // data being hashed
 
+      // _write(svgInDB);
+
+      // readSvg;
+      //_read();
+
       digest = sha256.convert(bytes);
+
+      final path = 'files/${svgFile!.path.split('/').last}';
+      final file = File(svgFile!.path);
+      final ref = FirebaseStorage.instance.ref().child(path);
+      log(ref.toString());
+
+      setState(() {
+        uploadTask = ref.putFile(file);
+      });
+      final snapshot = await uploadTask!.whenComplete(() {});
+
+      final urlDownload = await snapshot.ref.getDownloadURL();
+      log('Download Link:$urlDownload');
 
       // log("encode =" + EncryptData.encryptAES("abc"));
 
@@ -340,7 +384,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
           userFullname: fullname.text,
           userDiscription: description.text,
           userFacebookId: idFacebook,
-          userImage: svgInDB);
+          userImage: urlDownload);
       var register = await registerService.registers(dto);
 
       var userRegis = await _userService.getUserAll();
@@ -349,7 +393,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
         log(jsonEncode(register.data));
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('ลงทะเบียนล้มเหลว !!')),
+          SnackBar(content: Text('อีเมลนี้เคยลงทะเบียนแล้ว!!')),
         );
       } else {
         // avata.currentWidget;

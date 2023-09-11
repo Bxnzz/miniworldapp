@@ -130,7 +130,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(top: 30),
-                        child:   upImg(),
+                        child: upImg(),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),

@@ -158,25 +158,25 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
       //device must move horizontally before an update event is generated;
     );
 
-    StreamSubscription<Position> positionStream =
-        Geolocator.getPositionStream(locationSettings: locationSettings)
-            .listen((Position position) {
-      print(position.longitude); //Output: 80.24599079
-      print(position.latitude); //Output: 29.6593457
+    // StreamSubscription<Position> positionStream =
+    //     Geolocator.getPositionStream(locationSettings: locationSettings)
+    //         .listen((Position position) {
+    //   print(position.longitude); //Output: 80.24599079
+    //   print(position.latitude); //Output: 29.6593457
 
-      lngDevice = position.longitude;
-      latDevice = position.latitude;
+    //   lngDevice = position.longitude;
+    //   latDevice = position.latitude;
 
-      setState(() {
-        //refresh UI on update
-      });
-    });
+    //   setState(() {
+    //     //refresh UI on update
+    //   });
+    // });
   }
 
   Future<void> LoadData() async {
     startLoading(context);
     try {
-      //  checkGps();
+      checkGps();
       var a = await missionCompService.missionCompByTeamId(teamID: teamID);
 
       var mis = await missionService.missionByraceID(raceID: raceID);
@@ -353,10 +353,13 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
           text: "ค้นหา",
           color: Colors.amber,
           pressEvent: () {
+            checkGps();
+
             dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
             dis <= misDistance
                 ? AwesomeDialog(
-                    transitionAnimationDuration: Duration(milliseconds: 100),
+                    transitionAnimationDuration:
+                        const Duration(milliseconds: 100),
                     context: context,
                     headerAnimationLoop: false,
                     animType: AnimType.bottomSlide,
@@ -368,7 +371,11 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                     btnOkOnPress: () {
                       context.read<AppData>().idMis = misID;
                       context.read<AppData>().idTeam = teamID;
-
+                      context.read<AppData>().latMiscomp = latDevice;
+                      context.read<AppData>().lngMiscomp = lngDevice;
+                      setState(() {
+                        loadDataMethod = LoadData();
+                      });
                       widget.controller.index = 0;
                     },
                   ).show()
@@ -399,6 +406,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
           text: "ค้นหา",
           color: Colors.amber,
           pressEvent: () {
+            checkGps();
             dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
             dis <= misDistance
                 ? AwesomeDialog(
@@ -427,8 +435,13 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                           teamId: teamID);
                       var missionComp =
                           await missionCompService.insertMissionComps(mdto);
-                      loadDataMethod = LoadData();
+                      context.read<AppData>().latMiscomp = latDevice;
+                      context.read<AppData>().lngMiscomp = lngDevice;
+
                       if (widget.controller == 1) {
+                        setState(() {
+                          loadDataMethod = LoadData();
+                        });
                         widget.controller.jumpToTab(1);
                       }
                     },
@@ -453,7 +466,8 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
 
   btnMisType1_2(BuildContext context) {
     return ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
+          await getLocation();
           dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
           dis <= misDistance
               ? showDialog<String>(

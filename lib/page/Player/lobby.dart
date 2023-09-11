@@ -12,7 +12,9 @@ import 'package:miniworldapp/model/DTO/attendStatusDTO.dart';
 import 'package:miniworldapp/model/DTO/raceStatusDTO.dart';
 import 'package:miniworldapp/model/attend.dart';
 import 'package:miniworldapp/model/result/teamResult.dart';
+import 'package:miniworldapp/page/General/Home.dart';
 import 'package:miniworldapp/page/General/detil_race_host.dart';
+import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/home_join.dart';
 import 'package:miniworldapp/page/General/home_join_detail.dart';
 
@@ -458,6 +460,7 @@ class _LobbyState extends State<Lobby> {
     startLoading(context);
     try {
       log("LoadData");
+      log("idAttend = $idAttend");
       log(idRace.toString());
 
       var r = await raceService.racesByraceID(raceID: idRace);
@@ -570,6 +573,7 @@ class _LobbyState extends State<Lobby> {
     final textTheme = theme.textTheme;
     return WillPopScope(
         onWillPop: () async {
+          Get.to(() => Home());
           return true;
         },
         child: Scaffold(
@@ -627,7 +631,7 @@ class _LobbyState extends State<Lobby> {
                             children: [
                               IconButton(
                                 onPressed: () {
-                                  Navigator.of(context).pop();
+                                  Navigator.pop(context);
                                 },
                                 icon: FaIcon(
                                   FontAwesomeIcons.circleChevronLeft,
@@ -704,17 +708,8 @@ class _LobbyState extends State<Lobby> {
                                       onPressed: () {
                                         // log(attendShow.length.toString());
                                         if (attendShow.isEmpty) {
-                                          AwesomeDialog(
-                                            context: context,
-                                            dialogType: DialogType.warning,
-                                            animType: AnimType.bottomSlide,
-                                            headerAnimationLoop: false,
-                                            title: 'ยังไม่มีทีมที่เข้าร่วม',
-                                            desc:
-                                                'กรุณารอให้มีทีมเข้าร่วมก่อน',
-                                           
-                                          ).show();
-                                          
+                                          Get.defaultDialog(
+                                              title: 'ยังไม่มีทีมที่เข้าร่วม');
                                         } else {
                                           showAlertDialog(context);
                                         }

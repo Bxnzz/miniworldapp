@@ -353,7 +353,7 @@ class _Profile_editState extends State<Profile_edit> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        users.first.userImage.contains("<svg")
+        users.first.userImage.contains("svg")
             ? GestureDetector(
                 onTap: () {
                   showModalBottomSheet_photo_or_camera(context);
@@ -363,7 +363,8 @@ class _Profile_editState extends State<Profile_edit> {
                         radius: 50,
                         backgroundImage: FileImage(File(_image!.path)),
                       )
-                    : SvgPicture.string(users.first.userImage))
+                    : SvgPicture.network(
+                        "https://firebasestorage.googleapis.com/v0/b/mini-race-87786.appspot.com/o/files%2Fmy_file.svg?alt=media&token=c11bd3eb-485f-4e03-ba58-2c40e384bb88"))
             : GestureDetector(
                 onTap: () {
                   //Select gallery or camera
@@ -372,8 +373,7 @@ class _Profile_editState extends State<Profile_edit> {
                 child: _image == null
                     ? CircleAvatar(
                         radius: 50,
-                        backgroundImage:
-                            NetworkImage("${users.first.userImage}"),
+                        backgroundImage: NetworkImage(users.first.userImage),
                       )
                     : CircleAvatar(
                         radius: 50,

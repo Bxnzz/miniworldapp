@@ -25,7 +25,6 @@ import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
 import '../Host/race_review.dart';
 
-
 class HomeJoinDetail extends StatefulWidget {
   const HomeJoinDetail({super.key});
 
@@ -37,6 +36,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
   var size, height, width;
   // List<Race> races = [];
   List<AttendRace> attends = [];
+  List<AttendRace> attendDateTimes = [];
   List<Race> races = [];
   late int idUser;
   late int idrace;
@@ -54,6 +54,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
   String singUpST = '';
   String singUpFN = '';
   String eventDatetime = '';
+  String attendDateTime = '';
 
   late Future<void> loadDataMethod;
   late RaceService raceService;
@@ -72,7 +73,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
     status = context.read<AppData>().status;
 
     raceStatus = context.read<AppData>().raceStatus;
-
+    attendDateTime = context.read<AppData>().attendDateTime;
     attendService =
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
@@ -82,7 +83,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
     log("race id is $idrace");
     log("id Attend is $idAttend");
     log("id team is $teamid");
-
+    log("AttendDateTime  = ${context.read<AppData>().attendDateTime}");
     loadDataMethod = loadData();
   }
 
@@ -297,7 +298,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                           Center(
                             child: SizedBox(
                               width: 200,
-                              child: raceStatus == 1
+                              child: status == 1 && raceStatus == 1
                                   ? ElevatedButton(
                                       onPressed: () {
                                         setState(() {
@@ -307,12 +308,14 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                               idUser;
                                           context.read<AppData>().idrace =
                                               idrace;
-                                          context.read<AppData>().idAt =
-                                              idAttend;
+
                                           context.read<AppData>().idTeam =
                                               teamid;
                                           context.read<AppData>().status =
                                               status;
+                                          context
+                                              .read<AppData>()
+                                              .attendDateTime;
                                           Get.to(Lobby());
                                         });
                                       },
@@ -326,8 +329,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                                 idUser;
                                             context.read<AppData>().idrace =
                                                 idrace;
-                                            context.read<AppData>().idAt =
-                                                idAttend;
+
                                             context.read<AppData>().idTeam =
                                                 teamid;
                                             context.read<AppData>().status =
@@ -352,13 +354,12 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                           : Container(),
                             ),
                           ),
-                          
-                          // ElevatedButton(
-                          //     onPressed: () {
-                          //     //  log('username'+ context.read<AppData>().Username);
-                          //       Get.to(() => const ReviewPage());
-                          //     },
-                          //     child: Text("Review")),
+                          ElevatedButton(
+                              onPressed: () {
+                                //  log('username'+ context.read<AppData>().Username);
+                                Get.to(() => const ReviewPage());
+                              },
+                              child: Text("Review")),
                           ElevatedButton(
                               onPressed: () {
                                 Get.to(() => const raceReview());
@@ -406,6 +407,17 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
       singUpFN = dateFormat02;
       eventDatetime = dateFormat03;
 
+      if (idAttend == 0) {
+        log("if id at =0");
+        var attendByDateTime =
+            await attendService.attendByDateTime(DateTime: attendDateTime);
+        for (var i in attendByDateTime.data) {
+          idAttend = i.atId;
+          log("idat new set $idAttend");
+        }
+
+        setState(() {});
+      }
       a.data.first.raceName;
       UrlImg = a.data.first.raceImage;
       raceStatus = a.data.first.raceStatus;
