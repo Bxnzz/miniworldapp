@@ -73,97 +73,91 @@ class _Static_joinState extends State<Static_join> {
                 return GridView.count(
                   crossAxisCount: 2,
                   padding: EdgeInsets.only(top: 10),
-                  children: attends.map((element) {
+                  children: attends
+                      .where((element) => element.team.race.raceStatus == 4)
+                      .map((e) {
                     return Padding(
-                      padding: const EdgeInsets.only(
-                          left: 2.5, right: 2.5, bottom: 5),
-                      child: element.team.race.raceStatus == 4
-                          ? Card(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 2,
-                                  color: Colors.white,
-                                ),
-                                borderRadius:
-                                    BorderRadius.circular(20.0), //<-- SEE HERE
-                              ),
-                              //  shadowColor: ,
+                        padding: const EdgeInsets.only(
+                            left: 2.5, right: 2.5, bottom: 5),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              width: 2,
                               color: Colors.white,
-                              clipBehavior: Clip.hardEdge,
+                            ),
+                            borderRadius:
+                                BorderRadius.circular(20.0), //<-- SEE HERE
+                          ),
+                          //  shadowColor: ,
+                          color: Colors.white,
+                          clipBehavior: Clip.hardEdge,
 
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(12.0),
-                                splashColor: Colors.blue.withAlpha(30),
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => RankRace()));
-                                  context.read<AppData>().idrace =
-                                      element.team.race.raceId;
-                                },
-                                child: GridTile(
-                                    // crossAxisAlignment: CrossAxisAlignment.start,
-                                    child: Image.network(
-                                        element.team.race.raceImage,
-                                        //  width: Get.width,
-                                        //  height: Get.width*0.5625/2,
-                                        fit: BoxFit.cover),
-                                    footer: Container(
-                                      color: Get.theme.colorScheme.onBackground
-                                          .withOpacity(0.5),
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 5, 10, 0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12.0),
+                            splashColor: Colors.blue.withAlpha(30),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RankRace()));
+                              context.read<AppData>().idrace =
+                                  e.team.race.raceId;
+                            },
+                            child: GridTile(
+                                // crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Image.network(e.team.race.raceImage,
+                                    //  width: Get.width,
+                                    //  height: Get.width*0.5625/2,
+                                    fit: BoxFit.cover),
+                                footer: Container(
+                                  color: Get.theme.colorScheme.onBackground
+                                      .withOpacity(0.5),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(element.team.race.raceName,
-                                                  style: Get
-                                                      .textTheme.bodyMedium!
-                                                      .copyWith(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Get
-                                                              .theme
-                                                              .colorScheme
-                                                              .onPrimary)),
-                                              Text(
-                                                  "# ${element.team.race.raceId}",
-                                                  style: Get
-                                                      .textTheme.bodySmall!
-                                                      .copyWith(
-                                                          color: Get
-                                                              .theme
-                                                              .colorScheme
-                                                              .onPrimary)),
-                                            ],
-                                          ),
-                                          Container(height: 5),
-                                          // Text("ปิดรับสมัคร: " +
-                                          //     formatter.formatInBuddhistCalendarThai(
-                                          //         element.raceTimeFn)),
-                                          Text(
-                                              "สถานที่: " +
-                                                  element
-                                                      .team.race.raceLocation,
+                                          Text(e.team.race.raceName,
+                                              style: Get.textTheme.bodyMedium!
+                                                  .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Get
+                                                          .theme
+                                                          .colorScheme
+                                                          .onPrimary)),
+                                          Text("# ${e.team.race.raceId}",
                                               style: Get.textTheme.bodySmall!
                                                   .copyWith(
-                                                      color: Get.theme
-                                                          .colorScheme.onPrimary
-                                                          .withOpacity(0.8))),
-                                          Container(height: 5),
+                                                      color: Get
+                                                          .theme
+                                                          .colorScheme
+                                                          .onPrimary)),
                                         ],
                                       ),
-                                    )),
-                              ),
-                            )
-                          : Container(),
-                    );
+                                      Container(height: 5),
+                                      // Text("ปิดรับสมัคร: " +
+                                      //     formatter.formatInBuddhistCalendarThai(
+                                      //         element.raceTimeFn)),
+                                      Text(
+                                          "สถานที่: " +
+                                              e.team.race.raceLocation,
+                                          style: Get.textTheme.bodySmall!
+                                              .copyWith(
+                                                  color: Get.theme.colorScheme
+                                                      .onPrimary
+                                                      .withOpacity(0.8))),
+                                      Container(height: 5),
+                                    ],
+                                  ),
+                                )),
+                          ),
+                        ));
                   }).toList(),
                 );
               } else {

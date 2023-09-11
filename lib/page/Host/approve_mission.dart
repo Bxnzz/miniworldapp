@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:miniworldapp/page/Host/check_mission_list.dart';
+import 'package:miniworldapp/page/Host/list_approve.dart';
 import 'package:miniworldapp/service/user.dart';
 import 'package:uuid/uuid.dart';
 import 'package:circular_menu/circular_menu.dart';
@@ -265,6 +267,7 @@ class _ApproveMissionState extends State<ApproveMission> {
       var response1 = await OneSignal.shared.postNotification(notification1);
 
     stopLoading();
+    Get.to(()=>const CheckMissionList());
     // Navigator.of(context).pop();
   }
 
@@ -311,7 +314,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                     var response1 =
                         await OneSignal.shared.postNotification(notification1);
                     stopLoading();
-                    Navigator.of(context).pop();
+                    Get.to(()=>const CheckMissionList());
                   },
                   child: Text('ส่ง',
                       style: TextStyle(color: Get.theme.colorScheme.onPrimary)),
@@ -660,8 +663,8 @@ class _ApproveMissionState extends State<ApproveMission> {
                             .collection('s' + idrace.toString())
                             .add(messageDiscription.toJson());
                       }
-
                       stopLoading();
+                    
                     },
                     child: Text('OK'.toUpperCase()),
                   ),
@@ -713,7 +716,7 @@ class _ApproveMissionState extends State<ApproveMission> {
         : AwesomeDialog(
             context: context,
             dialogType: DialogType.error,
-            animType: AnimType.rightSlide,
+            animType: AnimType.bottomSlide,
             headerAnimationLoop: false,
             title: 'ข้อมูลไม่ถูกต้อง',
             desc: 'ส่งได้เฉพาะรูปภาพบรรยากาศเท่านั้น',

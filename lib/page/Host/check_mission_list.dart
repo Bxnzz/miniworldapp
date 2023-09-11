@@ -179,36 +179,37 @@ class _CheckMissionListState extends State<CheckMissionList> {
     });
   }
 
-  void _Endgame() async {
-    startLoading(context);
-    raceStatus = 3;
-    RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
-    var racestatus = await raceService.updateStatusRaces(racedto, idrace);
-    mc = {
-      'notitype': 'endgame',
-      'mcid': raceStatus,
-      'raceID': idrace,
-      'raceName': raceName
-    };
-    var notification1 = OSCreateNotification(
-        //playerID
-        additionalData: mc,
-        playerIds: playerIds,
-        content: raceName,
-        heading: "จบการแข่งขัน",
-        //  iosAttachments: {"id1",urlImage},
-        // bigPicture: imUrlString,
-        buttons: [
-          OSActionButton(text: "ตกลง", id: "id1"),
-          OSActionButton(text: "ยกเลิก", id: "id2")
-        ]);
-    log('player ' + playerIds.toString());
-    var response1 = await OneSignal.shared.postNotification(notification1);
+  // void _Endgame() async {
+  //   startLoading(context);
+  //   raceStatus = 3;
+  //   //log(remainMC.to)
+  //   // RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
+  //   // var racestatus = await raceService.updateStatusRaces(racedto, idrace);
+  //   // mc = {
+  //   //   'notitype': 'endgame',
+  //   //   'mcid': raceStatus,
+  //   //   'raceID': idrace,
+  //   //   'raceName': raceName
+  //   // };
+  //   // var notification1 = OSCreateNotification(
+  //   //     //playerID
+  //   //     additionalData: mc,
+  //   //     playerIds: playerIds,
+  //   //     content: raceName,
+  //   //     heading: "จบการแข่งขัน",
+  //   //     //  iosAttachments: {"id1",urlImage},
+  //   //     // bigPicture: imUrlString,
+  //   //     buttons: [
+  //   //       OSActionButton(text: "ตกลง", id: "id1"),
+  //   //       OSActionButton(text: "ยกเลิก", id: "id2")
+  //   //     ]);
+  //   // log('player ' + playerIds.toString());
+  //   // var response1 = await OneSignal.shared.postNotification(notification1);
 
-    // Get.defaultDialog(title: 'จบการแข่งขันแล้ว')
-    //     .then((value) => Get.to(HomeAll()));
-    stopLoading();
-  }
+  //   // Get.defaultDialog(title: 'จบการแข่งขันแล้ว')
+  //   //     .then((value) => Get.to(HomeAll()));
+  //   stopLoading();
+  // }
 
   void _processGame() async {
     raceStatus = 4;
@@ -244,12 +245,14 @@ class _CheckMissionListState extends State<CheckMissionList> {
           OSActionButton(text: "ยกเลิก", id: "id2")
         ]);
     log('player ' + playerIds.toString());
-    var response1 = await OneSignal.shared.postNotification(notification1);
-    Get.defaultDialog(title: 'ประมวลผลการแข่งขันแล้ว');
+    try {} catch (e) {
+      var response1 = await OneSignal.shared.postNotification(notification1);
+    }
 
-    Get.to(
-      () => RankRace(),
-    );
+    Get.defaultDialog(title: 'ประมวลผลการแข่งขันแล้ว').then((value) => Get.to(
+          () => RankRace(),
+        ));
+
     context.read<AppData>().idrace = idrace;
   }
 
@@ -292,7 +295,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
           ? FloatingActionButton.extended(
               backgroundColor: Colors.pinkAccent,
               onPressed: () {
-                _Endgame();
+                _endgame();
               },
               label: Text(
                 'จบการแข่งขัน',
@@ -305,13 +308,13 @@ class _CheckMissionListState extends State<CheckMissionList> {
               ? FloatingActionButton.extended(
                   backgroundColor: Colors.lightGreen,
                   onPressed: () {
-                    // log();
+                    log('remain ' + remainMC.toString());
+
                     if (remainMC != 0) {
                       Get.defaultDialog(
                           title: 'กรุณาตรวจสอบภารกิจให้เสร็จสิ้น');
                     } else {
                       //loop เรียงลำดับ
-
                       _processGame();
                       context.read<AppData>().idrace = idrace;
                     }
@@ -330,6 +333,11 @@ class _CheckMissionListState extends State<CheckMissionList> {
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               remainMC = 0;
+              // int i = 0;
+              // for (var element in missionComs) {
+              //   log(element.mcId.toString() + ' ' +(i++).toString());
+              // }
+
               return RefreshIndicator(
                 onRefresh: refresh,
                 child: ListView(
@@ -341,12 +349,20 @@ class _CheckMissionListState extends State<CheckMissionList> {
                         .where((e) =>
                             e.mission.misId == element.misId && e.mcStatus == 1)
                         .length;
-                    // for (var mm in missionComs) {
-                    //   log(mm.misId.toString() + ' ' + mm.mcStatus.toString());
-                    // }
-                    remainMC = mcStatus;
 
-                    log('remain ' + remainMC.toString());
+                    log(element.misId.toString());
+                    log(missionComs.length.toString());
+
+                    for (var e in missionComs
+                        .where((element) => element.mcStatus == 1)) {
+                      if (e.mission.misId == element.misId) {
+                        log('FFFF ' + e.mission.misId.toString());
+                        remainMC += 1;
+                      }
+                    }
+
+                    //log('remain ' + remainMC.toString());
+
                     //  log('mcss ' + mcStatus.toString());
                     return Padding(
                       padding:
@@ -442,5 +458,39 @@ class _CheckMissionListState extends State<CheckMissionList> {
             }
           }),
     );
+  }
+
+  void _endgame() async {
+    startLoading(context);
+    raceStatus = 3;
+    log(remainMC.toString());
+    RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
+    var racestatus = await raceService.updateStatusRaces(racedto, idrace);
+    mc = {
+      'notitype': 'endgame',
+      'mcid': raceStatus,
+      'raceID': idrace,
+      'raceName': raceName
+    };
+    var notification1 = OSCreateNotification(
+        //playerID
+        additionalData: mc,
+        playerIds: playerIds,
+        content: raceName,
+        heading: "จบการแข่งขัน",
+        //  iosAttachments: {"id1",urlImage},
+        // bigPicture: imUrlString,
+        buttons: [
+          OSActionButton(text: "ตกลง", id: "id1"),
+          OSActionButton(text: "ยกเลิก", id: "id2")
+        ]);
+    log('player ' + playerIds.toString());
+    try {} catch (e) {
+      var response1 = await OneSignal.shared.postNotification(notification1);
+    }
+
+    Navigator.of(context).pop();
+
+    stopLoading();
   }
 }

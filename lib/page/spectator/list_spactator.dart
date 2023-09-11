@@ -99,6 +99,11 @@ class _ListSpactatorState extends State<ListSpactator> {
       stopLoading();
     }
   }
+  Future refresh() async {
+    setState(() {
+      loadDataMethod = loadData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,103 +120,106 @@ class _ListSpactatorState extends State<ListSpactator> {
                   Colors.purpleAccent,
                   Color.fromARGB(255, 144, 64, 255),
                 ])),
-        child: FutureBuilder(
-            future: loadDataMethod,
-            builder: (context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return GridView.count(
-                  crossAxisCount: 2,
-                  padding: EdgeInsets.only(top: 10),
-                  children: races.where((element) => element.raceStatus == 2 && element.userId != idUser && race_all.contains(element.raceId)&& teamMe.contains(element.raceId) == false).map((e) {
-                    return  Padding(
-                      padding: const EdgeInsets.only(
-                          left: 2.5, right: 2.5, bottom: 5),
-                      child:  Card(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 2,
-                                  color: Colors.white,
+        child: RefreshIndicator(
+          onRefresh: refresh,
+          child: FutureBuilder(
+              future: loadDataMethod,
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return GridView.count(
+                    crossAxisCount: 2,
+                    padding: EdgeInsets.only(top: 10),
+                    children: races.where((element) => element.raceStatus == 2 && element.userId != idUser && race_all.contains(element.raceId)&& teamMe.contains(element.raceId) == false).map((e) {
+                      return  Padding(
+                        padding: const EdgeInsets.only(
+                            left: 2.5, right: 2.5, bottom: 5),
+                        child:  Card(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    width: 2,
+                                    color: Colors.white,
+                                  ),
+                                  borderRadius:
+                                      BorderRadius.circular(20.0), //<-- SEE HERE
                                 ),
-                                borderRadius:
-                                    BorderRadius.circular(20.0), //<-- SEE HERE
-                              ),
-                              //  shadowColor: ,
-                              color: Colors.white,
-                              clipBehavior: Clip.hardEdge,
-
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(12.0),
-                                splashColor: Colors.blue.withAlpha(30),
-                                onTap: () {
-                                  Get.to(Spectator());
-                                  context.read<AppData>().idrace = e.raceId;
-                                  log(e.raceId.toString());
-                                },
-                                child: GridTile(
-                                    // crossAxisAlignment: CrossAxisAlignment.start,
-                                    child: Image.network(e.raceImage,
-                                        //  width: Get.width,
-                                        //  height: Get.width*0.5625/2,
-                                        fit: BoxFit.cover),
-                                    footer: Container(
-                                      color: Get.theme.colorScheme.onBackground
-                                          .withOpacity(0.5),
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 5, 10, 0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(e.raceName,
-                                                  style: Get
-                                                      .textTheme.bodyMedium!
-                                                      .copyWith(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Get
-                                                              .theme
-                                                              .colorScheme
-                                                              .onPrimary)),
-                                              Text("# ${e.raceId}",
-                                                  style: Get
-                                                      .textTheme.bodySmall!
-                                                      .copyWith(
-                                                          color: Get
-                                                              .theme
-                                                              .colorScheme
-                                                              .onPrimary)),
-                                            ],
-                                          ),
-                                          Container(height: 5),
-                                          // Text("ปิดรับสมัคร: " +
-                                          //     formatter.formatInBuddhistCalendarThai(
-                                          //         element.raceTimeFn)),
-                                          Text(
-                                              "สถานที่: " +
-                                                  e.raceLocation,
-                                              style: Get.textTheme.bodySmall!
-                                                  .copyWith(
-                                                      color: Get.theme
-                                                          .colorScheme.onPrimary
-                                                          .withOpacity(0.8))),
-                                          Container(height: 5),
-                                          
-                                        ],
-                                      ),
-                                    )),
-                              ),
-                      )
-                    );
-                  }).toList(),
-                );
-              } else {
-                return Container();
-              }
-            }),
+                                //  shadowColor: ,
+                                color: Colors.white,
+                                clipBehavior: Clip.hardEdge,
+        
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  splashColor: Colors.blue.withAlpha(30),
+                                  onTap: () {
+                                    Get.to(Spectator());
+                                    context.read<AppData>().idrace = e.raceId;
+                                    log(e.raceId.toString());
+                                  },
+                                  child: GridTile(
+                                      // crossAxisAlignment: CrossAxisAlignment.start,
+                                      child: Image.network(e.raceImage,
+                                          //  width: Get.width,
+                                          //  height: Get.width*0.5625/2,
+                                          fit: BoxFit.cover),
+                                      footer: Container(
+                                        color: Get.theme.colorScheme.onBackground
+                                            .withOpacity(0.5),
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10, 5, 10, 0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(e.raceName,
+                                                    style: Get
+                                                        .textTheme.bodyMedium!
+                                                        .copyWith(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Get
+                                                                .theme
+                                                                .colorScheme
+                                                                .onPrimary)),
+                                                Text("# ${e.raceId}",
+                                                    style: Get
+                                                        .textTheme.bodySmall!
+                                                        .copyWith(
+                                                            color: Get
+                                                                .theme
+                                                                .colorScheme
+                                                                .onPrimary)),
+                                              ],
+                                            ),
+                                            Container(height: 5),
+                                            // Text("ปิดรับสมัคร: " +
+                                            //     formatter.formatInBuddhistCalendarThai(
+                                            //         element.raceTimeFn)),
+                                            Text(
+                                                "สถานที่: " +
+                                                    e.raceLocation,
+                                                style: Get.textTheme.bodySmall!
+                                                    .copyWith(
+                                                        color: Get.theme
+                                                            .colorScheme.onPrimary
+                                                            .withOpacity(0.8))),
+                                            Container(height: 5),
+                                            
+                                          ],
+                                        ),
+                                      )),
+                                ),
+                        )
+                      );
+                    }).toList(),
+                  );
+                } else {
+                  return Container();
+                }
+              }),
+        ),
       ),
     );
   }

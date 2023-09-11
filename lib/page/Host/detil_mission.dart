@@ -132,21 +132,6 @@ class _DetailMissionState extends State<DetailMission> {
       misResults = mission.data;
       newoder = newoder + 1;
       log(misResults.result);
-
-      // if (misResults.result == "1") {
-      //   // ScaffoldMessenger.of(context).showSnackBar(
-      //   //   const SnackBar(content: Text('update Successful')),
-      //   // );
-      //   // log("mission Successful");
-
-      // } else {
-      //   // log("team fail");
-      //   // ScaffoldMessenger.of(context).showSnackBar(
-      //   //   const SnackBar(content: Text('mission fail try agin!')),
-      //   // );
-
-      //   return;
-      // }
     }
     setState(() {
       startLoading(context);
@@ -219,7 +204,7 @@ class _DetailMissionState extends State<DetailMission> {
                   // Prevent the ListView from scrolling when an item is
                   // currently being dragged.
                   padding: const EdgeInsets.only(bottom: 24),
-                
+
                   children: [
                     const Divider(height: 0),
                     const Padding(padding: EdgeInsets.only(bottom: 8)),
@@ -350,14 +335,37 @@ class _DetailMissionState extends State<DetailMission> {
                                 .deleteMissons(mis.misId.toString());
                             log(missionsD.toString());
                             misRe = missionsD.data;
+                             missions.removeWhere((element) {
+                                return element.misId == mis.misId;
+                              }); //go through the loop and match content to delete from list
+                            
+
+                            for (var i = 0; i < missions.length; i++) {
+                              MissionDto missionDto = MissionDto(
+                                  misName: missions[i].misName,
+                                  misDiscrip: missions[i].misDiscrip,
+                                  misDistance: missions[i].misDistance,
+                                  misType: missions[i].misType,
+                                  misSeq: missions.indexOf(missions[i]) +1,
+                                  misMediaUrl: '',
+                                  misLat: missions[i].misLat,
+                                  misLng: missions[i].misLng,
+                                  raceId: missions[i].raceId);
+                              log(jsonEncode(missionDto));
+                              // log('item ' + missions[i].misId.toString()+':'+i.toString());
+                              var mission = await missionService.updateMis(
+                                  missionDto, missions[i].misId.toString());
+                            }
+
                             if (misRe.result == '1') {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                     content: Text('delete Successful')),
                               );
-                              missions.removeWhere((element) {
-                                return element.misId == mis.misId;
-                              }); //go through the loop and match content to delete from list
+
+                              // missions.removeWhere((element) {
+                              //   return element.misId == mis.misId;
+                              // }); //go through the loop and match content to delete from list
 
                               setState(() {});
                               Navigator.pop(context);
@@ -394,150 +402,6 @@ class _DetailMissionState extends State<DetailMission> {
           },
           icon: Icons.edit,
         ),
-        // SlidableAction(
-        //   flex: 3,
-        //   label: 'ดู',
-        //   backgroundColor: Colors.blueAccent,
-        //   onPressed: (BuildContext context) {
-        //     setState(() {
-        //       mType = mis.misType.toString();
-        //       var splitT = mType.split('');
-        //       //   //   log(splitT.toString());
-        //       List<String> substrings = splitT.toString().split(",");
-        //       //   //   //substrings = splitT.toString().substring("[");
-        //       log('sub' + splitT.toString());
-        //       //   // if(substrings[0] == '1'){
-        //       //   //   _checkbox == true;
-        //       //   // }
-        //       if (splitT.contains('1') == true) {
-        //         type1 = 'ข้อความ';
-        //         log(type1);
-        //       }
-        //       if (splitT.contains('2') == true) {
-        //         type1 = 'สื่อ';
-        //         log(type1);
-
-        //         ;
-        //       }
-        //       if (splitT.contains('3') == true) {
-        //         type1 = 'ไม่มีการส่ง';
-        //         log(type1);
-        //       } else {
-        //         return;
-        //       }
-        //     });
-        //     String tt = type1;
-        //     log('tt' + tt);
-        //     showDialog(
-        //       context: context,
-        //       builder: (context) => AlertDialog(
-        //         backgroundColor: Colors.white,
-        //         title: Center(
-        //             child: Text(
-        //           'รายละเอียดภารกิจ',
-        //           style: textTheme.headlineSmall?.copyWith(
-        //             fontWeight: FontWeight.bold,
-        //           ),
-        //         )),
-        //         content: SizedBox(
-        //           height: 150,
-        //           child: Column(
-        //             children: [
-        //               Center(
-        //                   child: Text(
-        //                 mis.misName,
-        //                 style: textTheme.bodyText1?.copyWith(),
-        //               )),
-        //               const Divider(),
-        //               Padding(
-        //                 padding: const EdgeInsets.only(right: 8, bottom: 4),
-        //                 child: Row(
-        //                   mainAxisAlignment: MainAxisAlignment.start,
-        //                   children: [
-        //                     const FaIcon(
-        //                       FontAwesomeIcons.fileLines,
-        //                       size: 18,
-        //                       color: Colors.grey,
-        //                     ),
-        //                     Padding(
-        //                       padding: const EdgeInsets.only(left: 13),
-        //                       child: Text(mis.misDiscrip),
-        //                     ),
-        //                   ],
-        //                 ),
-        //               ),
-        //               const Divider(),
-        //               Padding(
-        //                 padding: const EdgeInsets.only(right: 8, bottom: 4),
-        //                 child: Row(
-        //                   mainAxisAlignment: MainAxisAlignment.start,
-        //                   children: [
-        //                     const FaIcon(
-        //                       FontAwesomeIcons.listCheck,
-        //                       size: 18,
-        //                       color: Colors.grey,
-        //                     ),
-        //                     Padding(
-        //                       padding: const EdgeInsets.only(left: 13),
-        //                       //     child: Text(itemstr),
-        //                     ),
-        //                   ],
-        //                 ),
-        //               ),
-        //             ],
-        //           ),
-        //         ),
-        //         actions: <Widget>[
-        //           TextButton(
-        //             onPressed: () => Navigator.pop(context, 'Cancel'),
-        //             child: const Text('ยกเลิก',
-        //                 style: TextStyle(color: Colors.black)),
-        //           ),
-        //           SizedBox(
-        //               width: 120,
-        //               child: ElevatedButton(
-        //                   style: ElevatedButton.styleFrom(
-        //                       backgroundColor: Colors.redAccent),
-        //                   onPressed: () async {
-        //                     log('misID' + mis.misId.toString());
-
-        //                     var missionsD = await missionService
-        //                         .deleteMissons(mis.misId.toString());
-        //                     log(missionsD.toString());
-        //                     misRe = missionsD.data;
-        //                     if (misRe.result == '1') {
-        //                       ScaffoldMessenger.of(context).showSnackBar(
-        //                         const SnackBar(
-        //                             content: Text('delete Successful')),
-        //                       );
-        //                       missions.removeWhere((element) {
-        //                         return element.misId == mis.misId;
-        //                       }); //go through the loop and match content to delete from list
-
-        //                       setState(() {});
-        //                       Navigator.pop(context);
-        //                       // log("race Successful");
-        //                       return;
-        //                     } else {
-        //                       // log("team fail");
-        //                       ScaffoldMessenger.of(context).showSnackBar(
-        //                         const SnackBar(
-        //                             content: Text('delete fail try agin!')),
-        //                       );
-
-        //                       return;
-        //                     }
-        //                   },
-        //                   child: const Text(
-        //                     'ลบ',
-        //                     style: TextStyle(color: Colors.white),
-        //                   )))
-        //         ],
-        //       ),
-        //     );
-        //   },
-        //   icon: Icons.remove_red_eye,
-        // ),
       ]),
       child: Container(
         alignment: Alignment.center,
@@ -599,12 +463,7 @@ class _DetailMissionState extends State<DetailMission> {
               child: Box(
                 color: const Color.fromARGB(255, 233, 117, 253),
                 onTap: () async {
-                  final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Missioncreate(),
-                    ),
-                  );
+                  final result = await Get.to(() => Missioncreate());
                   context.read<AppData>().lastMis = mis.last.misId;
                   context.read<AppData>().sqnum = missions.last.misSeq;
                   log('last' + mis.last.misId.toString());

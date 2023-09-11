@@ -10,26 +10,28 @@ Widget loadingIndicator(BuildContext context) => Container(
           color: Theme.of(context).colorScheme.surface,
           borderRadius: const BorderRadius.all(Radius.circular(8))),
       child: SizedBox(
-        width: Get.width / 3 + 20,
-        height: Get.height / 4 - 60,
+        width: 150,
+        height: 150,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              width: 80,
-              height: 80,
-              child: LoadingIndicator(
-                indicatorType: Indicator.pacman,
-                colors: [
-                  Get.theme.colorScheme.primary,
-                  Colors.amber,
-                  Colors.green,
-                ],
-                strokeWidth: 2.0,
+            Expanded(
+              child: SizedBox(
+                width: 80,
+                height: 80,
+                child: LoadingIndicator(
+                  indicatorType: Indicator.pacman,
+                  colors: [
+                    Get.theme.colorScheme.primary,
+                    Colors.amber,
+                    Colors.green,
+                  ],
+                  strokeWidth: 2.0,
+                ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 8.0),
+              padding: const EdgeInsets.only(bottom: 20),
               child: Text(
                 'กำลังประมวลผล',
                 style: TextStyle(color: Get.theme.colorScheme.primary),

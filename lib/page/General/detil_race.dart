@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:miniworldapp/page/General/Home.dart';
 import 'package:miniworldapp/widget/loadData.dart';
 
 import 'package:provider/provider.dart';
@@ -305,15 +306,28 @@ class _DetailRaceState extends State<DetailRace> {
                           Center(
                               child: SizedBox(
                             width: 200,
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => CeateTeam()));
-                                  context.read<AppData>().idrace = idrace;
-                                },
-                                child: Text('ลงทะเบียน')),
+                            child: Column(
+                              children: [
+                                ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => CeateTeam()));
+                                      context.read<AppData>().idrace = idrace;
+                                    },
+                                    child: Text('ลงทะเบียน')),
+                                    ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => Home()));
+                                      context.read<AppData>().idrace = idrace;
+                                    },
+                                    child: Text('test')),
+                              ],
+                            ),
                           )),
                         ]),
                       ))

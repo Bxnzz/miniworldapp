@@ -19,6 +19,7 @@ import 'package:installed_apps/installed_apps.dart';
 import 'package:miniworldapp/model/DTO/passwordChengeDTO.dart';
 import 'package:miniworldapp/model/DTO/registerDTO.dart';
 import 'package:miniworldapp/model/DTO/userDTO.dart';
+import 'package:miniworldapp/page/General/Home.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
@@ -121,7 +122,7 @@ class _Profile_editState extends State<Profile_edit> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const HomeAll(),
+                builder: (context) => const Home(),
                 settings: const RouteSettings(arguments: null),
               ));
         },

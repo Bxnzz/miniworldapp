@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -27,6 +28,7 @@ final DefaultTheme defaultTheme = DefaultTheme();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Intl.defaultLocale = "th";
+  
 
   // String userId = await connectOneSignal();
   // log('User ID: $userId');
@@ -78,11 +80,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    
     return GetMaterialApp(
       // here
       navigatorObservers: [FlutterSmartDialog.observer],
+     
       // here
       builder: FlutterSmartDialog.init(),
+       
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: const [
         Locale('th', 'TH'),

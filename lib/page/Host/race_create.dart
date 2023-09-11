@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:flutter/services.dart';
 
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
@@ -13,6 +14,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/model/race.dart';
+import 'package:miniworldapp/page/General/Home.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/service/race.dart';
@@ -78,10 +80,10 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-       onWillPop: () async {
-          Get.to(() => const HomeAll());
-          return true;
-        },
+      onWillPop: () async {
+        Get.to(() => const Home());
+        return true;
+      },
       child: Scaffold(
           extendBodyBehindAppBar: true,
           appBar: AppBar(
@@ -128,7 +130,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(top: 30),
-                        child: upImg(),
+                        child:   upImg(),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -152,7 +154,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             SizedBox(
-                              width: 140,
+                              width: 175,
                               child: textFieldteam(raceLimit, 'จำนวนทีม...',
                                   'จำนวนทีม', 'กรุณากรอกจำนวนทีม'),
                             ),
@@ -160,33 +162,29 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                           ],
                         ),
                       ),
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20, right: 5),
-                            child: Center(
-                              child: SizedBox(
-                                  width: 120,
-                                  child: TextFieldDate(
-                                      controller: singUpST,
-                                      hintText: '00/00/0000',
-                                      labelText: 'วันที่เปิดรับสมัคร',
-                                      dates: TexttimeST)),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 5, right: 10),
-                            child: Center(
-                              child: SizedBox(
-                                  width: 120,
-                                  child: TextFieldDate(
-                                      controller: singUpFN,
-                                      hintText: '00/00/0000',
-                                      labelText: 'วันที่ปิดรับสมัคร',
-                                      dates: TexttimeFN)),
-                            ),
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: SizedBox(
+                              width: 240,
+                              child: TextFieldDate(
+                                  controller: singUpST,
+                                  hintText: '00/00/0000',
+                                  labelText: 'วันที่เปิดรับสมัคร',
+                                  dates: TexttimeST)),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: SizedBox(
+                              width: 240,
+                              child: TextFieldDate(
+                                  controller: singUpFN,
+                                  hintText: '00/00/0000',
+                                  labelText: 'วันที่ปิดรับสมัคร',
+                                  dates: TexttimeFN)),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -203,32 +201,26 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                         ),
                       ),
                       Row(
-                        // mainAxisAlignment: MainAxisAlignment.,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 25, right: 5),
-                            child: SizedBox(
-                                width: 115,
-                                child: SizedBox(
-                                  child: TextFieldTime(
-                                      controllers: raceTimeST,
-                                      hintText: '00:00',
-                                      labelText: 'เริ่ม',
-                                      times: TimeST),
-                                )),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 10, left: 5),
-                            child: SizedBox(
-                                width: 120,
-                                child: SizedBox(
-                                  child: TextFieldTime(
-                                      controllers: raceTimeFN,
-                                      hintText: '00:00',
-                                      labelText: 'สิ้นสุด',
-                                      times: TimeFN),
-                                )),
-                          ),
+                          SizedBox(
+                              width: 120,
+                              child: SizedBox(
+                                child: TextFieldTime(
+                                    controllers: raceTimeST,
+                                    hintText: '00:00',
+                                    labelText: 'เริ่ม',
+                                    times: TimeST),
+                              )),
+                          SizedBox(
+                              width: 120,
+                              child: SizedBox(
+                                child: TextFieldTime(
+                                    controllers: raceTimeFN,
+                                    hintText: '00:00',
+                                    labelText: 'สิ้นสุด',
+                                    times: TimeFN),
+                              )),
                         ],
                       ),
                       Padding(
@@ -333,8 +325,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                         child: Text('สร้างภารกิจ')),
                                     TextButton(
                                         onPressed: () async {
-                                      Navigator.of(context).pop();
-                                         
+                                          Navigator.of(context).pop();
                                         },
                                         child: Text('ยกเลิก')),
                                   ]);
@@ -426,6 +417,10 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextFormField(
+            inputFormatters: [
+              LengthLimitingTextInputFormatter(2),
+              FilteringTextInputFormatter.digitsOnly
+            ],
             keyboardType: TextInputType.number,
             controller: controller,
             autovalidateMode: AutovalidateMode.onUserInteraction,

@@ -6,12 +6,14 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 
 import 'package:miniworldapp/model/DTO/userDTO.dart';
 import 'package:miniworldapp/model/result/raceResult.dart';
+import 'package:miniworldapp/page/General/Home.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/rank_race.dart';
 
@@ -26,6 +28,9 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'dart:developer';
+import 'package:in_app_notification/in_app_notification.dart';
+import 'package:toast_notification/ToasterType.dart';
+import 'package:toast_notification/toast_notification.dart';
 
 import '../../main.dart';
 import '../../model/DTO/loginDTO.dart';
@@ -35,6 +40,8 @@ import '../Newhome.dart';
 import '../Player/player_race_start_menu.dart';
 import 'fontpage_register.dart';
 import 'package:crypto/crypto.dart';
+
+
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -332,61 +339,41 @@ class _LoginState extends State<Login> {
                                                     .notification
                                                     .additionalData!['mcid']);
                                                 log('qqqqqqqqqq');
-                                                Get.defaultDialog(
-                                                  title:
-                                                      'มีหลักฐานที่ต้องตรวจสอบ?',
-                                                  content: Text(event
-                                                          .notification
-                                                          .additionalData![
-                                                      'mission']),
-                                                  actions: <Widget>[
-                                                    ElevatedButton(
-                                                      child: const Text(
-                                                          'ตรวจสอบหลักฐาน'),
-                                                      onPressed: () => Get.to(
-                                                          ApproveMission(
-                                                              IDmc: int.parse(event
-                                                                      .notification
-                                                                      .additionalData![
-                                                                  'mcid']))),
-                                                    ),
-                                                  ],
-                                                );
+                                               
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                        "มีหลักฐานที่ต้องตรวจสอบ?\n ภารกิจ: ${event.notification.additionalData!['mission']} ทีม: ${event.notification.additionalData!['team']}       ",
+                                                    toastLength:
+                                                        Toast.LENGTH_LONG,
+                                                    gravity: ToastGravity.TOP,
+                                                    timeInSecForIosWeb: 3,
+                                                    backgroundColor:
+                                                        Colors.black,
+                                                    textColor: Colors.white,
+                                                    fontSize: 16.0);
 
                                                 log('nnnnnnnnnnn');
                                               } else if (event.notification
                                                           .additionalData![
                                                       'notitype'] ==
                                                   'checkMis') {
-                                                //      AwesomeDialog(
-                                                //   context: context,
-                                                //   dialogType: DialogType.success,
-                                                //   animType: AnimType.rightSlide,
-                                                //   headerAnimationLoop: false,
-                                                //   title: 'ทำภารกิจสำเร็จ!!!',
-                                                // ).show().then((value) => Get.to(PlayerRaceStartHint(controller: 1 as PersistentTabController)));
+                                               
                                                 Get.defaultDialog(
                                                         title:
                                                             'ทำภารกิจสำเร็จ!!!')
-                                                    .then((value) => Get.to(
-                                                        PlayerRaceStartHint(
-                                                            controller: 1
-                                                                as PersistentTabController)));
+                                                    .then((value) => Get.to(() =>
+                                                        PlayerRaceStartMenu()));
                                               } else if (event.notification
                                                           .additionalData![
                                                       'notitype'] ==
                                                   'checkUnMis') {
                                                 Get.defaultDialog(
                                                         title:
-                                                            'ทำภารกิจสำเร็จ!!!',
-                                                        content: event
-                                                                .notification
-                                                                .additionalData![
-                                                            'masseage'])
-                                                    .then((value) => Get.to(
-                                                        PlayerRaceStartHint(
-                                                            controller: 1
-                                                                as PersistentTabController)));
+                                                            'ทำภารกิจไม่สำเร็จ!!!',
+                                                        content: Text(
+                                                            '${event.notification.additionalData!['masseage']}'))
+                                                    .then((value) => Get.to(() =>
+                                                        PlayerRaceStartMenu()));
                                               } else if (event.notification
                                                           .additionalData![
                                                       'notitype'] ==
@@ -394,35 +381,30 @@ class _LoginState extends State<Login> {
                                                 Get.defaultDialog(
                                                         title:
                                                             'เริ่มการแข่งขัน')
-                                                    .then(
-                                                  (value) => Get.to(
-                                                      PlayerRaceStartMenu()),
-                                                );
+                                                    .then((value) => Get.to(() =>
+                                                        PlayerRaceStartMenu()));
+                                                log('toasttt');
 
-                                                // AwesomeDialog(
-                                                //   context: context,
-                                                //   dialogType: DialogType.info,
-                                                //   animType: AnimType.rightSlide,
-                                                //   headerAnimationLoop: false,
-                                                //   title: 'เริ่มการแข่งขัน',
-
-                                                // ).show().then((value) => Get.to(PlayerRaceStartMenu()));
+                                                log('ภารกิจจ');
                                               } else if (event.notification
                                                           .additionalData![
                                                       'notitype'] ==
                                                   'endgame') {
-                                                log('aaaaaa');
                                                 raceName = event.notification
                                                         .additionalData![
                                                     'raceName'];
+
                                                 raceID = int.parse(event
                                                     .notification
-                                                    .additionalData!['raceID']);
+                                                    .additionalData!['raceID']
+                                                    .toString());
 
                                                 Get.defaultDialog(
-                                                        title: 'จบการแข่งขัน')
+                                                        title: 'จบการแข่งขัน',
+                                                        content: const Text(
+                                                            'รอการประมวลผล'))
                                                     .then((value) {
-                                                  Get.to(ChatRoomPage(
+                                                  Get.to(() => ChatRoomPage(
                                                       userID: userID,
                                                       raceID: raceID,
                                                       userName: userName,
@@ -437,11 +419,14 @@ class _LoginState extends State<Login> {
                                                     'raceName'];
                                                 raceID = int.parse(event
                                                     .notification
-                                                    .additionalData!['raceID']);
+                                                    .additionalData!['raceID']
+                                                    .toString());
                                                 Get.defaultDialog(
-                                                  title: 'จบการแข่งขัน',
-                                                ).then((value) =>
-                                                    Get.to(RankRace()));
+                                                        title: 'จบการแข่งขัน',
+                                                        content: Text(
+                                                            'ประมวลผลเสร็จสิ้น'))
+                                                    .then((value) => Get.to(
+                                                        () => RankRace()));
                                                 // AwesomeDialog(
                                                 //   context: context,
                                                 //   dialogType:
@@ -501,7 +486,7 @@ class _LoginState extends State<Login> {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const HomeAll(),
+                                                      const Home(),
                                                   settings: const RouteSettings(
                                                       arguments: null),
                                                 ));
