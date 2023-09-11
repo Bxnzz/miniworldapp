@@ -145,16 +145,6 @@ class _RaceAllState extends State<RaceAll> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Text("  /${e.raceLimitteam}",
-                                                    style: Get
-                                                        .textTheme.bodyMedium!
-                                                        .copyWith(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: Get
-                                                                .theme
-                                                                .colorScheme
-                                                                .onPrimary)),
                                                 Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
