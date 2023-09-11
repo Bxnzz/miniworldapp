@@ -43,4 +43,5 @@ class AppData with ChangeNotifier {
 
   double latMiscomp = 0;
   double lngMiscomp = 0;
+  String attendDateTime = '';
 }

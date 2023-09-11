@@ -78,10 +78,10 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-       onWillPop: () async {
-          Get.to(() => const HomeAll());
-          return true;
-        },
+      onWillPop: () async {
+        Get.to(() => const HomeAll());
+        return true;
+      },
       child: Scaffold(
           extendBodyBehindAppBar: true,
           appBar: AppBar(
@@ -333,8 +333,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                         child: Text('สร้างภารกิจ')),
                                     TextButton(
                                         onPressed: () async {
-                                      Navigator.of(context).pop();
-                                         
+                                          Navigator.of(context).pop();
                                         },
                                         child: Text('ยกเลิก')),
                                   ]);

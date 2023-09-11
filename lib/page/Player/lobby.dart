@@ -458,6 +458,7 @@ class _LobbyState extends State<Lobby> {
     startLoading(context);
     try {
       log("LoadData");
+      log("idAttend = $idAttend");
       log(idRace.toString());
 
       var r = await raceService.racesByraceID(raceID: idRace);
@@ -467,7 +468,9 @@ class _LobbyState extends State<Lobby> {
       var a = await attendService.attendByRaceID(raceID: idRace);
       attends = a.data;
       status = a.data.first.status;
-
+      var attendDateTime = await attendService.attendByDateTime(
+          DateTime: context.read<AppData>().attendDateTime);
+      attendDateTime.data.first.atId;
       log('userCreate  ' + userCreate.toString());
 
       playerIds.clear();
