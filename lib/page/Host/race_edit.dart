@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -234,7 +235,7 @@ class _EditRaceState extends State<EditRace> {
                                 children: [
                                   SizedBox(
                                     width: 140,
-                                    child: textField(raceLimit, 'จำนวนทีม...',
+                                    child: textFieldteam(raceLimit, 'จำนวนทีม...',
                                         'จำนวนทีม', 'กรุณากรอกจำนวนทีม'),
                                   ),
                                   Text('ทีม')
@@ -504,25 +505,6 @@ class _EditRaceState extends State<EditRace> {
     log(img.path);
   }
 
-  // Future selectFile() async {
-  //   final result = await FilePicker.platform.pickFiles();
-  //   File file;
-  //   PlatformFile platFile;
-  //   if (result == null) return;
-  //   platFile = result.files.single;
-  //   file = File(platFile.path!);
-  //   pickedFile = file;
-
-  //   log(result.files.single.toString());
-  //   log(platFile.extension.toString());
-  //   if (platFile.extension == 'jpg' || platFile.extension == 'png') {
-  //     setState(() {
-  //       isImage = true;
-  //     });
-  //   } else {
-  //     isImage = false;
-  //   }
-  // }
   upImg() {
     return _image != null
         ? Stack(
@@ -597,5 +579,34 @@ class _EditRaceState extends State<EditRace> {
               )
             ],
           );
+          
   }
+  textFieldteam(final TextEditingController controller, String hintText,
+      String labelText, String error) {
+    return Form(
+      //key: keys,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          TextFormField(
+            inputFormatters: [
+              LengthLimitingTextInputFormatter(2),
+              FilteringTextInputFormatter.digitsOnly
+            ],
+            keyboardType: TextInputType.number,
+            controller: controller,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            decoration:
+                InputDecoration(hintText: hintText, labelText: labelText),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return error;
+              }
+              return null;
+            },
+          ),
+        ],
+      ),
+    );
+}
 }

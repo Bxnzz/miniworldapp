@@ -423,7 +423,7 @@ class _DetailHostState extends State<DetailHost> {
                           Center(
                             child: SizedBox(
                               width: 200,
-                              child: ElevatedButton(
+                              child: races.first.raceStatus == 1 ? ElevatedButton(
                                   onPressed: () {
                                     Navigator.push(
                                         context,
@@ -432,7 +432,7 @@ class _DetailHostState extends State<DetailHost> {
                                                 const DetailMission()));
                                     context.read<AppData>().idrace = idrace;
                                   },
-                                  child: Text('ภารกิจทั้งหมด')),
+                                  child: Text('ภารกิจทั้งหมด')):Container(),
                             ),
                           ),
                           Center(
