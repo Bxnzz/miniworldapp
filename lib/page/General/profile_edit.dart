@@ -62,6 +62,7 @@ class _Profile_editState extends State<Profile_edit> {
   File? pickedFile;
   UploadTask? uploadTask;
   int userID = 0;
+  String userimg = '';
   String img = '';
   String uri = '';
   String uri2 = '';
@@ -187,11 +188,13 @@ class _Profile_editState extends State<Profile_edit> {
       log("${userID} asdfasdf");
       var user = await userservice.getUserByID(userID: userID);
       users = user.data;
+
       userName.text = user.data.last.userName;
       userFullName.text = users.first.userFullname;
       userDis.text = users.first.userDiscription;
       userMail.text = users.first.userMail;
       oldPassword.text = users.first.userPassword;
+      userimg = users.first.userImage;
       log("user name ${userName.text}");
     } catch (err) {
       log('Error:$err');
@@ -363,8 +366,7 @@ class _Profile_editState extends State<Profile_edit> {
                         radius: 50,
                         backgroundImage: FileImage(File(_image!.path)),
                       )
-                    : SvgPicture.network(
-                        "https://firebasestorage.googleapis.com/v0/b/mini-race-87786.appspot.com/o/files%2Fmy_file.svg?alt=media&token=c11bd3eb-485f-4e03-ba58-2c40e384bb88"))
+                    : SvgPicture.network("${userimg}"))
             : GestureDetector(
                 onTap: () {
                   //Select gallery or camera
@@ -373,7 +375,7 @@ class _Profile_editState extends State<Profile_edit> {
                 child: _image == null
                     ? CircleAvatar(
                         radius: 50,
-                        backgroundImage: NetworkImage(users.first.userImage),
+                        backgroundImage: NetworkImage(userimg),
                       )
                     : CircleAvatar(
                         radius: 50,
@@ -385,9 +387,30 @@ class _Profile_editState extends State<Profile_edit> {
           decoration: const InputDecoration(label: Text("ชื่อในระบบ")),
         ),
         const Gap(20),
+        // Align(
+        //   alignment: Alignment.centerLeft,
+        //   child: Text(userMail.text)),
+        // FocusScope(
+        //     node: new FocusScopeNode(),
+        //     child: new TextFormField(
+        //       controller: _controller,
+        //       style: theme.textTheme.subhead.copyWith(
+        //         color: theme.disabledColor,
+        //       ),
+        //       decoration: new InputDecoration(
+        //         hintText:'You cannot focus me',
+        //       ),
+        //     )),
         TextFormField(
+          enabled: false,
           controller: userMail,
-          decoration: const InputDecoration(label: Text("อีเมล")),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Colors.black,
+              ),
+          decoration: const InputDecoration(
+              label: Text(
+            "อีเมล",
+          )),
         ),
         const Gap(20),
         TextFormField(

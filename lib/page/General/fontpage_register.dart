@@ -23,6 +23,8 @@ import '../../service/Register.dart';
 import '../../service/provider/appdata.dart';
 import 'package:random_avatar/random_avatar.dart';
 
+import '../../widget/loadData.dart';
+
 class FontRegisterPage extends StatefulWidget {
   const FontRegisterPage({super.key});
 
@@ -264,17 +266,19 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                           Navigator.pop(context);
                         },
                         child: Text('ยกเลิก')),
-                    ElevatedButton(
-                        onPressed: () async {
-                          svg = RandomAvatarString(
-                            DateTime.now().toIso8601String(),
-                            trBackground: false,
-                          );
-                          await _write(svg);
-                          log(svgFile!.path);
-                          setState(() {});
-                        },
-                        child: Text("Test"))
+                    // ElevatedButton(
+                    //     onPressed: () async {
+                    //       svg = RandomAvatarString(
+                    //         DateTime.now().toIso8601String(),
+                    //         trBackground: false,
+                    //       );
+                    //       await _write(svg);
+                    //       log(svgFile!.path);
+                    //       setState(() {
+
+                    //       });
+                    //     },
+                    //     child: Text("Test"))
                   ],
                 ),
                 // CircleAvatar(
@@ -314,6 +318,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
   }
 
   Future uploadFile() async {
+    startLoading(context);
     showAlertDialog(BuildContext context) {
       // set up the button
       Widget okButton = TextButton(
@@ -395,6 +400,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('อีเมลนี้เคยลงทะเบียนแล้ว!!')),
         );
+        stopLoading();
       } else {
         // avata.currentWidget;
         // setState(() {
@@ -407,6 +413,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
         confirmpassword.clear();
         fullname.clear();
         description.clear();
+        stopLoading();
         return showAlertDialog(context);
       }
     }
@@ -451,6 +458,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('ลงทะเบียนล้มเหลว !!')),
         );
+        stopLoading();
       } else {
         avata.currentWidget;
         setState(() {
@@ -463,6 +471,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
         confirmpassword.clear();
         fullname.clear();
         description.clear();
+        stopLoading();
         return showAlertDialog(context);
       }
     }
