@@ -18,6 +18,7 @@ import 'package:miniworldapp/page/General/Home.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/service/race.dart';
+import 'package:miniworldapp/widget/loadData.dart';
 import 'package:miniworldapp/widget/textfieldDate.dart';
 import 'package:provider/provider.dart';
 
@@ -316,11 +317,13 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                   actions: [
                                     TextButton(
                                         onPressed: () async {
+                                          startLoading(context);
                                           var race = await raceservice
                                               .insertRaces(dto);
                                           context.read<AppData>().idrace =
                                               race.data.raceId;
                                           Get.to(Missioncreate());
+                                          stopLoading();
                                         },
                                         child: Text('สร้างภารกิจ')),
                                     TextButton(
