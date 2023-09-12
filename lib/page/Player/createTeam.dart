@@ -253,9 +253,10 @@ class _CeateTeamState extends State<CeateTeam> {
                                             log("Can join Chk loop");
                                             uploadFile();
                                             break;
-                                          } else {
-                                            uploadFile();
                                           }
+                                        } else {
+                                          uploadFile();
+                                          break;
                                         }
                                       }
                                     }
@@ -488,11 +489,13 @@ class _CeateTeamState extends State<CeateTeam> {
   }
 
   Future uploadFile() async {
+    startLoading(context);
     if (_image == null) {
       // log("team fail");
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('กรุณาใส่รูปภาพ...')),
       );
+      stopLoading();
       return;
     }
 
@@ -552,6 +555,7 @@ class _CeateTeamState extends State<CeateTeam> {
       // Get.to(() => Home_join(
       //       navigationController: CircularBottomNavigationController(2),
       //     ));
+      stopLoading();
       Get.to(() => Home());
       return;
     } else {
@@ -561,7 +565,7 @@ class _CeateTeamState extends State<CeateTeam> {
             content:
                 Text('ลงทะเบียนผิดพลาด หรือ เคยลงทะเบียนเข้าร่วมไปแล้ว!!')),
       );
-
+      stopLoading();
       return;
     }
     stopLoading();
