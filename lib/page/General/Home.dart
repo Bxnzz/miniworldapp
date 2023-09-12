@@ -140,6 +140,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       bottomNavigationBar: SalomonBottomBar(
         currentIndex: currentPageIndex,
+        
         onTap: (i) => setState(() => currentPageIndex = i),
         items: [
           /// Home
@@ -147,20 +148,29 @@ class _HomeState extends State<Home> {
             icon: FaIcon(FontAwesomeIcons.house),
             title: Text("หน้าหลัก"),
             selectedColor: Colors.purple,
+            unselectedColor: Color.fromARGB(255, 200, 69, 223)
           ),
 
           /// Likes
           SalomonBottomBarItem(
-            icon: FaIcon(FontAwesomeIcons.userPlus),
-            title: Text("ที่สร้าง"),
+            icon: const FaIcon(FontAwesomeIcons.users),
+            title: const Text("การแข่งขัน"),
             selectedColor: Colors.pink,
+            unselectedColor: Color.fromARGB(255, 200, 69, 223)
           ),
 
           /// Search
           SalomonBottomBarItem(
-            icon: FaIcon(FontAwesomeIcons.users),
-            title: Text("ที่เข้าร่วม"),
+            icon: const FaIcon(FontAwesomeIcons.solidEye),
+            title: const Text("ผู้ชม"),
             selectedColor: Colors.orange,
+            unselectedColor: Color.fromARGB(255, 200, 69, 223)
+          ),
+           SalomonBottomBarItem(
+            icon: const FaIcon(FontAwesomeIcons.userLarge),
+            title: const Text("โปรไฟล์"),
+            selectedColor: Colors.blue,
+            unselectedColor: Color.fromARGB(255, 200, 69, 223)
           ),
         ],
       ),
@@ -173,12 +183,17 @@ class _HomeState extends State<Home> {
         Container(
           color: Colors.green,
           alignment: Alignment.center,
-          child: Home_create(),
+          child: TabbarRace(),
         ),
         Container(
           color: Colors.blue,
           alignment: Alignment.center,
-          child: Home_join(),
+          child: ListSpactator(),
+        ),
+        Container(
+          color: Colors.blue,
+          alignment: Alignment.center,
+          child: Text('data'),
         ),
       ][currentPageIndex],
       floatingActionButton: Padding(
@@ -214,68 +229,68 @@ class _HomeState extends State<Home> {
               },
             ),
           ],
-          closedForegroundColor: Colors.black,
+          closedForegroundColor: Colors.white,
           openForegroundColor: Colors.amber,
           closedBackgroundColor: Colors.amber,
-          openBackgroundColor: Colors.black,
+          openBackgroundColor: Colors.white,
         ),
       ),
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(50.0),
-        child: AppBar(
-          // BeveledRectangleBorder(
-          //     borderRadius: BorderRadius.circular(20)),
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: FractionalOffset(0.0, 0.0),
-                    end: FractionalOffset(1.0, 0.0),
-                    stops: [0.0, 1.0],
-                    tileMode: TileMode.clamp,
-                    colors: [
-                      Colors.purpleAccent,
-                      Color.fromARGB(255, 144, 64, 255),
-                    ])),
-          ),
-          // backgroundColor: Theme.of(context).colorScheme.primary,
-          title:
-              // SafeArea(
-              //   child: Column(
-              //     children: [
-              //       CircleAvatar(
-              //         backgroundImage: NetworkImage("${userimg}"),
-              //       )
-              //     ],
-              //   ),
-              // ),
-              Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Builder(
-                builder: (context) => IconButton(
-                  icon: FaIcon(FontAwesomeIcons.alignLeft,
-                      color: Theme.of(context).colorScheme.onPrimary, size: 18),
-                  onPressed: () => Scaffold.of(context).openDrawer(),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            CircleAvatar(
-              backgroundColor: Colors.amber,
-              child: IconButton(
-                icon: const Icon(Icons.search_sharp),
-                color: Colors.white,
-                onPressed: () {
-                  showSearch(context: context, delegate: mySearchDelegate());
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
+      // appBar: PreferredSize(
+      //   preferredSize: Size.fromHeight(50.0),
+      //   child: AppBar(
+      //     // BeveledRectangleBorder(
+      //     //     borderRadius: BorderRadius.circular(20)),
+      //     automaticallyImplyLeading: false,
+      //     elevation: 0,
+      //     flexibleSpace: Container(
+      //       decoration: const BoxDecoration(
+      //           gradient: LinearGradient(
+      //               begin: FractionalOffset(0.0, 0.0),
+      //               end: FractionalOffset(1.0, 0.0),
+      //               stops: [0.0, 1.0],
+      //               tileMode: TileMode.clamp,
+      //               colors: [
+      //                 Colors.purpleAccent,
+      //                 Color.fromARGB(255, 144, 64, 255),
+      //               ])),
+      //     ),
+      //     // backgroundColor: Theme.of(context).colorScheme.primary,
+      //     title:
+      //         // SafeArea(
+      //         //   child: Column(
+      //         //     children: [
+      //         //       CircleAvatar(
+      //         //         backgroundImage: NetworkImage("${userimg}"),
+      //         //       )
+      //         //     ],
+      //         //   ),
+      //         // ),
+      //         Row(
+      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //       children: [
+      //         Builder(
+      //           builder: (context) => IconButton(
+      //             icon: FaIcon(FontAwesomeIcons.alignLeft,
+      //                 color: Theme.of(context).colorScheme.onPrimary, size: 18),
+      //             onPressed: () => Scaffold.of(context).openDrawer(),
+      //           ),
+      //         ),
+      //       ],
+      //     ),
+      //     actions: [
+      //       CircleAvatar(
+      //         backgroundColor: Colors.amber,
+      //         child: IconButton(
+      //           icon: const Icon(Icons.search_sharp),
+      //           color: Colors.white,
+      //           onPressed: () {
+      //             showSearch(context: context, delegate: mySearchDelegate());
+      //           },
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ),
       drawer: drawer(
           userimg: userimg, Username: Username, userDescrip: userDescrip),
     );

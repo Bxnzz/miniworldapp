@@ -107,18 +107,11 @@ class _MissioncreateState extends State<Missioncreate> {
     return Scaffold(
       appBar: AppBar(
         // Overide the default Back button
-        automaticallyImplyLeading: false,
-        leadingWidth: 100,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: FaIcon(
-            FontAwesomeIcons.circleChevronLeft,
-            color: Colors.yellow,
-            size: 35,
-          ),
-        ),
+       // automaticallyImplyLeading: false,
+        // leadingWidth: 100,
+        // actions: [
+          
+        // ],
         title: const Text('สร้างภารกิจ'),
       ),
       body: raceMap(),
@@ -358,7 +351,6 @@ class _MissioncreateState extends State<Missioncreate> {
                     mType = int.parse(cb);
                     log('ty: ' + mType.toString());
 
-                    
                     MissionDto missionDto = MissionDto(
                         misName: nameMission.text,
                         misDiscrip: discripText.text,
@@ -381,7 +373,7 @@ class _MissioncreateState extends State<Missioncreate> {
                         const SnackBar(content: Text('mision Successful')),
                       );
                       setState(() {
-                        Get.to(DetailMission());
+                        Navigator.of(context).pop();
                       });
 
                       log("race Successful");

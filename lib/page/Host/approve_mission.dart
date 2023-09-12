@@ -267,7 +267,7 @@ class _ApproveMissionState extends State<ApproveMission> {
       var response1 = await OneSignal.shared.postNotification(notification1);
 
     stopLoading();
-    Get.to(()=>const CheckMissionList());
+    Get.to(()=> Navigator.of(context).pop());
     // Navigator.of(context).pop();
   }
 
@@ -314,7 +314,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                     var response1 =
                         await OneSignal.shared.postNotification(notification1);
                     stopLoading();
-                    Get.to(()=>const CheckMissionList());
+                    Get.to(()=> Navigator.of(context).pop());
                   },
                   child: Text('ส่ง',
                       style: TextStyle(color: Get.theme.colorScheme.onPrimary)),
