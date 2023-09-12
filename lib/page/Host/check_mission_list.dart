@@ -245,9 +245,8 @@ class _CheckMissionListState extends State<CheckMissionList> {
           OSActionButton(text: "ยกเลิก", id: "id2")
         ]);
     log('player ' + playerIds.toString());
-    try {} catch (e) {
-      var response1 = await OneSignal.shared.postNotification(notification1);
-    }
+
+    var response1 = await OneSignal.shared.postNotification(notification1);
 
     Get.defaultDialog(title: 'ประมวลผลการแข่งขันแล้ว').then((value) => Get.to(
           () => RankRace(),
@@ -485,12 +484,12 @@ class _CheckMissionListState extends State<CheckMissionList> {
           OSActionButton(text: "ยกเลิก", id: "id2")
         ]);
     log('player ' + playerIds.toString());
-    try {} catch (e) {
-      var response1 = await OneSignal.shared.postNotification(notification1);
-    }
 
-    Navigator.of(context).pop();
+    var response1 = await OneSignal.shared.postNotification(notification1);
 
     stopLoading();
+    setState(() {
+      loadDataMethod = loadData();
+    });
   }
 }

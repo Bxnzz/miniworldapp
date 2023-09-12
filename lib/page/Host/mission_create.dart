@@ -358,7 +358,7 @@ class _MissioncreateState extends State<Missioncreate> {
                     mType = int.parse(cb);
                     log('ty: ' + mType.toString());
 
-                    startLoading(context);
+                    
                     MissionDto missionDto = MissionDto(
                         misName: nameMission.text,
                         misDiscrip: discripText.text,
@@ -372,6 +372,7 @@ class _MissioncreateState extends State<Missioncreate> {
 
                     log(lats);
                     //print(double.parse('lat'+lats));
+                    startLoading(context);
                     var mission =
                         await missionService.insertMissions(missionDto);
                     stopLoading();

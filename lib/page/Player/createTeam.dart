@@ -78,17 +78,13 @@ class _CeateTeamState extends State<CeateTeam> {
   UploadTask? uploadTask;
   bool isImage = true;
   bool isJoin = false;
-
+File? _image;
   final avata = GlobalKey<FormState>();
+  final keys = GlobalKey<FormState>();
   String img = '';
   late DateTime raceST;
   late DateTime raceFN;
   String attendDateTime = '';
-  File? _image;
-  final keys = GlobalKey<FormState>();
-
-  String image = '';
-
   // 2. สร้าง initState เพื่อสร้าง object ของ service
   // และ async method ที่จะใช้กับ FutureBuilder
   late Future<void> loadDataMethods;
@@ -227,36 +223,34 @@ class _CeateTeamState extends State<CeateTeam> {
                                         log("FN${raceFN}");
                                         log("stJoin${j.team.race.raceTimeSt}");
                                         log("fnJoin${j.team.race.raceTimeFn}");
-                                        if (raceST.isAfter(
-                                                j.team.race.raceTimeSt) &&
-                                            raceST.isBefore(
+                                        if (raceST.isBefore(
                                                 j.team.race.raceTimeFn) &&
                                             raceFN.isAfter(
-                                                j.team.race.raceTimeSt) &&
-                                            raceFN.isBefore(
-                                                j.team.race.raceTimeFn)) {
-                                          log("can't join chk 4 condition");
+                                                j.team.race.raceTimeSt)) {
+                                          log("Can not join");
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             SnackBar(
                                                 content: Text(
                                                     'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
                                           );
+                                          isJoin = false;
                                           break;
-                                        }
+                                        } else if (raceST.isBefore(
+                                                    j.team.race.raceTimeFn) !=
+                                                true &&
+                                            raceFN.isAfter(
+                                                    j.team.race.raceTimeSt) !=
+                                                true) {
+                                          isJoin = true;
+                                          log("isjoin = $isJoin ");
 
-                                        // if (raceST.isBefore(
-                                        //         j.team.race.raceTimeFn) &&
-                                        //     raceFN.isAfter(
-                                        //         j.team.race.raceTimeSt)) {
-                                        //   log("Can not join");
-
-                                        //   isJoin = false;
-                                        //   break;
-                                        // }
-
-                                        else {
-                                          log("Acepp join");
+                                          if (isJoin == true) {
+                                            log("Can join Chk loop");
+                                            uploadFile();
+                                            break;
+                                          }
+                                        } else {
                                           uploadFile();
                                           break;
                                         }
@@ -281,7 +275,7 @@ class _CeateTeamState extends State<CeateTeam> {
 
   Padding SelectAndSearchmember() {
     return Padding(
-      padding: const EdgeInsets.only(top: 30, right: 30, left: 30),
+      padding: const EdgeInsets.fromLTRB(32, 20, 32, 32),
       child: Column(
         children: [
           DropdownButtonHideUnderline(
@@ -305,11 +299,7 @@ class _CeateTeamState extends State<CeateTeam> {
                   log(idUser2.toString());
                 });
               },
-              buttonStyleData: ButtonStyleData(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border:
-                          Border.all(color: Get.theme.colorScheme.primary))),
+
               dropdownStyleData: const DropdownStyleData(
                 maxHeight: 200,
               ),
@@ -396,29 +386,7 @@ class _CeateTeamState extends State<CeateTeam> {
     }
   }
 
-  // Future selectFile() async {
-  //   final result = await FilePicker.platform.pickFiles();
-  //   File file;
-  //   PlatformFile platFile;
-
-  //   setState(() {
-  //     if (result == null) return;
-  //     platFile = result.files.single;
-  //     file = File(platFile.path!);
-  //     pickedFile = file;
-
-  //     log(result.files.single.toString());
-  //     log(platFile.extension.toString());
-  //     if (platFile.extension == 'jpg' || platFile.extension == 'png') {
-  //       setState(() {
-  //         isImage = true;
-  //       });
-  //     } else {
-  //       isImage = false;
-  //     }
-  //   });
-  // }
-  Future _pickImage(ImageSource source) async {
+   Future _pickImage(ImageSource source) async {
     final image = await ImagePicker().pickImage(source: source);
     if (image == null) return;
     File? img = File(image.path!);
@@ -428,7 +396,7 @@ class _CeateTeamState extends State<CeateTeam> {
     setState(() {});
     log(img.path);
   }
-
+  
   upImg() {
     return _image != null
         ? Stack(
@@ -490,16 +458,20 @@ class _CeateTeamState extends State<CeateTeam> {
           );
   }
 
+
   Future uploadFile() async {
     if (_image == null) {
       // log("team fail");
+    startLoading(context);
+    final path = 'files/${pickedFile?.path.split('/').last}';
+    if (pickedFile == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('กรุณาใส่รูปภาพ...')),
+        SnackBar(content: Text('กรุณาอัพโหลดรูปทีม')),
       );
       return;
     }
 
-    final path = 'files/${_image?.path.split('/').last}';
+   // final path = 'files/${_image?.path.split('/').last}';
     final file = File(_image!.path);
     final ref = FirebaseStorage.instance.ref().child(path);
     log(ref.toString());
@@ -508,49 +480,55 @@ class _CeateTeamState extends State<CeateTeam> {
       uploadTask = ref.putFile(file);
     });
     final snapshot = await uploadTask!.whenComplete(() {});
+    } else {
+      final path = 'files/${pickedFile?.path.split('/').last}';
+      final file = File(pickedFile!.path);
+      final ref = FirebaseStorage.instance.ref().child(path);
+      setState(() {
+        uploadTask = ref.putFile(file);
+      });
+      final snapshot = await uploadTask!.whenComplete(() {});
 
-    final urlDownload = await snapshot.ref.getDownloadURL();
-    log('Download Link:$urlDownload');
+      final urlDownload = await snapshot.ref.getDownloadURL();
+      log('Download Link:$urlDownload');
+      img = urlDownload;
+      avata.currentWidget;
+      setState(() {
+        Image.file(File(pickedFile!.path));
+      });
+      log(users.toList().toString());
+      TeamDto dto =
+          TeamDto(raceId: idrace, teamName: nameTeam.text, teamImage: img);
+      var team = await teamService.teams(dto);
+      log(idUser.toString());
+      AttendDto attendDto = AttendDto(
+          lat: 0.1,
+          lng: 0.1,
+          datetime: attendDateTime,
+          userId: idUser,
+          teamId: team.data.teamId,
+          status: 1);
 
-    img = urlDownload;
+      var attends = await attendService.attends(attendDto);
+      AttendDto attendDto2 = AttendDto(
+          lat: 0.1,
+          lng: 0.1,
+          datetime: attendDateTime,
+          userId: idUser2,
+          teamId: team.data.teamId,
+          status: 1);
+      var attends2 = await attendService.attends(attendDto2);
 
-    avata.currentWidget;
-    // setState(() {
-    //   Image.file(File(pickedFile!.path));
-    // });
-    log(users.toList().toString());
-    TeamDto dto =
-        TeamDto(raceId: idrace, teamName: nameTeam.text, teamImage: img);
-    var team = await teamService.teams(dto);
-    log(idUser.toString());
-    AttendDto attendDto = AttendDto(
-        lat: 0.1,
-        lng: 0.1,
-        datetime: attendDateTime,
-        userId: idUser,
-        teamId: team.data.teamId,
-        status: 1);
+      log(attends.data.massage);
 
-    var attends = await attendService.attends(attendDto);
-    AttendDto attendDto2 = AttendDto(
-        lat: 0.1,
-        lng: 0.1,
-        datetime: attendDateTime,
-        userId: idUser2,
-        teamId: team.data.teamId,
-        status: 1);
-    var attends2 = await attendService.attends(attendDto2);
-
-    log(attends.data.massage);
-
-    if (team.data.teamId > 0 && attends.data.massage == "Insert Success") {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('team Successful')),
-      );
-      log("team success");
-      context.read<AppData>().idUser = idUser;
-      context.read<AppData>().attendDateTime = attendDateTime;
-      log("attendDateTime Provider = ${context.read<AppData>().attendDateTime}");
+      if (team.data.teamId > 0 && attends.data.massage == "Insert Success") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('team Successful')),
+        );
+        log("team success");
+        context.read<AppData>().idUser = idUser;
+        context.read<AppData>().attendDateTime = attendDateTime;
+        log("attendDateTime Provider = ${context.read<AppData>().attendDateTime}");
 
       // Get.to(() => Home_join(
       //       navigationController: CircularBottomNavigationController(2),
@@ -588,4 +566,5 @@ textField(final TextEditingController controller, String hintText,
       return null;
     },
   );
+}
 }
