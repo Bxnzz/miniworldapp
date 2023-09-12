@@ -226,40 +226,44 @@ class _CeateTeamState extends State<CeateTeam> {
                                                 log("FN${raceFN}");
                                                 log("stJoin${j.team.race.raceTimeSt}");
                                                 log("fnJoin${j.team.race.raceTimeFn}");
-                                                if (raceST.isBefore(j.team.race
+                                                if (raceST.isAfter(j.team.race.raceTimeSt) &&
+                                                    raceST.isBefore(j.team.race
                                                         .raceTimeFn) &&
                                                     raceFN.isAfter(j.team.race
-                                                        .raceTimeSt)) {
-                                                  log("Can not join");
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                        content: Text(
-                                                            'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
-                                                  );
-                                                  isJoin = false;
-                                                  break;
-                                                } else if (raceST.isBefore(j
-                                                            .team
-                                                            .race
-                                                            .raceTimeFn) !=
-                                                        true &&
-                                                    raceFN.isAfter(j.team.race
-                                                            .raceTimeSt) !=
-                                                        true) {
-                                                  isJoin = true;
-                                                  log("isjoin = $isJoin ");
-                                                  break;
+                                                        .raceTimeSt) &&
+                                                    raceFN.isBefore(j.team.race
+                                                        .raceTimeFn)) {
+                                                  log("can't join chk 4 condition");
                                                 }
-
-                                                if (isJoin == true) {
-                                                  log("Can join Chk loop");
-                                                  uploadFile();
-                                                  break;
-                                                } else {
-                                                  uploadFile();
-                                                  break;
-                                                }
+                                                // if (raceST.isBefore(j.team.race
+                                                //         .raceTimeFn) &&
+                                                //     raceFN.isAfter(j.team.race
+                                                //         .raceTimeSt)) {
+                                                //   log("Can not join");
+                                                //   ScaffoldMessenger.of(context)
+                                                //       .showSnackBar(
+                                                //     SnackBar(
+                                                //         content: Text(
+                                                //             'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
+                                                //   );
+                                                //   isJoin = false;
+                                                //   break;
+                                                // } else if (raceST.isBefore(j
+                                                //             .team
+                                                //             .race
+                                                //             .raceTimeFn) ==
+                                                //         false &&
+                                                //     raceFN.isAfter(j.team.race
+                                                //             .raceTimeSt) ==
+                                                //         false) {
+                                                //   isJoin = true;
+                                                //   log("isjoin = $isJoin ");
+                                                //   if (isJoin == true) {
+                                                //     log("Can join Chk loop");
+                                                // //    uploadFile();
+                                                //     break;
+                                                //   }
+                                                // }
                                               }
                                             }
                                           }
