@@ -284,7 +284,12 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
       missionComp.data;
       mcID = missionComp.data.mcId.toString();
 
-      mc = {'notitype': 'mission', 'mcid': mcID, 'mission': misName,'team':teamName};
+      mc = {
+        'notitype': 'mission',
+        'mcid': mcID,
+        'mission': misName,
+        'team': teamName
+      };
       log('img ${missionComp.data.misId}');
     } else {
       //update video
@@ -302,10 +307,16 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
       var missionComp = await missionCompService.insertMissionComps(mdto);
       mcID = missionComp.data.mcId.toString();
 
-      mc = {'notitype': 'mission', 'mcid': mcID, 'mission': misName,'team':teamName};
+      mc = {
+        'notitype': 'mission',
+        'mcid': mcID,
+        'mission': misName,
+        'team': teamName
+      };
       log('mcc$mc');
       log('one $onesingnalId');
     }
+
     if (deviceState == null || deviceState.userId == null) return;
 
     var playerId = deviceState.userId!;
@@ -351,7 +362,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
               body: misfind(),
             );
           } else {
-            return Scaffold();
+            return Container();
           }
         });
   }
@@ -540,7 +551,50 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
                         //  _handleSendNotification();
 
                         if (_image == null) {
-                          Get.defaultDialog(title: 'กรุณาเลือกหลักฐาน');
+                          if (answerPass.text != '') {
+                            final now = DateTime.now();
+                            dateTime = '${now.toIso8601String()}Z';
+                            MissionCompDto mdto = MissionCompDto(
+                                mcDatetime: DateTime.parse(dateTime),
+                                mcLat: latDevice,
+                                mcLng: lngDevice,
+                                mcMasseage: '',
+                                mcPhoto: '',
+                                mcStatus: 1,
+                                mcText: answerPass.text,
+                                mcVideo: '',
+                                misId: misID,
+                                teamId: teamID);
+                            var missionComp = await missionCompService
+                                .insertMissionComps(mdto);
+                            mcID = missionComp.data.mcId.toString();
+                            mc = {
+                              'notitype': 'mission',
+                              'mcid': mcID,
+                              'mission': misName,
+                              'team': teamName
+                            };
+                            var notification1 = OSCreateNotification(
+                                //playerID
+                                additionalData: mc,
+                                playerIds: [
+                                  onesingnalId,
+                                  //'9556bafc-c68e-4ef2-a469-2a4b61d09168',
+                                ],
+                                content: 'ส่งจากทีม: $teamName',
+                                heading: "หลักฐานภารกิจ: $misName",
+                                //  iosAttachments: {"id1",urlImage},
+                                // bigPicture: imUrlString,
+                                buttons: [
+                                  OSActionButton(text: "ตกลง", id: "id1"),
+                                  OSActionButton(text: "ยกเลิก", id: "id2")
+                                ]);
+
+                            var response1 = await OneSignal.shared
+                                .postNotification(notification1);
+                          } else {
+                            Get.defaultDialog(title: 'กรุณาเลือกหลักฐาน');
+                          }
                         } else {
                           await uploadFile();
 

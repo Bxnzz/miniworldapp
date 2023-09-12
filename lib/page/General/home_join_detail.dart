@@ -298,7 +298,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                           Center(
                             child: SizedBox(
                               width: 200,
-                              child: status == 1 && raceStatus == 1
+                              child: raceStatus == 1
                                   ? ElevatedButton(
                                       onPressed: () {
                                         setState(() {
@@ -308,7 +308,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                               idUser;
                                           context.read<AppData>().idrace =
                                               idrace;
-
+                        
                                           context.read<AppData>().idTeam =
                                               teamid;
                                           context.read<AppData>().status =
@@ -320,7 +320,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                         });
                                       },
                                       child: const Text('เข้าการแข่งขัน'))
-                                  : status == 2 && raceStatus == 2
+                                  :  raceStatus == 2
                                       ? ElevatedButton(
                                           onPressed: () {
                                             context.read<AppData>().idAt =
@@ -329,7 +329,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                                 idUser;
                                             context.read<AppData>().idrace =
                                                 idrace;
-
+                        
                                             context.read<AppData>().idTeam =
                                                 teamid;
                                             context.read<AppData>().status =
@@ -354,17 +354,17 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                           : Container(),
                             ),
                           ),
-                          ElevatedButton(
-                              onPressed: () {
-                                //  log('username'+ context.read<AppData>().Username);
-                                Get.to(() => const ReviewPage());
-                              },
-                              child: Text("Review")),
-                          ElevatedButton(
-                              onPressed: () {
-                                Get.to(() => const raceReview());
-                              },
-                              child: Text("ดูรีวิว"))
+                          // ElevatedButton(
+                          //     onPressed: () {
+                          //       //  log('username'+ context.read<AppData>().Username);
+                          //       Get.to(() => const ReviewPage());
+                          //     },
+                          //     child: Text("Review")),
+                          // ElevatedButton(
+                          //     onPressed: () {
+                          //       Get.to(() => const raceReview());
+                          //     },
+                          //     child: Text("ดูรีวิว"))
                         ]),
                       ))
                 ],
