@@ -248,14 +248,16 @@ class _CeateTeamState extends State<CeateTeam> {
                                                 true) {
                                           isJoin = true;
                                           log("isjoin = $isJoin ");
-                                    
-                                      
-                                        if (isJoin == true) {
-                                          log("Can join Chk loop");
-                                          uploadFile();
-                                          break;
+
+                                          if (isJoin == true) {
+                                            log("Can join Chk loop");
+                                            uploadFile();
+                                            break;
+                                          } else {
+                                            uploadFile();
+                                          }
                                         }
-                                      }    }
+                                      }
                                     }
                                   }
                                 },
