@@ -208,7 +208,6 @@ class _CeateTeamState extends State<CeateTeam> {
                                     // attends = b.data;
                                     //  log("asdfasdf  ${attends.first.atId}");
                                     if (attends.isEmpty) {
-                                      isJoin = true;
                                       log("Can join first attend");
                                       setState(() {
                                         uploadFile();
@@ -231,6 +230,7 @@ class _CeateTeamState extends State<CeateTeam> {
                                                 j.team.race.raceTimeSt) &&
                                             raceFN.isBefore(
                                                 j.team.race.raceTimeFn)) {
+                                          isJoin = true;
                                           log("can't join chk 4 condition");
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
@@ -239,11 +239,10 @@ class _CeateTeamState extends State<CeateTeam> {
                                                     'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
                                           );
                                           break;
-                                        } else {
-                                          log("Acepp join");
-                                          uploadFile();
-                                          break;
                                         }
+                                      }
+                                      if (isJoin == false) {
+                                        uploadFile();
                                       }
                                     }
                                   }
@@ -449,92 +448,86 @@ class _CeateTeamState extends State<CeateTeam> {
   }
 
   Future uploadFile() async {
+    startLoading(context);
     if (_image == null) {
       // log("team fail");
-      startLoading(context);
-      final path = 'files/${pickedFile?.path.split('/').last}';
-      if (pickedFile == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('กรุณาอัพโหลดรูปทีม')),
-        );
-        return;
-      }
-
-      // final path = 'files/${_image?.path.split('/').last}';
-      final file = File(_image!.path);
-      final ref = FirebaseStorage.instance.ref().child(path);
-      log(ref.toString());
-
-      setState(() {
-        uploadTask = ref.putFile(file);
-      });
-      final snapshot = await uploadTask!.whenComplete(() {});
-    } else {
-      final path = 'files/${pickedFile?.path.split('/').last}';
-      final file = File(pickedFile!.path);
-      final ref = FirebaseStorage.instance.ref().child(path);
-      setState(() {
-        uploadTask = ref.putFile(file);
-      });
-      final snapshot = await uploadTask!.whenComplete(() {});
-
-      final urlDownload = await snapshot.ref.getDownloadURL();
-      log('Download Link:$urlDownload');
-      img = urlDownload;
-      avata.currentWidget;
-      setState(() {
-        Image.file(File(pickedFile!.path));
-      });
-      log(users.toList().toString());
-      TeamDto dto =
-          TeamDto(raceId: idrace, teamName: nameTeam.text, teamImage: img);
-      var team = await teamService.teams(dto);
-      log(idUser.toString());
-      AttendDto attendDto = AttendDto(
-          lat: 0.1,
-          lng: 0.1,
-          datetime: attendDateTime,
-          userId: idUser,
-          teamId: team.data.teamId,
-          status: 1);
-
-      var attends = await attendService.attends(attendDto);
-      AttendDto attendDto2 = AttendDto(
-          lat: 0.1,
-          lng: 0.1,
-          datetime: attendDateTime,
-          userId: idUser2,
-          teamId: team.data.teamId,
-          status: 1);
-      var attends2 = await attendService.attends(attendDto2);
-
-      log(attends.data.massage);
-
-      if (team.data.teamId > 0 && attends.data.massage == "Insert Success") {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('team Successful')),
-        );
-        log("team success");
-        context.read<AppData>().idUser = idUser;
-        context.read<AppData>().attendDateTime = attendDateTime;
-        log("attendDateTime Provider = ${context.read<AppData>().attendDateTime}");
-
-        // Get.to(() => Home_join(
-        //       navigationController: CircularBottomNavigationController(2),
-        //     ));
-        Get.to(() => Home());
-        return;
-      } else {
-        log("team fail");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content:
-                  Text('ลงทะเบียนผิดพลาด หรือ เคยลงทะเบียนเข้าร่วมไปแล้ว!!')),
-        );
-
-        return;
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('กรุณาใส่รูปภาพ...')),
+      );
       stopLoading();
+      return;
+    }
+
+    final path = 'files/${_image?.path.split('/').last}';
+    final file = File(_image!.path);
+    final ref = FirebaseStorage.instance.ref().child(path);
+    log(ref.toString());
+
+    setState(() {
+      uploadTask = ref.putFile(file);
+    });
+    final snapshot = await uploadTask!.whenComplete(() {});
+
+    final urlDownload = await snapshot.ref.getDownloadURL();
+    log('Download Link:$urlDownload');
+
+    img = urlDownload;
+
+    avata.currentWidget;
+    // setState(() {
+    //   Image.file(File(pickedFile!.path));
+    // });
+    log(users.toList().toString());
+    TeamDto dto =
+        TeamDto(raceId: idrace, teamName: nameTeam.text, teamImage: img);
+    var team = await teamService.teams(dto);
+    log(idUser.toString());
+    AttendDto attendDto = AttendDto(
+        lat: 0.1,
+        lng: 0.1,
+        datetime: attendDateTime,
+        userId: idUser,
+        teamId: team.data.teamId,
+        status: 1);
+
+    var attends = await attendService.attends(attendDto);
+    AttendDto attendDto2 = AttendDto(
+        lat: 0.1,
+        lng: 0.1,
+        datetime: attendDateTime,
+        userId: idUser2,
+        teamId: team.data.teamId,
+        status: 1);
+    var attends2 = await attendService.attends(attendDto2);
+
+    log(attends.data.massage);
+
+    if (team.data.teamId > 0 && attends.data.massage == "Insert Success") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('team Successful')),
+      );
+      log("team success");
+      context.read<AppData>().idUser = idUser;
+      context.read<AppData>().attendDateTime = attendDateTime;
+      log("attendDateTime Provider = ${context.read<AppData>().attendDateTime}");
+
+      // Get.to(() => Home_join(
+      //       navigationController: CircularBottomNavigationController(2),
+      //     ));
+      stopLoading();
+
+      Get.to(() => Home());
+      return;
+    } else {
+      log("team fail");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content:
+                Text('ลงทะเบียนผิดพลาด หรือ เคยลงทะเบียนเข้าร่วมไปแล้ว!!')),
+      );
+      stopLoading();
+
+      return;
     }
   }
 
