@@ -78,7 +78,7 @@ class _CeateTeamState extends State<CeateTeam> {
   UploadTask? uploadTask;
   bool isImage = true;
   bool isJoin = false;
-File? _image;
+  File? _image;
   final avata = GlobalKey<FormState>();
   final keys = GlobalKey<FormState>();
   String img = '';
@@ -223,34 +223,24 @@ File? _image;
                                         log("FN${raceFN}");
                                         log("stJoin${j.team.race.raceTimeSt}");
                                         log("fnJoin${j.team.race.raceTimeFn}");
-                                        if (raceST.isBefore(
+                                        if (raceST.isAfter(
+                                                j.team.race.raceTimeSt) &&
+                                            raceST.isBefore(
                                                 j.team.race.raceTimeFn) &&
                                             raceFN.isAfter(
-                                                j.team.race.raceTimeSt)) {
-                                          log("Can not join");
+                                                j.team.race.raceTimeSt) &&
+                                            raceFN.isBefore(
+                                                j.team.race.raceTimeFn)) {
+                                          log("can't join chk 4 condition");
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             SnackBar(
                                                 content: Text(
                                                     'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
                                           );
-                                          isJoin = false;
                                           break;
-                                        } else if (raceST.isBefore(
-                                                    j.team.race.raceTimeFn) !=
-                                                true &&
-                                            raceFN.isAfter(
-                                                    j.team.race.raceTimeSt) !=
-                                                true) {
-                                          isJoin = true;
-                                          log("isjoin = $isJoin ");
-
-                                          if (isJoin == true) {
-                                            log("Can join Chk loop");
-                                            uploadFile();
-                                            break;
-                                          }
                                         } else {
+                                          log("Acepp join");
                                           uploadFile();
                                           break;
                                         }
@@ -386,7 +376,7 @@ File? _image;
     }
   }
 
-   Future _pickImage(ImageSource source) async {
+  Future _pickImage(ImageSource source) async {
     final image = await ImagePicker().pickImage(source: source);
     if (image == null) return;
     File? img = File(image.path!);
@@ -396,7 +386,7 @@ File? _image;
     setState(() {});
     log(img.path);
   }
-  
+
   upImg() {
     return _image != null
         ? Stack(
@@ -458,28 +448,27 @@ File? _image;
           );
   }
 
-
   Future uploadFile() async {
     if (_image == null) {
       // log("team fail");
-    startLoading(context);
-    final path = 'files/${pickedFile?.path.split('/').last}';
-    if (pickedFile == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('กรุณาอัพโหลดรูปทีม')),
-      );
-      return;
-    }
+      startLoading(context);
+      final path = 'files/${pickedFile?.path.split('/').last}';
+      if (pickedFile == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('กรุณาอัพโหลดรูปทีม')),
+        );
+        return;
+      }
 
-   // final path = 'files/${_image?.path.split('/').last}';
-    final file = File(_image!.path);
-    final ref = FirebaseStorage.instance.ref().child(path);
-    log(ref.toString());
+      // final path = 'files/${_image?.path.split('/').last}';
+      final file = File(_image!.path);
+      final ref = FirebaseStorage.instance.ref().child(path);
+      log(ref.toString());
 
-    setState(() {
-      uploadTask = ref.putFile(file);
-    });
-    final snapshot = await uploadTask!.whenComplete(() {});
+      setState(() {
+        uploadTask = ref.putFile(file);
+      });
+      final snapshot = await uploadTask!.whenComplete(() {});
     } else {
       final path = 'files/${pickedFile?.path.split('/').last}';
       final file = File(pickedFile!.path);
@@ -530,41 +519,41 @@ File? _image;
         context.read<AppData>().attendDateTime = attendDateTime;
         log("attendDateTime Provider = ${context.read<AppData>().attendDateTime}");
 
-      // Get.to(() => Home_join(
-      //       navigationController: CircularBottomNavigationController(2),
-      //     ));
-      Get.to(() => Home());
-      return;
-    } else {
-      log("team fail");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content:
-                Text('ลงทะเบียนผิดพลาด หรือ เคยลงทะเบียนเข้าร่วมไปแล้ว!!')),
-      );
+        // Get.to(() => Home_join(
+        //       navigationController: CircularBottomNavigationController(2),
+        //     ));
+        Get.to(() => Home());
+        return;
+      } else {
+        log("team fail");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content:
+                  Text('ลงทะเบียนผิดพลาด หรือ เคยลงทะเบียนเข้าร่วมไปแล้ว!!')),
+        );
 
-      return;
-    }
-    stopLoading();
-  }
-}
-
-textField(final TextEditingController controller, String hintText,
-    String labelText, String error, bool readON) {
-  return TextFormField(
-    readOnly: readON,
-    controller: controller,
-    decoration: InputDecoration(
-      hintText: hintText,
-      labelText: labelText,
-    ),
-    validator: (value) {
-      if (value == null || value.isEmpty) {
-        return error;
+        return;
       }
+      stopLoading();
+    }
+  }
 
-      return null;
-    },
-  );
-}
+  textField(final TextEditingController controller, String hintText,
+      String labelText, String error, bool readON) {
+    return TextFormField(
+      readOnly: readON,
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: hintText,
+        labelText: labelText,
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return error;
+        }
+
+        return null;
+      },
+    );
+  }
 }
