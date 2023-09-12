@@ -7,9 +7,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:miniworldapp/model/DTO/attendDTO.dart';
 import 'package:miniworldapp/model/attend.dart';
 import 'package:miniworldapp/model/race.dart';
@@ -84,11 +82,6 @@ class _CeateTeamState extends State<CeateTeam> {
   late DateTime raceST;
   late DateTime raceFN;
   String attendDateTime = '';
-  File? _image;
-  final keys = GlobalKey<FormState>();
-
-  String image = '';
-
   // 2. สร้าง initState เพื่อสร้าง object ของ service
   // และ async method ที่จะใช้กับ FutureBuilder
   late Future<void> loadDataMethods;
@@ -141,145 +134,154 @@ class _CeateTeamState extends State<CeateTeam> {
       onWillPop: () async {
         return true;
       },
-      child: Scaffold(
-        appBar: AppBar(title: Text("ลงทะเบียนการแข่งขัน")),
-        body: FutureBuilder(
-            future: loadDataMethods,
-            builder: (context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return Form(
-                  key: _formKey,
-                  child: Card(
-                    margin: EdgeInsets.fromLTRB(32, 20, 32, 32),
-                    color: Colors.purple.shade50,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          // GestureDetector(
-                          //     onTap: () {
-                          //       selectFile();
-                          //     },
-                          //     child: pickedFile != null
-                          //         ? CircleAvatar(
-                          //             key: avata,
-                          //             radius:
-                          //                 MediaQuery.of(context).size.width *
-                          //                     0.15,
-                          //             backgroundImage: FileImage(pickedFile!))
-                          //         : CircleAvatar(
-                          //             radius:
-                          //                 MediaQuery.of(context).size.width *
-                          //                     0.15,
-                          //             child: GestureDetector(
-                          //               onTap: () {
-                          //                 selectFile();
-                          //                 log('message');
-                          //               },
-                          //               child: Icon(
-                          //                 Icons.add_photo_alternate,
-                          //                 size: MediaQuery.of(context)
-                          //                         .size
-                          //                         .width *
-                          //                     0.15,
-                          //               ),
-                          //             ),
-                          //           )),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 30),
-                            child: upImg(),
-                          ),
-                          Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 30, right: 30, left: 30),
-                              child: textField(nameTeam, '', 'ชื่อทีม',
-                                  'กรุณาใส่ชื่อทีม', false)),
-                          Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 30, right: 30, left: 30),
-                              child: textField(
-                                  nameMember1, '', 'ตัวฉันเอง', '', true)),
-                          SelectAndSearchmember(),
-                          Padding(
-                            padding: const EdgeInsets.all(30),
-                            child: ElevatedButton(
-                                onPressed: () async {
-                                  log("message");
-                                  if (_formKey.currentState!.validate()) {
-                                    log("message2");
-                                    //regis race  first team
-                                    // var b = await attendService
-                                    //     .attendByUserID(userID: idUser);
-                                    // attends = b.data;
-                                    //  log("asdfasdf  ${attends.first.atId}");
-                                    if (attends.isEmpty) {
-                                      isJoin = true;
-                                      log("Can join first attend");
-                                      setState(() {
-                                        uploadFile();
-                                      });
-                                    }
-                                    if (attends.isNotEmpty) {
-                                      for (var j in attends) {
-                                        log("message1");
-                                        log("${j.atId}");
-                                        // log("attend${j.datetime}");
-                                        log("ST${raceST}");
-                                        log("FN${raceFN}");
-                                        log("stJoin${j.team.race.raceTimeSt}");
-                                        log("fnJoin${j.team.race.raceTimeFn}");
-                                        if (raceST.isBefore(
-                                                j.team.race.raceTimeFn) &&
-                                            raceFN.isAfter(
-                                                j.team.race.raceTimeSt)) {
-                                          log("Can not join");
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                                content: Text(
-                                                    'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
-                                          );
-                                          isJoin = false;
-                                          break;
-                                        } else if (raceST.isBefore(
-                                                    j.team.race.raceTimeFn) !=
-                                                true &&
-                                            raceFN.isAfter(
-                                                    j.team.race.raceTimeSt) !=
-                                                true) {
-                                          isJoin = true;
-                                          log("isjoin = $isJoin ");
+      child: FutureBuilder(
+          future: loadDataMethods,
+          builder: (context, AsyncSnapshot snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return Scaffold(
+                  //backgroundColor: Color.fromARGB(255, 234, 112, 255),
+                  appBar: AppBar(title: Text("${races.first.raceName}")),
+                  body: SingleChildScrollView(
+                    child: Form(
+                      key: _formKey,
+                      child: Center(
+                          child: Stack(
+                              alignment: AlignmentDirectional.topCenter,
+                              clipBehavior: Clip.none,
+                              children: [
+                            Card(
+                              margin: EdgeInsets.fromLTRB(32, 100, 32, 32),
+                              color: Colors.purple.shade50,
+                              child: Column(
+                                children: [
+                                  GestureDetector(
+                                      onTap: () {
+                                        selectFile();
+                                      },
+                                      child: pickedFile != null
+                                          ? CircleAvatar(
+                                              key: avata,
+                                              radius: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.15,
+                                              backgroundImage:
+                                                  FileImage(pickedFile!))
+                                          : CircleAvatar(
+                                              radius: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.15,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  selectFile();
+                                                  log('message');
+                                                },
+                                                child: Icon(
+                                                  Icons.add_photo_alternate,
+                                                  size: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.15,
+                                                ),
+                                              ),
+                                            )),
+                                  Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          32, 50, 32, 32),
+                                      child: textField(nameTeam, '', 'ชื่อทีม',
+                                          'กรุณาใส่ชื่อทีม', false)),
+                                  Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          32, 20, 32, 32),
+                                      child: textField(nameMember1, '',
+                                          'ตัวฉันเอง', '', true)),
+                                  SelectAndSearchmember(),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                        onPressed: () async {
+                                          log("message");
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            log("message2");
+                                            //regis race  first team
+                                            // var b = await attendService
+                                            //     .attendByUserID(userID: idUser);
+                                            // attends = b.data;
+                                            //  log("asdfasdf  ${attends.first.atId}");
+                                            if (attends.isEmpty) {
+                                              isJoin = true;
+                                              log("Can join first attend");
+                                              setState(() {
+                                                uploadFile();
+                                              });
+                                            }
+                                            if (attends.isNotEmpty) {
+                                              for (var j in attends) {
+                                                log("message1");
+                                                log("${j.atId}");
+                                                // log("attend${j.datetime}");
+                                                log("ST${raceST}");
+                                                log("FN${raceFN}");
+                                                log("stJoin${j.team.race.raceTimeSt}");
+                                                log("fnJoin${j.team.race.raceTimeFn}");
+                                                if (raceST.isBefore(j.team.race
+                                                        .raceTimeFn) &&
+                                                    raceFN.isAfter(j.team.race
+                                                        .raceTimeSt)) {
+                                                  log("Can not join");
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    SnackBar(
+                                                        content: Text(
+                                                            'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
+                                                  );
+                                                  isJoin = false;
+                                                  break;
+                                                } else if (raceST.isBefore(j
+                                                            .team
+                                                            .race
+                                                            .raceTimeFn) !=
+                                                        true &&
+                                                    raceFN.isAfter(j.team.race
+                                                            .raceTimeSt) !=
+                                                        true) {
+                                                  isJoin = true;
+                                                  log("isjoin = $isJoin ");
+                                                  break;
+                                                }
 
-                                          if (isJoin == true) {
-                                            log("Can join Chk loop");
-                                            uploadFile();
-                                            break;
+                                                if (isJoin == true) {
+                                                  log("Can join Chk loop");
+                                                  uploadFile();
+                                                  break;
+                                                } else {
+                                                  uploadFile();
+                                                  break;
+                                                }
+                                              }
+                                            }
                                           }
-                                        } else {
-                                          uploadFile();
-                                          break;
-                                        }
-                                      }
-                                    }
-                                  }
-                                },
-                                child: Text('สร้างทีม')),
-                          )
-                        ],
-                      ),
+                                        },
+                                        child: Text('สร้างทีม')),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ])),
                     ),
-                  ),
-                );
-              } else {
-                return Container();
-              }
-            }),
-      ),
+                  ));
+            } else {
+              return Scaffold();
+            }
+          }),
     );
   }
 
   Padding SelectAndSearchmember() {
     return Padding(
-      padding: const EdgeInsets.only(top: 30, right: 30, left: 30),
+      padding: const EdgeInsets.fromLTRB(32, 20, 32, 32),
       child: Column(
         children: [
           DropdownButtonHideUnderline(
@@ -303,11 +305,7 @@ class _CeateTeamState extends State<CeateTeam> {
                   log(idUser2.toString());
                 });
               },
-              buttonStyleData: ButtonStyleData(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border:
-                          Border.all(color: Get.theme.colorScheme.primary))),
+
               dropdownStyleData: const DropdownStyleData(
                 maxHeight: 200,
               ),
@@ -394,179 +392,100 @@ class _CeateTeamState extends State<CeateTeam> {
     }
   }
 
-  // Future selectFile() async {
-  //   final result = await FilePicker.platform.pickFiles();
-  //   File file;
-  //   PlatformFile platFile;
+  Future selectFile() async {
+    final result = await FilePicker.platform.pickFiles();
+    File file;
+    PlatformFile platFile;
 
-  //   setState(() {
-  //     if (result == null) return;
-  //     platFile = result.files.single;
-  //     file = File(platFile.path!);
-  //     pickedFile = file;
+    setState(() {
+      if (result == null) return;
+      platFile = result.files.single;
+      file = File(platFile.path!);
+      pickedFile = file;
 
-  //     log(result.files.single.toString());
-  //     log(platFile.extension.toString());
-  //     if (platFile.extension == 'jpg' || platFile.extension == 'png') {
-  //       setState(() {
-  //         isImage = true;
-  //       });
-  //     } else {
-  //       isImage = false;
-  //     }
-  //   });
-  // }
-  Future _pickImage(ImageSource source) async {
-    final image = await ImagePicker().pickImage(source: source);
-    if (image == null) return;
-    File? img = File(image.path!);
-
-    // img = await _cropImage(imageFile: img);
-    _image = img;
-    setState(() {});
-    log(img.path);
-  }
-
-  upImg() {
-    return _image != null
-        ? Stack(
-            children: [
-              SizedBox(
-                width: 250,
-                height: 150,
-                child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(color: Colors.white, width: 5),
-                    ),
-                    key: keys,
-                    child: Image.file(
-                      _image!,
-                      fit: BoxFit.cover,
-                    )),
-              ),
-              Positioned(
-                bottom: 10,
-                right: 10,
-                child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: IconButton(
-                        onPressed: () {
-                          _pickImage(ImageSource.gallery);
-                          log('message');
-                        },
-                        icon: const FaIcon(
-                          FontAwesomeIcons.camera,
-                          size: 25,
-                        ))),
-              )
-            ],
-          )
-        : SizedBox(
-            width: 250,
-            height: 150,
-            child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: Colors.white, width: 5),
-                  color: Colors.purpleAccent,
-                ),
-                key: keys,
-                child: IconButton(
-                    onPressed: () async {
-                      _pickImage(ImageSource.gallery);
-                      log('message');
-                    },
-                    icon: FaIcon(
-                      FontAwesomeIcons.camera,
-                      size: 30,
-                      color: Get.theme.colorScheme.onPrimary,
-                    ))),
-          );
+      log(result.files.single.toString());
+      log(platFile.extension.toString());
+      if (platFile.extension == 'jpg' || platFile.extension == 'png') {
+        setState(() {
+          isImage = true;
+        });
+      } else {
+        isImage = false;
+      }
+    });
   }
 
   Future uploadFile() async {
     startLoading(context);
-    if (_image == null) {
-      // log("team fail");
+    final path = 'files/${pickedFile?.path.split('/').last}';
+    if (pickedFile == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('กรุณาใส่รูปภาพ...')),
+        SnackBar(content: Text('กรุณาอัพโหลดรูปทีม')),
       );
-      stopLoading();
-      return;
-    }
-
-    final path = 'files/${_image?.path.split('/').last}';
-    final file = File(_image!.path);
-    final ref = FirebaseStorage.instance.ref().child(path);
-    log(ref.toString());
-
-    setState(() {
-      uploadTask = ref.putFile(file);
-    });
-    final snapshot = await uploadTask!.whenComplete(() {});
-
-    final urlDownload = await snapshot.ref.getDownloadURL();
-    log('Download Link:$urlDownload');
-
-    img = urlDownload;
-
-    avata.currentWidget;
-    // setState(() {
-    //   Image.file(File(pickedFile!.path));
-    // });
-    log(users.toList().toString());
-    TeamDto dto =
-        TeamDto(raceId: idrace, teamName: nameTeam.text, teamImage: img);
-    var team = await teamService.teams(dto);
-    log(idUser.toString());
-    AttendDto attendDto = AttendDto(
-        lat: 0.1,
-        lng: 0.1,
-        datetime: attendDateTime,
-        userId: idUser,
-        teamId: team.data.teamId,
-        status: 1);
-
-    var attends = await attendService.attends(attendDto);
-    AttendDto attendDto2 = AttendDto(
-        lat: 0.1,
-        lng: 0.1,
-        datetime: attendDateTime,
-        userId: idUser2,
-        teamId: team.data.teamId,
-        status: 1);
-    var attends2 = await attendService.attends(attendDto2);
-
-    log(attends.data.massage);
-
-    if (team.data.teamId > 0 && attends.data.massage == "Insert Success") {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('team Successful')),
-      );
-      log("team success");
-      context.read<AppData>().idUser = idUser;
-      context.read<AppData>().attendDateTime = attendDateTime;
-      log("attendDateTime Provider = ${context.read<AppData>().attendDateTime}");
-
-      // Get.to(() => Home_join(
-      //       navigationController: CircularBottomNavigationController(2),
-      //     ));
-      stopLoading();
-      Get.to(() => Home());
-      return;
     } else {
-      log("team fail");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content:
-                Text('ลงทะเบียนผิดพลาด หรือ เคยลงทะเบียนเข้าร่วมไปแล้ว!!')),
-      );
-      stopLoading();
-      return;
+      final file = File(pickedFile!.path);
+      final ref = FirebaseStorage.instance.ref().child(path);
+      setState(() {
+        uploadTask = ref.putFile(file);
+      });
+      final snapshot = await uploadTask!.whenComplete(() {});
+
+      final urlDownload = await snapshot.ref.getDownloadURL();
+      log('Download Link:$urlDownload');
+      img = urlDownload;
+      avata.currentWidget;
+      setState(() {
+        Image.file(File(pickedFile!.path));
+      });
+      log(users.toList().toString());
+      TeamDto dto =
+          TeamDto(raceId: idrace, teamName: nameTeam.text, teamImage: img);
+      var team = await teamService.teams(dto);
+      log(idUser.toString());
+      AttendDto attendDto = AttendDto(
+          lat: 0.1,
+          lng: 0.1,
+          datetime: attendDateTime,
+          userId: idUser,
+          teamId: team.data.teamId,
+          status: 1);
+
+      var attends = await attendService.attends(attendDto);
+      AttendDto attendDto2 = AttendDto(
+          lat: 0.1,
+          lng: 0.1,
+          datetime: attendDateTime,
+          userId: idUser2,
+          teamId: team.data.teamId,
+          status: 1);
+      var attends2 = await attendService.attends(attendDto2);
+
+      log(attends.data.massage);
+
+      if (team.data.teamId > 0 && attends.data.massage == "Insert Success") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('team Successful')),
+        );
+        log("team success");
+        context.read<AppData>().idUser = idUser;
+        context.read<AppData>().attendDateTime = attendDateTime;
+        log("attendDateTime Provider = ${context.read<AppData>().attendDateTime}");
+
+        // Get.to(() => Home_join(
+        //       navigationController: CircularBottomNavigationController(2),
+        //     ));
+        Get.to(() => Home());
+        return;
+      } else {
+        log("team fail");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content:
+                  Text('ลงทะเบียนผิดพลาด หรือ เคยลงทะเบียนเข้าร่วมไปแล้ว!!')),
+        );
+
+        return;
+      }
     }
     stopLoading();
   }
