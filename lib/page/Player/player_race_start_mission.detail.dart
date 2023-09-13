@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gap/gap.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -58,6 +59,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
   String dateTime = '';
   String mcID = '';
   String teamName = '';
+  String vedioProcess = '';
 
   int teamID = 0;
   int idrace = 0;
@@ -65,14 +67,20 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
 
   double latDevice = 0.0;
   double lngDevice = 0.0;
-  bool isImage = false;
+  bool isImage = true;
   bool isSubmit = true;
   String imageInProcess = '';
 
   File? _image;
   CroppedFile? croppedImage;
   VideoPlayerController? videoPlayerController;
+
+  VideoPlayerController? videoPlayerControllerInProcess;
+
   CustomVideoPlayerController? _customVideoPlayerController;
+
+  CustomVideoPlayerController? _customVideoPlayerControllerInProcess;
+
   UploadTask? uploadTask;
 
   @override
@@ -93,6 +101,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
 
     _attendService =
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
+
     loadDataMethod = loadData();
   }
 
@@ -132,7 +141,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
       } else if (misType.contains('1')) {
         type = 'ข้อความ';
       } else if (misType.contains('2')) {
-        type = 'สื่อ';
+        type = 'รูป,คลิป';
       } else if (misType.contains('3')) {
         type = 'ไม่มีการส่ง';
       } else {
@@ -152,7 +161,19 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
         if (e.misId == misID && e.mcStatus == 1) {
           isSubmit = false;
           imageInProcess = e.mcPhoto;
+          vedioProcess = e.mcVideo;
           log("mc photo " + imageInProcess.toString());
+          videoPlayerControllerInProcess = VideoPlayerController.network(
+            vedioProcess,
+          )..initialize().then((_) {
+              _customVideoPlayerControllerInProcess =
+                  CustomVideoPlayerController(
+                      context: context,
+                      videoPlayerController: videoPlayerControllerInProcess!,
+                      customVideoPlayerSettings:
+                          CustomVideoPlayerSettings(autoFadeOutControls: true));
+              setState(() {});
+            });
         }
       }).toList();
     } catch (err) {
@@ -341,6 +362,17 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
     var response1 = await OneSignal.shared.postNotification(notification1);
 
     //Get.defaultDialog(title: mc.toString());
+    videoPlayerControllerInProcess = await VideoPlayerController.network(
+      vedioProcess,
+    )
+      ..initialize().then((_) {
+        _customVideoPlayerControllerInProcess = CustomVideoPlayerController(
+            context: context,
+            videoPlayerController: videoPlayerControllerInProcess!,
+            customVideoPlayerSettings:
+                CustomVideoPlayerSettings(autoFadeOutControls: true));
+        setState(() {});
+      });
     stopLoading();
   }
 
@@ -352,17 +384,59 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
               appBar: AppBar(
+                centerTitle: true,
                 title: Text(
-                  "$misName",
+                  "ส่งภารกิจ",
                   style: Get.textTheme.headlineSmall!.copyWith(
                       color: Get.theme.colorScheme.primary,
-                      fontWeight: FontWeight.bold),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25),
                 ),
               ),
-              body: misfind(),
+              body: Stack(
+                children: [
+                  misfind(),
+                  _image == null
+                      ? isSubmit == true
+                          ? Positioned(
+                              height: 200,
+                              left: Get.width / 4,
+                              bottom: 50,
+                              child: AnimatedButton(
+                                height: 200,
+                                width: 200,
+                                borderRadius: BorderRadius.circular(100),
+                                text: "เพิ่มหลักฐานภารกิจ",
+                                buttonTextStyle: TextStyle(
+                                    fontSize: 30, color: Colors.white),
+                                color: Colors.orange,
+                                pressEvent: () async {
+                                  selectmedia();
+                                },
+                              ),
+                            )
+                          : Container()
+                      : isSubmit == true
+                          ? Positioned(
+                              height: 100,
+                              width: 100,
+                              left: 300,
+                              bottom: 270,
+                              child: IconButton(
+                                  onPressed: () {
+                                    selectmedia();
+                                  },
+                                  tooltip: "เลือกหลักฐานใหม่",
+                                  iconSize: 50,
+                                  constraints: BoxConstraints.expand(),
+                                  color: Colors.amber,
+                                  icon: FaIcon(FontAwesomeIcons.rotate)))
+                          : Container()
+                ],
+              ),
             );
           } else {
-            return Container();
+            return Scaffold();
           }
         });
   }
@@ -370,252 +444,290 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
   ListView misfind() {
     return ListView(children: [
       Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            height: 150,
-            child: ClipRRect(
-                clipBehavior: Clip.hardEdge,
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(misMediaUrl)),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 35, bottom: 8),
-                child: Text('รายละเอียด',
-                    style: Get.textTheme.bodyMedium!.copyWith(
-                        color: Get.theme.colorScheme.onBackground,
-                        fontWeight: FontWeight.bold)),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 15, left: 15),
-            child: Container(
-                width: Get.width,
-                height: 80,
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        width: 3, color: Get.theme.colorScheme.primary),
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.white),
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Text(misDiscrip),
-                )),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 35, top: 8),
-                child: Text('ประเภท',
-                    style: Get.textTheme.bodyMedium!.copyWith(
-                        color: Get.theme.colorScheme.onBackground,
-                        fontWeight: FontWeight.bold)),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 35, bottom: 8),
-                child: Container(
-                  height: 35,
-                  width: 75,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100),
-                    color: Get.theme.colorScheme.secondary,
+        children: [
+          Card(
+            margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 35, top: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "ภารกิจ ",
+                        style: Get.textTheme.headlineSmall!.copyWith(
+                          // color: Get.theme.colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "$misName",
+                        style: Get.textTheme.headlineSmall!.copyWith(
+                          color: Get.theme.colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                  child: Center(
-                    child: Text(type,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 30, right: 30, top: 15),
+                  child: Container(
+                    width: Get.width,
+                    height: 200,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(
+                            image: NetworkImage(misMediaUrl),
+                            fit: BoxFit.cover),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 30, right: 30, top: 8),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text('รายละเอียด :',
                         style: Get.textTheme.bodyLarge!.copyWith(
-                            color: Get.theme.colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold)),
+                            color: Get.theme.colorScheme.onBackground,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20)),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 35.0),
-                child: SizedBox(
-                  width: 80,
-                  height: 50,
-                  child: AnimatedButton(
-                    icon: FontAwesomeIcons.plus,
-                    color: Colors.orange,
-                    pressEvent: () async {
-                      selectmedia();
-                    },
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 30,
+                    right: 30,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(misDiscrip,
+                        style: Get.textTheme.bodyLarge!.copyWith(
+                            color: Get.theme.colorScheme.onBackground,
+                            fontSize: 20)),
                   ),
                 ),
-              )
-            ],
+
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 30, top: 10),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text('ผ่านภารกิจโดย',
+                            style: Get.textTheme.bodyLarge!.copyWith(
+                                color: Get.theme.colorScheme.onBackground,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20)),
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 30, right: 30, top: 10),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(type,
+                            style: Get.textTheme.bodyLarge!.copyWith(
+                                color: Get.theme.colorScheme.onBackground,
+                                fontSize: 20)),
+                      ),
+                    ),
+                  ],
+                ),
+                Gap(10)
+
+                //chk mission sending and status == 1(process)
+
+                // buildProgress(),
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 15, right: 15, bottom: 8),
+                //   child: TextField(
+                //     controller: answerPass,
+                //     keyboardType: TextInputType.multiline,
+                //     maxLines: 3,
+                //     textInputAction: TextInputAction.done,
+                //     decoration: InputDecoration(
+                //       hintText: ' คำอธิบาย...',
+                //       focusedBorder: OutlineInputBorder(
+                //           borderSide: BorderSide(
+                //               width: 3, color: Get.theme.colorScheme.primary)),
+                //     ),
+                //   ),
+                // ),
+              ],
+            ),
           ),
-          //chk mission sending and status == 1(process)
           isSubmit == true
               ? _image != null
                   ? isImage == true
-                      ? SizedBox(
-                          width: Get.width / 2,
-                          height: Get.height / 3,
-                          child: GestureDetector(
-                              onTap: () {
-                                SmartDialog.show(builder: (_) {
-                                  return Container(
-                                      alignment: Alignment.center,
-                                      child: PhotoView(
-
-                                          //  enablePanAlways: true,
-                                          tightMode: true,
-                                          imageProvider: FileImage(_image!)));
-                                });
-                              },
-                              child: Image.file(_image!)),
-                        )
-                      : _customVideoPlayerController != null
-                          ? SizedBox(
-                              width: Get.width,
-                              height: Get.height / 3,
+                      ? Column(
+                          children: [
+                            //mission select photo
+                            SizedBox(
+                              width: Get.width - 80,
+                              height: Get.height / 4,
                               child: GestureDetector(
-                                onLongPress: () {
-                                  selectmedia();
-                                },
-                                child: CustomVideoPlayer(
-                                    customVideoPlayerController:
-                                        _customVideoPlayerController!),
-                              ),
+                                  onTap: () {
+                                    SmartDialog.show(builder: (_) {
+                                      return Container(
+                                          alignment: Alignment.center,
+                                          child: PhotoView(
+
+                                              //  enablePanAlways: true,
+                                              tightMode: true,
+                                              imageProvider:
+                                                  FileImage(_image!)));
+                                    });
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      image: DecorationImage(
+                                          image: FileImage(_image!),
+                                          fit: BoxFit.cover),
+                                    ),
+                                  )),
                             )
-                          : SizedBox(
+                          ],
+                        )
+                      ////mission select media
+                      : _customVideoPlayerController == null
+                          ? SizedBox(
                               width: 200,
                               height: 150,
                               child: LoadingIndicator(
                                   indicatorType: Indicator.pacman))
-                  : Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Container(
-                        width: Get.width,
-                        height: 80,
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 3, color: Get.theme.colorScheme.primary),
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.white),
-                      ))
+                          : SizedBox(
+                              width: Get.width,
+                              height: Get.height / 3,
+                              child: CustomVideoPlayer(
+                                  customVideoPlayerController:
+                                      _customVideoPlayerController!),
+                            )
+                  : Container()
               //oldmission
-              : SizedBox(
-                  width: Get.width / 2,
-                  height: Get.height / 3,
-                  child: GestureDetector(
-                      onTap: () {
-                        SmartDialog.show(builder: (_) {
-                          return Container(
-                              alignment: Alignment.center,
-                              child: PhotoView(
+              : isSubmit != true
+                  ? SizedBox(
+                      width: Get.width - 80,
+                      height: Get.height / 4,
+                      child: GestureDetector(
+                          onTap: () {
+                            SmartDialog.show(builder: (_) {
+                              return Container(
+                                  alignment: Alignment.center,
+                                  child: PhotoView(
 
-                                  //  enablePanAlways: true,
-                                  tightMode: true,
-                                  imageProvider: NetworkImage(imageInProcess)));
-                        });
-                      },
-                      child: Image.network(imageInProcess)),
-                ),
-
-          // buildProgress(),
-          Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15, bottom: 8),
-            child: TextField(
-              controller: answerPass,
-              keyboardType: TextInputType.multiline,
-              maxLines: 3,
-              textInputAction: TextInputAction.done,
-              decoration: InputDecoration(
-                hintText: ' คำอธิบาย...',
-                focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        width: 3, color: Get.theme.colorScheme.primary)),
-              ),
-            ),
-          ),
-
+                                      //  enablePanAlways: true,
+                                      tightMode: true,
+                                      imageProvider:
+                                          NetworkImage(imageInProcess)));
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              image: DecorationImage(
+                                  image: NetworkImage(imageInProcess),
+                                  fit: BoxFit.cover),
+                            ),
+                          )),
+                    )
+                  : vedioProcess != ''
+                      ? SizedBox(
+                          width: Get.width,
+                          height: Get.height / 3,
+                          child: CustomVideoPlayer(
+                              customVideoPlayerController:
+                                  _customVideoPlayerControllerInProcess!),
+                        )
+                      : SizedBox(
+                          width: 200,
+                          height: 150,
+                          child: LoadingIndicator(
+                              indicatorType: Indicator.pacman)),
           SizedBox(
             width: 200,
-            child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Get.theme.colorScheme.primary,
-                ),
-                onPressed: isSubmit == true
-                    ? () async {
-                        //  _handleSendNotification();
+            child: _image != null
+                ? ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Get.theme.colorScheme.primary,
+                    ),
+                    onPressed: isSubmit == true
+                        ? () async {
+                            //  _handleSendNotification();
 
-                        if (_image == null) {
-                          if (answerPass.text != '') {
-                            final now = DateTime.now();
-                            dateTime = '${now.toIso8601String()}Z';
-                            MissionCompDto mdto = MissionCompDto(
-                                mcDatetime: DateTime.parse(dateTime),
-                                mcLat: latDevice,
-                                mcLng: lngDevice,
-                                mcMasseage: '',
-                                mcPhoto: '',
-                                mcStatus: 1,
-                                mcText: answerPass.text,
-                                mcVideo: '',
-                                misId: misID,
-                                teamId: teamID);
-                            var missionComp = await missionCompService
-                                .insertMissionComps(mdto);
-                            mcID = missionComp.data.mcId.toString();
-                            mc = {
-                              'notitype': 'mission',
-                              'mcid': mcID,
-                              'mission': misName,
-                              'team': teamName
-                            };
-                            var notification1 = OSCreateNotification(
-                                //playerID
-                                additionalData: mc,
-                                playerIds: [
-                                  onesingnalId,
-                                  //'9556bafc-c68e-4ef2-a469-2a4b61d09168',
-                                ],
-                                content: 'ส่งจากทีม: $teamName',
-                                heading: "หลักฐานภารกิจ: $misName",
-                                //  iosAttachments: {"id1",urlImage},
-                                // bigPicture: imUrlString,
-                                buttons: [
-                                  OSActionButton(text: "ตกลง", id: "id1"),
-                                  OSActionButton(text: "ยกเลิก", id: "id2")
-                                ]);
+                            if (_image == null) {
+                              if (answerPass.text != '') {
+                                final now = DateTime.now();
+                                dateTime = '${now.toIso8601String()}Z';
+                                MissionCompDto mdto = MissionCompDto(
+                                    mcDatetime: DateTime.parse(dateTime),
+                                    mcLat: latDevice,
+                                    mcLng: lngDevice,
+                                    mcMasseage: '',
+                                    mcPhoto: '',
+                                    mcStatus: 1,
+                                    mcText: answerPass.text,
+                                    mcVideo: '',
+                                    misId: misID,
+                                    teamId: teamID);
+                                var missionComp = await missionCompService
+                                    .insertMissionComps(mdto);
+                                mcID = missionComp.data.mcId.toString();
+                                mc = {
+                                  'notitype': 'mission',
+                                  'mcid': mcID,
+                                  'mission': misName,
+                                  'team': teamName
+                                };
+                                var notification1 = OSCreateNotification(
+                                    //playerID
+                                    additionalData: mc,
+                                    playerIds: [
+                                      onesingnalId,
+                                      //'9556bafc-c68e-4ef2-a469-2a4b61d09168',
+                                    ],
+                                    content: 'ส่งจากทีม: $teamName',
+                                    heading: "หลักฐานภารกิจ: $misName",
+                                    //  iosAttachments: {"id1",urlImage},
+                                    // bigPicture: imUrlString,
+                                    buttons: [
+                                      OSActionButton(text: "ตกลง", id: "id1"),
+                                      OSActionButton(text: "ยกเลิก", id: "id2")
+                                    ]);
 
-                            var response1 = await OneSignal.shared
-                                .postNotification(notification1);
-                          } else {
-                            Get.defaultDialog(title: 'กรุณาเลือกหลักฐาน');
+                                var response1 = await OneSignal.shared
+                                    .postNotification(notification1);
+                              } else {
+                                Get.defaultDialog(title: 'กรุณาเลือกหลักฐาน');
+                              }
+                            } else {
+                              await uploadFile();
+
+                              setState(() {
+                                loadDataMethod = loadData();
+                              });
+                            }
                           }
-                        } else {
-                          await uploadFile();
-
-                          setState(() {
-                            loadDataMethod = loadData();
-                          });
-                        }
-                      }
-                    : null,
-                child: isSubmit == true
-                    ? Text('ส่งหลักฐาน',
-                        style: Get.textTheme.bodyLarge!.copyWith(
-                            color: Get.theme.colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold))
-                    : Text('กำลังประมวลผล',
-                        style: Get.textTheme.bodyLarge!.copyWith(
-                            color: Get.theme.colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold))),
-          ),
+                        : null,
+                    child: isSubmit == true
+                        ? Text('ส่งหลักฐาน',
+                            style: Get.textTheme.bodyLarge!.copyWith(
+                                color: Get.theme.colorScheme.onPrimary,
+                                fontWeight: FontWeight.bold))
+                        : Text('กำลังประมวลผล',
+                            style: Get.textTheme.bodyLarge!.copyWith(
+                                color: Get.theme.colorScheme.onPrimary,
+                                fontWeight: FontWeight.bold)))
+                : _image != null
+                    ? ElevatedButton(onPressed: () {}, child: Text("กำ"))
+                    : Container(),
+          )
         ],
-      ),
+      )
     ]);
   }
 
