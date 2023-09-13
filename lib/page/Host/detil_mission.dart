@@ -389,8 +389,19 @@ class _DetailMissionState extends State<DetailMission> {
           label: 'แก้ไข',
           backgroundColor: Colors.amberAccent,
           onPressed: (BuildContext context) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const EditMission()));
+          showDialog<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const Dialog.fullscreen(
+                        child: EditMission(),
+                      );
+                    },
+                  ).then((value) {
+                    setState(() {
+                      _buildVerticalLanguageList();
+                      loadDataMethod = loadData();
+                    });
+                  });
             context.read<AppData>().idMis = mis.misId;
           },
           icon: Icons.edit,
@@ -456,18 +467,20 @@ class _DetailMissionState extends State<DetailMission> {
               child: Box(
                 color: const Color.fromARGB(255, 233, 117, 253),
                 onTap: () async {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Missioncreate(),
-                    fullscreenDialog: true
-                  ));
-                  // showDialog<void>(
-                  //   context: context,
-                  //   builder: (BuildContext context) {
-                  //     return Dialog.fullscreen(
-                  //       child: Missioncreate(),
-                  //     );
-                  //   },
-                  // );
+                  showDialog<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Dialog.fullscreen(
+                        child: Missioncreate(),
+                      );
+                    },
+                  ).then((value) {
+                    setState(() {
+                      _buildVerticalLanguageList();
+                      loadDataMethod = loadData();
+                    });
+                  });
+
                   //final result = await Get.to(() => Missioncreate());
                   context.read<AppData>().lastMis = mis.last.misId;
                   context.read<AppData>().sqnum = missions.last.misSeq;

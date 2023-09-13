@@ -147,7 +147,7 @@ class _HomeState extends State<Home> {
           SalomonBottomBarItem(
             icon: FaIcon(FontAwesomeIcons.house),
             title: Text("หน้าหลัก"),
-            selectedColor: Colors.purple,
+            selectedColor: Colors.pink,
             unselectedColor: Color.fromARGB(255, 200, 69, 223)
           ),
 
@@ -163,13 +163,13 @@ class _HomeState extends State<Home> {
           SalomonBottomBarItem(
             icon: const FaIcon(FontAwesomeIcons.solidEye),
             title: const Text("ผู้ชม"),
-            selectedColor: Colors.orange,
+            selectedColor: Colors.pink,
             unselectedColor: Color.fromARGB(255, 200, 69, 223)
           ),
            SalomonBottomBarItem(
             icon: const FaIcon(FontAwesomeIcons.userLarge),
             title: const Text("โปรไฟล์"),
-            selectedColor: Colors.blue,
+            selectedColor: Colors.pink,
             unselectedColor: Color.fromARGB(255, 200, 69, 223)
           ),
         ],

@@ -226,8 +226,10 @@ class _DetailHostState extends State<DetailHost> {
                                                             content: Text(
                                                                 'delete Successful')),
                                                       );
-                                                      setState(() {});
+                                                    //  setState(() {});
                                                       Navigator.pop(context);
+                                                      Navigator.pop(context);
+                                                     
                                                       // log("race Successful");
                                                       return;
                                                     } else {
@@ -423,16 +425,18 @@ class _DetailHostState extends State<DetailHost> {
                           Center(
                             child: SizedBox(
                               width: 200,
-                              child: races.first.raceStatus == 1 ? ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const DetailMission()));
-                                    context.read<AppData>().idrace = idrace;
-                                  },
-                                  child: Text('ภารกิจทั้งหมด')):Container(),
+                              child: races.first.raceStatus == 1
+                                  ? ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const DetailMission()));
+                                        context.read<AppData>().idrace = idrace;
+                                      },
+                                      child: Text('ภารกิจทั้งหมด'))
+                                  : Container(),
                             ),
                           ),
                           Center(

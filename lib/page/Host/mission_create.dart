@@ -372,10 +372,8 @@ class _MissioncreateState extends State<Missioncreate> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('mision Successful')),
                       );
-                      setState(() {
-                        Navigator.of(context).pop();
-                      });
-
+                      Navigator.of(context).pop();
+                     
                       log("race Successful");
 
                       // if (fristMis == 0) {
