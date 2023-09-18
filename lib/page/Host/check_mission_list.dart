@@ -257,205 +257,216 @@ class _CheckMissionListState extends State<CheckMissionList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: IconButton(
-              icon: Image.asset("assets/image/target.png"),
-              onPressed: () {
-                Get.to(() => ShowMapPage(
-                      showAppbar: true,
-                    ));
-                context.read<AppData>().idrace = idrace;
-              },
-            ),
-          )
-        ],
-        // Overide the default Back button
-        automaticallyImplyLeading: false,
-        leadingWidth: 100,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: FaIcon(
-            FontAwesomeIcons.circleChevronLeft,
-            color: Colors.yellow,
-            size: 35,
-          ),
-        ),
-
-        // other stuff
-        title: const Text('ภารกิจ'),
-      ),
-      floatingActionButton: raceStatus == 2
-          ? FloatingActionButton.extended(
-              backgroundColor: Colors.pinkAccent,
-              onPressed: () {
-                _endgame();
-              },
-              label: Text(
-                'จบการแข่งขัน',
-                style: Get.textTheme.bodyLarge!.copyWith(
-                    color: Get.theme.colorScheme.onPrimary,
-                    fontWeight: FontWeight.bold),
+    return WillPopScope(
+      onWillPop: () async{
+        Get.to(()=> DetailHost());
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: IconButton(
+                icon: Image.asset("assets/image/target.png"),
+                onPressed: () {
+                  Get.to(() => ShowMapPage(
+                        showAppbar: true,
+                      ));
+                  context.read<AppData>().idrace = idrace;
+                },
               ),
             )
-          : raceStatus == 3
-              ? FloatingActionButton.extended(
-                  backgroundColor: Colors.lightGreen,
-                  onPressed: () {
-                    log('remain ' + remainMC.toString());
-
-                    if (remainMC != 0) {
-                      Get.defaultDialog(
-                          title: 'กรุณาตรวจสอบภารกิจให้เสร็จสิ้น');
-                    } else {
-                      //loop เรียงลำดับ
-                      _processGame();
-                      context.read<AppData>().idrace = idrace;
-                    }
-                  },
-                  label: Text(
-                    'ประมวลผลการแข่งขัน',
-                    style: Get.textTheme.bodyLarge!.copyWith(
-                        color: Get.theme.colorScheme.onPrimary,
-                        fontWeight: FontWeight.bold),
-                  ),
-                )
-              : Container(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: FutureBuilder(
-          future: loadDataMethod,
-          builder: (context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              remainMC = 0;
-              // int i = 0;
-              // for (var element in missionComs) {
-              //   log(element.mcId.toString() + ' ' +(i++).toString());
-              // }
-
-              return RefreshIndicator(
-                onRefresh: refresh,
-                child: ListView(
-                  padding: EdgeInsets.only(top: 10),
-                  children: missions.map((element) {
-                    final theme = Theme.of(context);
-                    final textTheme = theme.textTheme;
-                    var mcStatus = missionComs
-                        .where((e) =>
-                            e.mission.misId == element.misId && e.mcStatus == 1)
-                        .length;
-
-                    log(element.misId.toString());
-                    log(missionComs.length.toString());
-
-                    for (var e in missionComs
-                        .where((element) => element.mcStatus == 1)) {
-                      if (e.mission.misId == element.misId) {
-                        log('FFFF ' + e.mission.misId.toString());
-                        remainMC += 1;
+          ],
+          // Overide the default Back button
+          automaticallyImplyLeading: false,
+          leadingWidth: 100,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: FaIcon(
+              FontAwesomeIcons.circleChevronLeft,
+              color: Colors.yellow,
+              size: 35,
+            ),
+          ),
+    
+          // other stuff
+          title: const Text('ภารกิจ'),
+        ),
+        floatingActionButton: raceStatus == 2
+            ? FloatingActionButton.extended(
+                backgroundColor: Colors.pinkAccent,
+                onPressed: () {
+                 // raceStatus
+                  startLoading(context);
+                  _endgame();
+                  stopLoading();
+                },
+                label: Text(
+                  'จบการแข่งขัน',
+                  style: Get.textTheme.bodyLarge!.copyWith(
+                      color: Get.theme.colorScheme.onPrimary,
+                      fontWeight: FontWeight.bold),
+                ),
+              )
+            : raceStatus == 3
+                ? FloatingActionButton.extended(
+                    backgroundColor: Colors.lightGreen,
+                    onPressed: () {
+                      log('remain ' + remainMC.toString());
+    
+                      if (remainMC != 0) {
+                        Get.defaultDialog(
+                            title: 'กรุณาตรวจสอบภารกิจให้เสร็จสิ้น');
+                      } else {
+                        //loop เรียงลำดับ
+                        startLoading(context);
+                        _processGame();
+                        context.read<AppData>().idrace = idrace;
+                        stopLoading();
                       }
-                    }
-
-                    //log('remain ' + remainMC.toString());
-
-                    //  log('mcss ' + mcStatus.toString());
-                    return Padding(
-                      padding:
-                          const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                      child: element.misType != 3
-                          ? badges.Badge(
-                              position:
-                                  badges.BadgePosition.topEnd(top: -5, end: 5),
-                              badgeAnimation: badges.BadgeAnimation.slide(
-                                  // disappearanceFadeAnimationDuration: Duration(milliseconds: 200),
-                                  // curve: Curves.easeInCubic,
-                                  ),
-                              // showBadge: _showCartBadge,
-                              badgeStyle: badges.BadgeStyle(
-                                badgeColor: Colors.red,
-                              ),
-                              badgeContent: Text(
-                                mcStatus.toString(),
-                                style: textTheme.bodyText2?.copyWith(
-                                    fontSize: 16, color: Colors.white),
-                              ),
-                              child: element.misType != 3
-                                  ? Card(
-                                      //  shadowColor: ,
-
-                                      clipBehavior: Clip.hardEdge,
-
-                                      child: InkWell(
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                        splashColor: Colors.blue.withAlpha(30),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Container(
-                                              alignment: Alignment.center,
-                                              // For testing different size item. You can comment this line
-                                              padding: element.misName ==
-                                                      element.misName
-                                                  ? const EdgeInsets.symmetric(
-                                                      vertical: 16.0)
-                                                  : EdgeInsets.zero,
-                                              child: ListTile(
-                                                  title: Text(
-                                                    element.misName,
-                                                    style: textTheme.bodyText2
-                                                        ?.copyWith(
-                                                      fontSize: 16,
+                    },
+                    label: Text(
+                      'ประมวลผลการแข่งขัน',
+                      style: Get.textTheme.bodyLarge!.copyWith(
+                          color: Get.theme.colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  )
+                : Container(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        body: FutureBuilder(
+            future: loadDataMethod,
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                remainMC = 0;
+                // int i = 0;
+                // for (var element in missionComs) {
+                //   log(element.mcId.toString() + ' ' +(i++).toString());
+                // }
+    
+                return RefreshIndicator(
+                  onRefresh: refresh,
+                  child: ListView(
+                    padding: EdgeInsets.only(top: 10),
+                    children: missions.map((element) {
+                      final theme = Theme.of(context);
+                      final textTheme = theme.textTheme;
+                      var mcStatus = missionComs
+                          .where((e) =>
+                              e.mission.misId == element.misId && e.mcStatus == 1)
+                          .length;
+    
+                      log(element.misId.toString());
+                      log(missionComs.length.toString());
+    
+                      for (var e in missionComs
+                          .where((element) => element.mcStatus == 1)) {
+                        if (e.mission.misId == element.misId) {
+                          log('FFFF ' + e.mission.misId.toString());
+                          remainMC += 1;
+                        }
+                      }
+    
+                      //log('remain ' + remainMC.toString());
+    
+                      //  log('mcss ' + mcStatus.toString());
+                      return Padding(
+                        padding:
+                            const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                        child: element.misType != 3
+                            ? badges.Badge(
+                                position:
+                                    badges.BadgePosition.topEnd(top: -5, end: 5),
+                                badgeAnimation: badges.BadgeAnimation.slide(
+                                    // disappearanceFadeAnimationDuration: Duration(milliseconds: 200),
+                                    // curve: Curves.easeInCubic,
+                                    ),
+                                // showBadge: _showCartBadge,
+                                badgeStyle: badges.BadgeStyle(
+                                  badgeColor: Colors.red,
+                                ),
+                                badgeContent: Text(
+                                  mcStatus.toString(),
+                                  style: textTheme.bodyText2?.copyWith(
+                                      fontSize: 16, color: Colors.white),
+                                ),
+                                child: element.misType != 3
+                                    ? Card(
+                                        //  shadowColor: ,
+    
+                                        clipBehavior: Clip.hardEdge,
+    
+                                        child: InkWell(
+                                          borderRadius:
+                                              BorderRadius.circular(12.0),
+                                          splashColor: Colors.blue.withAlpha(30),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Container(
+                                                alignment: Alignment.center,
+                                                // For testing different size item. You can comment this line
+                                                padding: element.misName ==
+                                                        element.misName
+                                                    ? const EdgeInsets.symmetric(
+                                                        vertical: 16.0)
+                                                    : EdgeInsets.zero,
+                                                child: ListTile(
+                                                    title: Text(
+                                                      element.misName,
+                                                      style: textTheme.bodyText2
+                                                          ?.copyWith(
+                                                        fontSize: 16,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  leading: SizedBox(
-                                                    width: 36,
-                                                    height: 36,
-                                                    child: Center(
-                                                      child: Text(
-                                                        //int sortn = mis.misSeq,
-                                                        '${missions.indexOf(element) + 1}',
-                                                        style: textTheme
-                                                            .bodyLarge
-                                                            ?.copyWith(
-                                                          color: Colors.purple,
-                                                          fontSize: 16,
+                                                    leading: SizedBox(
+                                                      width: 36,
+                                                      height: 36,
+                                                      child: Center(
+                                                        child: Text(
+                                                          //int sortn = mis.misSeq,
+                                                          '${missions.indexOf(element) + 1}',
+                                                          style: textTheme
+                                                              .bodyLarge
+                                                              ?.copyWith(
+                                                            color: Colors.purple,
+                                                            fontSize: 16,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  trailing: FilledButton(
-                                                    child:
-                                                        Text('ตรวจสอบภารกิจ'),
-                                                    onPressed: () {
-                                                      Get.to(ListApprove());
-                                                      context
-                                                              .read<AppData>()
-                                                              .misID =
-                                                          element.misId;
-                                                    },
-                                                  )),
-                                            ),
-                                          ],
+                                                    trailing: FilledButton(
+                                                      child:
+                                                          Text('ตรวจสอบภารกิจ'),
+                                                      onPressed: () {
+                                                        Get.to(ListApprove());
+                                                        context
+                                                                .read<AppData>()
+                                                                .misID =
+                                                            element.misId;
+                                                      },
+                                                    )),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          : Container(),
-                    );
-                  }).toList(),
-                ),
-              );
-            } else {
-              return Container();
-            }
-          }),
+                                      )
+                                    : Container(),
+                              )
+                            : Container(),
+                      );
+                    }).toList(),
+                  ),
+                );
+              } else {
+                return Container();
+              }
+            }),
+      ),
     );
   }
 

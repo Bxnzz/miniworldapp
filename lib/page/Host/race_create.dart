@@ -317,7 +317,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
 
                               var race = await raceservice.insertRaces(dto);
                               context.read<AppData>().idrace = race.data.raceId;
-
+                              bool ispop = false;
                               AwesomeDialog(
                                 context: context,
                                 dialogType: DialogType.success,
@@ -325,31 +325,28 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                 headerAnimationLoop: false,
                                 title: 'สร้างการแข่งขันสำเร็จ!!',
                                 desc: 'ต้องการสร้างภารกิจต่อไปหรือไม่?',
-                                showCloseIcon: true,
+                               
                                 btnOkText: "เอาไว้ก่อน",
                                 btnCancelText: "สร้างภารกิจ",
                                 btnOkOnPress: () async {
-                                  Navigator.of(context).pop();
+                                  ispop == false;
+                                 log('message');
                                 },
                                 btnCancelColor: Colors.lightGreen,
                                 btnOkColor: Colors.amber,
-                                btnCancelOnPress: () async {
-                                  Navigator.of(context).pop();
-                                  showDialog<void>(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return Dialog.fullscreen(
-                                        child: Missioncreate(),
-                                      );
-                                    },
-                                  );
+                                btnCancelOnPress: ()  async{
+                                 
+                                 ispop = true;
+                                 Get.to(()=>Missioncreate());
 
                                   context.read<AppData>().idrace =
                                       race.data.raceId;
                                 },
                               ).show().then((value) {
-                                Navigator.of(context).pop();
-                                // Navigator.of(context).pop();
+                                if(ispop == false){
+                                 Navigator.of(context).pop(); 
+                                } 
+                             
                               });
 
                               // Get.defaultDialog(

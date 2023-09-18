@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:implicitly_animated_reorderable_list_2/implicitly_animated_reorderable_list_2.dart';
 import 'package:implicitly_animated_reorderable_list_2/transitions.dart';
 import 'package:miniworldapp/model/result/raceResult.dart';
+import 'package:miniworldapp/page/General/Home.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/page/Host/race_edit_mission.dart';
@@ -166,51 +167,57 @@ class _DetailMissionState extends State<DetailMission> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        // Overide the default Back button
-        automaticallyImplyLeading: false,
-        leadingWidth: 100,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: FaIcon(
-            FontAwesomeIcons.circleChevronLeft,
-            color: Colors.yellow,
-            size: 35,
+    return WillPopScope(
+      onWillPop: () async{
+        Get.to(()=> Home());
+      return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          // Overide the default Back button
+          // automaticallyImplyLeading: false,
+          // leadingWidth: 100,
+          // leading: IconButton(
+          //   onPressed: () {
+          //     Navigator.of(context).pop();
+          //   },
+          //   icon: FaIcon(
+          //     FontAwesomeIcons.circleChevronLeft,
+          //     color: Colors.yellow,
+          //     size: 35,
+          //   ),
+          // ),
+          backgroundColor: const Color.fromARGB(255, 238, 145, 255),
+          // other stuff
+          title: Text(
+            'จัดการภารกิจ',
+            style: TextStyle(color: Colors.white),
           ),
         ),
-        backgroundColor: const Color.fromARGB(255, 238, 145, 255),
-        // other stuff
-        title: Text(
-          'จัดการภารกิจ',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: RefreshIndicator(
-        onRefresh: refresh,
-        child: FutureBuilder(
-          future: loadDataMethod,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return ListView(
-                controller: scrollController,
-                // Prevent the ListView from scrolling when an item is
-                // currently being dragged.
-                padding: const EdgeInsets.only(bottom: 24),
-
-                children: [
-                  const Divider(height: 0),
-                  const Padding(padding: EdgeInsets.only(bottom: 8)),
-                  // _buildHeadline(),
-                  _buildVerticalLanguageList(),
-                ],
-              );
-            } else {
-              return Container();
-            }
-          },
+        body: RefreshIndicator(
+          onRefresh: refresh,
+          child: FutureBuilder(
+            future: loadDataMethod,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return ListView(
+                  controller: scrollController,
+                  // Prevent the ListView from scrolling when an item is
+                  // currently being dragged.
+                  padding: const EdgeInsets.only(bottom: 24),
+    
+                  children: [
+                    const Divider(height: 0),
+                    const Padding(padding: EdgeInsets.only(bottom: 8)),
+                    // _buildHeadline(),
+                    _buildVerticalLanguageList(),
+                  ],
+                );
+              } else {
+                return Container();
+              }
+            },
+          ),
         ),
       ),
     );

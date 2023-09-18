@@ -119,55 +119,61 @@ class _MissioncreateState extends State<Missioncreate> {
   }
 
   raceMap() {
-    return FutureBuilder(
-        future: loadDataMethod,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return Container();
-          }
-          return Scaffold(
-              body: SafeArea(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 300,
-                  child: Stack(children: [
-                    GoogleMap(
-                      myLocationEnabled: false,
-                      myLocationButtonEnabled: false,
-                      mapType: MapType.hybrid,
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(
-                            currentLatLng.latitude, currentLatLng.longitude),
-                        zoom: 16,
+    return WillPopScope(
+      onWillPop: () async {
+        Get.to(()=> DetailMission());
+        return true;
+      },
+      child: FutureBuilder(
+          future: loadDataMethod,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return Container();
+            }
+            return Scaffold(
+                body: SafeArea(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 300,
+                    child: Stack(children: [
+                      GoogleMap(
+                        myLocationEnabled: false,
+                        myLocationButtonEnabled: false,
+                        mapType: MapType.hybrid,
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(
+                              currentLatLng.latitude, currentLatLng.longitude),
+                          zoom: 16,
+                        ),
+                        onMapCreated: (GoogleMapController controller) {
+                          _controller.complete(controller);
+                        },
+                        markers: markerss.map((e) => e).toSet(),
+                        polylines: _polylines,
+                        onCameraMove: (position) {
+                          lats = position.target.latitude.toString();
+                          longs = position.target.longitude.toString();
+                          log('lat' + position.target.latitude.toString());
+                        },
                       ),
-                      onMapCreated: (GoogleMapController controller) {
-                        _controller.complete(controller);
-                      },
-                      markers: markerss.map((e) => e).toSet(),
-                      polylines: _polylines,
-                      onCameraMove: (position) {
-                        lats = position.target.latitude.toString();
-                        longs = position.target.longitude.toString();
-                        log('lat' + position.target.latitude.toString());
-                      },
-                    ),
-                    Positioned(
-                        top: (300 / 2) - 32,
-                        left: (MediaQuery.of(context).size.width / 2) - 16,
-                        child: Column(
-                          children: [
-                            Image.asset("assets/image/target.png"),
-                            // Text('Lat:'+lat+',Long:'+long),
-                          ],
-                        )),
-                  ]),
-                ),
-                missionInput(),
-              ],
-            ),
-          ));
-        });
+                      Positioned(
+                          top: (300 / 2) - 32,
+                          left: (MediaQuery.of(context).size.width / 2) - 16,
+                          child: Column(
+                            children: [
+                              Image.asset("assets/image/target.png"),
+                              // Text('Lat:'+lat+',Long:'+long),
+                            ],
+                          )),
+                    ]),
+                  ),
+                  missionInput(),
+                ],
+              ),
+            ));
+          }),
+    );
   }
 
   missionInput() {
