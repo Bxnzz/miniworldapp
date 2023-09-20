@@ -141,7 +141,7 @@ class _LobbyState extends State<Lobby> {
     } catch (e) {}
 
     // Get.defaultDialog(title: mc.toString());
-    Get.to(()=> CheckMissionList());
+    Get.off(()=> const CheckMissionList());
     stopLoading();
   }
 

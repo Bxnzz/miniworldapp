@@ -156,12 +156,9 @@ class _RankRaceState extends State<RankRace> {
               icon: Image.asset(
                 "assets/image/review.png",
               ),
-              onPressed: () {
-              
-              },
+              onPressed: () {},
             ),
           ),
-         
           IconButton(
               onPressed: () {
                 Get.to(Share());
@@ -177,8 +174,19 @@ class _RankRaceState extends State<RankRace> {
                       color: Colors.white,
                     ),
                   ))),
-                  
         ],
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+          },
+          icon: FaIcon(
+            FontAwesomeIcons.circleChevronLeft,
+            color: Colors.yellow,
+            size: 35,
+          ),
+        ),
       ),
       body: FutureBuilder(
           future: loadDataMethod,
@@ -219,11 +227,14 @@ class _RankRaceState extends State<RankRace> {
                           right: 10,
                           child: Column(
                             children: [
-                             teamImage1 != '' ? SizedBox(
-                                width: 50,
-                                height: 50,
-                                child: Image.asset("assets/image/crown1.png"),
-                              ):Container(),
+                              teamImage1 != ''
+                                  ? SizedBox(
+                                      width: 50,
+                                      height: 50,
+                                      child: Image.asset(
+                                          "assets/image/crown1.png"),
+                                    )
+                                  : Container(),
                               Container(
                                 width: 100,
                                 height: 100,
@@ -250,12 +261,14 @@ class _RankRaceState extends State<RankRace> {
                             children: [
                               Column(
                                 children: [
-                                  teamImage2 != '' ? SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child:
-                                        Image.asset("assets/image/crown2.png"),
-                                  ):Container(),
+                                  teamImage2 != ''
+                                      ? SizedBox(
+                                          width: 50,
+                                          height: 50,
+                                          child: Image.asset(
+                                              "assets/image/crown2.png"),
+                                        )
+                                      : Container(),
                                   Container(
                                     width: 100,
                                     height: 100,
