@@ -134,12 +134,18 @@ class _Home_createState extends State<Home_create> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(element.raceName,
-                                            style: Get.textTheme.bodyMedium!
-                                                .copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Get.theme.colorScheme
-                                                        .onPrimary)),
+                                        Expanded(
+                                          child: Text(element.raceName,
+                                             softWrap: false,
+                                                maxLines: 1,
+                                                overflow:
+                                                    TextOverflow.ellipsis, // new
+                                              style: Get.textTheme.bodyMedium!
+                                                  .copyWith(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Get.theme.colorScheme
+                                                          .onPrimary)),
+                                        ),
                                         Text("# ${element.raceId}",
                                             style: Get.textTheme.bodySmall!
                                                 .copyWith(
@@ -151,7 +157,7 @@ class _Home_createState extends State<Home_create> {
                                     // Text("ปิดรับสมัคร: " +
                                     //     formatter.formatInBuddhistCalendarThai(
                                     //         element.raceTimeFn)),
-                                    Text("สถานที่: " + element.raceLocation,
+                                    Text("สถานที่: ${element.raceLocation}",
                                         style: Get.textTheme.bodySmall!
                                             .copyWith(
                                                 color: Get

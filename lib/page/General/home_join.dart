@@ -72,7 +72,9 @@ class _Home_joinState extends State<Home_join> {
                   return GridView.count(
                     crossAxisCount: 2,
                     padding: EdgeInsets.only(top: 10),
-                    children: attends.where((element) => element.team.race.raceStatus != 4).map((e) {
+                    children: attends
+                        .where((element) => element.team.race.raceStatus != 4)
+                        .map((e) {
                       final theme = Theme.of(context);
                       final textTheme = theme.textTheme;
                       return Padding(
@@ -96,8 +98,7 @@ class _Home_joinState extends State<Home_join> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          HomeJoinDetail()));
+                                      builder: (context) => HomeJoinDetail()));
                               context.read<AppData>().status = e.status;
                               context.read<AppData>().idUser = e.userId;
                               context.read<AppData>().idTeam = e.teamId;
@@ -124,7 +125,13 @@ class _Home_joinState extends State<Home_join> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(e.team.race.raceName,
+                                          Expanded(
+                                            child: Text(
+                                              e.team.race.raceName,
+                                              softWrap: false,
+                                              maxLines: 1,
+                                              overflow:
+                                                  TextOverflow.ellipsis, // new
                                               style: Get.textTheme.bodyMedium!
                                                   .copyWith(
                                                       fontWeight:
@@ -132,8 +139,12 @@ class _Home_joinState extends State<Home_join> {
                                                       color: Get
                                                           .theme
                                                           .colorScheme
-                                                          .onPrimary)),
-                                          Text("# ${e.team.race.raceId}",
+                                                          .onPrimary),
+                                            ),
+                                          ),
+                                          Text(
+                                              "# ${e.team.race.raceId}",
+                                             
                                               style: Get.textTheme.bodySmall!
                                                   .copyWith(
                                                       color: Get
@@ -175,8 +186,8 @@ class _Home_joinState extends State<Home_join> {
   Future<void> loadData() async {
     startLoading(context);
     try {
-       var r = await raceService.races();
-       races = r.data;
+      var r = await raceService.races();
+      races = r.data;
       var a = await attendService.attendByUserID(userID: idUser);
       attends = a.data;
     } catch (err) {

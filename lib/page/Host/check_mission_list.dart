@@ -420,7 +420,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
                                                                     right: 10),
                                                             child: FilledButton(
                                                               child: Text(
-                                                                  'ตรวจสอบ'),
+                                                                  'ดูหลักฐาน'),
                                                               onPressed: () {
                                                                 showDialog<
                                                                     void>(
