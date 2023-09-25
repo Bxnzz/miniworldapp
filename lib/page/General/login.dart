@@ -381,8 +381,11 @@ class _LoginState extends State<Login> {
                                                 Get.defaultDialog(
                                                         title:
                                                             'เริ่มการแข่งขัน')
-                                                    .then((value) => Get.to(() =>
-                                                        PlayerRaceStartMenu()));
+                                                    .then((value) => Get.off(() {
+                                                      PlayerRaceStartMenu();
+                                                   
+                                                    }
+                                                        ));
                                                 log('toasttt');
 
                                                 log('ภารกิจจ');
