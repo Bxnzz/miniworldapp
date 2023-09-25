@@ -1,8 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:animated_button/animated_button.dart';
 import 'package:appinio_video_player/appinio_video_player.dart';
-import 'package:awesome_dialog/awesome_dialog.dart';
+// import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -64,11 +65,13 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
   int teamID = 0;
   int idrace = 0;
   int misID = 0;
+  int MCmisID = 0;
+  int mcLastSt = 0;
 
   double latDevice = 0.0;
   double lngDevice = 0.0;
   bool isImage = true;
-  bool isSubmit = true;
+  bool isSubmit = false;
   String imageInProcess = '';
 
   File? _image;
@@ -80,7 +83,8 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
   CustomVideoPlayerController? _customVideoPlayerController;
 
   CustomVideoPlayerController? _customVideoPlayerControllerInProcess;
-
+  final CustomVideoPlayerSettings _customVideoPlayerSettings =
+      const CustomVideoPlayerSettings(showFullscreenButton: true);
   UploadTask? uploadTask;
 
   @override
@@ -91,9 +95,12 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
     teamID = context.read<AppData>().idTeam;
     idrace = context.read<AppData>().idrace;
     misID = context.read<AppData>().idMis;
+
     latDevice = context.read<AppData>().latMiscomp;
     lngDevice = context.read<AppData>().lngMiscomp;
-    log('id' + idrace.toString());
+    log("isSubmit " + isSubmit.toString());
+    log('provider isSubmit ' + context.read<AppData>().isSubmit.toString());
+
     missionCompService =
         MissionCompService(Dio(), baseUrl: context.read<AppData>().baseurl);
     missionService =
@@ -105,9 +112,19 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
     loadDataMethod = loadData();
   }
 
+  @override
+  void dispose() {
+    _customVideoPlayerControllerInProcess!.dispose();
+    _customVideoPlayerController!.dispose();
+    super.dispose();
+  }
+
   Future<void> loadData() async {
     startLoading(context);
     try {
+      log('provider isSubmit on loadData ' +
+          context.read<AppData>().isSubmit.toString());
+      isSubmit = context.read<AppData>().isSubmit;
       misID = context.read<AppData>().idMis;
       var a = await missionCompService.missionCompByTeamId(teamID: teamID);
       log("idteam ====${teamID}");
@@ -117,8 +134,21 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
       teamName = teambyid.data.first.team.teamName;
 
       var mis3 = await missionService.missionBymisID(misID: misID);
-      //var mc = await missionCompService.missionCompBymisId(misID: misID);
-      log("misID ====${misID}");
+
+      var mc = await missionCompService.missionCompBymisId(misID: misID);
+      if (mc.data.isEmpty) {
+        log("set SubmitStatus =false");
+        context.read<AppData>().isSubmit = false;
+      }
+      if (mc.data.isNotEmpty) {
+        mcLastSt = mc.data.last.mcStatus;
+        MCmisID = mc.data.last.misId;
+        // context.read<AppData>().isSubmit = true;
+        log("MCmisID = $MCmisID");
+        log("mcLastSt${mc.data.last.mcStatus}");
+        log("misID ====${misID}");
+      }
+
       //log("${mc.data.length}");
       missionComp = a.data;
       missions = mis2.data;
@@ -157,25 +187,26 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
       log("latdevice = $latDevice");
       log("lngdevice = $lngDevice");
 
-      missionComp.map((e) async {
+      missionComp.map((e) {
         if (e.misId == misID && e.mcStatus == 1) {
-          isSubmit = false;
           imageInProcess = e.mcPhoto;
           vedioProcess = e.mcVideo;
           log("mc photo " + imageInProcess.toString());
-          videoPlayerControllerInProcess = VideoPlayerController.network(
-            vedioProcess,
-          )..initialize().then((_) {
-              _customVideoPlayerControllerInProcess =
-                  CustomVideoPlayerController(
-                      context: context,
-                      videoPlayerController: videoPlayerControllerInProcess!,
-                      customVideoPlayerSettings:
-                          CustomVideoPlayerSettings(autoFadeOutControls: true));
-              setState(() {});
-            });
+          log("mc vedioProcess " + vedioProcess.toString());
         }
       }).toList();
+      videoPlayerControllerInProcess = VideoPlayerController.network(
+        vedioProcess,
+      )..initialize().then((_) {
+          _customVideoPlayerControllerInProcess = CustomVideoPlayerController(
+              context: context,
+              videoPlayerController: videoPlayerControllerInProcess!,
+              customVideoPlayerSettings:
+                  CustomVideoPlayerSettings(autoFadeOutControls: true));
+          setState(() {});
+        }).onError((error, stackTrace) {
+          log(error.toString());
+        });
     } catch (err) {
       log('Error:$err');
     } finally {
@@ -210,7 +241,6 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
     _image = img;
     videoPlayerController = VideoPlayerController.file(File(_image!.path))
       ..initialize().then((_) {
-        log(videoPlayerController.toString());
         //SizedBox(child: ,)
         _customVideoPlayerController = CustomVideoPlayerController(
             context: context,
@@ -218,7 +248,9 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
             customVideoPlayerSettings:
                 CustomVideoPlayerSettings(autoFadeOutControls: true));
         setState(() {});
+        log("videoPlayerController" + videoPlayerController.toString());
       });
+    log("videoPlayerController" + videoPlayerController.toString());
 
     setState(() {});
   }
@@ -263,6 +295,8 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
 
   Future uploadFile() async {
     startLoading(context);
+    isSubmit = true;
+    context.read<AppData>().isSubmit = isSubmit;
     var deviceState = await OneSignal.shared.getDeviceState();
     final now = DateTime.now();
     dateTime = '${now.toIso8601String()}Z';
@@ -362,17 +396,19 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
     var response1 = await OneSignal.shared.postNotification(notification1);
 
     //Get.defaultDialog(title: mc.toString());
-    videoPlayerControllerInProcess = await VideoPlayerController.network(
-      vedioProcess,
-    )
-      ..initialize().then((_) {
-        _customVideoPlayerControllerInProcess = CustomVideoPlayerController(
-            context: context,
-            videoPlayerController: videoPlayerControllerInProcess!,
-            customVideoPlayerSettings:
-                CustomVideoPlayerSettings(autoFadeOutControls: true));
-        setState(() {});
-      });
+    // videoPlayerControllerInProcess = await VideoPlayerController.network(
+    //   vedioProcess,
+    // )
+    //   ..initialize().then((_) {
+    //     _customVideoPlayerControllerInProcess = CustomVideoPlayerController(
+    //         context: context,
+    //         videoPlayerController: videoPlayerControllerInProcess!,
+    //         customVideoPlayerSettings:
+    //             CustomVideoPlayerSettings(autoFadeOutControls: true));
+    //     setState(() {});
+    //   });
+
+    // videoPlayerController = null;
     stopLoading();
   }
 
@@ -382,57 +418,76 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
         future: loadDataMethod,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return Scaffold(
-              appBar: AppBar(
-                centerTitle: true,
-                title: Text(
-                  "ส่งภารกิจ",
-                  style: Get.textTheme.headlineSmall!.copyWith(
-                      color: Get.theme.colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25),
+            return RefreshIndicator(
+              onRefresh: loadData,
+              child: Scaffold(
+                resizeToAvoidBottomInset: false,
+                appBar: AppBar(
+                  centerTitle: true,
+                  title: Text(
+                    "ส่งภารกิจ",
+                    style: Get.textTheme.headlineSmall!.copyWith(
+                        color: Get.theme.colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25),
+                  ),
                 ),
-              ),
-              body: Stack(
-                children: [
-                  misfind(),
-                  _image == null
-                      ? isSubmit == true
-                          ? Positioned(
-                              height: 200,
-                              left: Get.width / 4,
-                              bottom: 50,
-                              child: AnimatedButton(
-                                height: 200,
-                                width: 200,
-                                borderRadius: BorderRadius.circular(100),
-                                text: "เพิ่มหลักฐานภารกิจ",
-                                buttonTextStyle: TextStyle(
-                                    fontSize: 30, color: Colors.white),
-                                color: Colors.orange,
-                                pressEvent: () async {
-                                  selectmedia();
-                                },
-                              ),
-                            )
-                          : Container()
-                      : isSubmit == true
-                          ? Positioned(
-                              height: 100,
-                              width: 100,
-                              left: 300,
-                              bottom: 270,
-                              child: IconButton(
-                                  onPressed: () {
-                                    selectmedia();
-                                  },
-                                  tooltip: "เลือกหลักฐานใหม่",
-                                  iconSize: 50,
-                                  constraints: BoxConstraints.expand(),
-                                  color: Colors.amber,
-                                  icon: FaIcon(FontAwesomeIcons.rotate)))
-                          : Container()
-                ],
+                body: Stack(
+                  children: [
+                    misfind(),
+                    if (_image == null)
+                      if (isSubmit == false)
+                        Positioned(
+                          height: 200,
+                          left: Get.width / 4,
+                          bottom: 100,
+                          child: AnimatedButton(
+                              height: 150,
+                              shape: BoxShape.circle,
+                              color: Colors.orange,
+                              onPressed: () {
+                                selectmedia();
+                              },
+                              child: Text(
+                                '   เพิ่ม\nหลักฐาน',
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  color: Colors.white,
+                                ),
+                              )),
+                        )
+                      else
+                        Container()
+                    else if (context.read<AppData>().isSubmit == false &&
+                        isSubmit == false &&
+                        _image != null)
+                      Positioned(
+                        width: 65,
+                        height: 65,
+                        right: 50,
+                        bottom: 255,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(40),
+                              color: Colors.white.withOpacity(0.3)),
+                          child: IconButton(
+                              onPressed: () {
+                                selectmedia();
+                              },
+                              tooltip: "เลือกหลักฐานใหม่",
+                              iconSize: 50,
+                              constraints: BoxConstraints.expand(),
+                              color: Colors.amber,
+                              icon: FaIcon(FontAwesomeIcons.rotate)),
+                        ),
+                      ),
+                    Positioned(
+                      right: Get.width / 4,
+                      bottom: 50,
+                      child: btnSend(),
+                    ),
+                  ],
+                ),
               ),
             );
           } else {
@@ -441,129 +496,128 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
         });
   }
 
-  ListView misfind() {
-    return ListView(children: [
-      Column(
-        children: [
-          Card(
-            margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 35, top: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "ภารกิจ ",
-                        style: Get.textTheme.headlineSmall!.copyWith(
-                          // color: Get.theme.colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        "$misName",
-                        style: Get.textTheme.headlineSmall!.copyWith(
-                          color: Get.theme.colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 30, right: 30, top: 15),
-                  child: Container(
-                    width: Get.width,
-                    height: 200,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        image: DecorationImage(
-                            image: NetworkImage(misMediaUrl),
-                            fit: BoxFit.cover),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 30, right: 30, top: 8),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text('รายละเอียด :',
-                        style: Get.textTheme.bodyLarge!.copyWith(
-                            color: Get.theme.colorScheme.onBackground,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20)),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 30,
-                    right: 30,
-                  ),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(misDiscrip,
-                        style: Get.textTheme.bodyLarge!.copyWith(
-                            color: Get.theme.colorScheme.onBackground,
-                            fontSize: 20)),
-                  ),
-                ),
-
-                Row(
+  misfind() {
+    return Column(
+      children: [
+        Card(
+          margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 35, top: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30, top: 10),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text('ผ่านภารกิจโดย',
-                            style: Get.textTheme.bodyLarge!.copyWith(
-                                color: Get.theme.colorScheme.onBackground,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20)),
+                    Text(
+                      "ภารกิจ ",
+                      style: Get.textTheme.headlineSmall!.copyWith(
+                        // color: Get.theme.colorScheme.primary,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 30, right: 30, top: 10),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(type,
-                            style: Get.textTheme.bodyLarge!.copyWith(
-                                color: Get.theme.colorScheme.onBackground,
-                                fontSize: 20)),
+                    Text(
+                      "$misName",
+                      style: Get.textTheme.headlineSmall!.copyWith(
+                        color: Get.theme.colorScheme.primary,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
-                Gap(10)
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 30, right: 30, top: 15),
+                child: Container(
+                  width: Get.width,
+                  height: 200,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      image: DecorationImage(
+                          image: NetworkImage(misMediaUrl), fit: BoxFit.cover),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 30, right: 30, top: 8),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('รายละเอียด :',
+                      style: Get.textTheme.bodyLarge!.copyWith(
+                          color: Get.theme.colorScheme.onBackground,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20)),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 30,
+                  right: 30,
+                ),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(misDiscrip,
+                      style: Get.textTheme.bodyLarge!.copyWith(
+                          color: Get.theme.colorScheme.onBackground,
+                          fontSize: 20)),
+                ),
+              ),
 
-                //chk mission sending and status == 1(process)
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30, top: 10),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text('ผ่านภารกิจโดย',
+                          style: Get.textTheme.bodyLarge!.copyWith(
+                              color: Get.theme.colorScheme.onBackground,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20)),
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 30, right: 30, top: 10),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(type,
+                          style: Get.textTheme.bodyLarge!.copyWith(
+                              color: Get.theme.colorScheme.onBackground,
+                              fontSize: 20)),
+                    ),
+                  ),
+                ],
+              ),
+              Gap(10)
 
-                // buildProgress(),
-                // Padding(
-                //   padding: const EdgeInsets.only(left: 15, right: 15, bottom: 8),
-                //   child: TextField(
-                //     controller: answerPass,
-                //     keyboardType: TextInputType.multiline,
-                //     maxLines: 3,
-                //     textInputAction: TextInputAction.done,
-                //     decoration: InputDecoration(
-                //       hintText: ' คำอธิบาย...',
-                //       focusedBorder: OutlineInputBorder(
-                //           borderSide: BorderSide(
-                //               width: 3, color: Get.theme.colorScheme.primary)),
-                //     ),
-                //   ),
-                // ),
-              ],
-            ),
+              //chk mission sending and status == 1(process)
+
+              // buildProgress(),
+              // Padding(
+              //   padding: const EdgeInsets.only(left: 15, right: 15, bottom: 8),
+              //   child: TextField(
+              //     controller: answerPass,
+              //     keyboardType: TextInputType.multiline,
+              //     maxLines: 3,
+              //     textInputAction: TextInputAction.done,
+              //     decoration: InputDecoration(
+              //       hintText: ' คำอธิบาย...',
+              //       focusedBorder: OutlineInputBorder(
+              //           borderSide: BorderSide(
+              //               width: 3, color: Get.theme.colorScheme.primary)),
+              //     ),
+              //   ),
+              // ),
+            ],
           ),
-          isSubmit == true
-              ? _image != null
-                  ? isImage == true
-                      ? Column(
+        ),
+        isSubmit == false
+            ? _image != null
+                ? isImage == true
+                    ? SafeArea(
+                        child: Column(
                           children: [
                             //mission select photo
                             SizedBox(
@@ -592,25 +646,27 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
                                   )),
                             )
                           ],
-                        )
-                      ////mission select media
-                      : _customVideoPlayerController == null
-                          ? SizedBox(
-                              width: 200,
-                              height: 150,
-                              child: LoadingIndicator(
-                                  indicatorType: Indicator.pacman))
-                          : SizedBox(
-                              width: Get.width,
-                              height: Get.height / 3,
-                              child: CustomVideoPlayer(
-                                  customVideoPlayerController:
-                                      _customVideoPlayerController!),
-                            )
-                  : Container()
-              //oldmission
-              : isSubmit != true
-                  ? SizedBox(
+                        ),
+                      )
+                    ////mission select media
+                    : _customVideoPlayerController == null
+                        ? SizedBox(
+                            width: 200,
+                            height: 150,
+                            child: LoadingIndicator(
+                                indicatorType: Indicator.pacman))
+                        : SizedBox(
+                            width: Get.width - 80,
+                            height: Get.height / 4,
+                            child: CustomVideoPlayer(
+                                customVideoPlayerController:
+                                    _customVideoPlayerController!),
+                          )
+                : Container()
+            //oldmission
+            : context.read<AppData>().isSubmit == true && imageInProcess != ''
+                ? SafeArea(
+                    child: SizedBox(
                       width: Get.width - 80,
                       height: Get.height / 4,
                       child: GestureDetector(
@@ -634,106 +690,119 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail> {
                                   fit: BoxFit.cover),
                             ),
                           )),
-                    )
-                  : vedioProcess != ''
-                      ? SizedBox(
-                          width: Get.width,
-                          height: Get.height / 3,
-                          child: CustomVideoPlayer(
-                              customVideoPlayerController:
-                                  _customVideoPlayerControllerInProcess!),
-                        )
-                      : SizedBox(
-                          width: 200,
-                          height: 150,
-                          child: LoadingIndicator(
-                              indicatorType: Indicator.pacman)),
-          SizedBox(
-            width: 200,
-            child: _image != null
-                ? ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Get.theme.colorScheme.primary,
                     ),
-                    onPressed: isSubmit == true
-                        ? () async {
-                            //  _handleSendNotification();
-
-                            if (_image == null) {
-                              if (answerPass.text != '') {
-                                final now = DateTime.now();
-                                dateTime = '${now.toIso8601String()}Z';
-                                MissionCompDto mdto = MissionCompDto(
-                                    mcDatetime: DateTime.parse(dateTime),
-                                    mcLat: latDevice,
-                                    mcLng: lngDevice,
-                                    mcMasseage: '',
-                                    mcPhoto: '',
-                                    mcStatus: 1,
-                                    mcText: answerPass.text,
-                                    mcVideo: '',
-                                    misId: misID,
-                                    teamId: teamID);
-                                var missionComp = await missionCompService
-                                    .insertMissionComps(mdto);
-                                mcID = missionComp.data.mcId.toString();
-                                mc = {
-                                  'notitype': 'mission',
-                                  'mcid': mcID,
-                                  'mission': misName,
-                                  'team': teamName
-                                };
-                                var notification1 = OSCreateNotification(
-                                    //playerID
-                                    additionalData: mc,
-                                    playerIds: [
-                                      onesingnalId,
-                                      //'9556bafc-c68e-4ef2-a469-2a4b61d09168',
-                                    ],
-                                    content: 'ส่งจากทีม: $teamName',
-                                    heading: "หลักฐานภารกิจ: $misName",
-                                    //  iosAttachments: {"id1",urlImage},
-                                    // bigPicture: imUrlString,
-                                    buttons: [
-                                      OSActionButton(text: "ตกลง", id: "id1"),
-                                      OSActionButton(text: "ยกเลิก", id: "id2")
-                                    ]);
-
-                                var response1 = await OneSignal.shared
-                                    .postNotification(notification1);
-                              } else {
-                                Get.defaultDialog(title: 'กรุณาเลือกหลักฐาน');
-                              }
-                            } else {
-                              await uploadFile();
-
-                              setState(() {
-                                loadDataMethod = loadData();
-                              });
-                            }
-                          }
-                        : null,
-                    child: isSubmit == true
-                        ? Text('ส่งหลักฐาน',
-                            style: Get.textTheme.bodyLarge!.copyWith(
-                                color: Get.theme.colorScheme.onPrimary,
-                                fontWeight: FontWeight.bold))
-                        : Text('กำลังประมวลผล',
-                            style: Get.textTheme.bodyLarge!.copyWith(
-                                color: Get.theme.colorScheme.onPrimary,
-                                fontWeight: FontWeight.bold)))
-                : _image != null
-                    ? ElevatedButton(onPressed: () {}, child: Text("กำ"))
+                  )
+                : context.read<AppData>().isSubmit == true &&
+                        _customVideoPlayerControllerInProcess != null &&
+                        vedioProcess != ''
+                    ? SizedBox(
+                        width: Get.width - 80,
+                        height: Get.height / 4,
+                        child: CustomVideoPlayer(
+                            customVideoPlayerController:
+                                _customVideoPlayerControllerInProcess!),
+                      )
                     : Container(),
-          )
-        ],
-      )
-    ]);
+      ],
+    );
+  }
+
+  SizedBox btnSend() {
+    return SizedBox(
+      width: 200,
+      child: context.read<AppData>().isSubmit == false &&
+              isSubmit == false &&
+              _image != null
+          ? ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Get.theme.colorScheme.primary,
+              ),
+              onPressed: context.read<AppData>().isSubmit == false
+                  ? () async {
+                      //  _handleSendNotification();
+
+                      if (_image == null) {
+                        if (answerPass.text != '') {
+                          final now = DateTime.now();
+                          dateTime = '${now.toIso8601String()}Z';
+                          MissionCompDto mdto = MissionCompDto(
+                              mcDatetime: DateTime.parse(dateTime),
+                              mcLat: latDevice,
+                              mcLng: lngDevice,
+                              mcMasseage: '',
+                              mcPhoto: '',
+                              mcStatus: 1,
+                              mcText: answerPass.text,
+                              mcVideo: '',
+                              misId: misID,
+                              teamId: teamID);
+                          var missionComp =
+                              await missionCompService.insertMissionComps(mdto);
+                          mcID = missionComp.data.mcId.toString();
+                          mc = {
+                            'notitype': 'mission',
+                            'mcid': mcID,
+                            'mission': misName,
+                            'team': teamName
+                          };
+                          var notification1 = OSCreateNotification(
+                              //playerID
+                              additionalData: mc,
+                              playerIds: [
+                                onesingnalId,
+                                //'9556bafc-c68e-4ef2-a469-2a4b61d09168',
+                              ],
+                              content: 'ส่งจากทีม: $teamName',
+                              heading: "หลักฐานภารกิจ: $misName",
+                              //  iosAttachments: {"id1",urlImage},
+                              // bigPicture: imUrlString,
+                              buttons: [
+                                OSActionButton(text: "ตกลง", id: "id1"),
+                                OSActionButton(text: "ยกเลิก", id: "id2")
+                              ]);
+
+                          var response1 = await OneSignal.shared
+                              .postNotification(notification1);
+                        } else {
+                          Get.defaultDialog(title: 'กรุณาเลือกหลักฐาน');
+                        }
+                      } else {
+                        await uploadFile();
+
+                        setState(() {
+                          loadDataMethod = loadData();
+                        });
+                      }
+                    }
+                  : null,
+              child: context.read<AppData>().isSubmit == false
+                  ? Text('ส่งหลักฐาน',
+                      style: Get.textTheme.bodyLarge!.copyWith(
+                          color: Get.theme.colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold))
+                  : Text(
+                      'กำลังประมวลผล',
+                      style: Get.textTheme.bodyLarge!.copyWith(
+                          color: Get.theme.colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold),
+                    ),
+            )
+          : context.read<AppData>().isSubmit == true && isSubmit == true
+              ? ElevatedButton(
+                  onPressed: null,
+                  child: Text(
+                    "ส่งแล้วรอประมวลผล",
+                    style: Get.textTheme.bodyLarge!.copyWith(
+                        color: Colors.grey, fontWeight: FontWeight.bold),
+                  ),
+                )
+              : Container(),
+    );
   }
 
   Future<dynamic> selectmedia() {
     return showModalBottomSheet(
-        isDismissible: true,
+        useRootNavigator: true,
         context: context,
         builder: (context) {
           return Column(
