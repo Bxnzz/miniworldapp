@@ -377,7 +377,6 @@ class _LoginState extends State<Login> {
                                                           .additionalData![
                                                       'notitype'] ==
                                                   'checkMis') {
-                                                //notify mission Success!!!
                                                 Get.defaultDialog(
                                                         cancel:
                                                             Btn_in_success_mission(),

@@ -82,7 +82,9 @@ class _SpectatorState extends State<Spectator> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+       extendBodyBehindAppBar: true,
       appBar: AppBar(
+  
         title: Text('โหมดผู้ชม'),
         actions: <Widget>[
           Padding(

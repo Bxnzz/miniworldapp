@@ -74,7 +74,8 @@ class _ListApproveState extends State<ListApprove> {
       stopLoading();
     }
   }
-    Future refresh() async {
+
+  Future refresh() async {
     setState(() {
       loadDataMethod = loadData();
     });
@@ -84,7 +85,6 @@ class _ListApproveState extends State<ListApprove> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('หลักฐานทั้งหมด')),
-     
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: FutureBuilder(
           future: loadDataMethod,
@@ -100,59 +100,73 @@ class _ListApproveState extends State<ListApprove> {
                     return Padding(
                       padding:
                           const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                      child: element.mission.misType != 3 && element.mcStatus == 1
+                      child: element.mission.misType != 3 &&
+                              element.mcStatus == 1
                           ? Card(
-                            //  shadowColor: ,
-                            clipBehavior: Clip.hardEdge,
-              
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(12.0),
-                              splashColor: Colors.blue.withAlpha(30),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Container(
-                                    alignment: Alignment.center,
-                                    // For testing different size item. You can comment this line
-                                    padding: element.misId == element.misId
-                                        ? const EdgeInsets.symmetric(
-                                            vertical: 16.0)
-                                        : EdgeInsets.zero,
-                                    child: ListTile(
-                                        title: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'ทีม : ${element.team.teamName}',
-                                              style: textTheme.bodyText2
-                                                  ?.copyWith(
-                                                fontSize: 16,
+                              //  shadowColor: ,
+                              clipBehavior: Clip.hardEdge,
+
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(12.0),
+                                splashColor: Colors.blue.withAlpha(30),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Container(
+                                      alignment: Alignment.center,
+                                      // For testing different size item. You can comment this line
+                                      padding: element.misId == element.misId
+                                          ? const EdgeInsets.symmetric(
+                                              vertical: 16.0)
+                                          : EdgeInsets.zero,
+                                      child: ListTile(
+                                          title: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'ทีม : ${element.team.teamName}',
+                                                style: textTheme.bodyText2
+                                                    ?.copyWith(
+                                                  fontSize: 16,
+                                                ),
                                               ),
-                                            ),
-                                            Text(
-                                              'ประเภท : ${type}',
-                                              style: textTheme.bodyText2
-                                                  ?.copyWith(
-                                                fontSize: 16,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        trailing: FilledButton(
-                                          child: Text('ตรวจสอบ'),
-                                          onPressed: () {
-                                            Get.to(ApproveMission(
-                                              IDmc: element.mcId,
-                                            ));
-                                            //  context.read<AppData>().misID = element.misId;
-                                          },
-                                        )),
-                                  ),
-                                ],
+                                              Text(
+                                                'ประเภท : ${type}',
+                                                style: textTheme.bodyText2
+                                                    ?.copyWith(
+                                                  fontSize: 16,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          trailing: FilledButton(
+                                            child: Text('ตรวจสอบ'),
+                                            onPressed: () {
+                                              showDialog<void>(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return Dialog.fullscreen(
+                                                    child: ApproveMission(
+                                                      IDmc: element.mcId,
+                                                    ),
+                                                  );
+                                                },
+                                              ).then((value) {
+                                                setState(() {
+                                                  loadDataMethod = loadData();
+                                                });
+                                              });
+
+                                              //  context.read<AppData>().misID = element.misId;
+                                            },
+                                          )),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          )
+                            )
                           : Container(),
                     );
                   }).toList(),

@@ -65,120 +65,119 @@ class _Home_joinState extends State<Home_join> {
       child: Scaffold(
         body: RefreshIndicator(
           onRefresh: refresh,
-          child: Container(
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: FractionalOffset(0.0, 0.0),
-                    end: FractionalOffset(1.0, 0.0),
-                    stops: [0.0, 1.0],
-                    tileMode: TileMode.clamp,
-                    colors: [
-                      Colors.purpleAccent,
-                      Color.fromARGB(255, 144, 64, 255),
-                    ])),
-            child: FutureBuilder(
-                future: loadDataMethod,
-                builder: (context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return GridView.count(
-                      crossAxisCount: 2,
-                      padding: EdgeInsets.only(top: 10),
-                      children: attends.where((element) => element.team.race.raceStatus != 4).map((e) {
-                        final theme = Theme.of(context);
-                        final textTheme = theme.textTheme;
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                              left: 2.5, right: 2.5, bottom: 5),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(
-                                width: 2,
-                                color: Colors.white,
-                              ),
-                              borderRadius:
-                                  BorderRadius.circular(20.0), //<-- SEE HERE
+          child: FutureBuilder(
+              future: loadDataMethod,
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return GridView.count(
+                    crossAxisCount: 2,
+                    padding: EdgeInsets.only(top: 10),
+                    children: attends
+                        .where((element) => element.team.race.raceStatus != 4)
+                        .map((e) {
+                      final theme = Theme.of(context);
+                      final textTheme = theme.textTheme;
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                            left: 2.5, right: 2.5, bottom: 5),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                              width: 2,
+                              color: Colors.white,
                             ),
-                            color: Colors.white,
-                            clipBehavior: Clip.hardEdge,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(12.0),
-                              splashColor: Colors.blue.withAlpha(30),
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            HomeJoinDetail()));
-                                context.read<AppData>().status = e.status;
-                                context.read<AppData>().idUser = e.userId;
-                                context.read<AppData>().idTeam = e.teamId;
-                                context.read<AppData>().idrace = e.team.raceId;
-                                context.read<AppData>().idAt = e.atId;
-                                //showDetailDialog(context, e);
-                              },
-                              child: GridTile(
-                                  // crossAxisAlignment: CrossAxisAlignment.start,
-                                  child: Image.network(e.team.race.raceImage,
-                                      //  width: Get.width,
-                                      //  height: Get.width*0.5625/2,
-                                      fit: BoxFit.cover),
-                                  footer: Container(
-                                    color: Get.theme.colorScheme.onBackground
-                                        .withOpacity(0.5),
-                                    padding:
-                                        const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(e.team.race.raceName,
-                                                style: Get.textTheme.bodyMedium!
-                                                    .copyWith(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Get
-                                                            .theme
-                                                            .colorScheme
-                                                            .onPrimary)),
-                                            Text("# ${e.team.race.raceId}",
-                                                style: Get.textTheme.bodySmall!
-                                                    .copyWith(
-                                                        color: Get
-                                                            .theme
-                                                            .colorScheme
-                                                            .onPrimary)),
-                                          ],
-                                        ),
-                                        Container(height: 5),
-                                        // Text("ปิดรับสมัคร: " +
-                                        //     formatter.formatInBuddhistCalendarThai(
-                                        //         element.raceTimeFn)),
-                                        Text(
-                                            "สถานที่: " +
-                                                e.team.race.raceLocation,
-                                            style: Get.textTheme.bodySmall!
-                                                .copyWith(
-                                                    color: Get.theme.colorScheme
-                                                        .onPrimary
-                                                        .withOpacity(0.8))),
-                                        Container(height: 5),
-                                      ],
-                                    ),
-                                  )),
-                            ),
+                            borderRadius:
+                                BorderRadius.circular(20.0), //<-- SEE HERE
                           ),
-                        );
-                      }).toList(),
-                    );
-                  } else {
-                    return Container();
-                  }
-                }),
-          ),
+                          color: Colors.white,
+                          clipBehavior: Clip.hardEdge,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12.0),
+                            splashColor: Colors.blue.withAlpha(30),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomeJoinDetail()));
+                              context.read<AppData>().status = e.status;
+                              context.read<AppData>().idUser = e.userId;
+                              context.read<AppData>().idTeam = e.teamId;
+                              context.read<AppData>().idrace = e.team.raceId;
+                              context.read<AppData>().idAt = e.atId;
+                              //showDetailDialog(context, e);
+                            },
+                            child: GridTile(
+                                // crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Image.network(e.team.race.raceImage,
+                                    //  width: Get.width,
+                                    //  height: Get.width*0.5625/2,
+                                    fit: BoxFit.cover),
+                                footer: Container(
+                                  color: Get.theme.colorScheme.onBackground
+                                      .withOpacity(0.5),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              e.team.race.raceName,
+                                              softWrap: false,
+                                              maxLines: 1,
+                                              overflow:
+                                                  TextOverflow.ellipsis, // new
+                                              style: Get.textTheme.bodyMedium!
+                                                  .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Get
+                                                          .theme
+                                                          .colorScheme
+                                                          .onPrimary),
+                                            ),
+                                          ),
+                                          Text(
+                                              "# ${e.team.race.raceId}",
+                                             
+                                              style: Get.textTheme.bodySmall!
+                                                  .copyWith(
+                                                      color: Get
+                                                          .theme
+                                                          .colorScheme
+                                                          .onPrimary)),
+                                        ],
+                                      ),
+                                      Container(height: 5),
+                                      // Text("ปิดรับสมัคร: " +
+                                      //     formatter.formatInBuddhistCalendarThai(
+                                      //         element.raceTimeFn)),
+                                      Text(
+                                          "สถานที่: " +
+                                              e.team.race.raceLocation,
+                                          style: Get.textTheme.bodySmall!
+                                              .copyWith(
+                                                  color: Get.theme.colorScheme
+                                                      .onPrimary
+                                                      .withOpacity(0.8))),
+                                      Container(height: 5),
+                                    ],
+                                  ),
+                                )),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                } else {
+                  return Container();
+                }
+              }),
         ),
       ),
     );
@@ -187,8 +186,8 @@ class _Home_joinState extends State<Home_join> {
   Future<void> loadData() async {
     startLoading(context);
     try {
-       var r = await raceService.races();
-       races = r.data;
+      var r = await raceService.races();
+      races = r.data;
       var a = await attendService.attendByUserID(userID: idUser);
       attends = a.data;
     } catch (err) {

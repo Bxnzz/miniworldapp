@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:implicitly_animated_reorderable_list_2/implicitly_animated_reorderable_list_2.dart';
 import 'package:implicitly_animated_reorderable_list_2/transitions.dart';
 import 'package:miniworldapp/model/result/raceResult.dart';
+import 'package:miniworldapp/page/General/Home.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/page/Host/race_edit_mission.dart';
@@ -167,25 +168,25 @@ class _DetailMissionState extends State<DetailMission> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        //Get.to(() => const DetailMission());
-        return true;
+      onWillPop: () async{
+        Get.to(()=> Home());
+      return true;
       },
       child: Scaffold(
         appBar: AppBar(
           // Overide the default Back button
-          automaticallyImplyLeading: false,
-          leadingWidth: 100,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: FaIcon(
-              FontAwesomeIcons.circleChevronLeft,
-              color: Colors.yellow,
-              size: 35,
-            ),
-          ),
+          // automaticallyImplyLeading: false,
+          // leadingWidth: 100,
+          // leading: IconButton(
+          //   onPressed: () {
+          //     Navigator.of(context).pop();
+          //   },
+          //   icon: FaIcon(
+          //     FontAwesomeIcons.circleChevronLeft,
+          //     color: Colors.yellow,
+          //     size: 35,
+          //   ),
+          // ),
           backgroundColor: const Color.fromARGB(255, 238, 145, 255),
           // other stuff
           title: Text(
@@ -204,7 +205,7 @@ class _DetailMissionState extends State<DetailMission> {
                   // Prevent the ListView from scrolling when an item is
                   // currently being dragged.
                   padding: const EdgeInsets.only(bottom: 24),
-
+    
                   children: [
                     const Divider(height: 0),
                     const Padding(padding: EdgeInsets.only(bottom: 8)),
@@ -335,10 +336,9 @@ class _DetailMissionState extends State<DetailMission> {
                                 .deleteMissons(mis.misId.toString());
                             log(missionsD.toString());
                             misRe = missionsD.data;
-                             missions.removeWhere((element) {
-                                return element.misId == mis.misId;
-                              }); //go through the loop and match content to delete from list
-                            
+                            missions.removeWhere((element) {
+                              return element.misId == mis.misId;
+                            }); //go through the loop and match content to delete from list
 
                             for (var i = 0; i < missions.length; i++) {
                               MissionDto missionDto = MissionDto(
@@ -346,7 +346,7 @@ class _DetailMissionState extends State<DetailMission> {
                                   misDiscrip: missions[i].misDiscrip,
                                   misDistance: missions[i].misDistance,
                                   misType: missions[i].misType,
-                                  misSeq: missions.indexOf(missions[i]) +1,
+                                  misSeq: missions.indexOf(missions[i]) + 1,
                                   misMediaUrl: '',
                                   misLat: missions[i].misLat,
                                   misLng: missions[i].misLng,
@@ -396,8 +396,19 @@ class _DetailMissionState extends State<DetailMission> {
           label: 'แก้ไข',
           backgroundColor: Colors.amberAccent,
           onPressed: (BuildContext context) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const EditMission()));
+          showDialog<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const Dialog.fullscreen(
+                        child: EditMission(),
+                      );
+                    },
+                  ).then((value) {
+                    setState(() {
+                      _buildVerticalLanguageList();
+                      loadDataMethod = loadData();
+                    });
+                  });
             context.read<AppData>().idMis = mis.misId;
           },
           icon: Icons.edit,
@@ -463,16 +474,30 @@ class _DetailMissionState extends State<DetailMission> {
               child: Box(
                 color: const Color.fromARGB(255, 233, 117, 253),
                 onTap: () async {
-                  final result = await Get.to(() => Missioncreate());
+                  showDialog<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Dialog.fullscreen(
+                        child: Missioncreate(),
+                      );
+                    },
+                  ).then((value) {
+                    setState(() {
+                      _buildVerticalLanguageList();
+                      loadDataMethod = loadData();
+                    });
+                  });
+
+                  //final result = await Get.to(() => Missioncreate());
                   context.read<AppData>().lastMis = mis.last.misId;
                   context.read<AppData>().sqnum = missions.last.misSeq;
                   log('last' + mis.last.misId.toString());
 
-                  if (result != null && !missions.contains(result)) {
-                    setState(() {
-                      missions.add(result);
-                    });
-                  }
+                  // if (result != null && !missions.contains(result)) {
+                  //   setState(() {
+                  //     missions.add(result);
+                  //   });
+                  // }
                 },
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -502,6 +527,14 @@ class _DetailMissionState extends State<DetailMission> {
           );
         });
   }
+
+  // void _openAddEntryDialog() {
+  //   Navigator.of(context).push(new MaterialPageRoute<Null>(
+  //       builder: (BuildContext context) {
+  //         return new Missioncreate();
+  //       },
+  //       fullscreenDialog: true));
+  // }
 
   @override
   void dispose() {

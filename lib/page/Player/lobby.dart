@@ -17,6 +17,7 @@ import 'package:miniworldapp/page/General/detil_race_host.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/home_join.dart';
 import 'package:miniworldapp/page/General/home_join_detail.dart';
+import 'package:miniworldapp/page/Host/check_mission_list.dart';
 
 import 'package:miniworldapp/page/Player/chat_room.dart';
 import 'package:miniworldapp/service/team.dart';
@@ -113,6 +114,7 @@ class _LobbyState extends State<Lobby> {
   }
 
   void _Startgame() async {
+    startLoading(context);
     raceStatus = 2;
     RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
     var racestatus = await raceService.updateStatusRaces(racedto, idRace);
@@ -139,7 +141,8 @@ class _LobbyState extends State<Lobby> {
     } catch (e) {}
 
     // Get.defaultDialog(title: mc.toString());
-    Get.to(DetailHost());
+    Get.off(()=> const CheckMissionList());
+    stopLoading();
   }
 
   Widget CardDetailPlayer() {
@@ -493,6 +496,7 @@ class _LobbyState extends State<Lobby> {
   }
 
   showAlertDialog(BuildContext context) {
+    startLoading(context);
     // set up the button
     Widget okButton = SizedBox(
       width: 120,
@@ -504,8 +508,9 @@ class _LobbyState extends State<Lobby> {
           raceStatus = 2;
           RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
           var a = await raceService.updateStatusRaces(racedto, idRace);
-
+        startLoading(context);
           _Startgame();
+          stopLoading();
         },
       ),
     );
@@ -532,6 +537,7 @@ class _LobbyState extends State<Lobby> {
         return alert;
       },
     );
+    stopLoading();
   }
 
   showProfileAlertDialog(BuildContext context, AttendRaceUser user) {
