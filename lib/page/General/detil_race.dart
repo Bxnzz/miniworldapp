@@ -314,19 +314,20 @@ class _DetailRaceState extends State<DetailRace> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => CeateTeam()));
+                                              builder: (context) =>
+                                                  CeateTeam()));
                                       context.read<AppData>().idrace = idrace;
                                     },
                                     child: Text('ลงทะเบียน')),
-                                    ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => Home()));
-                                      context.read<AppData>().idrace = idrace;
-                                    },
-                                    child: Text('test')),
+                                // ElevatedButton(
+                                // onPressed: () {
+                                //   Navigator.push(
+                                //       context,
+                                //       MaterialPageRoute(
+                                //           builder: (context) => Home()));
+                                //   context.read<AppData>().idrace = idrace;
+                                // },
+                                // child: Text('test')),
                               ],
                             ),
                           )),
