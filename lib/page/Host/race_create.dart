@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/services.dart';
 
 import 'package:dio/dio.dart';
@@ -226,8 +227,10 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton(
+                        child: FilledButton(
                             onPressed: () async {
+                              startLoading(context);
+
                               if (raceLimit.text == "" &&
                                   raceName.text == "" &&
                                   raceLocation.text == "") {
@@ -311,27 +314,62 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                 userId: idUser,
                                 signUpTimeFn: DateTime.parse(TexttimeFN.text),
                               );
-                              Get.defaultDialog(
-                                  title: 'สร้างการแข่งขันสำเร็จ!!',
-                                  content: Text('กรุณาสร้างภารกิจต่อไป'),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () async {
-                                          startLoading(context);
-                                          var race = await raceservice
-                                              .insertRaces(dto);
-                                          context.read<AppData>().idrace =
-                                              race.data.raceId;
-                                          Get.to(Missioncreate());
-                                          stopLoading();
-                                        },
-                                        child: Text('สร้างภารกิจ')),
-                                    TextButton(
-                                        onPressed: () async {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('ยกเลิก')),
-                                  ]);
+
+                              var race = await raceservice.insertRaces(dto);
+                              context.read<AppData>().idrace = race.data.raceId;
+                              bool ispop = false;
+                              AwesomeDialog(
+                                context: context,
+                                dialogType: DialogType.success,
+                                animType: AnimType.bottomSlide,
+                                headerAnimationLoop: false,
+                                title: 'สร้างการแข่งขันสำเร็จ!!',
+                                desc: 'ต้องการสร้างภารกิจต่อไปหรือไม่?',
+                               
+                                btnOkText: "เอาไว้ก่อน",
+                                btnCancelText: "สร้างภารกิจ",
+                                btnOkOnPress: () async {
+                                  ispop == false;
+                                 log('message');
+                                },
+                                btnCancelColor: Colors.lightGreen,
+                                btnOkColor: Colors.amber,
+                                btnCancelOnPress: ()  async{
+                                 
+                                 ispop = true;
+                                 Get.to(()=>Missioncreate());
+
+                                  context.read<AppData>().idrace =
+                                      race.data.raceId;
+                                },
+                              ).show().then((value) {
+                                if(ispop == false){
+                                 Navigator.of(context).pop(); 
+                                } 
+                             
+                              });
+
+                              // Get.defaultDialog(
+                              //     title: 'สร้างการแข่งขันสำเร็จ!!',
+                              //     content: Text('กรุณาสร้างภารกิจต่อไป'),
+                              //     actions: [
+                              //       TextButton(
+                              //           onPressed: () async {
+                              //             startLoading(context);
+                              //             var race = await raceservice
+                              //                 .insertRaces(dto);
+                              //             context.read<AppData>().idrace =
+                              //                 race.data.raceId;
+                              //             Get.to(Missioncreate());
+                              //             stopLoading();
+                              //           },
+                              //           child: Text('สร้างภารกิจ')),
+                              //       TextButton(
+                              //           onPressed: () async {
+                              //             Navigator.of(context).pop();
+                              //           },
+                              //           child: Text('ยกเลิก')),
+                              //     ]);
 
                               //race.data.raceName.toString();
                               // if (race.) {
@@ -348,8 +386,9 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
 
                               //   return;
                               // }
+                              stopLoading();
                             },
-                            child: const Text("ถัดไป")),
+                            child: const Text("สร้างการแข่งขัน")),
                       ),
                     ],
                   ),

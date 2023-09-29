@@ -27,10 +27,12 @@ class _TextFieldTimeState extends State<TextFieldTime> {
           height: 33,
           child: TextFormField(
             controller: widget.controllers,
+            readOnly: true,
             decoration: InputDecoration(
+              
               // enabled: false,
               labelText: widget.labelText,
-              hintText: widget.hintText,
+              hintText:  widget.hintText,
               suffixIcon: IconButton(
                 onPressed: () {
                   CupertinoRoundedDatePicker.show(

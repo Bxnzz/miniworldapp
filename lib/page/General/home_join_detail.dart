@@ -87,6 +87,58 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
     loadDataMethod = loadData();
   }
 
+  Future<void> loadData() async {
+    startLoading(context);
+    try {
+      // var r = await raceService.racesByID(userID: idUser);
+      // var a = await attendService.attendByUserID(userID: idUser);
+      // attends = a.data;
+      var a = await raceService.racesByraceID(raceID: idrace);
+      races = a.data;
+      idrace = a.data.first.raceId;
+      Rname = a.data.first.raceName;
+      log(Rname);
+      Rlocation = a.data.first.raceLocation;
+      team = a.data.first.raceLimitteam.toString();
+      String formattedDate01 = DateFormat.Hm().format(a.data.first.raceTimeSt);
+      raceTimeST = formattedDate01;
+      String formattedDate02 = DateFormat.Hm().format(a.data.first.raceTimeFn);
+      raceTimeFN = formattedDate02;
+
+      var formatter = DateFormat.yMMMMEEEEd();
+      var dateFormat01 =
+          formatter.formatInBuddhistCalendarThai(a.data.first.signUpTimeSt);
+      var dateFormat02 =
+          formatter.formatInBuddhistCalendarThai(a.data.first.signUpTimeFn);
+      var dateFormat03 =
+          formatter.formatInBuddhistCalendarThai(a.data.first.eventDatetime);
+      singUpST = dateFormat01;
+      singUpFN = dateFormat02;
+      eventDatetime = dateFormat03;
+
+      if (idAttend == 0) {
+        log("if id at =0");
+        var attendByDateTime =
+            await attendService.attendByDateTime(DateTime: attendDateTime);
+        for (var i in attendByDateTime.data) {
+          idAttend = i.atId;
+          log("idat new set $idAttend");
+        }
+
+        setState(() {});
+      }
+      a.data.first.raceName;
+      UrlImg = a.data.first.raceImage;
+      raceStatus = a.data.first.raceStatus;
+      log(UrlImg);
+      log("Rase statys = $raceStatus");
+    } catch (err) {
+      log('Error:$err');
+    } finally {
+      stopLoading();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -94,14 +146,10 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
     size = MediaQuery.of(context).size;
     height = size.height;
     width = size.width;
-    return WillPopScope(
-      onWillPop: () async {
-        return true;
-      },
-      child: Scaffold(
-        body: FutureBuilder(
+    return Scaffold(
+      body: FutureBuilder(
           future: loadDataMethod,
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return Stack(
                 children: [
@@ -134,8 +182,6 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                               size: 35,
                             ),
                           ),
-
-                          // )
                         ]),
                   ),
                   Positioned(
@@ -151,7 +197,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                             top: 0),
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(35),
+                              topLeft: Radius.circular(40),
                               topRight: Radius.circular(35)),
                           color: Colors.white,
                         ),
@@ -161,12 +207,10 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                             child: Center(
                                 child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                Rname,
-                                style: textTheme.bodyText1?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              child: Text(Rname,
+                                  style: Get.textTheme.bodyLarge!.copyWith(
+                                      color: Get.theme.colorScheme.primary,
+                                      fontWeight: FontWeight.bold)),
                             )),
                           ),
                           const Divider(),
@@ -296,75 +340,67 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                           ),
                           const Divider(),
                           Center(
-                            child: SizedBox(
-                              width: 200,
-                              child: raceStatus == 1
-                                  ? ElevatedButton(
-                                      onPressed: () {
-                                        setState(() {
+                            child: races.first.raceStatus == 1
+                                ? ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        context.read<AppData>().idAt = idAttend;
+                                        context.read<AppData>().idUser = idUser;
+                                        context.read<AppData>().idrace = idrace;
+
+                                        context.read<AppData>().idTeam = teamid;
+                                        context.read<AppData>().status = status;
+                                        context.read<AppData>().attendDateTime;
+                                        Get.to(Lobby());
+                                      });
+                                    },
+                                    child: const Text('เข้าการแข่งขัน'))
+                                : races.first.raceStatus == 2
+                                    ? ElevatedButton(
+                                        onPressed: () {
                                           context.read<AppData>().idAt =
                                               idAttend;
                                           context.read<AppData>().idUser =
                                               idUser;
                                           context.read<AppData>().idrace =
                                               idrace;
-                        
+
                                           context.read<AppData>().idTeam =
                                               teamid;
                                           context.read<AppData>().status =
                                               status;
-                                          context
-                                              .read<AppData>()
-                                              .attendDateTime;
-                                          Get.to(Lobby());
-                                        });
-                                      },
-                                      child: const Text('เข้าการแข่งขัน'))
-                                  :  raceStatus == 2
-                                      ? ElevatedButton(
-                                          onPressed: () {
-                                            context.read<AppData>().idAt =
-                                                idAttend;
-                                            context.read<AppData>().idUser =
-                                                idUser;
-                                            context.read<AppData>().idrace =
-                                                idrace;
-                        
-                                            context.read<AppData>().idTeam =
-                                                teamid;
-                                            context.read<AppData>().status =
-                                                status;
-                                            Get.to(PlayerRaceStartMenu());
-                                          },
-                                          child: const Text('เข้าการแข่งขัน'))
-                                      : raceStatus == 3
-                                          ? ElevatedButton(
-                                              onPressed: () {
-                                                context.read<AppData>().idUser =
-                                                    idUser;
-                                                Get.to(ChatRoomPage(
-                                                    userID: idUser,
-                                                    raceID: idrace,
-                                                    userName: context
-                                                        .read<AppData>()
-                                                        .Username,
-                                                    raceName: Rname));
-                                              },
-                                              child: Text('รอประมวลผล...'))
-                                          : Container(),
-                            ),
+                                          showDialog<void>(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return Dialog.fullscreen(
+                                                child: PlayerRaceStartMenu(),
+                                              );
+                                            },
+                                          ).then((value) {
+                                            setState(() {
+                                              loadDataMethod = loadData();
+                                            });
+                                          });
+                                          //Get.to(PlayerRaceStartMenu());
+                                        },
+                                        child: const Text(
+                                            'การแข่งขันกำลังดำเนินการ'))
+                                    : races.first.raceStatus == 3
+                                        ? ElevatedButton(
+                                            onPressed: () {
+                                              context.read<AppData>().idUser =
+                                                  idUser;
+                                              Get.to(ChatRoomPage(
+                                                  userID: idUser,
+                                                  raceID: idrace,
+                                                  userName: context
+                                                      .read<AppData>()
+                                                      .Username,
+                                                  raceName: Rname));
+                                            },
+                                            child: Text('รอประมวลผล...'))
+                                        : Container(),
                           ),
-                          // ElevatedButton(
-                          //     onPressed: () {
-                          //       //  log('username'+ context.read<AppData>().Username);
-                          //       Get.to(() => const ReviewPage());
-                          //     },
-                          //     child: Text("Review")),
-                          // ElevatedButton(
-                          //     onPressed: () {
-                          //       Get.to(() => const raceReview());
-                          //     },
-                          //     child: Text("ดูรีวิว"))
                         ]),
                       ))
                 ],
@@ -372,61 +408,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
             } else {
               return Container();
             }
-          },
-        ),
-      ),
+          }),
     );
-  }
-
-  Future<void> loadData() async {
-    startLoading(context);
-    try {
-      // var r = await raceService.racesByID(userID: idUser);
-      // var a = await attendService.attendByUserID(userID: idUser);
-      // attends = a.data;
-      var a = await raceService.racesByraceID(raceID: idrace);
-      races = a.data;
-      idrace = a.data.first.raceId;
-      Rname = a.data.first.raceName;
-      log(Rname);
-      Rlocation = a.data.first.raceLocation;
-      team = a.data.first.raceLimitteam.toString();
-      String formattedDate01 = DateFormat.Hm().format(a.data.first.raceTimeSt);
-      raceTimeST = formattedDate01;
-      String formattedDate02 = DateFormat.Hm().format(a.data.first.raceTimeFn);
-      raceTimeFN = formattedDate02;
-
-      var formatter = DateFormat.yMMMMEEEEd();
-      var dateFormat01 =
-          formatter.formatInBuddhistCalendarThai(a.data.first.signUpTimeSt);
-      var dateFormat02 =
-          formatter.formatInBuddhistCalendarThai(a.data.first.signUpTimeFn);
-      var dateFormat03 =
-          formatter.formatInBuddhistCalendarThai(a.data.first.eventDatetime);
-      singUpST = dateFormat01;
-      singUpFN = dateFormat02;
-      eventDatetime = dateFormat03;
-
-      if (idAttend == 0) {
-        log("if id at =0");
-        var attendByDateTime =
-            await attendService.attendByDateTime(DateTime: attendDateTime);
-        for (var i in attendByDateTime.data) {
-          idAttend = i.atId;
-          log("idat new set $idAttend");
-        }
-
-        setState(() {});
-      }
-      a.data.first.raceName;
-      UrlImg = a.data.first.raceImage;
-      raceStatus = a.data.first.raceStatus;
-      log(UrlImg);
-      log("Rase statys = $raceStatus");
-    } catch (err) {
-      log('Error:$err');
-    } finally {
-      stopLoading();
-    }
   }
 }

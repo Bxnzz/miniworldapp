@@ -40,8 +40,8 @@ class _TextFieldDateState extends State<TextFieldDate> {
           height: 33,
           child: TextFormField(
             controller: widget.controller,
+           readOnly: true,
             decoration: InputDecoration(
-              // enabled: false,
               labelText: widget.labelText,
               hintText: widget.hintText,
               suffixIcon: IconButton(

@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:miniworldapp/model/result/raceResult.dart';
 import 'package:miniworldapp/page/General/detil_race_host.dart';
+import 'package:miniworldapp/page/General/home_join.dart';
 import 'package:miniworldapp/page/Host/detil_mission.dart';
 
 import 'package:miniworldapp/page/Host/race_edit.dart';
@@ -77,232 +78,104 @@ class _Home_createState extends State<Home_create> {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: refresh,
-        child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  begin: FractionalOffset(0.0, 0.0),
-                  end: FractionalOffset(1.0, 0.0),
-                  stops: [0.0, 1.0],
-                  tileMode: TileMode.clamp,
-                  colors: [
-                    Colors.purpleAccent,
-                    Color.fromARGB(255, 144, 64, 255),
-                  ])),
-          child: FutureBuilder(
-              future: loadDataMethod,
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return GridView.count(
-                    crossAxisCount: 2,
-                    padding: EdgeInsets.only(top: 10),
-                    children: race.where((e) => e.raceStatus != 4).map((element) {
-                      //IDrace = element.raceId;
-                      final theme = Theme.of(context);
-                      final textTheme = theme.textTheme;
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                            left: 2.5, right: 2.5, bottom: 5),
-                        //child: Stack(
-                        //  children: [
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 2,
-                              color: Colors.white,
-                            ),
-                            borderRadius:
-                                BorderRadius.circular(20.0), //<-- SEE HERE
+        child: FutureBuilder(
+            future: loadDataMethod,
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return GridView.count(
+                  crossAxisCount: 2,
+                  padding: EdgeInsets.only(top: 10),
+                  children: race.where((e) => e.raceStatus != 4).map((element) {
+                    //IDrace = element.raceId;
+                    final theme = Theme.of(context);
+                    final textTheme = theme.textTheme;
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                          left: 2.5, right: 2.5, bottom: 5),
+                      //child: Stack(
+                      //  children: [
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            width: 2,
+                            color: Colors.white,
                           ),
-                          color: Colors.white,
-                          clipBehavior: Clip.hardEdge,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(12.0),
-                            splashColor: Colors.blue.withAlpha(30),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => DetailHost()));
-                              context.read<AppData>().idrace = element.raceId;
-                            },
-                            child: GridTile(
-                              // crossAxisAlignment: CrossAxisAlignment.start,
+                          borderRadius:
+                              BorderRadius.circular(20.0), //<-- SEE HERE
+                        ),
+                        color: Colors.white,
+                        clipBehavior: Clip.hardEdge,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12.0),
+                          splashColor: Colors.blue.withAlpha(30),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DetailHost()));
+                            context.read<AppData>().idrace = element.raceId;
+                          },
+                          child: GridTile(
+                            // crossAxisAlignment: CrossAxisAlignment.start,
 
-                              child: Image.network(element.raceImage,
-                                  // width: Get.width,
-                                  // height: Get.width * 0.5625,
-                                  fit: BoxFit.cover),
-                              footer: Container(
-                                  color: Get.theme.colorScheme.onBackground
-                                      .withOpacity(0.5),
-                                  padding:
-                                      const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(element.raceName,
+                            child: Image.network(element.raceImage,
+                                // width: Get.width,
+                                // height: Get.width * 0.5625,
+                                fit: BoxFit.cover),
+                            footer: Container(
+                                color: Get.theme.colorScheme.onBackground
+                                    .withOpacity(0.5),
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(element.raceName,
+                                             softWrap: false,
+                                                maxLines: 1,
+                                                overflow:
+                                                    TextOverflow.ellipsis, // new
                                               style: Get.textTheme.bodyMedium!
                                                   .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Get
-                                                          .theme
-                                                          .colorScheme
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Get.theme.colorScheme
                                                           .onPrimary)),
-                                          Text("# ${element.raceId}",
-                                              style: Get.textTheme.bodySmall!
-                                                  .copyWith(
-                                                      color: Get
-                                                          .theme
-                                                          .colorScheme
-                                                          .onPrimary)),
-                                        ],
-                                      ),
-                                      Container(height: 5),
-                                      // Text("ปิดรับสมัคร: " +
-                                      //     formatter.formatInBuddhistCalendarThai(
-                                      //         element.raceTimeFn)),
-                                      Text("สถานที่: " + element.raceLocation,
-                                          style: Get.textTheme.bodySmall!
-                                              .copyWith(
-                                                  color: Get.theme.colorScheme
-                                                      .onPrimary
-                                                      .withOpacity(0.8))),
-                                      Container(height: 5),
-                                    ],
-                                  )),
-                            ),
+                                        ),
+                                        Text("# ${element.raceId}",
+                                            style: Get.textTheme.bodySmall!
+                                                .copyWith(
+                                                    color: Get.theme.colorScheme
+                                                        .onPrimary)),
+                                      ],
+                                    ),
+                                    Container(height: 5),
+                                    // Text("ปิดรับสมัคร: " +
+                                    //     formatter.formatInBuddhistCalendarThai(
+                                    //         element.raceTimeFn)),
+                                    Text("สถานที่: ${element.raceLocation}",
+                                        style: Get.textTheme.bodySmall!
+                                            .copyWith(
+                                                color: Get
+                                                    .theme.colorScheme.onPrimary
+                                                    .withOpacity(0.8))),
+                                    Container(height: 5),
+                                  ],
+                                )),
                           ),
                         ),
-                        // Positioned(
-                        //     top: 0,
-                        //     right: 0,
-                        // child: Container(
-                        //   // padding: EdgeInsets.all(8),
-                        //   // decoration: BoxDecoration(
-
-                        //   //     color: Colors.white.withOpacity(0.5),
-                        //   //     borderRadius: BorderRadius.circular(100)),
-                        //   child: PopupMenuButton(
-                        //       onSelected: (result) {
-                        //         if (result == 0) {
-                        //           Navigator.push(
-                        //               context,
-                        //               MaterialPageRoute(
-                        //                   builder: (context) =>
-                        //                       EditRace()));
-                        //           context.read<AppData>().idrace =
-                        //               element.raceId;
-                        //         }
-                        //         if (result == 1) {
-                        //           //  Navigator.pop(context);
-                        //           showDialog(
-                        //             context: context,
-                        //             builder: (context) => AlertDialog(
-                        //               backgroundColor: Color.fromARGB(
-                        //                   255, 255, 255, 255),
-                        //               title: Center(
-                        //                   child: Text('ลบการแข่งขัน?')),
-                        //               content: Text(
-                        //                   'คุณต้องการจะลบการแข่งขันนี้หรือไม่?'),
-                        //               actions: <Widget>[
-                        //                 TextButton(
-                        //                   onPressed: () =>
-                        //                       Navigator.pop(
-                        //                           context, 'Cancel'),
-                        //                   child: const Text('ยกเลิก',
-                        //                       style: TextStyle(
-                        //                           color: Colors.black)),
-                        //                 ),
-                        //                 SizedBox(
-                        //                     width: 120,
-                        //                     child: ElevatedButton(
-                        //                         style: ElevatedButton
-                        //                             .styleFrom(
-                        //                                 backgroundColor:
-                        //                                     Colors
-                        //                                         .redAccent),
-                        //                         onPressed: () async {
-                        //                           log('race' +
-                        //                               element.raceId
-                        //                                   .toString());
-                        //                           //  try {
-                        //                           //
-                        //                           //  }on DioError catch (e) {
-                        //                           //    //throw Exception(e);
-                        //                           //    log(e.response!.data);
-                        //                           //  }
-                        //                           var race = await raceService
-                        //                               .deleteRace(element
-                        //                                   .raceId
-                        //                                   .toString());
-                        //                           log(race.toString());
-                        //                           raceRe = race.data;
-                        //                           if (raceRe.result ==
-                        //                               '1') {
-                        //                             ScaffoldMessenger
-                        //                                     .of(context)
-                        //                                 .showSnackBar(
-                        //                               const SnackBar(
-                        //                                   content: Text(
-                        //                                       'delete Successful')),
-                        //                             );
-                        //                             setState(() {});
-                        //                             Navigator.pop(
-                        //                                 context);
-                        //                             // log("race Successful");
-                        //                             return;
-                        //                           } else {
-                        //                             // log("team fail");
-                        //                             ScaffoldMessenger
-                        //                                     .of(context)
-                        //                                 .showSnackBar(
-                        //                               const SnackBar(
-                        //                                   content: Text(
-                        //                                       'delete fail try agin!')),
-                        //                             );
-
-                        //                             return;
-                        //                           }
-                        //                         },
-                        //                         child: const Text(
-                        //                           'ลบ',
-                        //                           style: TextStyle(
-                        //                               color:
-                        //                                   Colors.white),
-                        //                         )))
-                        //               ],
-                        //             ),
-                        //           );
-                        //         }
-                        //       },
-                        //       shape: RoundedRectangleBorder(
-                        //           borderRadius:
-                        //               BorderRadius.circular(8)),
-                        //       itemBuilder: (BuildContext context) {
-                        //         return [
-                        //           _buildPopupMenuEdit(
-                        //               'แก้ไข', Icons.edit, 0),
-                        //           _buildPopupMenuDelete(
-                        //               'ลบ', Icons.delete, 1),
-                        //         ];
-                        //       }),
-                        // )),
-                        // ],
-                        // ),
-                      );
-                    }).toList(),
-                  );
-                } else {
-                  return Container();
-                }
-              }),
-        ),
+                      ),
+                    );
+                  }).toList(),
+                );
+              } else {
+                return Container();
+              }
+            }),
       ),
     );
   }
@@ -342,5 +215,131 @@ class _Home_createState extends State<Home_create> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [Icon(iconData), Text(menuTitle)],
         ));
+  }
+}
+
+class TabbarRace extends StatefulWidget {
+  const TabbarRace({super.key});
+
+  @override
+  State<TabbarRace> createState() => _TabbarRaceState();
+}
+
+class _TabbarRaceState extends State<TabbarRace>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  @override
+  void initState() {
+    _tabController = TabController(length: 2, vsync: this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          SizedBox(
+            height: 130, //30 for bottom
+            child: Stack(
+              children: [
+                Positioned(
+                  top: 0,
+                  // bottom: 150, // to shift little up
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.vertical(
+                          bottom: Radius.circular(20),
+                        ),
+                        gradient: LinearGradient(
+                            begin: FractionalOffset(0.0, 0.0),
+                            end: FractionalOffset(1.0, 0.0),
+                            stops: [0.0, 1.0],
+                            tileMode: TileMode.clamp,
+                            colors: [
+                              Color.fromARGB(255, 207, 107, 244),
+                              Color.fromARGB(255, 152, 90, 238),
+                            ])),
+                    width: Get.width,
+                    height: 100,
+                  ),
+                ),
+                Positioned(
+                    bottom: 10,
+                    left: 25,
+                    right: 25,
+                    child: SizedBox(
+                      height: 45,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Color(0xFFe8e8e8),
+                                blurRadius: 5.0,
+                                offset: Offset(0, 5)),
+                            BoxShadow(
+                                color: Colors.white, offset: Offset(-5, 0)),
+                            BoxShadow(color: Colors.white, offset: Offset(5, 0))
+                          ],
+                          borderRadius: BorderRadius.circular(
+                            25.0,
+                          ),
+                        ),
+                        child: TabBar(
+                          dividerColor: Colors.transparent,
+                          indicatorPadding: EdgeInsets.zero,
+                          indicatorSize: TabBarIndicatorSize.tab,
+                          controller: _tabController,
+                          // give the indicator a decoration (color and border radius)
+                          indicator: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              25.0,
+                            ),
+                            color: Colors.amber,
+                          ),
+
+                          labelColor: Colors.white,
+
+                          // unselectedLabelColor: Colors.black,
+                          tabs: [
+                            // first tab [you can add an icon using the icon property]
+                            const Tab(
+                              text: 'การแข่งขันที่สร้าง',
+                            ),
+                            // second tab [you can add an icon using the icon property]
+                            const Tab(
+                              text: 'การแข่งขันที่เข้าร่วม',
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
+              ],
+            ),
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                // first tab bar view widget
+                Center(child: Home_create()),
+
+                // second tab bar view widget
+                Center(child: Home_join()),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
