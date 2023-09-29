@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -20,6 +21,7 @@ import 'package:miniworldapp/page/General/rank_race.dart';
 import 'package:miniworldapp/page/Player/chat_room.dart';
 import 'package:miniworldapp/page/Player/lobby.dart';
 import 'package:miniworldapp/page/Player/player_race_start_hint.dart';
+import 'package:miniworldapp/page/Player/player_race_start_mission.detail.dart';
 import 'package:miniworldapp/page/Player/review.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:miniworldapp/service/user.dart';
@@ -35,13 +37,12 @@ import 'package:toast_notification/toast_notification.dart';
 import '../../main.dart';
 import '../../model/DTO/loginDTO.dart';
 import '../../service/login.dart';
+import '../../widget/dialogAlert.dart';
 import '../Host/approve_mission.dart';
 import '../Newhome.dart';
 import '../Player/player_race_start_menu.dart';
 import 'fontpage_register.dart';
 import 'package:crypto/crypto.dart';
-
-
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -80,6 +81,9 @@ class _LoginState extends State<Login> {
   var digest;
   String oneID = '';
 
+  bool chkPageRoute = false;
+  bool isSubmit = false;
+
   @override
   void initState() {
     super.initState();
@@ -104,6 +108,9 @@ class _LoginState extends State<Login> {
       log('User ID: $oneID');
 
       var one = await userService.updateOneID(oneID);
+      // SchedulerBinding.instance.addPostFrameCallback((_) {
+      //   Navigator.of(context).pushReplacementNamed("PlayerRaceStartMenu");
+      // });
     } catch (e) {
       log("err:" + e.printError.toString());
     } finally {
@@ -116,6 +123,19 @@ class _LoginState extends State<Login> {
     email.dispose(); // ยกเลิกการใช้งานที่เกี่ยวข้องทั้งหมดถ้ามี
     password.dispose();
     super.dispose();
+  }
+
+  void GetAlertDialogCorrect() {
+    Get.defaultDialog(
+      title: 'ภารกิจล้มเหลว!!!',
+      content: Column(
+        children: [
+          dialog_alert(
+              asset: 'assets/image/failmsg.json', width: 200, height: 200),
+        ],
+      ),
+      cancel: Btn_in_fail_mission(),
+    );
   }
 
   @override
@@ -339,7 +359,7 @@ class _LoginState extends State<Login> {
                                                     .notification
                                                     .additionalData!['mcid']);
                                                 log('qqqqqqqqqq');
-                                               
+
                                                 Fluttertoast.showToast(
                                                     msg:
                                                         "มีหลักฐานที่ต้องตรวจสอบ?\n ภารกิจ: ${event.notification.additionalData!['mission']} ทีม: ${event.notification.additionalData!['team']}       ",
@@ -357,23 +377,53 @@ class _LoginState extends State<Login> {
                                                           .additionalData![
                                                       'notitype'] ==
                                                   'checkMis') {
-                                               
+                                                //notify mission Success!!!
                                                 Get.defaultDialog(
+                                                        cancel:
+                                                            Btn_in_success_mission(),
                                                         title:
-                                                            'ทำภารกิจสำเร็จ!!!')
-                                                    .then((value) => Get.to(() =>
-                                                        PlayerRaceStartMenu()));
-                                              } else if (event.notification
+                                                            'ภารกิจสำเร็จ!!!',
+                                                        content: dialog_alert(
+                                                            asset:
+                                                                'assets/image/correctmsg.json',
+                                                            width: 200,
+                                                            height: 200),
+                                                        barrierDismissible:
+                                                            false)
+                                                    .then((value) {
+                                                  setState(() {
+                                                    loadDataMethod;
+                                                  });
+                                                });
+                                              }
+                                              //notify mission Fail!!!
+                                              else if (event.notification
                                                           .additionalData![
                                                       'notitype'] ==
                                                   'checkUnMis') {
                                                 Get.defaultDialog(
+                                                        cancel:
+                                                            Btn_in_fail_mission(),
                                                         title:
-                                                            'ทำภารกิจไม่สำเร็จ!!!',
-                                                        content: Text(
-                                                            '${event.notification.additionalData!['masseage']}'))
-                                                    .then((value) => Get.to(() =>
-                                                        PlayerRaceStartMenu()));
+                                                            'ภารกิจล้มเหลว!!!',
+                                                        content: Column(
+                                                          children: [
+                                                            dialog_alert(
+                                                                asset:
+                                                                    'assets/image/failmsg.json',
+                                                                width: 200,
+                                                                height: 200),
+                                                            Text(
+                                                                '${event.notification.additionalData!['masseage']}'),
+                                                          ],
+                                                        ),
+                                                        barrierDismissible:
+                                                            false)
+                                                    .then((value) {
+                                                  setState(() {
+                                                    loadDataMethod;
+                                                  });
+                                                });
                                               } else if (event.notification
                                                           .additionalData![
                                                       'notitype'] ==
@@ -576,6 +626,61 @@ class _LoginState extends State<Login> {
           },
         ),
       )),
+    );
+  }
+
+  SizedBox Btn_in_fail_mission() {
+    return SizedBox(
+      width: Get.width,
+      child: ElevatedButton(
+          onPressed: () {
+            log("outcontext");
+
+            if (Get.currentRoute == '/PlayerRaceStMisDetail') {
+              isSubmit = false;
+              log("issubmit :$isSubmit");
+
+              Get.back();
+              Get.back();
+              Get.to(() => PlayerRaceStMisDetail(), fullscreenDialog: true);
+            } else if (Get.currentRoute == '/PlayerRaceStartMenu') {
+              Get.back();
+              Get.to(() => PlayerRaceStMisDetail(), fullscreenDialog: true);
+              log("currentroute is ${Get.currentRoute}");
+            } else {
+              isSubmit = false;
+              log("issubmit :$isSubmit");
+
+              Get.back();
+              Get.to(() => PlayerRaceStMisDetail(), fullscreenDialog: true);
+            }
+          },
+          child: Text("ทำภารกิจใหม่")),
+    );
+  }
+
+  SizedBox Btn_in_success_mission() {
+    return SizedBox(
+      width: Get.width,
+      child: ElevatedButton(
+          onPressed: () {
+            log("outcontext");
+
+            if (Get.currentRoute == '/PlayerRaceStMisDetail') {
+              Get.back();
+              Get.back();
+              Get.back();
+              Get.to(() => PlayerRaceStartMenu());
+            } else if (Get.currentRoute == '/PlayerRaceStartMenu') {
+              Get.back();
+              Get.to(() => PlayerRaceStartMenu());
+              log("currentroute is ${Get.currentRoute}");
+            } else {
+              Get.back();
+              Get.to(() => PlayerRaceStartMenu());
+            }
+          },
+          child: Text("ตกลง")),
     );
   }
 

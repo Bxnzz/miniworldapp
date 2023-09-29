@@ -80,8 +80,15 @@ class _PlayerRaceStartMenuState extends State<PlayerRaceStartMenu> {
         _buildScreens;
       });
     }
+    if (_controller.index == 1) {
+      setState(() {
+        _buildScreens;
+      });
+    }
+
     return WillPopScope(
       onWillPop: () async {
+        Get.off(() => HomeJoinDetail());
         return true;
       },
       child: Scaffold(
@@ -126,7 +133,14 @@ class _PlayerRaceStartMenuState extends State<PlayerRaceStartMenu> {
         body: PersistentTabView(
           onItemSelected: (value) {
             if (value == 0) {
+              log("value" + value.toString());
               setState(() {});
+            }
+            if (value == 1) {
+              log("value" + value.toString());
+              setState(() {
+                _buildScreens();
+              });
             }
           },
           context,
