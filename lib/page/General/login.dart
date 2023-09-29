@@ -41,8 +41,6 @@ import '../Player/player_race_start_menu.dart';
 import 'fontpage_register.dart';
 import 'package:crypto/crypto.dart';
 
-
-
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -339,7 +337,7 @@ class _LoginState extends State<Login> {
                                                     .notification
                                                     .additionalData!['mcid']);
                                                 log('qqqqqqqqqq');
-                                               
+
                                                 Fluttertoast.showToast(
                                                     msg:
                                                         "มีหลักฐานที่ต้องตรวจสอบ?\n ภารกิจ: ${event.notification.additionalData!['mission']} ทีม: ${event.notification.additionalData!['team']}       ",
@@ -357,7 +355,6 @@ class _LoginState extends State<Login> {
                                                           .additionalData![
                                                       'notitype'] ==
                                                   'checkMis') {
-                                               
                                                 Get.defaultDialog(
                                                         title:
                                                             'ทำภารกิจสำเร็จ!!!')
@@ -381,11 +378,8 @@ class _LoginState extends State<Login> {
                                                 Get.defaultDialog(
                                                         title:
                                                             'เริ่มการแข่งขัน')
-                                                    .then((value) => Get.off(() {
-                                                      PlayerRaceStartMenu();
-                                                   
-                                                    }
-                                                        ));
+                                                    .then((value) => Get.to(() =>
+                                                        PlayerRaceStartMenu()));
                                                 log('toasttt');
 
                                                 log('ภารกิจจ');
