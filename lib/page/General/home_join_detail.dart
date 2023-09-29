@@ -308,7 +308,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                               idUser;
                                           context.read<AppData>().idrace =
                                               idrace;
-                        
+
                                           context.read<AppData>().idTeam =
                                               teamid;
                                           context.read<AppData>().status =
@@ -316,11 +316,11 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                           context
                                               .read<AppData>()
                                               .attendDateTime;
-                                          Get.to(Lobby());
+                                          Get.to(() => Lobby());
                                         });
                                       },
                                       child: const Text('เข้าการแข่งขัน'))
-                                  :  raceStatus == 2
+                                  : raceStatus == 2
                                       ? ElevatedButton(
                                           onPressed: () {
                                             context.read<AppData>().idAt =
@@ -329,12 +329,12 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                                 idUser;
                                             context.read<AppData>().idrace =
                                                 idrace;
-                        
+
                                             context.read<AppData>().idTeam =
                                                 teamid;
                                             context.read<AppData>().status =
                                                 status;
-                                            Get.to(PlayerRaceStartMenu());
+                                            Get.to(() => PlayerRaceStartMenu());
                                           },
                                           child: const Text('เข้าการแข่งขัน'))
                                       : raceStatus == 3
@@ -342,7 +342,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                               onPressed: () {
                                                 context.read<AppData>().idUser =
                                                     idUser;
-                                                Get.to(ChatRoomPage(
+                                                Get.to(() => ChatRoomPage(
                                                     userID: idUser,
                                                     raceID: idrace,
                                                     userName: context

@@ -38,7 +38,8 @@ class AppData with ChangeNotifier {
   Timer updateLocationTimer = Timer(Duration(seconds: 10), () {});
   Timer updateLocationTimerPlayer = Timer(Duration(seconds: 10), () {});
   bool showAppbar = false;
-
+  bool isSubmit = false;
+  bool firstMis = false;
   int raceStatus = 0;
 
   double latMiscomp = 0;

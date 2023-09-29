@@ -18,10 +18,12 @@ import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/home_join_detail.dart';
 import 'package:miniworldapp/page/Player/player_race_start_menu.dart';
 import 'package:miniworldapp/page/Player/player_race_start_mission.dart';
+import 'package:miniworldapp/page/Player/player_race_start_mission.detail.dart';
 import 'package:miniworldapp/service/mission.dart';
 import 'package:miniworldapp/widget/loadData.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
+import 'package:animated_button/animated_button.dart' as anm;
 
 import '../../model/DTO/missionCompDTO.dart';
 import '../../model/mission.dart';
@@ -46,6 +48,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
   late int raceID;
   late int misID;
   late int misDistance = 0;
+  int misSeq = 0;
   int indexpage = 1;
   int idAttend = 0;
 
@@ -234,14 +237,14 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                 lng = mission[0].misLng;
 
                 misID = mission[0].misId;
+                misSeq = mission[0].misSeq;
                 misName = mission[0].misName;
                 misDistance = mission[0].misDistance;
                 misDescrip = mission[0].misDiscrip;
                 misType = mission[0].misType.toString();
                 if (misType.contains('12')) {
                   type = 'ข้อความ,สื่อ';
-                }
-                if (misType.contains('1')) {
+                } else if (misType.contains('1')) {
                   type = 'ข้อความ';
                 } else if (misType.contains('2')) {
                   type = 'สื่อ';
@@ -275,13 +278,13 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                     log("lng $lng");
                     misID = mission[i + 1].misId;
                     misName = mission[i + 1].misName;
+                    misSeq = mission[i + 1].misSeq;
                     misDistance = mission[i + 1].misDistance;
                     misDescrip = mission[i + 1].misDiscrip;
                     misType = mission[i + 1].misType.toString();
                     if (misType.contains('12')) {
-                      type = 'ข้อความ,สื่อ';
-                    }
-                    if (misType.contains('1')) {
+                      type = 'ข้อความ\,สื่อ';
+                    } else if (misType.contains('1')) {
                       type = 'ข้อความ';
                     } else if (misType.contains('2')) {
                       type = 'สื่อ';
@@ -346,13 +349,12 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
 
   antBTN(BuildContext context) {
     return Container(
-      height: 130,
-      padding: const EdgeInsets.only(right: 150, left: 150, bottom: 20),
-      child: AnimatedButton(
-          borderRadius: BorderRadius.circular(200),
-          text: "ค้นหา",
+        height: 130,
+        child: anm.AnimatedButton(
+          shape: BoxShape.circle,
+          height: 120,
           color: Colors.amber,
-          pressEvent: () {
+          onPressed: () {
             checkGps();
 
             dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
@@ -366,17 +368,22 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                     dialogType: DialogType.infoReverse,
                     title: 'เจอแล้ว !!!',
                     desc:
-                        '#$misID\nชื่อภารกิจ : $misName \nรายละเอียด : $misDescrip \nประเภทภารกิจ : $type',
+                        'ภารกิจลำดับที่ :$misSeq\nชื่อภารกิจ : $misName \nรายละเอียด : $misDescrip \nประเภทภารกิจ : $type',
                     btnOkText: 'ดูรายละเอียด',
                     btnOkOnPress: () {
                       context.read<AppData>().idMis = misID;
                       context.read<AppData>().idTeam = teamID;
                       context.read<AppData>().latMiscomp = latDevice;
                       context.read<AppData>().lngMiscomp = lngDevice;
+
                       setState(() {
                         loadDataMethod = LoadData();
                       });
                       widget.controller.index = 0;
+                      context.read<AppData>().isSubmit = false;
+                      setState(() {});
+                      Get.to(() => PlayerRaceStMisDetail(),
+                          fullscreenDialog: true);
                     },
                   ).show()
                 : AwesomeDialog(
@@ -393,74 +400,87 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
                           latDevice, lngDevice, lat, lng);
                     },
                   ).show();
-          }),
-    );
+          },
+          child: Text(
+            "ค้นหา",
+            style: TextStyle(
+              fontSize: 22,
+              color: Colors.white,
+            ),
+          ),
+        ));
   }
 
   antBTN3(BuildContext context) {
     return Container(
       height: 130,
-      padding: const EdgeInsets.only(right: 150, left: 150, bottom: 20),
-      child: AnimatedButton(
-          borderRadius: BorderRadius.circular(200),
-          text: "ค้นหา",
-          color: Colors.amber,
-          pressEvent: () {
-            checkGps();
-            dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
-            dis <= misDistance
-                ? AwesomeDialog(
-                    transitionAnimationDuration: Duration(milliseconds: 100),
-                    context: context,
-                    headerAnimationLoop: false,
-                    animType: AnimType.bottomSlide,
-                    dialogType: DialogType.infoReverse,
-                    title: 'เจอแล้ว !!!',
-                    desc:
-                        '#$misID\nชื่อภารกิจ : $misName \nรายละเอียด : $misDescrip \nประเภทภารกิจ : $type',
-                    btnOkText: 'สำเร็จ',
-                    btnOkOnPress: () async {
-                      final now = DateTime.now();
-                      dateTime = '${now.toIso8601String()}Z';
-                      MissionCompDto mdto = MissionCompDto(
-                          mcDatetime: DateTime.parse(dateTime),
-                          mcLat: latDevice,
-                          mcLng: lngDevice,
-                          mcMasseage: '',
-                          mcPhoto: '',
-                          mcStatus: 2,
-                          mcText: '',
-                          mcVideo: '',
-                          misId: misID,
-                          teamId: teamID);
-                      var missionComp =
-                          await missionCompService.insertMissionComps(mdto);
-                      context.read<AppData>().latMiscomp = latDevice;
-                      context.read<AppData>().lngMiscomp = lngDevice;
+      child: anm.AnimatedButton(
+        shape: BoxShape.circle,
+        height: 120,
+        color: Colors.amber,
+        onPressed: () {
+          checkGps();
+          dis = Geolocator.distanceBetween(latDevice, lngDevice, lat, lng);
+          dis <= misDistance
+              ? AwesomeDialog(
+                  transitionAnimationDuration: Duration(milliseconds: 100),
+                  context: context,
+                  headerAnimationLoop: false,
+                  animType: AnimType.bottomSlide,
+                  dialogType: DialogType.infoReverse,
+                  title: 'เจอแล้ว !!!',
+                  desc:
+                      'ภารกิจลำดับที่ : $misSeq\nชื่อภารกิจ : $misName \nรายละเอียด : $misDescrip \nประเภทภารกิจ : $type',
+                  btnOkText: 'สำเร็จ',
+                  btnOkOnPress: () async {
+                    final now = DateTime.now();
+                    dateTime = '${now.toIso8601String()}Z';
+                    MissionCompDto mdto = MissionCompDto(
+                        mcDatetime: DateTime.parse(dateTime),
+                        mcLat: latDevice,
+                        mcLng: lngDevice,
+                        mcMasseage: '',
+                        mcPhoto: '',
+                        mcStatus: 2,
+                        mcText: '',
+                        mcVideo: '',
+                        misId: misID,
+                        teamId: teamID);
+                    var missionComp =
+                        await missionCompService.insertMissionComps(mdto);
+                    context.read<AppData>().latMiscomp = latDevice;
+                    context.read<AppData>().lngMiscomp = lngDevice;
+                    context.read<AppData>().isSubmit = false;
+                    setState(() {
+                      loadDataMethod = LoadData();
+                    });
 
-                      if (widget.controller == 1) {
-                        setState(() {
-                          loadDataMethod = LoadData();
-                        });
-                        widget.controller.jumpToTab(1);
-                      }
-                    },
-                  ).show()
-                : AwesomeDialog(
-                    transitionAnimationDuration: Duration(milliseconds: 100),
-                    context: context,
-                    headerAnimationLoop: false,
-                    animType: AnimType.bottomSlide,
-                    dialogType: DialogType.question,
-                    title: 'ห่างจากภารกิจ ',
-                    desc: '${dis.toStringAsFixed(1)} เมตร',
-                    btnOkText: 'ตกลง',
-                    btnOkOnPress: () {
-                      dis = Geolocator.distanceBetween(
-                          latDevice, lngDevice, lat, lng);
-                    },
-                  ).show();
-          }),
+                    loadDataMethod = LoadData();
+                  },
+                ).show()
+              : AwesomeDialog(
+                  transitionAnimationDuration: Duration(milliseconds: 100),
+                  context: context,
+                  headerAnimationLoop: false,
+                  animType: AnimType.bottomSlide,
+                  dialogType: DialogType.question,
+                  title: 'ห่างจากภารกิจ ',
+                  desc: '${dis.toStringAsFixed(1)} เมตร',
+                  btnOkText: 'ตกลง',
+                  btnOkOnPress: () {
+                    dis = Geolocator.distanceBetween(
+                        latDevice, lngDevice, lat, lng);
+                  },
+                ).show();
+        },
+        child: Text(
+          "ค้นหา",
+          style: TextStyle(
+            fontSize: 22,
+            color: Colors.white,
+          ),
+        ),
+      ),
     );
   }
 
