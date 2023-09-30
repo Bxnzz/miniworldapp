@@ -337,7 +337,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                 btnCancelOnPress: ()  async{
                                  
                                  ispop = true;
-                                 Get.to(()=>Missioncreate());
+                                 Get.off(()=>Missioncreate());
 
                                   context.read<AppData>().idrace =
                                       race.data.raceId;
