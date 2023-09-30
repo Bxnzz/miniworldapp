@@ -402,8 +402,8 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
                 if (missionComp[j].misId == missions[i].misId &&
                     missionComp[j].mcStatus == 2) {
                   log("pass ${missions[i].misId}");
-                  log("next ${missions[i + 1].misId}");
-                  next = true;
+                  // log("next ${missions[i + 1].misId}");
+
                   missionShow.add(missions[i]);
                   if (i + 1 > missions.length - 1) {
                     lastmisComp = true;

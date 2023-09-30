@@ -351,7 +351,7 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                         context.read<AppData>().idTeam = teamid;
                                         context.read<AppData>().status = status;
                                         context.read<AppData>().attendDateTime;
-                                        Get.to(Lobby());
+                                        Get.to(() => Lobby());
                                       });
                                     },
                                     child: const Text('เข้าการแข่งขัน'))
@@ -369,17 +369,9 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                               teamid;
                                           context.read<AppData>().status =
                                               status;
-                                          showDialog<void>(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return Dialog.fullscreen(
-                                                child: PlayerRaceStartMenu(),
-                                              );
-                                            },
-                                          ).then((value) {
-                                            setState(() {
-                                              loadDataMethod = loadData();
-                                            });
+                                          Get.to(() => PlayerRaceStartMenu());
+                                          setState(() {
+                                            loadDataMethod = loadData();
                                           });
                                           //Get.to(PlayerRaceStartMenu());
                                         },
