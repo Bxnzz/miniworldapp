@@ -127,8 +127,12 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
 
   @override
   void dispose() {
-    _customVideoPlayerControllerInProcess!.dispose();
-    _customVideoPlayerController!.dispose();
+    if (_customVideoPlayerControllerInProcess != null ||
+        _customVideoPlayerController != null) {
+      _customVideoPlayerControllerInProcess!.dispose();
+      _customVideoPlayerController!.dispose();
+    }
+
     super.dispose();
   }
 
@@ -636,7 +640,8 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
                           cardDetailMis(),
                           if (StSubmitDb == 0 ||
                               StSubmitDb == 2 ||
-                              StSubmitDb == 4)
+                              StSubmitDb == 4 ||
+                              misType == 12)
                             SizedBox(
                               width: Get.width,
                               child: Padding(
@@ -1041,25 +1046,22 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
         SizedBox(
           width: 200,
           child: StSubmitDb == 4 ||
-                  StSubmitDb == 5 && _image != null ||
+                  StSubmitDb == 5 ||
+                  _image != null ||
                   answerShow == true
               ? ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Get.theme.colorScheme.primary,
                   ),
-                  onPressed: StSubmitDb == 4 ||
-                          StSubmitDb == 5 && _image != null ||
-                          answerShow == true
-                      ? () async {
-                          //  _handleSendNotification();
+                  onPressed: () async {
+                    //  _handleSendNotification();
 
-                          await uploadFile();
+                    await uploadFile();
 
-                          setState(() {
-                            loadDataMethod = loadData();
-                          });
-                        }
-                      : null,
+                    setState(() {
+                      loadDataMethod = loadData();
+                    });
+                  },
                   child: Text('ส่งหลักฐาน',
                       style: Get.textTheme.bodyLarge!.copyWith(
                           color: Get.theme.colorScheme.onPrimary,
