@@ -50,6 +50,7 @@ class _raceReviewState extends State<raceReview> {
   Future<void> loadData() async {
     startLoading(context);
     try {
+      log("idrace =$raceID");
       var review = await reviewservice.reviewByRaceID(raceID: raceID);
 
       reviews = review.data;

@@ -12,6 +12,7 @@ import 'package:miniworldapp/model/result/rewardResult.dart';
 import 'package:miniworldapp/model/reward.dart';
 import 'package:miniworldapp/model/team.dart';
 import 'package:miniworldapp/page/General/share.dart';
+import 'package:miniworldapp/page/Host/race_review.dart';
 import 'package:miniworldapp/service/attend.dart';
 import 'package:miniworldapp/service/mission.dart';
 import 'package:miniworldapp/service/missionComp.dart';
@@ -77,6 +78,7 @@ class _RankRaceState extends State<RankRace> {
     startLoading(context);
     try {
       idrace = context.read<AppData>().idrace;
+      log("idrace $idrace");
       idUser = context.read<AppData>().idUser;
       var r = await rewardService.rewardByRaceID(raceID: idrace);
       rewards = r.data;
@@ -156,7 +158,10 @@ class _RankRaceState extends State<RankRace> {
               icon: Image.asset(
                 "assets/image/review.png",
               ),
-              onPressed: () {},
+              onPressed: () {
+                context.read<AppData>().idrace = idrace;
+                Get.to(() => raceReview());
+              },
             ),
           ),
           IconButton(
@@ -178,7 +183,6 @@ class _RankRaceState extends State<RankRace> {
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pop();
             Navigator.of(context).pop();
           },
           icon: FaIcon(
