@@ -301,6 +301,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
       log(teamID.toString());
       log("latdevice = $latDevice");
       log("lngdevice = $lngDevice");
+      log("StSubmitDb = $StSubmitDb");
     } catch (err) {
       log('Error:$err');
     } finally {
@@ -499,77 +500,76 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
     // } else {
     //   Get.defaultDialog(title: 'กรุณาเลือกหลักฐาน');
     // }
-    if (_image != null) {
-      final path = 'files/${_image?.path.split('/').last}';
 
-      final file = File(_image!.path!);
+    final path = 'files/${_image?.path.split('/').last}';
 
-      final ref = FirebaseStorage.instance.ref().child(path);
-      log(ref.toString());
+    final file = File(_image!.path!);
 
-      setState(() {
-        uploadTask = ref.putFile(file);
-      });
-      final snapshot = await uploadTask!.whenComplete(() {});
+    final ref = FirebaseStorage.instance.ref().child(path);
+    log(ref.toString());
 
-      final urlDownload = await snapshot.ref.getDownloadURL();
+    setState(() {
+      uploadTask = ref.putFile(file);
+    });
+    final snapshot = await uploadTask!.whenComplete(() {});
 
-      log('Download Link:$urlDownload');
-      log('mid ' + latDevice.toString());
+    final urlDownload = await snapshot.ref.getDownloadURL();
 
-      if (isImage == true) {
-        //update image
-        MissionCompDto mdto = MissionCompDto(
-            mcDatetime: DateTime.parse(dateTime),
-            mcLat: latDevice,
-            mcLng: lngDevice,
-            mcMasseage: '',
-            mcPhoto: urlDownload,
-            mcStatus: 1,
-            mcText: answerPass.text,
-            mcVideo: '',
-            misId: misID,
-            teamId: teamID);
-        debugPrint(missionCompDtoToJson(mdto));
-        var missionComp = await missionCompService.insertMissionComps(mdto);
+    log('Download Link:$urlDownload');
+    log('mid ' + latDevice.toString());
 
-        missionComp.data;
-        mcID = missionComp.data.mcId.toString();
+    if (isImage == true) {
+      //update image
+      MissionCompDto mdto = MissionCompDto(
+          mcDatetime: DateTime.parse(dateTime),
+          mcLat: latDevice,
+          mcLng: lngDevice,
+          mcMasseage: '',
+          mcPhoto: urlDownload,
+          mcStatus: 1,
+          mcText: answerPass.text,
+          mcVideo: '',
+          misId: misID,
+          teamId: teamID);
+      debugPrint(missionCompDtoToJson(mdto));
+      var missionComp = await missionCompService.insertMissionComps(mdto);
 
-        mc = {
-          'notitype': 'mission',
-          'mcid': mcID,
-          'mission': misName,
-          'team': teamName
-        };
-        log('img ${missionComp.data.misId}');
-      } else {
-        //update video
-        MissionCompDto mdto = MissionCompDto(
-            mcDatetime: DateTime.parse(dateTime),
-            mcLat: latDevice,
-            mcLng: lngDevice,
-            mcMasseage: '',
-            mcPhoto: '',
-            mcStatus: 1,
-            mcText: answerPass.text,
-            mcVideo: urlDownload,
-            misId: misID,
-            teamId: teamID);
-        var missionComp = await missionCompService.insertMissionComps(mdto);
-        mcID = missionComp.data.mcId.toString();
+      missionComp.data;
+      mcID = missionComp.data.mcId.toString();
 
-        mc = {
-          'notitype': 'mission',
-          'mcid': mcID,
-          'mission': misName,
-          'team': teamName
-        };
-        log('mcc$mc');
-        log('one $onesingnalId');
-      }
-      _image = null;
+      mc = {
+        'notitype': 'mission',
+        'mcid': mcID,
+        'mission': misName,
+        'team': teamName
+      };
+      log('img ${missionComp.data.misId}');
+    } else {
+      //update video
+      MissionCompDto mdto = MissionCompDto(
+          mcDatetime: DateTime.parse(dateTime),
+          mcLat: latDevice,
+          mcLng: lngDevice,
+          mcMasseage: '',
+          mcPhoto: '',
+          mcStatus: 1,
+          mcText: answerPass.text,
+          mcVideo: urlDownload,
+          misId: misID,
+          teamId: teamID);
+      var missionComp = await missionCompService.insertMissionComps(mdto);
+      mcID = missionComp.data.mcId.toString();
+
+      mc = {
+        'notitype': 'mission',
+        'mcid': mcID,
+        'mission': misName,
+        'team': teamName
+      };
+      log('mcc$mc');
+      log('one $onesingnalId');
     }
+    _image = null;
 
     if (deviceState == null || deviceState.userId == null) return;
 
@@ -638,10 +638,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           cardDetailMis(),
-                          if (StSubmitDb == 0 ||
-                              StSubmitDb == 2 ||
-                              StSubmitDb == 4 ||
-                              misType == 12)
+                          if (StSubmitDb != 1 && misType == "12")
                             SizedBox(
                               width: Get.width,
                               child: Padding(
@@ -1045,10 +1042,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
       children: [
         SizedBox(
           width: 200,
-          child: StSubmitDb == 4 ||
-                  StSubmitDb == 5 ||
-                  _image != null ||
-                  answerShow == true
+          child: (StSubmitDb == 4 || StSubmitDb == 5)
               ? ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Get.theme.colorScheme.primary,
@@ -1057,7 +1051,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
                     //  _handleSendNotification();
 
                     await uploadFile();
-
+                    StSubmitDb = 1;
                     setState(() {
                       loadDataMethod = loadData();
                     });
