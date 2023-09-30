@@ -11,6 +11,7 @@ import 'package:miniworldapp/model/result/raceResult.dart';
 import 'package:miniworldapp/page/General/detil_race_host.dart';
 import 'package:miniworldapp/page/General/home_join.dart';
 import 'package:miniworldapp/page/Host/detil_mission.dart';
+import 'package:miniworldapp/page/Host/race_create.dart';
 
 import 'package:miniworldapp/page/Host/race_edit.dart';
 
@@ -76,101 +77,122 @@ class _Home_createState extends State<Home_create> {
 
   RaceCreate() {
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Get.to(() => RaceCreatePage());
+        },     
+        icon: const Icon(Icons.add, color: Colors.white),
+        label: Text("สร้างห้อง",
+            style: Get.theme.textTheme.bodyMedium!
+                .copyWith(fontWeight: FontWeight.bold,color: Colors.white)),
+        backgroundColor: Colors.amber,
+      ),
       body: RefreshIndicator(
         onRefresh: refresh,
         child: FutureBuilder(
             future: loadDataMethod,
             builder: (context, AsyncSnapshot snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                return GridView.count(
-                  crossAxisCount: 2,
-                  padding: EdgeInsets.only(top: 10),
-                  children: race.where((e) => e.raceStatus != 4).map((element) {
-                    //IDrace = element.raceId;
-                    final theme = Theme.of(context);
-                    final textTheme = theme.textTheme;
-                    return Padding(
-                      padding: const EdgeInsets.only(
-                          left: 2.5, right: 2.5, bottom: 5),
-                      //child: Stack(
-                      //  children: [
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 2,
+                return Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.only(top: 10),
+                    children:
+                        race.where((e) => e.raceStatus != 4).map((element) {
+                      //IDrace = element.raceId;
+                      final theme = Theme.of(context);
+                      final textTheme = theme.textTheme;
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 10, left: 10),
+                        //child: Stack(
+                        //  children: [
+                        child: SizedBox(
+                          height: 150,
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                width: 2,
+                                color: Colors.white,
+                              ),
+                              borderRadius:
+                                  BorderRadius.circular(20.0), //<-- SEE HERE
+                            ),
                             color: Colors.white,
-                          ),
-                          borderRadius:
-                              BorderRadius.circular(20.0), //<-- SEE HERE
-                        ),
-                        color: Colors.white,
-                        clipBehavior: Clip.hardEdge,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12.0),
-                          splashColor: Colors.blue.withAlpha(30),
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => DetailHost()));
-                            context.read<AppData>().idrace = element.raceId;
-                          },
-                          child: GridTile(
-                            // crossAxisAlignment: CrossAxisAlignment.start,
+                            clipBehavior: Clip.hardEdge,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(12.0),
+                              splashColor: Colors.blue.withAlpha(30),
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => DetailHost()));
+                                context.read<AppData>().idrace = element.raceId;
+                              },
+                              child: GridTile(
+                                // crossAxisAlignment: CrossAxisAlignment.start,
 
-                            child: Image.network(element.raceImage,
-                                // width: Get.width,
-                                // height: Get.width * 0.5625,
-                                fit: BoxFit.cover),
-                            footer: Container(
-                                color: Get.theme.colorScheme.onBackground
-                                    .withOpacity(0.5),
-                                padding:
-                                    const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: Text(element.raceName,
-                                             softWrap: false,
-                                                maxLines: 1,
-                                                overflow:
-                                                    TextOverflow.ellipsis, // new
-                                              style: Get.textTheme.bodyMedium!
-                                                  .copyWith(
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Get.theme.colorScheme
-                                                          .onPrimary)),
+                                child: Image.network(element.raceImage,
+                                    // width: Get.width,
+                                    // height: Get.width * 0.5625,
+                                    fit: BoxFit.cover),
+                                footer: Container(
+                                    color: Get.theme.colorScheme.onBackground
+                                        .withOpacity(0.5),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: Text(element.raceName,
+                                                  softWrap: false,
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow
+                                                      .ellipsis, // new
+                                                  style: Get
+                                                      .textTheme.bodyMedium!
+                                                      .copyWith(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Get
+                                                              .theme
+                                                              .colorScheme
+                                                              .onPrimary)),
+                                            ),
+                                            Text("# ${element.raceId}",
+                                                style: Get.textTheme.bodySmall!
+                                                    .copyWith(
+                                                        color: Get
+                                                            .theme
+                                                            .colorScheme
+                                                            .onPrimary)),
+                                          ],
                                         ),
-                                        Text("# ${element.raceId}",
+                                        Container(height: 5),
+                                        // Text("ปิดรับสมัคร: " +
+                                        //     formatter.formatInBuddhistCalendarThai(
+                                        //         element.raceTimeFn)),
+                                        Text("สถานที่: ${element.raceLocation}",
                                             style: Get.textTheme.bodySmall!
                                                 .copyWith(
                                                     color: Get.theme.colorScheme
-                                                        .onPrimary)),
+                                                        .onPrimary
+                                                        .withOpacity(0.8))),
+                                        Container(height: 5),
                                       ],
-                                    ),
-                                    Container(height: 5),
-                                    // Text("ปิดรับสมัคร: " +
-                                    //     formatter.formatInBuddhistCalendarThai(
-                                    //         element.raceTimeFn)),
-                                    Text("สถานที่: ${element.raceLocation}",
-                                        style: Get.textTheme.bodySmall!
-                                            .copyWith(
-                                                color: Get
-                                                    .theme.colorScheme.onPrimary
-                                                    .withOpacity(0.8))),
-                                    Container(height: 5),
-                                  ],
-                                )),
+                                    )),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  }).toList(),
+                      );
+                    }).toList(),
+                  ),
                 );
               } else {
                 return Container();

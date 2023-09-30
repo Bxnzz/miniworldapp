@@ -219,45 +219,45 @@ class _HomeState extends State<Home> {
             child: Text('data'),
           ),
         ][currentPageIndex],
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.only(bottom: 10, right: 5),
-          child: SpeedDial(
-            child: const Icon(Icons.add),
-            speedDialChildren: <SpeedDialChild>[
-              SpeedDialChild(
-                child: const FaIcon(FontAwesomeIcons.squarePlus),
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.pink,
-                label: 'สร้างการแข่งขัน',
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const RaceCreatePage()));
-                  setState(() {
-                    _text = 'สร้างการแข่งขัน';
-                  });
-                },
-              ),
-              SpeedDialChild(
-                child: const FaIcon(FontAwesomeIcons.eye),
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.blue,
-                label: 'เข้าชมการแข่งขัน',
-                onPressed: () {
-                  Get.to(ListSpactator());
-                  setState(() {
-                    _text = '"เข้าชมการแข่งขัน"';
-                  });
-                },
-              ),
-            ],
-            closedForegroundColor: Colors.white,
-            openForegroundColor: Colors.amber,
-            closedBackgroundColor: Colors.amber,
-            openBackgroundColor: Colors.white,
-          ),
-        ),
+        // floatingActionButton: Padding(
+        //   padding: const EdgeInsets.only(bottom: 10, right: 5),
+        //   child: SpeedDial(
+        //     child: const Icon(Icons.add),
+        //     speedDialChildren: <SpeedDialChild>[
+        //       SpeedDialChild(
+        //         child: const FaIcon(FontAwesomeIcons.squarePlus),
+        //         foregroundColor: Colors.white,
+        //         backgroundColor: Colors.pink,
+        //         label: 'สร้างการแข่งขัน',
+        //         onPressed: () {
+        //           Navigator.push(
+        //               context,
+        //               MaterialPageRoute(
+        //                   builder: (context) => const RaceCreatePage()));
+        //           setState(() {
+        //             _text = 'สร้างการแข่งขัน';
+        //           });
+        //         },
+        //       ),
+        //       // SpeedDialChild(
+        //       //   child: const FaIcon(FontAwesomeIcons.eye),
+        //       //   foregroundColor: Colors.white,
+        //       //   backgroundColor: Colors.blue,
+        //       //   label: 'เข้าชมการแข่งขัน',
+        //       //   onPressed: () {
+        //       //     Get.to(ListSpactator());
+        //       //     setState(() {
+        //       //       _text = '"เข้าชมการแข่งขัน"';
+        //       //     });
+        //       //   },
+        //       // ),
+        //     ],
+        //     closedForegroundColor: Colors.white,
+        //     openForegroundColor: Colors.amber,
+        //     closedBackgroundColor: Colors.amber,
+        //     openBackgroundColor: Colors.white,
+        //   ),
+        // ),
         // appBar: PreferredSize(
         //   preferredSize: Size.fromHeight(50.0),
         //   child: AppBar(

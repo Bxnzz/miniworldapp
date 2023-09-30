@@ -29,16 +29,14 @@ class _ListSpactatorState extends State<ListSpactator> {
   late Future<void> loadDataMethod;
   late RaceService raceService;
   late AttendService attendService;
-  List<AttendRace> idUserAttends= [];
-  List<AttendRace> teamIdAtt= [];
- 
+  List<AttendRace> idUserAttends = [];
+  List<AttendRace> teamIdAtt = [];
+
   Set<int> race_all = {};
   int hostID = 0;
   Set<int> teamMe = {};
 
-
   int idUser = 0;
- 
 
   @override
   void initState() {
@@ -46,7 +44,8 @@ class _ListSpactatorState extends State<ListSpactator> {
     // 2.1 object ของ service โดยต้องส่ง baseUrl (จาก provider) เข้าไปด้วย
     raceService = RaceService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
-    attendService = AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    attendService =
+        AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
     // 2.2 async method
     loadDataMethod = loadData();
@@ -57,48 +56,47 @@ class _ListSpactatorState extends State<ListSpactator> {
     try {
       idUser = context.read<AppData>().idUser;
       log('user ' + idUser.toString());
-      
+
       var r = await raceService.races();
       races = r.data;
       for (var re in races) {
-        if(re.raceStatus == 2){
-          log('race '+re.raceId.toString());
-        race_all.add(re.raceId);
+        if (re.raceStatus == 2) {
+          log('race ' + re.raceId.toString());
+          race_all.add(re.raceId);
         }
-        
       }
 
-      
-    //  log('status ' + status.toString());
+      //  log('status ' + status.toString());
 
       var t = await attendService.attendByUserID(userID: idUser);
       teamAttends = t.data;
-    //  hostID = t.data.first
-    
+      //  hostID = t.data.first
+
       for (var tm in teamAttends) {
         log(tm.team.raceId.toString());
         teamMe.add(tm.team.raceId);
       }
-      log('race '+teamMe.toString());
+      log('race ' + teamMe.toString());
 
       var a = await attendService.attendsAll();
-     // attends = a.data;
-    
-   idUserAttends = a.data.where((element) => teamMe.contains(element.team.raceId) == false).toList();
-   
-     for (var att in idUserAttends) {
-      
-       log(att.userId.toString());
-      race_all.add(att.team.raceId);
-       log('race '+race_all.toString());
-     }
-     
+      // attends = a.data;
+
+      idUserAttends = a.data
+          .where((element) => teamMe.contains(element.team.raceId) == false)
+          .toList();
+
+      for (var att in idUserAttends) {
+        log(att.userId.toString());
+        race_all.add(att.team.raceId);
+        log('race ' + race_all.toString());
+      }
     } catch (err) {
       log('Error:$err');
     } finally {
       stopLoading();
     }
   }
+
   Future refresh() async {
     setState(() {
       loadDataMethod = loadData();
@@ -108,7 +106,11 @@ class _ListSpactatorState extends State<ListSpactator> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Center(child: Text('โหมดผู้ชม')),),
+      
+      appBar: AppBar(
+        automaticallyImplyLeading: false, 
+        title: const Center(child: Text('โหมดผู้ชม')),
+      ),
       body: RefreshIndicator(
         onRefresh: refresh,
         child: FutureBuilder(
@@ -118,90 +120,96 @@ class _ListSpactatorState extends State<ListSpactator> {
                 return GridView.count(
                   crossAxisCount: 2,
                   padding: EdgeInsets.only(top: 10),
-                  children: races.where((element) => element.raceStatus == 2 && element.userId != idUser && race_all.contains(element.raceId)&& teamMe.contains(element.raceId) == false).map((e) {
-                    return  Padding(
-                      padding: const EdgeInsets.only(
-                          left: 2.5, right: 2.5, bottom: 5),
-                      child:  Card(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 2,
-                                  color: Colors.white,
-                                ),
-                                borderRadius:
-                                    BorderRadius.circular(20.0), //<-- SEE HERE
-                              ),
-                              //  shadowColor: ,
+                  children: races
+                      .where((element) =>
+                          element.raceStatus == 2 &&
+                          element.userId != idUser &&
+                          race_all.contains(element.raceId) &&
+                          teamMe.contains(element.raceId) == false)
+                      .map((e) {
+                    return Padding(
+                        padding: const EdgeInsets.only(
+                            left: 2.5, right: 2.5, bottom: 5),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              width: 2,
                               color: Colors.white,
-                              clipBehavior: Clip.hardEdge,
-      
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(12.0),
-                                splashColor: Colors.blue.withAlpha(30),
-                                onTap: () {
-                                  Get.to(Spectator());
-                                  context.read<AppData>().idrace = e.raceId;
-                                  log(e.raceId.toString());
-                                },
-                                child: GridTile(
-                                    // crossAxisAlignment: CrossAxisAlignment.start,
-                                    child: Image.network(e.raceImage,
-                                        //  width: Get.width,
-                                        //  height: Get.width*0.5625/2,
-                                        fit: BoxFit.cover),
-                                    footer: Container(
-                                      color: Get.theme.colorScheme.onBackground
-                                          .withOpacity(0.5),
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 5, 10, 0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                            ),
+                            borderRadius:
+                                BorderRadius.circular(20.0), //<-- SEE HERE
+                          ),
+                          //  shadowColor: ,
+                          color: Colors.white,
+                          clipBehavior: Clip.hardEdge,
+
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12.0),
+                            splashColor: Colors.blue.withAlpha(30),
+                            onTap: () {
+                              Get.to(Spectator());
+                              context.read<AppData>().idrace = e.raceId;
+                              log(e.raceId.toString());
+                            },
+                            child: GridTile(
+                                // crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Image.network(e.raceImage,
+                                    //  width: Get.width,
+                                    //  height: Get.width*0.5625/2,
+                                    fit: BoxFit.cover),
+                                footer: Container(
+                                  color: Get.theme.colorScheme.onBackground
+                                      .withOpacity(0.5),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(e.raceName,
-                                                  style: Get
-                                                      .textTheme.bodyMedium!
-                                                      .copyWith(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Get
-                                                              .theme
-                                                              .colorScheme
-                                                              .onPrimary)),
-                                              Text("# ${e.raceId}",
-                                                  style: Get
-                                                      .textTheme.bodySmall!
-                                                      .copyWith(
-                                                          color: Get
-                                                              .theme
-                                                              .colorScheme
-                                                              .onPrimary)),
-                                            ],
+                                          Expanded(
+                                            child: Text(e.raceName,
+                                                softWrap: false,
+                                                maxLines: 1,
+                                                overflow:
+                                                    TextOverflow.ellipsis, // new
+                                                style: Get.textTheme.bodyMedium!
+                                                    .copyWith(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Get
+                                                            .theme
+                                                            .colorScheme
+                                                            .onPrimary)),
                                           ),
-                                          Container(height: 5),
-                                          // Text("ปิดรับสมัคร: " +
-                                          //     formatter.formatInBuddhistCalendarThai(
-                                          //         element.raceTimeFn)),
-                                          Text(
-                                              "สถานที่: " +
-                                                  e.raceLocation,
+                                          Text("# ${e.raceId}",
                                               style: Get.textTheme.bodySmall!
                                                   .copyWith(
-                                                      color: Get.theme
-                                                          .colorScheme.onPrimary
-                                                          .withOpacity(0.8))),
-                                          Container(height: 5),
-                                          
+                                                      color: Get
+                                                          .theme
+                                                          .colorScheme
+                                                          .onPrimary)),
                                         ],
                                       ),
-                                    )),
-                              ),
-                      )
-                    );
+                                      Container(height: 5),
+                                      // Text("ปิดรับสมัคร: " +
+                                      //     formatter.formatInBuddhistCalendarThai(
+                                      //         element.raceTimeFn)),
+                                      Text("สถานที่: " + e.raceLocation,
+                                          style: Get.textTheme.bodySmall!
+                                              .copyWith(
+                                                  color: Get.theme.colorScheme
+                                                      .onPrimary
+                                                      .withOpacity(0.8))),
+                                      Container(height: 5),
+                                    ],
+                                  ),
+                                )),
+                          ),
+                        ));
                   }).toList(),
                 );
               } else {
