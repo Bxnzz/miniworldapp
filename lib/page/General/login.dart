@@ -428,10 +428,24 @@ class _LoginState extends State<Login> {
                                                       'notitype'] ==
                                                   'startgame') {
                                                 Get.defaultDialog(
+                                                  barrierDismissible: false,
                                                         title:
-                                                            'เริ่มการแข่งขัน')
-                                                    .then((value) => Get.to(() =>
-                                                        PlayerRaceStartMenu()));
+                                                            'เริ่มการแข่งขัน'
+                                                            ,confirm: ElevatedButton(onPressed: (){
+                                                           if(Get.currentRoute == '/Lobby'){
+                                                           Get.back();
+                                                           Get.back();
+                                                           Get.to(()=>PlayerRaceStartMenu());
+                                                           }else{
+                                                           Get.back();
+                                                           Get.to(()=>PlayerRaceStartMenu());
+                                                           }
+
+                                                            }, child: Text('เข้าการแข่งขัน')));
+                                                    // .then(
+                                                    //   (value) => Get.off(() =>
+                                                    //     const PlayerRaceStartMenu())
+                                                    //     );
                                                 log('toasttt');
 
                                                 log('ภารกิจจ');
