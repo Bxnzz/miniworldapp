@@ -10,6 +10,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:miniworldapp/model/review.dart';
 import 'package:miniworldapp/service/race.dart';
@@ -172,14 +173,14 @@ class _ShareState extends State<Share> {
           "แชร์ผลการแข่งขัน",
           style: Get.textTheme.headlineSmall!.copyWith(color: Colors.white),
         ),
-        leading: IconButton(
-          icon: FaIcon(
-            FontAwesomeIcons.circleChevronLeft,
-            color: Colors.yellow,
-            size: 35,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        // leading: IconButton(
+        //   icon: FaIcon(
+        //     FontAwesomeIcons.circleChevronLeft,
+        //     color: Colors.yellow,
+        //     size: 35,
+        //   ),
+        //   onPressed: () => Navigator.of(context).pop(),
+        // ),
       ),
       body: FutureBuilder(
           future: loadDataMethod,
@@ -276,6 +277,13 @@ class _ShareState extends State<Share> {
                                         width: Get.width / 1.2,
                                         height: 500,
                                         decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Color(0x3f000000),
+                                              offset: Offset(0, 6),
+                                              blurRadius: 0.2,
+                                            ),
+                                          ],
                                           color: Colors.white,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(15)),
@@ -389,16 +397,47 @@ class _ShareState extends State<Share> {
                                           ],
                                         ),
                                       ),
+                                      // Positioned(
+                                      //   top: 483,
+                                      //   width: Get.width / 1.2,
+                                      //   height: 15,
+                                      //   child: Container(
+                                      //     height: 20,
+                                      //     decoration: BoxDecoration(
+                                      //       color: Color(0xffd3d8ff),
+                                      //       borderRadius: BorderRadius.all(
+                                      //           Radius.circular(21)),
+                                      //       boxShadow: [
+                                      //         BoxShadow(
+                                      //           color: Color(0x3f000000),
+                                      //           offset: Offset(0, 4),
+                                      //           blurRadius: 0,
+                                      //         ),
+                                      //       ],
+                                      //     ),
+                                      //   ),
+                                      // ),
                                       Positioned(
                                         top: 280,
                                         right: 30,
                                         child: crown(),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 )
                               : Container(),
-                      SizedBox(
+                      Gap(10),
+                      Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0x3f000000),
+                              offset: Offset(0, 6),
+                              blurRadius: 0.2,
+                            ),
+                          ],
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                        ),
                         width: 120,
                         child: ElevatedButton(
                             onPressed: () {

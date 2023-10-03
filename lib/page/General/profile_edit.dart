@@ -259,14 +259,7 @@ class _Profile_editState extends State<Profile_edit> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: FaIcon(
-            FontAwesomeIcons.circleChevronLeft,
-            color: Colors.yellow,
-            size: 35,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        automaticallyImplyLeading: false,
         title: Text(
           "แก้ไขโปรไฟล์",
           style: textTheme.displayMedium?.copyWith(

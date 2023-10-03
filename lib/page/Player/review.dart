@@ -13,6 +13,7 @@ import 'package:miniworldapp/service/attend.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:miniworldapp/service/review.dart';
 import 'package:provider/provider.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 
 import '../../widget/loadData.dart';
 
@@ -36,6 +37,8 @@ class _ReviewPageState extends State<ReviewPage> {
   TextEditingController revText = TextEditingController();
 
   late Future<void> loadDataMethods;
+
+  final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     // TODO: implement initState
@@ -68,32 +71,41 @@ class _ReviewPageState extends State<ReviewPage> {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     return Scaffold(
+      extendBodyBehindAppBar: false,
       backgroundColor: Color.fromARGB(255, 189, 75, 255),
-      appBar: PreferredSize(
-          preferredSize: Size(Get.width, Get.height),
-          child: SafeArea(
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  icon: const FaIcon(
-                    FontAwesomeIcons.circleChevronLeft,
-                    color: Colors.yellow,
-                    size: 35,
-                  ),
-                ),
-                Text(
-                  "รีวิวการแข่งขัน",
-                  style: textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 20),
-                )
-              ],
-            ),
-          )),
+      appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: Text("รีวิว",
+              style: textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.amber,
+              ))),
+      //  PreferredSize(
+      //     preferredSize: Size(Get.width, Get.height),
+      //     child: SafeArea(
+      //       child: Row(
+      //         children: [
+      //           // IconButton(
+      //           //   onPressed: () {
+      //           //     Navigator.of(context).pop();
+      //           //   },
+      //           //   icon: const FaIcon(
+      //           //     FontAwesomeIcons.circleChevronLeft,
+      //           //     color: Colors.yellow,
+      //           //     size: 35,
+      //           //   ),
+      //           // ),
+      //           Text(
+      //             "รีวิวการแข่งขัน",
+      //             style: textTheme.bodyLarge?.copyWith(
+      //                 fontWeight: FontWeight.bold,
+      //                 color: Colors.white,
+      //                 fontSize: 20),
+      //           )
+      //         ],
+      //       ),
+      //     )),
       body: SingleChildScrollView(
         child: FutureBuilder(
             future: loadDataMethods,
@@ -102,7 +114,6 @@ class _ReviewPageState extends State<ReviewPage> {
                 return SafeArea(
                   child: Center(
                     child: Stack(
-                      clipBehavior: Clip.hardEdge,
                       children: [
                         Positioned(
                           left: Get.width / 4,
@@ -113,7 +124,7 @@ class _ReviewPageState extends State<ReviewPage> {
                           margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
                           elevation: 0.0,
                           child: SizedBox(
-                            height: Get.height / 2,
+                            height: Get.height / 2 + 50,
                             width: Get.width / 1.3,
                             child: InkWell(
                               onTap: () {},
@@ -125,13 +136,13 @@ class _ReviewPageState extends State<ReviewPage> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text("\" ${userName} \""),
-                                    Text("คุณชอบการแข่งขันนี้ไหม  ?",
+                                    Text("คุณชอบการแข่งขันนี้ไหม?",
                                         style: Get.textTheme.headlineMedium!
                                             .copyWith()),
-                                    ratungBar(),
                                     Text("ให้คะแนนเราสิ",
                                         style: Get.textTheme.headlineMedium!
                                             .copyWith()),
+                                    ratungBar(),
                                     SizedBox(
                                       height: Get.height / 5,
                                       width: Get.width / 1.5,

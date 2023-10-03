@@ -166,7 +166,7 @@ class _RankRaceState extends State<RankRace> {
           ),
           IconButton(
               onPressed: () {
-                Get.to(Share());
+                Get.to(() => Share(), fullscreenDialog: true);
               },
               icon: Container(
                   height: 40,
