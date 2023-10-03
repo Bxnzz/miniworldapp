@@ -131,7 +131,7 @@ class _MissioncreateState extends State<Missioncreate> {
               return Container();
             }
             return Scaffold(
-                body: SafeArea(
+                body: SingleChildScrollView(
               child: Column(
                 children: [
                   SizedBox(
@@ -177,231 +177,227 @@ class _MissioncreateState extends State<Missioncreate> {
   }
 
   missionInput() {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Column(
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 15),
+          child: upImg(),
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 15),
-              child: upImg(),
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text('ชื่อภารกิจ'),
-                ),
-                SizedBox(
-                  width: 250,
-                  child: TextFormField(
-                    controller: nameMission,
-                    decoration: const InputDecoration(
-                      hintText: 'ชื่อภารกิจ',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text('คำอธิบาย'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    width: 250,
-                    child: TextFormField(
-                      controller: discripText,
-                      decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(15),
-                          hintText: 'คำอธิบาย...'),
-                      keyboardType: TextInputType.multiline,
-                      minLines: 3,
-                      maxLines: 4,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text('รัศมีแจ้งเตือนภารกิจ'),
-                ),
-                dropdownRadius()
-              ],
-            ),
             const Padding(
               padding: EdgeInsets.all(8.0),
-              child: Text('กรุณาเลือกประเภทภารกิจ'),
+              child: Text('ชื่อภารกิจ'),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Checkbox(
-                  value: _checkbox,
-                  onChanged: _checkbox2 == true
-                      ? null
-                      : (value) {
-                          setState(() {
-                            _checkbox = !_checkbox;
-                            if (_checkbox == true) {
-                              cb1 = '1';
-                            } else {
-                              cb1 = '';
-                              return;
-                            }
-                            log('cc1: ' + cb1);
-                          });
-                        },
+            SizedBox(
+              width: 250,
+              child: TextFormField(
+                controller: nameMission,
+                decoration: const InputDecoration(
+                  hintText: 'ชื่อภารกิจ',
                 ),
-                const Text('ข้อความ'),
-                Checkbox(
-                  value: _checkbox1,
-                  onChanged: _checkbox2 == true
-                      ? null
-                      : (value) {
-                          setState(() {
-                            _checkbox1 = !_checkbox1;
-
-                            if (_checkbox1 == true) {
-                              cb2 = '2';
-                            } else {
-                              cb2 = '';
-                              return;
-                            }
-                            log('cc2: ' + cb2.toString());
-                          });
-                        },
-                ),
-                const Text('สื่อ'),
-                Checkbox(
-                    value: _checkbox2,
-                    onChanged: _checkbox == true || _checkbox1 == true
-                        ? null
-                        : (value) {
-                            setState(() {
-                              _checkbox2 = !_checkbox2;
-                              //   log(_checkbox2.toString());
-                              if (_checkbox2 == true) {
-                                cb3 = '3';
-                              } else {
-                                cb3 = '';
-                                return;
-                              }
-                              log('cc3: ' + cb3.toString());
-                            });
-                          }),
-                const Text('ไม่มีการส่ง'),
-              ],
-            ),
-            Center(
-              child: ElevatedButton(
-                  child: const Text('สร้างภารกิจ'),
-                  onPressed: () async {
-                    sqnum = 0;
-                    fristMis == 0;
-                    setState(() {
-                      if (sqnum == 2) {
-                        sqnum = 0;
-                      }
-                    });
-                    if (_image == null) {
-                      // log("team fail");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('กรุณาใส่รูปภาพ...')),
-                      );
-                      return;
-                    }
-                    final path = 'files/${_image?.path.split('/').last}';
-                    final file = File(_image!.path);
-                    final ref = FirebaseStorage.instance.ref().child(path);
-                    log(ref.toString());
-
-                    setState(() {
-                      uploadTask = ref.putFile(file);
-                    });
-                    final snapshot = await uploadTask!.whenComplete(() {});
-
-                    final urlDownload = await snapshot.ref.getDownloadURL();
-                    log('Download Link:$urlDownload');
-
-                    img = urlDownload;
-
-                    fristMis = lastNum;
-                    log('numold ' + fristMis.toString());
-
-                    if (fristMis == 0) {
-                      fristMis = fristMis + 1;
-                    } else if (fristMis >= 1) {
-                      fristMis++;
-                    }
-                    log('num ' + fristMis.toString());
-
-                    if (lats == '' && longs == '') {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('กรุณาหาจุดภารกิจ...')),
-                      );
-                    }
-
-                    cb = cb1 + cb2 + cb3;
-                    log('ch ' + cb);
-                    mType = int.parse(cb);
-                    log('ty: ' + mType.toString());
-
-                    MissionDto missionDto = MissionDto(
-                        misName: nameMission.text,
-                        misDiscrip: discripText.text,
-                        misDistance: int.parse(selectedValue!),
-                        misType: mType,
-                        misSeq: sqMis,
-                        misMediaUrl: urlDownload,
-                        misLat: double.parse(lats),
-                        misLng: double.parse(longs),
-                        raceId: idrace);
-
-                    log(lats);
-                    //print(double.parse('lat'+lats));
-                    startLoading(context);
-                    var mission =
-                        await missionService.insertMissions(missionDto);
-                    stopLoading();
-                    if (mission.response.statusCode == 200) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('mision Successful')),
-                      );
-                      Get.off(()=>DetailMission());
-                     
-                      log("race Successful");
-
-                      // if (fristMis == 0) {
-                      //   Get.to(DetailMission());
-                      // } else {
-                      //   Navigator.of(context).pop();
-                      // }
-                      //  if()
-                      return;
-                    } else {
-                      // log("team fail");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('mission fail try agin!')),
-                      );
-
-                      return;
-                    }
-                  }),
+              ),
             ),
           ],
         ),
-      ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text('คำอธิบาย'),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: 250,
+                child: TextFormField(
+                  controller: discripText,
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.all(15),
+                      hintText: 'คำอธิบาย...'),
+                  keyboardType: TextInputType.multiline,
+                  minLines: 3,
+                  maxLines: 4,
+                ),
+              ),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text('รัศมีแจ้งเตือนภารกิจ'),
+            ),
+            dropdownRadius()
+          ],
+        ),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text('กรุณาเลือกประเภทภารกิจ'),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Checkbox(
+              value: _checkbox,
+              onChanged: _checkbox2 == true
+                  ? null
+                  : (value) {
+                      setState(() {
+                        _checkbox = !_checkbox;
+                        if (_checkbox == true) {
+                          cb1 = '1';
+                        } else {
+                          cb1 = '';
+                          return;
+                        }
+                        log('cc1: ' + cb1);
+                      });
+                    },
+            ),
+            const Text('ข้อความ'),
+            Checkbox(
+              value: _checkbox1,
+              onChanged: _checkbox2 == true
+                  ? null
+                  : (value) {
+                      setState(() {
+                        _checkbox1 = !_checkbox1;
+
+                        if (_checkbox1 == true) {
+                          cb2 = '2';
+                        } else {
+                          cb2 = '';
+                          return;
+                        }
+                        log('cc2: ' + cb2.toString());
+                      });
+                    },
+            ),
+            const Text('สื่อ'),
+            Checkbox(
+                value: _checkbox2,
+                onChanged: _checkbox == true || _checkbox1 == true
+                    ? null
+                    : (value) {
+                        setState(() {
+                          _checkbox2 = !_checkbox2;
+                          //   log(_checkbox2.toString());
+                          if (_checkbox2 == true) {
+                            cb3 = '3';
+                          } else {
+                            cb3 = '';
+                            return;
+                          }
+                          log('cc3: ' + cb3.toString());
+                        });
+                      }),
+            const Text('ไม่มีการส่ง'),
+          ],
+        ),
+        Center(
+          child: ElevatedButton(
+              child: const Text('สร้างภารกิจ'),
+              onPressed: () async {
+                sqnum = 0;
+                fristMis == 0;
+                setState(() {
+                  if (sqnum == 2) {
+                    sqnum = 0;
+                  }
+                });
+                if (_image == null) {
+                  // log("team fail");
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('กรุณาใส่รูปภาพ...')),
+                  );
+                  return;
+                }
+                final path = 'files/${_image?.path.split('/').last}';
+                final file = File(_image!.path);
+                final ref = FirebaseStorage.instance.ref().child(path);
+                log(ref.toString());
+
+                setState(() {
+                  uploadTask = ref.putFile(file);
+                });
+                final snapshot = await uploadTask!.whenComplete(() {});
+
+                final urlDownload = await snapshot.ref.getDownloadURL();
+                log('Download Link:$urlDownload');
+
+                img = urlDownload;
+
+                fristMis = lastNum;
+                log('numold ' + fristMis.toString());
+
+                if (fristMis == 0) {
+                  fristMis = fristMis + 1;
+                } else if (fristMis >= 1) {
+                  fristMis++;
+                }
+                log('num ' + fristMis.toString());
+
+                if (lats == '' && longs == '') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('กรุณาหาจุดภารกิจ...')),
+                  );
+                }
+
+                cb = cb1 + cb2 + cb3;
+                log('ch ' + cb);
+                mType = int.parse(cb);
+                log('ty: ' + mType.toString());
+
+                MissionDto missionDto = MissionDto(
+                    misName: nameMission.text,
+                    misDiscrip: discripText.text,
+                    misDistance: int.parse(selectedValue!),
+                    misType: mType,
+                    misSeq: sqMis,
+                    misMediaUrl: urlDownload,
+                    misLat: double.parse(lats),
+                    misLng: double.parse(longs),
+                    raceId: idrace);
+
+                log(lats);
+                //print(double.parse('lat'+lats));
+                startLoading(context);
+                var mission =
+                    await missionService.insertMissions(missionDto);
+                stopLoading();
+                if (mission.response.statusCode == 200) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('mision Successful')),
+                  );
+                  Get.off(()=>DetailMission());
+                 
+                  log("race Successful");
+
+                  // if (fristMis == 0) {
+                  //   Get.to(DetailMission());
+                  // } else {
+                  //   Navigator.of(context).pop();
+                  // }
+                  //  if()
+                  return;
+                } else {
+                  // log("team fail");
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('mission fail try agin!')),
+                  );
+
+                  return;
+                }
+              }),
+        ),
+      ],
     );
   }
 
@@ -448,7 +444,7 @@ class _MissioncreateState extends State<Missioncreate> {
                           log('message');
                         },
                         icon: const FaIcon(
-                          FontAwesomeIcons.camera,
+                          FontAwesomeIcons.images,
                           size: 25,
                         ))),
               )
@@ -470,7 +466,7 @@ class _MissioncreateState extends State<Missioncreate> {
                       log('message');
                     },
                     icon: FaIcon(
-                      FontAwesomeIcons.camera,
+                      FontAwesomeIcons.images,
                       size: 30,
                       color: Get.theme.colorScheme.onPrimary,
                     ))),
