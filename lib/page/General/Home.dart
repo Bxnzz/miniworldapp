@@ -120,25 +120,27 @@ class _HomeState extends State<Home> {
   late UserService userService;
 
   Future<bool> _onWillPop() async {
-  return (await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: new Text('ออกจากแอปพลิเคชัน?'),
-          content: new Text('ต้องการออกจากแอปพลิเคชันหรือไม่'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false), //<-- SEE HERE
-              child: new Text('ไม่'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true), // <-- SEE HERE
-              child: new Text('ใช่'),
-            ),
-          ],
-        ),
-      )) ??
-      false;
-}
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: new Text('ออกจากแอปพลิเคชัน?'),
+            content: new Text('ต้องการออกจากแอปพลิเคชันหรือไม่'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () =>
+                    Navigator.of(context).pop(false), //<-- SEE HERE
+                child: new Text('ไม่'),
+              ),
+              TextButton(
+                onPressed: () =>
+                    Navigator.of(context).pop(true), // <-- SEE HERE
+                child: new Text('ใช่'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
 
   @override
   void initState() {
@@ -163,38 +165,33 @@ class _HomeState extends State<Home> {
       child: Scaffold(
         bottomNavigationBar: SalomonBottomBar(
           currentIndex: currentPageIndex,
-          
           onTap: (i) => setState(() => currentPageIndex = i),
           items: [
             /// Home
             SalomonBottomBarItem(
-              icon: FaIcon(FontAwesomeIcons.house),
-              title: Text("หน้าหลัก"),
-              selectedColor: Colors.pink,
-              unselectedColor: Color.fromARGB(255, 200, 69, 223)
-            ),
-    
+                icon: FaIcon(FontAwesomeIcons.house),
+                title: Text("หน้าหลัก"),
+                selectedColor: Colors.pink,
+                unselectedColor: Color.fromARGB(255, 200, 69, 223)),
+
             /// Likes
             SalomonBottomBarItem(
-              icon: const FaIcon(FontAwesomeIcons.users),
-              title: const Text("การแข่งขัน"),
-              selectedColor: Colors.pink,
-              unselectedColor: Color.fromARGB(255, 200, 69, 223)
-            ),
-    
+                icon: const FaIcon(FontAwesomeIcons.users),
+                title: const Text("การแข่งขัน"),
+                selectedColor: Colors.pink,
+                unselectedColor: Color.fromARGB(255, 200, 69, 223)),
+
             /// Search
             SalomonBottomBarItem(
-              icon: const FaIcon(FontAwesomeIcons.solidEye),
-              title: const Text("ผู้ชม"),
-              selectedColor: Colors.pink,
-              unselectedColor: Color.fromARGB(255, 200, 69, 223)
-            ),
-             SalomonBottomBarItem(
-              icon: const FaIcon(FontAwesomeIcons.userLarge),
-              title: const Text("โปรไฟล์"),
-              selectedColor: Colors.pink,
-              unselectedColor: Color.fromARGB(255, 200, 69, 223)
-            ),
+                icon: const FaIcon(FontAwesomeIcons.solidEye),
+                title: const Text("ผู้ชม"),
+                selectedColor: Colors.pink,
+                unselectedColor: Color.fromARGB(255, 200, 69, 223)),
+            SalomonBottomBarItem(
+                icon: const FaIcon(FontAwesomeIcons.userLarge),
+                title: const Text("โปรไฟล์"),
+                selectedColor: Colors.pink,
+                unselectedColor: Color.fromARGB(255, 200, 69, 223)),
           ],
         ),
         body: <Widget>[
@@ -216,7 +213,7 @@ class _HomeState extends State<Home> {
           Container(
             color: Colors.blue,
             alignment: Alignment.center,
-            child: Text('data'),
+            child: Profile_edit(),
           ),
         ][currentPageIndex],
         // floatingActionButton: Padding(
@@ -534,13 +531,15 @@ class mySearchDelegate extends SearchDelegate {
                   //  shadowColor: ,
                   color: Colors.white,
                   clipBehavior: Clip.hardEdge,
-              
+
                   child: InkWell(
                     borderRadius: BorderRadius.circular(12.0),
                     splashColor: Colors.blue.withAlpha(30),
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => DetailRace()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DetailRace()));
                       context.read<AppData>().idrace = element.raceId;
                     },
                     child: GridTile(
@@ -550,14 +549,15 @@ class mySearchDelegate extends SearchDelegate {
                             //  height: Get.width*0.5625/2,
                             fit: BoxFit.cover),
                         footer: Container(
-                          color:
-                              Get.theme.colorScheme.onBackground.withOpacity(0.5),
+                          color: Get.theme.colorScheme.onBackground
+                              .withOpacity(0.5),
                           padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(element.raceName,
                                       style: Get.textTheme.bodyMedium!.copyWith(

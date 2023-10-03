@@ -147,10 +147,10 @@ class _RankRaceState extends State<RankRace> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async {
-          Get.to(() => const Home());
-          return true;
-        },
+      onWillPop: () async {
+        Get.to(() => const Home());
+        return true;
+      },
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 224, 193, 246),
         appBar: AppBar(
@@ -290,10 +290,11 @@ class _RankRaceState extends State<RankRace> {
                                       ),
                                     ),
                                     Text(teamName2,
-                                        style: Get.textTheme.bodyLarge!.copyWith(
-                                            color:
-                                                Get.theme.colorScheme.onPrimary,
-                                            fontWeight: FontWeight.bold)),
+                                        style: Get.textTheme.bodyLarge!
+                                            .copyWith(
+                                                color: Get.theme.colorScheme
+                                                    .onPrimary,
+                                                fontWeight: FontWeight.bold)),
                                   ],
                                 ),
                                 Column(
@@ -317,10 +318,11 @@ class _RankRaceState extends State<RankRace> {
                                       ),
                                     ),
                                     Text(teamName3,
-                                        style: Get.textTheme.bodyLarge!.copyWith(
-                                            color:
-                                                Get.theme.colorScheme.onPrimary,
-                                            fontWeight: FontWeight.bold)),
+                                        style: Get.textTheme.bodyLarge!
+                                            .copyWith(
+                                                color: Get.theme.colorScheme
+                                                    .onPrimary,
+                                                fontWeight: FontWeight.bold)),
                                   ],
                                 ),
                               ],
@@ -384,7 +386,8 @@ class _RankRaceState extends State<RankRace> {
                                                               child: Image.asset(
                                                                   "assets/image/crown3.png"),
                                                             )
-                                                          : rewards.indexOf(e) >=
+                                                          : rewards.indexOf(
+                                                                      e) >=
                                                                   3
                                                               ? Container(
                                                                   width: 40,
@@ -421,7 +424,8 @@ class _RankRaceState extends State<RankRace> {
                                                       att.keys.first ==
                                                       e.teamId) ==
                                                   attendShow.where((atts) =>
-                                                      atts.keys.first == idUser))
+                                                      atts.keys.first ==
+                                                      idUser))
                                                 Text(
                                                   e.team.teamName + '(ทีมคุณ)',
                                                   style: TextStyle(
@@ -450,7 +454,7 @@ class _RankRaceState extends State<RankRace> {
                                             /// [{'130', ['kop', 'dan']}, {'129', ['bob']}
                                             /// , {'101', ['ar ap....']}]
                                             /// element.values.first => ['kop', 'dan']
-    
+
                                             return ListTile(
                                               title: Column(
                                                   mainAxisAlignment:
@@ -473,18 +477,12 @@ class _RankRaceState extends State<RankRace> {
                                                                           mainAxisAlignment:
                                                                               MainAxisAlignment.start,
                                                                           children: [
-                                                                            Text(te
-                                                                                .user
-                                                                                .userName),
+                                                                            Text(te.user.userName),
                                                                             CircleAvatar(
-                                                                              radius:
-                                                                                  Get.width / 6,
-                                                                              backgroundImage:
-                                                                                  NetworkImage(te.user.userImage),
+                                                                              radius: Get.width / 6,
+                                                                              backgroundImage: NetworkImage(te.user.userImage),
                                                                             ),
-                                                                            Text(te
-                                                                                .user
-                                                                                .userFullname),
+                                                                            Text(te.user.userFullname),
                                                                           ],
                                                                         ),
                                                                       ),
@@ -493,8 +491,7 @@ class _RankRaceState extends State<RankRace> {
                                                                         te.user
                                                                             .userDiscription,
                                                                         textAlign:
-                                                                            TextAlign
-                                                                                .center,
+                                                                            TextAlign.center,
                                                                       ),
                                                                     ));
                                                       },
@@ -514,11 +511,11 @@ class _RankRaceState extends State<RankRace> {
                                                                 child:
                                                                     GestureDetector(
                                                                   child: CircleAvatar(
-                                                                      radius: 25,
-                                                                      backgroundImage:
-                                                                          NetworkImage(te
-                                                                              .user
-                                                                              .userImage)),
+                                                                      radius:
+                                                                          25,
+                                                                      backgroundImage: NetworkImage(te
+                                                                          .user
+                                                                          .userImage)),
                                                                 ),
                                                               ),
                                                               Padding(
@@ -526,7 +523,8 @@ class _RankRaceState extends State<RankRace> {
                                                                     const EdgeInsets
                                                                             .only(
                                                                         top: 5,
-                                                                        left: 5),
+                                                                        left:
+                                                                            5),
                                                                 child: Text(
                                                                   te.user
                                                                       .userName,
