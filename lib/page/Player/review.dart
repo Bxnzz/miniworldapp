@@ -9,6 +9,7 @@ import 'package:miniworldapp/model/DTO/reviewDTO.dart';
 import 'package:miniworldapp/model/result/reviewResult.dart';
 import 'package:miniworldapp/page/General/Home.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
+import 'package:miniworldapp/page/Host/race_review.dart';
 import 'package:miniworldapp/service/attend.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:miniworldapp/service/review.dart';
@@ -194,7 +195,9 @@ class _ReviewPageState extends State<ReviewPage> {
                                                         content: Text(
                                                             'รีวิวสำเร็จ :)')),
                                                   );
-                                                  Get.to(() => Home());
+                                                  Get.back();
+                                                  Get.back();
+                                                  Get.to(() => raceReview());
                                                   return;
                                                 } else {
                                                   ScaffoldMessenger.of(context)
