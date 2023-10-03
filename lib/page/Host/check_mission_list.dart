@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ import 'package:miniworldapp/service/team.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:giffy_dialog/giffy_dialog.dart';
 
 import '../../model/DTO/raceStatusDTO.dart';
 import '../../model/mission.dart';
@@ -33,6 +35,7 @@ import '../../service/mission.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/reward.dart';
 import '../../widget/loadData.dart';
+import '../spectator/rank_spectator.dart';
 
 class CheckMissionList extends StatefulWidget {
   const CheckMissionList({super.key});
@@ -212,47 +215,66 @@ class _CheckMissionListState extends State<CheckMissionList> {
   // }
 
   void _processGame() async {
-    raceStatus = 4;
-    RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
-    var racestatus = await raceService.updateStatusRaces(racedto, idrace);
+    AwesomeDialog(
+      dialogBackgroundColor: Colors.white,
+      context: context,
+      dialogType: DialogType.warning,
+      animType: AnimType.bottomSlide,
+      headerAnimationLoop: false,
+      title: 'จบการแข่งขัน',
+      desc: 'ต้องการที่จะจบการแข่งขัน?',
+      btnOkText: "ยกเลิก",
+      btnCancelText: "ตกลง",
+      btnOkOnPress: () async {},
+      btnCancelColor: Colors.lightGreen,
+      btnOkColor: Colors.redAccent,
+      btnCancelOnPress: () async {
+        startLoading(context);
+        raceStatus = 4;
+        RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
+        var racestatus = await raceService.updateStatusRaces(racedto, idrace);
 
-    for (var i = 0; i < teamRewards.length; i++) {
-      log('Rank: ${i + 1} ${teamRewards[i].teamId} ${teamRewards[i].team.teamName} ${teamRewards[i].misId} ${teamRewards[i].mcDatetime}');
+        for (var i = 0; i < teamRewards.length; i++) {
+          log('Rank: ${i + 1} ${teamRewards[i].teamId} ${teamRewards[i].team.teamName} ${teamRewards[i].misId} ${teamRewards[i].mcDatetime}');
 
-      RewardDto rewardDto = RewardDto(
-          reType: i + 1, teamId: teamRewards[i].teamId, raceId: idrace);
-      log('re' + rewardDtoToJson(rewardDto));
-      // ('reward'+rewardDto.toString());
-      var reward = await rewardService.reward(rewardDto);
-    }
+          RewardDto rewardDto = RewardDto(
+              reType: i + 1, teamId: teamRewards[i].teamId, raceId: idrace);
+          log('re' + rewardDtoToJson(rewardDto));
+          // ('reward'+rewardDto.toString());
+          var reward = await rewardService.reward(rewardDto);
+        }
 
-    mc = {
-      'notitype': 'processgame',
-      'mcid': raceStatus,
-      'raceID': idrace,
-      'raceName': raceName
-    };
-    var notification1 = OSCreateNotification(
-        //playerID
-        additionalData: mc,
-        playerIds: playerIds,
-        content: raceName,
-        heading: "ประมวลผลการแข่งขัน",
-        //  iosAttachments: {"id1",urlImage},
-        // bigPicture: imUrlString,
-        buttons: [
-          OSActionButton(text: "ตกลง", id: "id1"),
-          OSActionButton(text: "ยกเลิก", id: "id2")
-        ]);
-    log('player ' + playerIds.toString());
+        // mc = {
+        //   'notitype': 'processgame',
+        //   'mcid': raceStatus,
+        //   'raceID': idrace,
+        //   'raceName': raceName
+        // };
+        // var notification1 = OSCreateNotification(
+        //     //playerID
+        //     additionalData: mc,
+        //     playerIds: playerIds,
+        //     content: raceName,
+        //     heading: "ประมวลผลการแข่งขัน",
+        //     //  iosAttachments: {"id1",urlImage},
+        //     // bigPicture: imUrlString,
+        //     buttons: [
+        //       OSActionButton(text: "ตกลง", id: "id1"),
+        //       OSActionButton(text: "ยกเลิก", id: "id2")
+        //     ]);
+        // log('player ' + playerIds.toString());
 
-    var response1 = await OneSignal.shared.postNotification(notification1);
+        // var response1 = await OneSignal.shared.postNotification(notification1);
 
-    Get.defaultDialog(title: 'ประมวลผลการแข่งขันแล้ว').then((value) => Get.off(
-          () => RankRace(),
-        ));
+        Get.off(() => RankRace());
 
-    context.read<AppData>().idrace = idrace;
+        context.read<AppData>().idrace = idrace;
+        setState(() {
+          loadDataMethod = loadData();
+        });
+        stopLoading();
+      },
+    ).show();
   }
 
   @override
@@ -265,8 +287,18 @@ class _CheckMissionListState extends State<CheckMissionList> {
         child: Scaffold(
           appBar: AppBar(
             actions: <Widget>[
+              IconButton(
+                icon: Image.asset(
+                  "assets/image/rank.png",
+                ),
+                onPressed: () {
+                  Get.to(RankSpectator());
+                  context.read<AppData>().idrace = idrace;
+                  log('raceeeeeeee' + idrace.toString());
+                },
+              ),
               Padding(
-                padding: const EdgeInsets.only(right: 10),
+                padding: const EdgeInsets.only(right: 5),
                 child: IconButton(
                   icon: Image.asset("assets/image/target.png"),
                   onPressed: () {
@@ -276,23 +308,8 @@ class _CheckMissionListState extends State<CheckMissionList> {
                     context.read<AppData>().idrace = idrace;
                   },
                 ),
-              )
+              ),
             ],
-            // Overide the default Back button
-            // automaticallyImplyLeading: false,
-            // leadingWidth: 100,
-            // leading: IconButton(
-            //   onPressed: () {
-            //     Navigator.of(context).pop();
-            //   },
-            //   icon: FaIcon(
-            //     FontAwesomeIcons.circleChevronLeft,
-            //     color: Colors.yellow,
-            //     size: 35,
-            //   ),
-            // ),
-
-            // other stuff
             title: Text('ตรวจสอบหลักฐาน'),
           ),
           body: FutureBuilder(
@@ -514,9 +531,19 @@ class _CheckMissionListState extends State<CheckMissionList> {
                                           log('remain ' + remainMC.toString());
 
                                           if (remainMC != 0) {
-                                            Get.defaultDialog(
-                                                title:
-                                                    'กรุณาตรวจสอบภารกิจให้เสร็จสิ้น');
+                                            AwesomeDialog(
+                                              context: context,
+                                              dialogType: DialogType.error,
+                                              animType: AnimType.bottomSlide,
+                                              headerAnimationLoop: false,
+                                              title:
+                                                  'มีหลักฐานที่ยังไม่ตรวจสอบ',
+                                              desc:
+                                                  'กรุณาตรวจสอบภารกิจให้เสร็จสิ้น?',
+                                              btnOkText: "ตกลง",
+                                              btnOkOnPress: () async {},
+                                              btnOkColor: Colors.redAccent,
+                                            ).show();
                                           } else {
                                             //loop เรียงลำดับ
                                             startLoading(context);
@@ -549,34 +576,52 @@ class _CheckMissionListState extends State<CheckMissionList> {
   }
 
   void _endgame() async {
-    startLoading(context);
-    raceStatus = 3;
-    log(remainMC.toString());
-    RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
-    var racestatus = await raceService.updateStatusRaces(racedto, idrace);
-    mc = {
-      'notitype': 'endgame',
-      'mcid': raceStatus,
-      'raceID': idrace,
-      'raceName': raceName
-    };
-    var notification1 = OSCreateNotification(
-        //playerID
-        additionalData: mc,
-        playerIds: playerIds,
-        content: raceName,
-        heading: "จบการแข่งขัน",
-        //  iosAttachments: {"id1",urlImage},
-        // bigPicture: imUrlString,
-        buttons: [
-          OSActionButton(text: "ตกลง", id: "id1"),
-          OSActionButton(text: "ยกเลิก", id: "id2")
-        ]);
-    log('player ' + playerIds.toString());
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.warning,
+      animType: AnimType.bottomSlide,
+      headerAnimationLoop: false,
+      title: 'ประมวลผลการแข่งขัน',
+      desc: 'กรุณาตรวจสอบการแข่งขันให้เสร็จสิ้น\n เพื่อทำการจบการแข่งขัน',
+      btnOkText: "ยกเลิก",
+      btnCancelText: "ตกลง",
+      btnOkOnPress: () async {},
+      btnCancelColor: Colors.lightGreen,
+      btnOkColor: Colors.redAccent,
+      btnCancelOnPress: () async {
+        startLoading(context);
+        raceStatus = 3;
+        log(remainMC.toString());
+        RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
+        var racestatus = await raceService.updateStatusRaces(racedto, idrace);
+        mc = {
+          'notitype': 'endgame',
+          'mcid': raceStatus,
+          'raceID': idrace,
+          'raceName': raceName
+        };
+        var notification1 = OSCreateNotification(
+            //playerID
+            additionalData: mc,
+            playerIds: playerIds,
+            content: raceName,
+            heading: "จบการแข่งขัน",
+            //  iosAttachments: {"id1",urlImage},
+            // bigPicture: imUrlString,
+            buttons: [
+              OSActionButton(text: "ตกลง", id: "id1"),
+              OSActionButton(text: "ยกเลิก", id: "id2")
+            ]);
+        log('player ' + playerIds.toString());
 
-    var response1 = await OneSignal.shared.postNotification(notification1);
+        var response1 = await OneSignal.shared.postNotification(notification1);
+        setState(() {
+          loadDataMethod = loadData();
+        });
+        stopLoading();
+      },
+    ).show();
 
-    stopLoading();
     setState(() {
       loadDataMethod = loadData();
     });

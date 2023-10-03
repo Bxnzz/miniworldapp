@@ -939,6 +939,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  giffy_dialog:
+    dependency: "direct main"
+    description:
+      name: giffy_dialog
+      sha256: "9bf9b54fd2b658938c882cb96f35abf86aefb96f5eef977b602325218bfee8e8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0+2"
   glob:
     dependency: transitive
     description:

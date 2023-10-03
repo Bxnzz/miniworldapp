@@ -141,7 +141,7 @@ class _LobbyState extends State<Lobby> {
     } catch (e) {}
 
     // Get.defaultDialog(title: mc.toString());
-    Get.off(()=> const CheckMissionList());
+    Get.off(() => const CheckMissionList());
     stopLoading();
   }
 
@@ -508,7 +508,7 @@ class _LobbyState extends State<Lobby> {
           raceStatus = 2;
           RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
           var a = await raceService.updateStatusRaces(racedto, idRace);
-        startLoading(context);
+          startLoading(context);
           _Startgame();
           stopLoading();
         },
@@ -691,45 +691,58 @@ class _LobbyState extends State<Lobby> {
                         ),
                       ),
                       idUser == userCreate
-                          ? Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 30),
-                                  child: SizedBox(
-                                    width: 120,
-                                    child: PushableButton(
-                                      child: Text(
-                                        'เริ่มเกม',
-                                        style:
-                                            textTheme.displayMedium?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      height: 40,
-                                      elevation: 8,
-                                      hslColor: const HSLColor.fromAHSL(
-                                          1.0, 120, 1.0, 0.37),
-                                      onPressed: () {
-                                        // log(attendShow.length.toString());
-                                        if (attendShow.isEmpty) {
-                                          Get.defaultDialog(
-                                              title: 'ยังไม่มีทีมที่เข้าร่วม');
-                                        } else {
-                                          showAlertDialog(context);
-                                        }
-                                      },
+                          ? Padding(
+                              padding: const EdgeInsets.only(bottom: 30),
+                              child: SizedBox(
+                                width: 120,
+                                child: PushableButton(
+                                  child: Text(
+                                    'เริ่มเกม',
+                                    style: textTheme.displayMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 20,
                                     ),
                                   ),
+                                  height: 40,
+                                  elevation: 8,
+                                  hslColor: const HSLColor.fromAHSL(
+                                      1.0, 120, 1.0, 0.37),
+                                  onPressed: () {
+                                    Set<int> statuslist = {};
+                                    for (var addstatus in attends) {
+                                      log(addstatus.status.toString());
+                                      if (addstatus.status == 1) {
+                                        statuslist.add(addstatus.status);
+                                      }
+                                    }
+                                    if (statuslist.contains(1)) {
+                                      AwesomeDialog(
+                                        context: context,
+                                        dialogType: DialogType.error,
+                                        animType: AnimType.bottomSlide,
+                                        headerAnimationLoop: false,
+                                        title: 'มีทีมที่ยังไม่พร้อม!!',
+                                        desc: 'กรุณารอให้ผู้เข้าแข่งขันกดพร้อม\n หรือเตะทีมที่ไม่พร้อมออกจากการแข่งขัน',
+                                      ).show();
+                                   
+                                    } else if (attendShow.isEmpty) {
+                                       AwesomeDialog(
+                                        context: context,
+                                        dialogType: DialogType.error,
+                                        animType: AnimType.bottomSlide,
+                                        headerAnimationLoop: false,
+                                        title: 'ยังไม่มีทีมเข้าร่วมการแข่งขัน!!',
+                                        desc: 'กรุณารอให้ผู้เข้าแข่งขันเข้าร่วมการแข่งขัน',
+                                      ).show();
+                                    } else {
+                                      showAlertDialog(context);
+                                    }
+                                  },
                                 ),
-                              ],
+                              ),
                             )
-                          : Column(
-                              children: [
-                                chkReadyBtn(context),
-                              ],
-                            )
+                          : chkReadyBtn(context)
                     ]),
                   );
                 } else {

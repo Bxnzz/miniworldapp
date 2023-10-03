@@ -199,211 +199,209 @@ class _EditMissionState extends State<EditMission> {
             return Container();
           }
           return Scaffold(
-              body: Column(
-            children: [
-              SizedBox(
-                height: 300,
-                child: Stack(children: [
-                  GoogleMap(
-                    myLocationEnabled: true,
-                    myLocationButtonEnabled: true,
-                    mapType: MapType.hybrid,
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(lat, lng),
-                      zoom: 16,
+              body: SingleChildScrollView(
+                child: Column(
+                          children: [
+                SizedBox(
+                  height: 300,
+                  child: Stack(children: [
+                    GoogleMap(
+                      myLocationEnabled: true,
+                      myLocationButtonEnabled: true,
+                      mapType: MapType.hybrid,
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(lat, lng),
+                        zoom: 16,
+                      ),
+                      onMapCreated: (GoogleMapController controller) {
+                        _controller.complete(controller);
+                      },
+                      markers: markerss.map((e) => e).toSet(),
+                      polylines: _polylines,
+                      onCameraMove: (position) {
+                        // latitude = position.target.latitude.toInt();
+                        // lat = int.tryParse(lats.toString().split('.')[3]);
+                        // longstitude = position.target.latitude.toInt();
+                        // long = int.tryParse(lats.toString().split('.')[3]);
+                        // log('xxxx ' +
+                        //     position.target.latitude.toString() +
+                        //     ' ' +
+                        //     position.target.longitude.toString());
+                        // Text(position.target.latitude.toString());
+                        lats = position.target.latitude.toString();
+                        longs = position.target.longitude.toString();
+                        log('lat' + position.target.latitude.toString());
+                      },
                     ),
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                    },
-                    markers: markerss.map((e) => e).toSet(),
-                    polylines: _polylines,
-                    onCameraMove: (position) {
-                      // latitude = position.target.latitude.toInt();
-                      // lat = int.tryParse(lats.toString().split('.')[3]);
-                      // longstitude = position.target.latitude.toInt();
-                      // long = int.tryParse(lats.toString().split('.')[3]);
-                      // log('xxxx ' +
-                      //     position.target.latitude.toString() +
-                      //     ' ' +
-                      //     position.target.longitude.toString());
-                      // Text(position.target.latitude.toString());
-                      lats = position.target.latitude.toString();
-                      longs = position.target.longitude.toString();
-                      log('lat' + position.target.latitude.toString());
-                    },
-                  ),
-                  Positioned(
-                      top: (300 / 2) - 32,
-                      left: (MediaQuery.of(context).size.width / 2) - 16,
-                      child: Column(
-                        children: [
-                          Image.asset("assets/image/target.png"),
-                        ],
-                      )),
-                ]),
-              ),
-              missionInput(),
-            ],
-          ));
+                    Positioned(
+                        top: (300 / 2) - 32,
+                        left: (MediaQuery.of(context).size.width / 2) - 16,
+                        child: Column(
+                          children: [
+                            Image.asset("assets/image/target.png"),
+                          ],
+                        )),
+                  ]),
+                ),
+                missionInput(),
+                          ],
+                        ),
+              ));
         });
   }
 
   missionInput() {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Column(
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 15),
+          child: upImg(),
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 15),
-              child: upImg(),
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('ชื่อภารกิจ'),
-                ),
-                SizedBox(
-                  width: 150,
-                  child: TextFormField(
-                    controller: nameMission,
-                    decoration: InputDecoration(
-                      hintText: 'ชื่อภารกิจ',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('คำอธิบาย'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    width: 150,
-                    child: TextFormField(
-                      controller: DescriptionMission,
-                      decoration: InputDecoration(
-                        hintText: 'คำอธิบาย...',
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('กรุณาเลือกประเภทภารกิจ'),
+              child: Text('ชื่อภารกิจ'),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('รัศมีแจ้งเตือนภารกิจ'),
+            SizedBox(
+              width: 150,
+              child: TextFormField(
+                controller: nameMission,
+                decoration: InputDecoration(
+                  hintText: 'ชื่อภารกิจ',
                 ),
-                Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: dropdownRadius(dd))
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Checkbox(
-                    value: _checkbox,
-                    onChanged: _checkbox2 == true
-                        ? null
-                        : (value) {
-                            setState(() {
-                              _checkbox = !_checkbox;
-                              //  _checkbox = true;
-                            });
-                          }),
-                Text('ข้อความ'),
-                Checkbox(
-                  value: _checkbox1,
-                  onChanged: _checkbox2 == true
-                      ? null
-                      : (value) {
-                          setState(() {
-                            _checkbox1 = !_checkbox1;
-
-                            log(_checkbox1.toString());
-                          });
-                        },
-                ),
-                Text('สื่อ'),
-                Checkbox(
-                  value: _checkbox2,
-                  onChanged: _checkbox == true || _checkbox1 == true
-                      ? null
-                      : (value) {
-                          setState(() {
-                            _checkbox2 = !_checkbox2;
-                          });
-                        },
-                ),
-                Text('ไม่มีการส่ง'),
-              ],
-            ),
-            Center(
-              child: ElevatedButton(
-                  child: Text('แก้ไขภารกิจ'),
-                  onPressed: () async {
-                    cb = cb1 + cb2 + cb3;
-                    log('ch ' + cb);
-                    mTypeCast = int.parse(cb);
-                    log('ty: ' + mTypeCast.toString());
-
-                    if (lats == '' && longs == '') {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('กรุณาหาจุดภารกิจ...')),
-                      );
-                    }
-
-                    MissionDto missionDto = MissionDto(
-                        misName: nameMission.text,
-                        misDiscrip: DescriptionMission.text,
-                        misDistance: int.parse(selectedValue!),
-                        misType: mTypeCast,
-                        misSeq: sq,
-                        misMediaUrl: '',
-                        misLat: double.parse(lats),
-                        misLng: double.parse(longs),
-                        raceId: idrace);
-                    // log(jsonEncode(missionDto));
-                    log(('lat' + lats));
-                    var mission = await missionService.updateMis(
-                        missionDto, misID.toString());
-                    misResults = mission.data;
-                    if (misResults.result == "1") {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('update Successful')),
-                      );
-                      log("mission Successful");
-                      Navigator.of(context).pop();
-                      return;
-                    } else {
-                      // log("team fail");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('mission fail try agin!')),
-                      );
-
-                      return;
-                    }
-                  }),
+              ),
             ),
           ],
         ),
-      ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('คำอธิบาย'),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: 150,
+                child: TextFormField(
+                  controller: DescriptionMission,
+                  decoration: InputDecoration(
+                    hintText: 'คำอธิบาย...',
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text('กรุณาเลือกประเภทภารกิจ'),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('รัศมีแจ้งเตือนภารกิจ'),
+            ),
+            Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: dropdownRadius(dd))
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Checkbox(
+                value: _checkbox,
+                onChanged: _checkbox2 == true
+                    ? null
+                    : (value) {
+                        setState(() {
+                          _checkbox = !_checkbox;
+                          //  _checkbox = true;
+                        });
+                      }),
+            Text('ข้อความ'),
+            Checkbox(
+              value: _checkbox1,
+              onChanged: _checkbox2 == true
+                  ? null
+                  : (value) {
+                      setState(() {
+                        _checkbox1 = !_checkbox1;
+
+                        log(_checkbox1.toString());
+                      });
+                    },
+            ),
+            Text('สื่อ'),
+            Checkbox(
+              value: _checkbox2,
+              onChanged: _checkbox == true || _checkbox1 == true
+                  ? null
+                  : (value) {
+                      setState(() {
+                        _checkbox2 = !_checkbox2;
+                      });
+                    },
+            ),
+            Text('ไม่มีการส่ง'),
+          ],
+        ),
+        Center(
+          child: ElevatedButton(
+              child: Text('แก้ไขภารกิจ'),
+              onPressed: () async {
+                cb = cb1 + cb2 + cb3;
+                log('ch ' + cb);
+                mTypeCast = int.parse(cb);
+                log('ty: ' + mTypeCast.toString());
+
+                if (lats == '' && longs == '') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('กรุณาหาจุดภารกิจ...')),
+                  );
+                }
+
+                MissionDto missionDto = MissionDto(
+                    misName: nameMission.text,
+                    misDiscrip: DescriptionMission.text,
+                    misDistance: int.parse(selectedValue!),
+                    misType: mTypeCast,
+                    misSeq: sq,
+                    misMediaUrl: '',
+                    misLat: double.parse(lats),
+                    misLng: double.parse(longs),
+                    raceId: idrace);
+                // log(jsonEncode(missionDto));
+                log(('lat' + lats));
+                var mission = await missionService.updateMis(
+                    missionDto, misID.toString());
+                misResults = mission.data;
+                if (misResults.result == "1") {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('update Successful')),
+                  );
+                  log("mission Successful");
+                  Navigator.of(context).pop();
+                  return;
+                } else {
+                  // log("team fail");
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('mission fail try agin!')),
+                  );
+
+                  return;
+                }
+              }),
+        ),
+      ],
     );
   }
 
@@ -450,7 +448,7 @@ class _EditMissionState extends State<EditMission> {
                           log('message');
                         },
                         icon: const FaIcon(
-                          FontAwesomeIcons.camera,
+                          FontAwesomeIcons.images,
                           size: 25,
                         ))),
               )
@@ -484,7 +482,7 @@ class _EditMissionState extends State<EditMission> {
                               log('message');
                             },
                             icon: const FaIcon(
-                              FontAwesomeIcons.camera,
+                              FontAwesomeIcons.images,
                               size: 25,
                               color: Colors.white,
                             ))),
@@ -503,7 +501,7 @@ class _EditMissionState extends State<EditMission> {
                           log('message');
                         },
                         icon: const FaIcon(
-                          FontAwesomeIcons.camera,
+                          FontAwesomeIcons.images,
                           size: 25,
                         ))):Container(),
               )
