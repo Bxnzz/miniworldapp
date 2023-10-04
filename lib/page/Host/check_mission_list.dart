@@ -244,27 +244,27 @@ class _CheckMissionListState extends State<CheckMissionList> {
           var reward = await rewardService.reward(rewardDto);
         }
 
-        // mc = {
-        //   'notitype': 'processgame',
-        //   'mcid': raceStatus,
-        //   'raceID': idrace,
-        //   'raceName': raceName
-        // };
-        // var notification1 = OSCreateNotification(
-        //     //playerID
-        //     additionalData: mc,
-        //     playerIds: playerIds,
-        //     content: raceName,
-        //     heading: "ประมวลผลการแข่งขัน",
-        //     //  iosAttachments: {"id1",urlImage},
-        //     // bigPicture: imUrlString,
-        //     buttons: [
-        //       OSActionButton(text: "ตกลง", id: "id1"),
-        //       OSActionButton(text: "ยกเลิก", id: "id2")
-        //     ]);
-        // log('player ' + playerIds.toString());
+        mc = {
+          'notitype': 'processgame',
+          'mcid': raceStatus,
+          'raceID': idrace,
+          'raceName': raceName
+        };
+        var notification1 = OSCreateNotification(
+            //playerID
+            additionalData: mc,
+            playerIds: playerIds,
+            content: raceName,
+            heading: "ประมวลผลการแข่งขัน",
+            //  iosAttachments: {"id1",urlImage},
+            // bigPicture: imUrlString,
+            buttons: [
+              OSActionButton(text: "ตกลง", id: "id1"),
+              OSActionButton(text: "ยกเลิก", id: "id2")
+            ]);
+        log('player ' + playerIds.toString());
 
-        // var response1 = await OneSignal.shared.postNotification(notification1);
+        var response1 = await OneSignal.shared.postNotification(notification1);
 
         Get.off(() => RankRace());
 

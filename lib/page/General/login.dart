@@ -320,7 +320,14 @@ class _LoginState extends State<Login> {
                                                   'startgame') {
                                                 Get.defaultDialog(
                                                     title: 'เริ่มการแข่งขัน');
-                                              } else if (additionalData[
+                                              }  else if (additionalData[
+                                                          'notitype']
+                                                      .toString() ==
+                                                  'deleteTeam') {
+                                                Get.defaultDialog(
+                                                    title: additionalData[
+                                                        'masseage']);
+                                              }else if (additionalData[
                                                           'notitype']
                                                       .toString() ==
                                                   'endgame') {
@@ -450,6 +457,23 @@ class _LoginState extends State<Login> {
 
                                                 log('ภารกิจจ');
                                               } else if (event.notification
+                                                          .additionalData![
+                                                      'notitype'] ==
+                                                  'deleteTeam') {
+
+                                                raceID = int.parse(event
+                                                    .notification
+                                                    .additionalData!['raceID']
+                                                    .toString());
+
+                                                Get.defaultDialog(
+                                                        title: 'ทีมของคุณออกจากการแข่งขัน!!',
+                                                        content: const Text(
+                                                            'ทีมของคุณได้ออกจากการแข่งขันนี้แล้ว'))
+                                                    .then((value) {
+                                                  Get.off(()=>Home());
+                                                });
+                                              }else if (event.notification
                                                           .additionalData![
                                                       'notitype'] ==
                                                   'endgame') {
