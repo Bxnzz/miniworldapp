@@ -95,11 +95,12 @@ class _Home_joinState extends State<Home_join> {
                               borderRadius: BorderRadius.circular(12.0),
                               splashColor: Colors.blue.withAlpha(30),
                               onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            HomeJoinDetail()));
+                                Get.to(() => HomeJoinDetail());
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) =>
+                                //             HomeJoinDetail()));
                                 context.read<AppData>().status = e.status;
                                 context.read<AppData>().idUser = e.userId;
                                 context.read<AppData>().idTeam = e.teamId;

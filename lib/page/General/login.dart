@@ -319,15 +319,42 @@ class _LoginState extends State<Login> {
                                                       .toString() ==
                                                   'startgame') {
                                                 Get.defaultDialog(
-                                                    title: 'เริ่มการแข่งขัน');
-                                              }  else if (additionalData[
+                                                        barrierDismissible:
+                                                            false,
+                                                        title:
+                                                            'เริ่มการแข่งขัน',
+                                                        content: Text(
+                                                            "การแข่งขันได้เริ่มขึ้นแล้วไปสนุกกัน"),
+                                                        confirm: ElevatedButton(
+                                                            onPressed: () {
+                                                              if (Get.currentRoute ==
+                                                                  '/Lobby') {
+                                                                Get.back();
+                                                                Get.back();
+
+                                                                Get.to(() =>
+                                                                    PlayerRaceStartMenu());
+                                                              } else {
+                                                                Get.back();
+                                                                Get.to(() =>
+                                                                    PlayerRaceStartMenu());
+                                                              }
+                                                            },
+                                                            child: Text(
+                                                                'เข้าการแข่งขัน')))
+                                                    .then((value) {
+                                                  setState(() {
+                                                    loadDataMethod;
+                                                  });
+                                                });
+                                              } else if (additionalData[
                                                           'notitype']
                                                       .toString() ==
                                                   'deleteTeam') {
                                                 Get.defaultDialog(
                                                     title: additionalData[
                                                         'masseage']);
-                                              }else if (additionalData[
+                                              } else if (additionalData[
                                                           'notitype']
                                                       .toString() ==
                                                   'endgame') {
@@ -435,24 +462,37 @@ class _LoginState extends State<Login> {
                                                       'notitype'] ==
                                                   'startgame') {
                                                 Get.defaultDialog(
-                                                  barrierDismissible: false,
+                                                        barrierDismissible:
+                                                            false,
                                                         title:
-                                                            'เริ่มการแข่งขัน'
-                                                            ,confirm: ElevatedButton(onPressed: (){
-                                                           if(Get.currentRoute == '/Lobby'){
-                                                           Get.back();
-                                                           Get.back();
-                                                           Get.to(()=>PlayerRaceStartMenu());
-                                                           }else{
-                                                           Get.back();
-                                                           Get.to(()=>PlayerRaceStartMenu());
-                                                           }
+                                                            'เริ่มการแข่งขัน',
+                                                        confirm: ElevatedButton(
+                                                            onPressed: () {
+                                                              if (Get.currentRoute ==
+                                                                  '/Lobby') {
+                                                                Get.back();
+                                                                Get.back();
 
-                                                            }, child: Text('เข้าการแข่งขัน')));
-                                                    // .then(
-                                                    //   (value) => Get.off(() =>
-                                                    //     const PlayerRaceStartMenu())
-                                                    //     );
+                                                                Get.to(() =>
+                                                                    PlayerRaceStartMenu());
+                                                              } else {
+                                                                Get.back();
+                                                                Get.to(() =>
+                                                                    PlayerRaceStartMenu());
+                                                              }
+                                                            },
+                                                            child: Text(
+                                                                'เข้าการแข่งขัน')))
+                                                    .then((value) {
+                                                  setState(() {
+                                                    loadDataMethod;
+                                                  });
+                                                });
+
+                                                // .then(
+                                                //   (value) => Get.off(() =>
+                                                //     const PlayerRaceStartMenu())
+                                                //     );
                                                 log('toasttt');
 
                                                 log('ภารกิจจ');
@@ -460,20 +500,20 @@ class _LoginState extends State<Login> {
                                                           .additionalData![
                                                       'notitype'] ==
                                                   'deleteTeam') {
-
                                                 raceID = int.parse(event
                                                     .notification
                                                     .additionalData!['raceID']
                                                     .toString());
 
                                                 Get.defaultDialog(
-                                                        title: 'ทีมของคุณออกจากการแข่งขัน!!',
+                                                        title:
+                                                            'ทีมของคุณออกจากการแข่งขัน!!',
                                                         content: const Text(
                                                             'ทีมของคุณได้ออกจากการแข่งขันนี้แล้ว'))
                                                     .then((value) {
-                                                  Get.off(()=>Home());
+                                                  Get.off(() => Home());
                                                 });
-                                              }else if (event.notification
+                                              } else if (event.notification
                                                           .additionalData![
                                                       'notitype'] ==
                                                   'endgame') {
