@@ -17,6 +17,8 @@ import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../General/detil_race_host.dart';
+
 class PlayerRaceStartMenu extends StatefulWidget {
   const PlayerRaceStartMenu({super.key});
 
@@ -86,127 +88,113 @@ class _PlayerRaceStartMenuState extends State<PlayerRaceStartMenu> {
       });
     }
 
-    return WillPopScope(
-      onWillPop: () async {
-        Get.off(() => HomeJoinDetail());
-        return true;
-      },
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size(Get.width, Get.height),
-          child: SafeArea(
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    try {
-                      context
-                          .read<AppData>()
-                          .updateLocationTimerPlayer
-                          .cancel();
-
-                      log('Timer Stopped1...');
-                    } catch (e) {
-                      log('ERRx ' + e.toString());
-                    }
-
-                    Navigator.of(context).pop();
-                  },
-                  icon: const FaIcon(
-                    FontAwesomeIcons.circleChevronLeft,
-                    color: Colors.yellow,
-                    size: 35,
-                  ),
-                ),
-                Text(
-                  "การแข่งขัน",
-                  style: textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.purple,
-                      fontSize: 20),
-                )
-              ],
-            ),
-          ),
-        ),
-
-        body: PersistentTabView(
-          onItemSelected: (value) {
-            if (value == 0) {
-              log("value" + value.toString());
-              setState(() {});
-            }
-            if (value == 1) {
-              log("value" + value.toString());
-              setState(() {
-                _buildScreens();
-              });
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            try {
+              context.read<AppData>().updateLocationTimerPlayer.cancel();
+              Get.back();
+              log('Timer Stopped1...');
+            } catch (e) {
+              log('ERRx ' + e.toString());
             }
           },
-          context,
-          controller: _controller,
-          screens: _buildScreens(),
-          items: _navBarsItems(),
-          confineInSafeArea: true,
-          backgroundColor: Colors.white, // Default is Colors.white.
-          handleAndroidBackButtonPress: true, // Default is true.
-          resizeToAvoidBottomInset:
-              true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-          stateManagement: true, // Default is true.
-          hideNavigationBarWhenKeyboardShows:
-              true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
-          decoration: NavBarDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            colorBehindNavBar: Colors.white,
+          icon: const FaIcon(
+            FontAwesomeIcons.circleChevronLeft,
+            color: Colors.yellow,
+            size: 35,
           ),
-          popAllScreensOnTapOfSelectedTab: true,
-          popActionScreens: PopActionScreensType.all,
-          itemAnimationProperties: const ItemAnimationProperties(
-            // Navigation Bar's items animation properties.
-            duration: Duration(milliseconds: 100),
-            curve: Curves.ease,
-          ),
-          screenTransitionAnimation: const ScreenTransitionAnimation(
-            // Screen transition animation on change of selected tab.
-            animateTabTransition: true,
-            curve: Curves.ease,
-            duration: Duration(milliseconds: 200),
-          ),
-          navBarStyle: NavBarStyle
-              .style13, // Choose the nav bar style with this property.
         ),
-
-        // Column(
-        //   children: [
-        //     // Expanded(
-        //     //   child: Center(
-        //     //     child: _widgetOptions.elementAt(_selectedIndex),
-        //     //   ),
-        //     // ),
-        //   ],
-        // ),
-        // bottomNavigationBar: BottomNavigationBar(
-        //   items: const <BottomNavigationBarItem>[
-        //     BottomNavigationBarItem(
-        //       icon: FaIcon(
-        //         FontAwesomeIcons.listUl,
-        //         size: 20,
-        //       ),
-        //       label: 'ภารกิจ',
-        //     ),
-        //     BottomNavigationBarItem(
-        //       icon: FaIcon(
-        //         FontAwesomeIcons.exclamation,
-        //         size: 20,
-        //       ),
-        //       label: 'ค้นหา',
-        //     ),
-        //   ],
-        //   currentIndex: _selectedIndex,
-        //   //selectedItemColor: Colors.amber[800],
-        //   onTap: _onItemTapped,
-        // ),
+        title: Row(
+          children: [
+            Text(
+              "การแข่งขัน",
+              style: textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.purple,
+                  fontSize: 20),
+            )
+          ],
+        ),
       ),
+
+      body: PersistentTabView(
+        onItemSelected: (value) {
+          if (value == 0) {
+            log("value" + value.toString());
+            setState(() {});
+          }
+          if (value == 1) {
+            log("value" + value.toString());
+            setState(() {
+              _buildScreens();
+            });
+          }
+        },
+        context,
+        controller: _controller,
+        screens: _buildScreens(),
+        items: _navBarsItems(),
+        confineInSafeArea: true,
+        backgroundColor: Colors.white, // Default is Colors.white.
+        handleAndroidBackButtonPress: true, // Default is true.
+        resizeToAvoidBottomInset:
+            true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+        stateManagement: true, // Default is true.
+        hideNavigationBarWhenKeyboardShows:
+            true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+        decoration: NavBarDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          colorBehindNavBar: Colors.white,
+        ),
+        popAllScreensOnTapOfSelectedTab: true,
+        popActionScreens: PopActionScreensType.all,
+        itemAnimationProperties: const ItemAnimationProperties(
+          // Navigation Bar's items animation properties.
+          duration: Duration(milliseconds: 100),
+          curve: Curves.ease,
+        ),
+        screenTransitionAnimation: const ScreenTransitionAnimation(
+          // Screen transition animation on change of selected tab.
+          animateTabTransition: true,
+          curve: Curves.ease,
+          duration: Duration(milliseconds: 200),
+        ),
+        navBarStyle:
+            NavBarStyle.style13, // Choose the nav bar style with this property.
+      ),
+
+      // Column(
+      //   children: [
+      //     // Expanded(
+      //     //   child: Center(
+      //     //     child: _widgetOptions.elementAt(_selectedIndex),
+      //     //   ),
+      //     // ),
+      //   ],
+      // ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: FaIcon(
+      //         FontAwesomeIcons.listUl,
+      //         size: 20,
+      //       ),
+      //       label: 'ภารกิจ',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: FaIcon(
+      //         FontAwesomeIcons.exclamation,
+      //         size: 20,
+      //       ),
+      //       label: 'ค้นหา',
+      //     ),
+      //   ],
+      //   currentIndex: _selectedIndex,
+      //   //selectedItemColor: Colors.amber[800],
+      //   onTap: _onItemTapped,
+      // ),
     );
   }
 

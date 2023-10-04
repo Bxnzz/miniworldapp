@@ -201,199 +201,232 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                               topRight: Radius.circular(35)),
                           color: Colors.white,
                         ),
-                        child: Column(children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 6),
-                            child: Center(
-                                child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(Rname,
-                                  style: Get.textTheme.bodyLarge!.copyWith(
-                                      color: Get.theme.colorScheme.primary,
-                                      fontWeight: FontWeight.bold)),
-                            )),
-                          ),
-                          const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8, bottom: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const FaIcon(
-                                  FontAwesomeIcons.locationDot,
-                                  size: 18,
-                                  color: Colors.grey,
-                                ),
+                        child: RefreshIndicator(
+                          onRefresh: loadData,
+                          child: ListView(
+                            children: [
+                              Column(children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 17),
-                                  child: Text(Rlocation),
-                                )
-                              ],
-                            ),
-                          ),
-                          const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8, bottom: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const FaIcon(
-                                  FontAwesomeIcons.peopleGroup,
-                                  size: 18,
-                                  color: Colors.grey,
+                                  padding: const EdgeInsets.only(top: 6),
+                                  child: Center(
+                                      child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(Rname,
+                                        style: Get.textTheme.bodyLarge!
+                                            .copyWith(
+                                                color: Get
+                                                    .theme.colorScheme.primary,
+                                                fontWeight: FontWeight.bold)),
+                                  )),
                                 ),
+                                const Divider(),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 8),
-                                  child: Text('$team ทีม'),
-                                )
-                              ],
-                            ),
-                          ),
-                          const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8, bottom: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const FaIcon(
-                                  FontAwesomeIcons.solidCalendarPlus,
-                                  size: 18,
-                                  color: Colors.grey,
+                                  padding: const EdgeInsets.only(
+                                      right: 8, bottom: 4),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const FaIcon(
+                                        FontAwesomeIcons.locationDot,
+                                        size: 18,
+                                        color: Colors.grey,
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 17),
+                                        child: Text(Rlocation),
+                                      )
+                                    ],
+                                  ),
                                 ),
+                                const Divider(),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 13),
-                                  child: Text(singUpST),
-                                )
-                              ],
-                            ),
-                          ),
-                          const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8, bottom: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const FaIcon(
-                                  FontAwesomeIcons.solidCalendarXmark,
-                                  size: 18,
-                                  color: Colors.grey,
+                                  padding: const EdgeInsets.only(
+                                      right: 8, bottom: 4),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const FaIcon(
+                                        FontAwesomeIcons.peopleGroup,
+                                        size: 18,
+                                        color: Colors.grey,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 8),
+                                        child: Text('$team ทีม'),
+                                      )
+                                    ],
+                                  ),
                                 ),
+                                const Divider(),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 13),
-                                  child: Text(singUpFN),
-                                )
-                              ],
-                            ),
-                          ),
-                          const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8, bottom: 4),
-                            child: Row(
-                              children: [
-                                const FaIcon(
-                                  FontAwesomeIcons.solidClock,
-                                  size: 18,
-                                  color: Colors.grey,
+                                  padding: const EdgeInsets.only(
+                                      right: 8, bottom: 4),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const FaIcon(
+                                        FontAwesomeIcons.solidCalendarPlus,
+                                        size: 18,
+                                        color: Colors.grey,
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 13),
+                                        child: Text(singUpST),
+                                      )
+                                    ],
+                                  ),
                                 ),
+                                const Divider(),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 13),
-                                  child: Text(raceTimeST),
-                                )
-                              ],
-                            ),
-                          ),
-                          const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8, bottom: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                FaIcon(
-                                  FontAwesomeIcons.solidCircleXmark,
-                                  size: 18,
-                                  color: Colors.grey,
+                                  padding: const EdgeInsets.only(
+                                      right: 8, bottom: 4),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const FaIcon(
+                                        FontAwesomeIcons.solidCalendarXmark,
+                                        size: 18,
+                                        color: Colors.grey,
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 13),
+                                        child: Text(singUpFN),
+                                      )
+                                    ],
+                                  ),
                                 ),
+                                const Divider(),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 13),
-                                  child: Text(raceTimeFN),
-                                )
-                              ],
-                            ),
-                          ),
-                          const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8, bottom: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                FaIcon(
-                                  FontAwesomeIcons.solidCalendarCheck,
-                                  size: 18,
-                                  color: Colors.grey,
+                                  padding: const EdgeInsets.only(
+                                      right: 8, bottom: 4),
+                                  child: Row(
+                                    children: [
+                                      const FaIcon(
+                                        FontAwesomeIcons.solidClock,
+                                        size: 18,
+                                        color: Colors.grey,
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 13),
+                                        child: Text(raceTimeST),
+                                      )
+                                    ],
+                                  ),
                                 ),
+                                const Divider(),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 13),
-                                  child: Text(eventDatetime),
+                                  padding: const EdgeInsets.only(
+                                      right: 8, bottom: 4),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      FaIcon(
+                                        FontAwesomeIcons.solidCircleXmark,
+                                        size: 18,
+                                        color: Colors.grey,
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 13),
+                                        child: Text(raceTimeFN),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          const Divider(),
-                          Center(
-                            child: races.first.raceStatus == 1
-                                ? ElevatedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        context.read<AppData>().idAt = idAttend;
-                                        context.read<AppData>().idUser = idUser;
-                                        context.read<AppData>().idrace = idrace;
+                                const Divider(),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      right: 8, bottom: 4),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      FaIcon(
+                                        FontAwesomeIcons.solidCalendarCheck,
+                                        size: 18,
+                                        color: Colors.grey,
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 13),
+                                        child: Text(eventDatetime),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Divider(),
+                                Center(
+                                  child: races.first.raceStatus == 1
+                                      ? ElevatedButton(
+                                          onPressed: () {
+                                            context.read<AppData>().idAt =
+                                                idAttend;
+                                            context.read<AppData>().idUser =
+                                                idUser;
+                                            context.read<AppData>().idrace =
+                                                idrace;
 
-                                        context.read<AppData>().idTeam = teamid;
-                                        context.read<AppData>().status = status;
-                                        context.read<AppData>().attendDateTime;
-                                        Get.to(() => Lobby());
-                                      });
-                                    },
-                                    child: const Text('เข้าการแข่งขัน'))
-                                : races.first.raceStatus == 2
-                                    ? ElevatedButton(
-                                        onPressed: () {
-                                          context.read<AppData>().idAt =
-                                              idAttend;
-                                          context.read<AppData>().idUser =
-                                              idUser;
-                                          context.read<AppData>().idrace =
-                                              idrace;
+                                            context.read<AppData>().idTeam =
+                                                teamid;
+                                            context.read<AppData>().status =
+                                                status;
+                                            context
+                                                .read<AppData>()
+                                                .attendDateTime;
+                                            Get.to(() => Lobby());
+                                          },
+                                          child: const Text('เข้าการแข่งขัน'))
+                                      : races.first.raceStatus == 2
+                                          ? ElevatedButton(
+                                              onPressed: () {
+                                                context.read<AppData>().idAt =
+                                                    idAttend;
+                                                context.read<AppData>().idUser =
+                                                    idUser;
+                                                context.read<AppData>().idrace =
+                                                    idrace;
 
-                                          context.read<AppData>().idTeam =
-                                              teamid;
-                                          context.read<AppData>().status =
-                                              status;
-                                          Get.to(() => PlayerRaceStartMenu());
-                                          setState(() {
-                                            loadDataMethod = loadData();
-                                          });
-                                          //Get.to(PlayerRaceStartMenu());
-                                        },
-                                        child: const Text(
-                                            'การแข่งขันกำลังดำเนินการ'))
-                                    : races.first.raceStatus == 3
-                                        ? ElevatedButton(
-                                            onPressed: () {
-                                              context.read<AppData>().idUser =
-                                                  idUser;
-                                              Get.to(ChatRoomPage(
-                                                  userID: idUser,
-                                                  raceID: idrace,
-                                                  userName: context
-                                                      .read<AppData>()
-                                                      .Username,
-                                                  raceName: Rname));
-                                            },
-                                            child: Text('รอประมวลผล...'))
-                                        : Container(),
+                                                context.read<AppData>().idTeam =
+                                                    teamid;
+                                                context.read<AppData>().status =
+                                                    status;
+                                                Get.to(() =>
+                                                        PlayerRaceStartMenu())!
+                                                    .then((value) {
+                                                  setState(() {
+                                                    loadDataMethod = loadData();
+                                                    log('Goback');
+                                                  });
+                                                });
+
+                                                //Get.to(PlayerRaceStartMenu());
+                                              },
+                                              child: const Text(
+                                                  'การแข่งขันกำลังดำเนินการ'))
+                                          : races.first.raceStatus == 3
+                                              ? ElevatedButton(
+                                                  onPressed: () {
+                                                    context
+                                                        .read<AppData>()
+                                                        .idUser = idUser;
+                                                    Get.to(ChatRoomPage(
+                                                        userID: idUser,
+                                                        raceID: idrace,
+                                                        userName: context
+                                                            .read<AppData>()
+                                                            .Username,
+                                                        raceName: Rname));
+                                                  },
+                                                  child: Text('รอประมวลผล...'))
+                                              : Container(),
+                                ),
+                              ]),
+                            ],
                           ),
-                        ]),
+                        ),
                       ))
                 ],
               );
