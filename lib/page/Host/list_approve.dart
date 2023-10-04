@@ -26,6 +26,7 @@ class _ListApproveState extends State<ListApprove> {
   int misID = 0;
   String misType = '';
   String type = '';
+  Set<int> sumStatus = {};
   List<Mission> missions = [];
 
   bool isLoaded = false;
@@ -51,8 +52,18 @@ class _ListApproveState extends State<ListApprove> {
       misType = a.data.first.mission.misType.toString();
 
       var splitT = misType.split('');
+     log('aaaaa '+missionComp.length.toString());
 
       List<String> substrings = splitT.toString().split(",");
+
+      sumStatus.clear();
+      for (var statusSum in missionComp) {
+        sumStatus.add(statusSum.mcStatus);
+      }
+
+      if (sumStatus.contains(1) == false) {
+        Navigator.of(context).pop();
+      }
 
       log(misType);
       if (misType.contains('12')) {
@@ -91,87 +102,88 @@ class _ListApproveState extends State<ListApprove> {
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return RefreshIndicator(
-                onRefresh: refresh,
-                child: ListView(
-                  padding: EdgeInsets.only(top: 10),
-                  children: missionComp.map((element) {
-                    final theme = Theme.of(context);
-                    final textTheme = theme.textTheme;
-                    return Padding(
-                      padding:
-                          const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                      child: element.mission.misType != 3 &&
-                              element.mcStatus == 1
-                          ? Card(
-                              //  shadowColor: ,
-                              clipBehavior: Clip.hardEdge,
+                  onRefresh: refresh,
+                  child: ListView(
+                    padding: EdgeInsets.only(top: 10),
+                    children: missionComp.map((element) {
+                      final theme = Theme.of(context);
+                      final textTheme = theme.textTheme;
+                    
+                      return Padding(
+                        padding:
+                            const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                        child: element.mission.misType != 3 &&
+                                element.mcStatus == 1
+                            ? Card(
+                                //  shadowColor: ,
+                                clipBehavior: Clip.hardEdge,
 
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(12.0),
-                                splashColor: Colors.blue.withAlpha(30),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Container(
-                                      alignment: Alignment.center,
-                                      // For testing different size item. You can comment this line
-                                      padding: element.misId == element.misId
-                                          ? const EdgeInsets.symmetric(
-                                              vertical: 16.0)
-                                          : EdgeInsets.zero,
-                                      child: ListTile(
-                                          title: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'ทีม : ${element.team.teamName}',
-                                                style: textTheme.bodyText2
-                                                    ?.copyWith(
-                                                  fontSize: 16,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  splashColor: Colors.blue.withAlpha(30),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Container(
+                                        alignment: Alignment.center,
+                                        // For testing different size item. You can comment this line
+                                        padding: element.misId == element.misId
+                                            ? const EdgeInsets.symmetric(
+                                                vertical: 16.0)
+                                            : EdgeInsets.zero,
+                                        child: ListTile(
+                                            title: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'ทีม : ${element.team.teamName}',
+                                                  style: textTheme.bodyText2
+                                                      ?.copyWith(
+                                                    fontSize: 16,
+                                                  ),
                                                 ),
-                                              ),
-                                              Text(
-                                                'ประเภท : ${type}',
-                                                style: textTheme.bodyText2
-                                                    ?.copyWith(
-                                                  fontSize: 16,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                          trailing: FilledButton(
-                                            child: Text('ตรวจสอบ'),
-                                            onPressed: () {
-                                              showDialog<void>(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return Dialog.fullscreen(
-                                                    child: ApproveMission(
-                                                      IDmc: element.mcId,
-                                                    ),
-                                                  );
-                                                },
-                                              ).then((value) {
-                                                setState(() {
-                                                  loadDataMethod = loadData();
+                                                Text(
+                                                  'ประเภท : ${type}',
+                                                  style: textTheme.bodyText2
+                                                      ?.copyWith(
+                                                    fontSize: 16,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            trailing: FilledButton(
+                                              child: Text('ตรวจสอบ'),
+                                              onPressed: () {
+                                                showDialog<void>(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return Dialog.fullscreen(
+                                                      child: ApproveMission(
+                                                        IDmc: element.mcId,
+                                                      ),
+                                                    );
+                                                  },
+                                                ).then((value) {
+                                                  setState(() {
+                                                    loadDataMethod = loadData();
+                                                  });
                                                 });
-                                              });
 
-                                              //  context.read<AppData>().misID = element.misId;
-                                            },
-                                          )),
-                                    ),
-                                  ],
+                                                //  context.read<AppData>().misID = element.misId;
+                                              },
+                                            )),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            )
-                          : Container(),
-                    );
-                  }).toList(),
-                ),
-              );
+                              )
+                            : Container(),
+                      );
+                    }).toList(),
+                  ));
             } else {
               return Container();
             }

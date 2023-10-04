@@ -65,6 +65,7 @@ class _LobbyState extends State<Lobby> {
   int selec = 1;
 
   List<String> playerIds = [];
+  List<int> IDplayers = [];
   List<String> teamIDs = [];
   Map<String, dynamic> mc = {};
 
@@ -123,6 +124,7 @@ class _LobbyState extends State<Lobby> {
       'notitype': 'startgame',
       'mcid': raceStatus,
       'raceID': idRace,
+      'playerIds':IDplayers
     };
     var notification1 = OSCreateNotification(
         //playerID
@@ -658,9 +660,11 @@ class _LobbyState extends State<Lobby> {
       log('userCreate  ' + userCreate.toString());
 
       playerIds.clear();
+      IDplayers.clear();
       for (var element in a.data) {
         if (element.user.onesingnalId.isNotEmpty) {
           playerIds.add(element.user.onesingnalId);
+          IDplayers.add(element.userId);
         }
       }
 

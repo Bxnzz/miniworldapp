@@ -22,7 +22,7 @@ import '../Host/check_mission_list.dart';
 import '../Host/detil_mission.dart';
 import '../Host/race_edit.dart';
 import '../Player/createTeam.dart';
-import '../showmap.dart';
+import 'showmap.dart';
 
 class DetailHost extends StatefulWidget {
   const DetailHost({super.key});

@@ -7,6 +7,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -107,10 +109,10 @@ class _MissioncreateState extends State<Missioncreate> {
     return Scaffold(
       appBar: AppBar(
         // Overide the default Back button
-       // automaticallyImplyLeading: false,
+        // automaticallyImplyLeading: false,
         // leadingWidth: 100,
         // actions: [
-          
+
         // ],
         title: const Text('สร้างภารกิจ'),
       ),
@@ -121,7 +123,7 @@ class _MissioncreateState extends State<Missioncreate> {
   raceMap() {
     return WillPopScope(
       onWillPop: () async {
-        Get.to(()=> DetailMission());
+        Get.to(() => DetailMission());
         return true;
       },
       child: FutureBuilder(
@@ -138,9 +140,13 @@ class _MissioncreateState extends State<Missioncreate> {
                     height: 300,
                     child: Stack(children: [
                       GoogleMap(
-                        myLocationEnabled: false,
+                       // myLocationEnabled: false,
                         myLocationButtonEnabled: false,
                         mapType: MapType.hybrid,
+                        gestureRecognizers: {
+                          Factory<OneSequenceGestureRecognizer>(
+                              () => EagerGestureRecognizer())
+                        },
                         initialCameraPosition: CameraPosition(
                           target: LatLng(
                               currentLatLng.latitude, currentLatLng.longitude),
@@ -369,15 +375,15 @@ class _MissioncreateState extends State<Missioncreate> {
                 log(lats);
                 //print(double.parse('lat'+lats));
                 startLoading(context);
-                var mission =
-                    await missionService.insertMissions(missionDto);
+                var mission = await missionService.insertMissions(missionDto);
                 stopLoading();
                 if (mission.response.statusCode == 200) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('mision Successful')),
+                    const SnackBar(content: Text('สร้างภารกิจสำเร็จ')),
                   );
-                  Get.off(()=>DetailMission());
-                 
+                  Navigator.of(context).pop();
+                  Get.off(() => DetailMission());
+
                   log("race Successful");
 
                   // if (fristMis == 0) {

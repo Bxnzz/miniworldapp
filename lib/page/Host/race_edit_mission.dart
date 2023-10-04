@@ -6,6 +6,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get_storage/get_storage.dart';
@@ -206,8 +208,12 @@ class _EditMissionState extends State<EditMission> {
                   height: 300,
                   child: Stack(children: [
                     GoogleMap(
-                      myLocationEnabled: true,
-                      myLocationButtonEnabled: true,
+                    //  myLocationEnabled: true,
+                     // myLocationButtonEnabled: true,
+                       gestureRecognizers: {
+                          Factory<OneSequenceGestureRecognizer>(
+                              () => EagerGestureRecognizer())
+                        },
                       mapType: MapType.hybrid,
                       initialCameraPosition: CameraPosition(
                         target: LatLng(lat, lng),

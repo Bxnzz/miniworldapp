@@ -502,33 +502,30 @@ class _RankSpectatorState extends State<RankSpectator> {
                                                       padding:
                                                           const EdgeInsets.only(
                                                               left: 55),
-                                                      child: Expanded(
-                                                        child:
-                                                            LinearPercentIndicator(
+                                                      child: LinearPercentIndicator(
                                                           barRadius:
-                                                              const Radius
-                                                                  .circular(50),
-                                                          width: 200,
+                                                        const Radius
+                                                            .circular(50),
+                                                          width: 250,
                                                           animation: true,
                                                           lineHeight: 20.0,
                                                           animationDuration:
-                                                              2500,
+                                                        2500,
                                                           percent:
-                                                              e.mission.misSeq /
-                                                                  lastMis,
+                                                        e.mission.misSeq /
+                                                            lastMis,
                                                           center: Text(e.mission
-                                                                  .misSeq
-                                                                  .toString() +
-                                                              '/' +
-                                                              lastMis
-                                                                  .toString()),
+                                                            .misSeq
+                                                            .toString() +
+                                                        '/' +
+                                                        lastMis
+                                                            .toString()),
                                                           linearStrokeCap:
-                                                              LinearStrokeCap
-                                                                  .roundAll,
+                                                        LinearStrokeCap
+                                                            .roundAll,
                                                           progressColor:
-                                                              Colors.amber,
+                                                        Colors.amber,
                                                         ),
-                                                      ),
                                                     ),
                                                   ],
                                                 ),

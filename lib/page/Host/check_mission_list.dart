@@ -17,7 +17,7 @@ import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/home_create.dart';
 import 'package:miniworldapp/page/Host/list_approve.dart';
 import 'package:miniworldapp/page/General/rank_race.dart';
-import 'package:miniworldapp/page/showmap.dart';
+import 'package:miniworldapp/page/General/showmap.dart';
 import 'package:miniworldapp/service/missionComp.dart';
 import 'package:miniworldapp/service/race.dart';
 import 'package:miniworldapp/service/team.dart';
@@ -438,7 +438,39 @@ class _CheckMissionListState extends State<CheckMissionList> {
                                                             child: FilledButton(
                                                               child: Text(
                                                                   'ดูหลักฐาน'),
-                                                              onPressed: () {
+                                                              onPressed:
+                                                                  () async {
+                                                                var mcStatus = missionComs
+                                                                    .where((e) =>
+                                                                        e.mission.misId ==
+                                                                            element
+                                                                                .misId &&
+                                                                        e.mcStatus ==
+                                                                            1)
+                                                                    .length;
+                                                                log('assssss ' +
+                                                                    mcStatus
+                                                                        .toString());
+                                                                if (mcStatus ==
+                                                                    0) {
+                                                                  AwesomeDialog(
+                                                                    context:
+                                                                        context,
+                                                                    dialogType:
+                                                                        DialogType
+                                                                            .warning,
+                                                                    animType:
+                                                                        AnimType
+                                                                            .bottomSlide,
+                                                                    headerAnimationLoop:
+                                                                        false,
+                                                                    title:
+                                                                        'ไม่มีหลักฐานให้ตรวจสอบ',
+                                                                    desc:
+                                                                        'เนื่องจากคุณได้ตรวจไปแล้ว\n หรือยังไม่มีหลักฐานที่ส่งเข้ามา',
+                                                                  ).show();
+                                                                  
+                                                                }
                                                                 showDialog<
                                                                     void>(
                                                                   context:

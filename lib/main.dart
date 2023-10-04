@@ -13,7 +13,7 @@ import 'package:miniworldapp/page/Host/mission_create.dart';
 import 'package:miniworldapp/page/Player/createTeam.dart';
 import 'package:miniworldapp/page/home.dart';
 import 'package:miniworldapp/page/loginpage.dart';
-import 'package:miniworldapp/page/showmap.dart';
+import 'package:miniworldapp/page/General/showmap.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:miniworldapp/theme/default.dart';
 import 'package:provider/provider.dart';

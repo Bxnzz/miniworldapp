@@ -20,7 +20,7 @@ import '../../service/attend.dart';
 import '../../service/provider/appdata.dart';
 import '../../service/race.dart';
 import '../../widget/loadData.dart';
-import '../showmap.dart';
+import '../General/showmap.dart';
 import 'package:uuid/uuid.dart';
 
 class Spectator extends StatefulWidget {
