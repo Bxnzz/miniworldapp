@@ -259,7 +259,7 @@ class _LobbyState extends State<Lobby> {
                             ),
                           ],
                         ),
-                        child: CardDetail(index, textTheme, context));
+                        child: CardDetailHost(index, textTheme, context));
                   }
 
                   return CardDetail(index, textTheme, context);
@@ -406,6 +406,137 @@ class _LobbyState extends State<Lobby> {
                 ),
               ],
             )),
+      ),
+    );
+  }
+
+  SizedBox CardDetailHost(
+      int index, TextTheme textTheme, BuildContext context) {
+    return SizedBox(
+      width: Get.width,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            InkWell(
+              borderRadius: BorderRadius.circular(12.0),
+              splashColor: Colors.blue.withAlpha(30),
+              child: Stack(children: [
+                Positioned(
+                  child: Opacity(
+                    opacity: 0.3,
+                    child: Image.network(
+                      attendShow[index].values.first.first.team.teamImage,
+                      height: 60,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                ExpansionTile(
+                    key: Key(selec.toString()),
+                    initiallyExpanded:
+                        idTeam == attendShow[index].values.first.first.teamId &&
+                            idUser !=
+                                attendShow[index]
+                                    .values
+                                    .first
+                                    .first
+                                    .team
+                                    .race
+                                    .userId,
+                    title: idTeam ==
+                                attendShow[index].values.first.first.teamId &&
+                            idUser !=
+                                attendShow[index]
+                                    .values
+                                    .first
+                                    .first
+                                    .team
+                                    .race
+                                    .userId
+                        ?
+                        //ทีมที่เข้าร่วม
+                        Row(children: [
+                            Text(
+                              ("${attendShow[index].values.first.first.team.teamName} (ทีมคุณ)"),
+                              style: textTheme.bodyLarge?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromRGBO(156, 39, 176, 1),
+                                  shadows: [
+                                    Shadow(
+                                      blurRadius: 10,
+                                      color: Colors.white54,
+                                      offset: Offset(5, 3),
+                                    ),
+                                  ]),
+                            ),
+                          ])
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              //Name team (Host)
+                              //another team
+                              Text(
+                                  attendShow[index]
+                                      .values
+                                      .first
+                                      .first
+                                      .team
+                                      .teamName,
+                                  style: textTheme.bodyLarge?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      shadows: [
+                                        Shadow(
+                                          blurRadius: 20.0,
+                                          color:
+                                              Color.fromRGBO(253, 244, 255, 1),
+                                          offset: Offset(5, 3),
+                                        ),
+                                      ])),
+                            ],
+                          ),
+                    children: attendShow[index].values.first.map((e) {
+                      return ListTile(
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    showProfileAlertDialog(context, e.user);
+                                    log("tab${e.user.userName}");
+                                  },
+                                  child: CircleAvatar(
+                                      radius: 25,
+                                      backgroundImage:
+                                          NetworkImage(e.user.userImage)),
+                                ),
+                                Gap(5),
+                                Text(e.user.userName),
+                              ],
+                            ),
+                            e.status == 2
+                                //statuscheck(logging in)
+                                ? const FaIcon(
+                                    FontAwesomeIcons.solidCircleCheck,
+                                    color: Colors.green,
+                                    size: 30,
+                                  )
+                                : const FaIcon(
+                                    FontAwesomeIcons.solidCircleXmark,
+                                    color: Colors.red,
+                                    size: 30,
+                                  ),
+                          ],
+                        ),
+                      );
+                    }).toList())
+              ]),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -723,17 +854,19 @@ class _LobbyState extends State<Lobby> {
                                         animType: AnimType.bottomSlide,
                                         headerAnimationLoop: false,
                                         title: 'มีทีมที่ยังไม่พร้อม!!',
-                                        desc: 'กรุณารอให้ผู้เข้าแข่งขันกดพร้อม\n หรือเตะทีมที่ไม่พร้อมออกจากการแข่งขัน',
+                                        desc:
+                                            'กรุณารอให้ผู้เข้าแข่งขันกดพร้อม\n หรือเตะทีมที่ไม่พร้อมออกจากการแข่งขัน',
                                       ).show();
-                                   
                                     } else if (attendShow.isEmpty) {
-                                       AwesomeDialog(
+                                      AwesomeDialog(
                                         context: context,
                                         dialogType: DialogType.error,
                                         animType: AnimType.bottomSlide,
                                         headerAnimationLoop: false,
-                                        title: 'ยังไม่มีทีมเข้าร่วมการแข่งขัน!!',
-                                        desc: 'กรุณารอให้ผู้เข้าแข่งขันเข้าร่วมการแข่งขัน',
+                                        title:
+                                            'ยังไม่มีทีมเข้าร่วมการแข่งขัน!!',
+                                        desc:
+                                            'กรุณารอให้ผู้เข้าแข่งขันเข้าร่วมการแข่งขัน',
                                       ).show();
                                     } else {
                                       showAlertDialog(context);
