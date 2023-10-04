@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -18,11 +19,13 @@ import 'package:miniworldapp/model/DTO/attendDTO.dart';
 
 import 'package:miniworldapp/model/attend.dart';
 import 'package:miniworldapp/model/result/attendRaceResult.dart';
+import 'package:miniworldapp/model/result/rewardResult.dart';
 import 'package:miniworldapp/service/attend.dart';
+import 'package:miniworldapp/service/reward.dart';
 import 'package:provider/provider.dart';
 
-import '../service/provider/appdata.dart';
-import '../widget/loadData.dart';
+import '../../service/provider/appdata.dart';
+import '../../widget/loadData.dart';
 import 'package:http/http.dart' as http;
 
 class ShowMapPage extends StatefulWidget {
@@ -39,7 +42,9 @@ class ShowMapPageState extends State<ShowMapPage> {
   late Future<void> loadDataMethod;
   List<AttendRace> attends = [];
   List<AttendRace> attendLatLng = [];
+  List<RewardResult> rewards = [];
   late AttendService attendService;
+  late RewardService rewardService;
   String imgUser = '';
   Set<Marker> markers = {};
   late BitmapDescriptor _markerIcon;
@@ -49,6 +54,13 @@ class ShowMapPageState extends State<ShowMapPage> {
   late int userId;
   late String datetime;
   int idrace = 0;
+  Set<int> teamMe = {};
+  Set<int> teamAllRegis = {};
+  Set<int> teamRe = {};
+  Set<int> all = {};
+  int sum1 = 0;
+  int sum2 = 0;
+  int sum3 = 0;
 
   late int range = 0;
   bool showAppbar = true;
@@ -60,6 +72,8 @@ class ShowMapPageState extends State<ShowMapPage> {
     log('id' + idrace.toString());
     attendService =
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    rewardService =
+        RewardService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
     // 2.2 async method
     loadDataMethod = loadData();
@@ -72,7 +86,51 @@ class ShowMapPageState extends State<ShowMapPage> {
       attends = a.data;
       //  log('lat'+attends.first.lat.toString());
       // isLoaded = true;
+
       imgUser = attends.first.user.userImage;
+      for (var tm in attends) {
+        log('tmmmm ' + tm.team.raceId.toString());
+        teamMe.add(tm.team.raceId);
+        //log('teamAll'+ tm.teamId.toString());
+        teamAllRegis.add(tm.teamId);
+      }
+      log('teamAll' + teamAllRegis.toString());
+      log('raceteams ' + teamMe.toString());
+
+      var re = await rewardService.rewardAll();
+      rewards = re.data;
+      sum1 = 0;
+      sum2 = 0;
+      sum3 = 0;
+
+      for (var element in rewards) {
+        log('RewardTeam' + element.teamId.toString());
+        // teamRe.add(element.teamId);
+        // var all = teamAllRegis.intersection(teamRe);
+        // log('all$all');
+
+        if (teamAllRegis.contains(element.teamId)) {
+          log('Name ' +
+              element.team.teamName +
+              ' no. ' +
+              element.reType.toString());
+          log('sumAll ' + teamAllRegis.length.toString());
+          if (element.reType == 1) {
+            log('sum ' + teamAllRegis.length.toString());
+            sum1 = teamAllRegis.length;
+            log('sum1 ' + sum1.toString());
+          }
+          if (element.reType == 2) {
+            log('sum2 ' + teamAllRegis.length.toString());
+            sum2 = all.length;
+          }
+          if (element.reType == 3) {
+            log('sum3 ' + teamAllRegis.length.toString());
+            sum3 = all.length;
+          } else {}
+        }
+        log('sum11111111 ' + sum1.toString());
+      }
     } catch (err) {
       // isLoaded = false;
       log('Error:$err');
@@ -94,22 +152,63 @@ class ShowMapPageState extends State<ShowMapPage> {
               title: "${e.team.teamName}",
               snippet: "${e.user.userName}",
               onTap: () {
-                SmartDialog.show(builder: (_) {
-                  return Dialog(
-                      child: Container(
-                    height: 200,
-                    width: 200,
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          radius: 50,
+                AwesomeDialog(
+                        customHeader: CircleAvatar(
+                          radius: Get.width / 6,
                           backgroundImage: NetworkImage("${e.user.userImage}"),
                         ),
-                        Text("ชื่อ: ${e.user.userName}"),
-                      ],
-                    ),
-                  ));
-                });
+                        desc: "${e.user.userName}",
+                        context: context,
+                        showCloseIcon: true,
+                        dismissOnBackKeyPress: true,
+                        dialogType: DialogType.noHeader,
+                        title: 'ภารกิจล้มเหลว!!!',
+                        body: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text("ชื่อในระบบ : ${e.user.userName}"),
+                            Text("ชื่อจริง : ${e.user.userFullname}"),
+                            Text("คำอธิบาย :${e.user.userDiscription}"),
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Image.asset(
+                                    "assets/image/crown1.png",
+                                    width: 50,
+                                  ),
+                                  Text(sum1.toString()),
+                                  Image.asset(
+                                    "assets/image/crown2.png",
+                                    width: 50,
+                                  ),
+                                  Text(sum2.toString()),
+                                  Image.asset(
+                                    "assets/image/crown3.png",
+                                    width: 50,
+                                  ),
+                                  Text(sum3.toString()),
+                                ]),
+                          ],
+                        ),
+                        closeIcon: FaIcon(FontAwesomeIcons.x))
+                    .show();
+                // SmartDialog.show(builder: (_) {
+                //   return Dialog(
+                //       child: Container(
+                //     height: 200,
+                //     width: 200,
+                //     child: Column(
+                //       children: [
+                //         CircleAvatar(
+                //           radius: 50,
+                //           backgroundImage: NetworkImage("${e.user.userImage}"),
+                //         ),
+                //         Text("ชื่อ: ${e.user.userName}"),
+                //       ],
+                //     ),
+                //   ));
+                // });
 
                 // Get.defaultDialog(title: 'ข้อมูลสมาชิก');
               }));
