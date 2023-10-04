@@ -65,6 +65,7 @@ class _LobbyState extends State<Lobby> {
   int selec = 1;
 
   List<String> playerIds = [];
+  List<String> teamIDs = [];
   Map<String, dynamic> mc = {};
 
   String Username = '';
@@ -207,7 +208,7 @@ class _LobbyState extends State<Lobby> {
                                                                   idTeamDel
                                                                       .toString());
 
-                                                      if (teamDelete
+                                                       if (teamDelete
                                                               .data.result ==
                                                           '1') {
                                                         ScaffoldMessenger.of(
@@ -217,6 +218,7 @@ class _LobbyState extends State<Lobby> {
                                                               content: Text(
                                                                   'delete Successful')),
                                                         );
+
                                                         attendShow.removeWhere(
                                                             (element) {
                                                           return element
@@ -226,14 +228,62 @@ class _LobbyState extends State<Lobby> {
                                                                   .teamId ==
                                                               idTeamDel;
                                                         }); //go through the loop and match content to delete from list
+                                                      teamIDs.clear();
+                                                      log(attendShow[index]
+                                                          .values
+                                                          .first
+                                                          .first
+                                                          .user
+                                                          .onesingnalId
+                                                          .toString());
+                                                      teamIDs.add(
+                                                          attendShow[index]
+                                                              .values
+                                                              .first
+                                                              .first
+                                                              .user
+                                                              .onesingnalId);
+                                                      mc = {
+                                                        'notitype':
+                                                            'deleteTeam',
+                                                        'raceID': idRace,
+                                                        'teamid': idTeamDel
+                                                      };
+                                                      var notification1 =
+                                                          OSCreateNotification(
+                                                              //playerID
+                                                              additionalData:
+                                                                  mc,
+                                                              playerIds:
+                                                                  teamIDs,
+                                                              content: raceName,
+                                                              heading:
+                                                                  "ลบทีมที่เข้าแข่งขัน",
+                                                              //  iosAttachments: {"id1",urlImage},
+                                                              // bigPicture: imUrlString,
+                                                              buttons: [
+                                                            OSActionButton(
+                                                                text: "ตกลง",
+                                                                id: "id1"),
+                                                            OSActionButton(
+                                                                text: "ยกเลิก",
+                                                                id: "id2")
+                                                          ]);
+                                                      log('player ' +
+                                                          teamIDs.toString());
 
-                                                        setState(() {
-                                                          loadDataMethod =
-                                                              loadData();
-                                                        });
-                                                        Navigator.pop(context);
-                                                        // log("race Successful");
-                                                        return;
+                                                      var response1 =
+                                                          await OneSignal.shared
+                                                              .postNotification(
+                                                                  notification1);
+
+                                                      setState(() {
+                                                        loadDataMethod =
+                                                            loadData();
+                                                      });
+                                                      Navigator.pop(context);
+                                                      log("race Successful");
+                                                      return;
                                                       } else {
                                                         // log("team fail");
                                                         ScaffoldMessenger.of(
