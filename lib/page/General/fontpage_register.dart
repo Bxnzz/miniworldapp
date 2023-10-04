@@ -6,12 +6,15 @@ import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/service/user.dart';
 import 'package:path_provider/path_provider.dart';
@@ -48,6 +51,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
   late RegisterService registerService;
   late UserService _userService;
   bool _isHidden = false;
+  bool _isHiddenConf = false;
   File? pickedFile;
   File? svgFile;
   UploadTask? uploadTask;
@@ -61,12 +65,15 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
   late var bytes;
   late var digest;
   late Future readSvg;
+  File? _image;
+  CroppedFile? croppedImage;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     bool _isHidden = true;
+    bool _isHiddenConf = true;
     registerService =
         RegisterService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
@@ -85,6 +92,56 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
     //  log("svgInDB = " + svgFile!.path);
   }
 
+  Future _pickImage(ImageSource source) async {
+    final image = await ImagePicker().pickImage(source: source);
+    if (image == null) return;
+    File? img = File(image.path!);
+    // img = await _cropImage(imageFile: img);
+    _image = img;
+    croppedImage = await ImageCropper().cropImage(sourcePath: img.path);
+    if (croppedImage == null) return null;
+
+    _image = File(croppedImage!.path);
+
+    setState(() {});
+  }
+
+  Future<dynamic> showModalBottomSheet_photo_or_camera(BuildContext context) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: Get.width,
+                child: ElevatedButton(
+                    onPressed: () {
+                      log("${_image}");
+
+                      _pickImage(ImageSource.camera);
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("ถ่ายรูป")),
+              ),
+              SizedBox(
+                width: Get.width,
+                child: ElevatedButton(
+                    onPressed: () {
+                      log("${_image}");
+
+                      setState(() {
+                        _pickImage(ImageSource.gallery);
+                        Navigator.of(context).pop();
+                      });
+                    },
+                    child: Text("เลือกรูป")),
+              )
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     _write(svg);
@@ -97,138 +154,167 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
             padding: EdgeInsets.symmetric(vertical: 10),
             child: Column(
               children: [
-                // FloatingActionButton(
-                //   onPressed: () async {
-                //     svg = RandomAvatarString(
-                //       DateTime.now().toIso8601String(),
-                //       trBackground: false,
-                //     );
-                //     log(svgInDB);
-                //     //log(svg);
-
-                //     _painters.add(
-                //       RandomAvatar(
-                //         DateTime.now().toIso8601String(),
-                //         height: 50,
-                //         width: 52,
-                //       ),
-                //     );
-                //     _controller.text = svg;
-                //     setState(() {});
-                //   },
-                //   tooltip: 'Generate',
-                //   child: const Icon(Icons.gesture),
-                // ),
-                //RandomAvatar(svg, trBackground: false),
-                GestureDetector(
-                    onTap: () {
-                      selectFile();
-                      log('message');
-                    },
-                    child: pickedFile != null
-                        ? CircleAvatar(
+                _image != null
+                    ? GestureDetector(
+                        onTap: () {
+                          showModalBottomSheet_photo_or_camera(context);
+                        },
+                        child: CircleAvatar(
                             key: avata,
                             radius: MediaQuery.of(context).size.width * 0.15,
-                            backgroundImage: FileImage(pickedFile!))
-                        : CircleAvatar(
-                            radius: MediaQuery.of(context).size.width * 0.15,
-                            child: GestureDetector(
-                              onTap: () {
-                                selectFile();
-                                log('message');
-                              },
-                              child: SvgPicture.string('''$svg'''),
+                            backgroundImage: FileImage(_image!)),
+                      )
+                    : Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Positioned(
+                            child: CircleAvatar(
+                              radius: MediaQuery.of(context).size.width * 0.15,
+                              child: GestureDetector(
+                                child: SvgPicture.string('''$svg'''),
+                              ),
                             ),
-                          )),
+                          ),
+                          Positioned(
+                            child: CircleAvatar(
+                              radius: MediaQuery.of(context).size.width * 0.15,
+                              backgroundColor: Get
+                                  .theme.colorScheme.onBackground
+                                  .withOpacity(0.5),
+                              child: IconButton(
+                                  splashRadius: 100,
+                                  onPressed: () {
+                                    showModalBottomSheet_photo_or_camera(
+                                        context);
+                                    log('messadfffge');
+                                  },
+                                  icon: Icon(
+                                    CupertinoIcons.plus_circle_fill,
+                                    color: Colors.white,
+                                    size: 40.0,
+                                  )),
+                            ),
+                          )
+                        ],
+                      ),
                 Gap(20),
                 SizedBox(
-                  child: textField(userName, '', 'ชื่อในระบบ',
-                      'กรุณาใส่ชื่อในระบบ', Icon(Icons.account_box_sharp)),
+                  width: Get.width / 1.1,
+                  child: textField(userName, '', 'ชื่อในระบบ', 'ใส่ชื่อในระบบ',
+                      Icon(Icons.account_box_sharp)),
                 ),
-                TextFormField(
-                  controller: email,
-                  decoration: const InputDecoration(
-                    labelText: 'อีเมล',
-                    icon: Icon(Icons.email_outlined),
+                SizedBox(
+                  width: Get.width / 1.1,
+                  child: TextFormField(
+                    controller: email,
+                    decoration: const InputDecoration(
+                      labelText: 'อีเมล',
+                      icon: Icon(Icons.email_outlined),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'กรุณาใส่อีเมล.';
+                      }
+                      if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+                        return "ใส่อีเมลให้ถูกต้อง";
+                      }
+                      return null;
+                    },
                   ),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'กรุณาใส่อีเมล.';
-                    }
-                    if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
-                      return "กรุณาใส่อีเมลให้ถูกต้อง";
-                    }
-                    return null;
-                  },
                 ),
                 Gap(15),
-                TextFormField(
-                  obscureText: _isHidden,
-                  enableSuggestions: false,
-                  autocorrect: false,
-                  controller: password,
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _isHidden =
-                              !_isHidden; // เมื่อกดก็เปลี่ยนค่าตรงกันข้าม
-                        });
-                      },
-                      icon: Icon(
-                        _isHidden // เงื่อนไขการสลับ icon
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                        size: 16,
+                SizedBox(
+                  width: Get.width / 1.1,
+                  child: TextFormField(
+                    obscureText: !_isHidden,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    controller: password,
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _isHidden =
+                                !_isHidden; // เมื่อกดก็เปลี่ยนค่าตรงกันข้าม
+                          });
+                        },
+                        icon: Icon(
+                          _isHidden // เงื่อนไขการสลับ icon
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          size: 16,
+                        ),
+                      ),
+                      labelText: 'รหัสผ่าน',
+                      icon: Icon(Icons.password),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'ใส่รหัสผ่าน.';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                Gap(15),
+                SizedBox(
+                  width: Get.width / 1.1,
+                  child: TextFormField(
+                    obscureText: !_isHiddenConf,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    controller: confirmpassword,
+                    decoration: InputDecoration(
+                      labelText: 'ยืนยันรหัสผ่าน',
+                      icon: Icon(Icons.password),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _isHiddenConf =
+                                !_isHiddenConf; // เมื่อกดก็เปลี่ยนค่าตรงกันข้าม
+                          });
+                        },
+                        icon: Icon(
+                          _isHiddenConf // เงื่อนไขการสลับ icon
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          size: 16,
+                        ),
                       ),
                     ),
-                    labelText: 'รหัสผ่าน',
-                    icon: Icon(Icons.password),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'ยืนยันรหัสผ่าน.';
+                      }
+                      if (value != password.text) {
+                        return 'รหัสยืนยันไม่ถูกต้อง.';
+                      }
+                      return null;
+                    },
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'กรุณาใส่รหัสผ่าน.';
-                    }
-                    return null;
-                  },
-                ),
-                Gap(15),
-                TextFormField(
-                  obscureText: true,
-                  enableSuggestions: false,
-                  autocorrect: false,
-                  controller: confirmpassword,
-                  decoration: const InputDecoration(
-                    labelText: 'ยืนยันรหัสผ่าน',
-                    icon: Icon(Icons.password),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'ยืนยันรหัสผ่าน.';
-                    }
-                    if (value != password.text) {
-                      return 'รหัสยืนยันไม่ถูกต้อง.';
-                    }
-                    return null;
-                  },
                 ),
                 Gap(15),
                 SizedBox(
-                  child: textField(
-                      fullname,
-                      '',
-                      'ชื่อ-นามสกุล',
-                      'กรุณาใส่ชื่อ-นามสกุล.',
-                      Icon(Icons.text_decrease_outlined)),
+                  width: Get.width / 1.1,
+                  child: textField(fullname, '', 'ชื่อ-นามสกุล',
+                      'ใส่ชื่อ-นามสกุล.', Icon(Icons.person_outline)),
                 ),
                 SizedBox(
-                  child: textField(
-                    description,
-                    '',
-                    'คำอธิบาย',
-                    'ใส่คำอธิบายตัวคุณพอสังเขป',
-                    Icon(Icons.email_outlined),
+                  width: Get.width / 1.1,
+                  child: TextFormField(
+                    controller: description,
+                    decoration: InputDecoration(
+                      labelText: 'คำอธิบาย',
+                      icon: Icon(Icons.description_outlined),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'แนะนำตัวคุณหน่อย.';
+                      }
+
+                      return null;
+                    },
                   ),
                 ),
                 Row(
@@ -237,9 +323,15 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                     ElevatedButton(
                         onPressed: () async {
                           if (await _formKey.currentState!.validate()) {
-                            await _write(svg);
-                            uploadFile();
-                            log("password =  $digest");
+                            if (_image != null) {
+                              uploadFile();
+                              log("password =  $digest");
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text('กรุณาเลือกรูปภาพ!!! !!')),
+                              );
+                            }
 
                             // RegisterDto dto = RegisterDto(
                             //     userName: userName.text,
@@ -354,78 +446,78 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
     log("before upload");
 
     ///upload SVG
-    if (pickedFile == null) {
-      log("Pickfile Null ");
-      passwordINDB = password.text;
-      bytes = utf8.encode(passwordINDB); // data being hashed
+    // if (pickedFile == null) {
+    //   log("Pickfile Null ");
+    //   passwordINDB = password.text;
+    //   bytes = utf8.encode(passwordINDB); // data being hashed
 
-      // _write(svgInDB);
+    //   // _write(svgInDB);
 
-      // readSvg;
-      //_read();
+    //   // readSvg;
+    //   //_read();
 
-      digest = sha256.convert(bytes);
+    //   digest = sha256.convert(bytes);
 
-      final path = 'files/${svgFile!.path.split('/').last}';
-      final file = File(svgFile!.path);
-      final ref = FirebaseStorage.instance.ref().child(path);
-      log(ref.toString());
+    //   final path = 'files/${svgFile!.path.split('/').last}';
+    //   final file = File(svgFile!.path);
+    //   final ref = FirebaseStorage.instance.ref().child(path);
+    //   log(ref.toString());
 
-      setState(() {
-        uploadTask = ref.putFile(file);
-      });
-      final snapshot = await uploadTask!.whenComplete(() {});
+    //   setState(() {
+    //     uploadTask = ref.putFile(file);
+    //   });
+    //   final snapshot = await uploadTask!.whenComplete(() {});
 
-      final urlDownload = await snapshot.ref.getDownloadURL();
-      log('Download Link:$urlDownload');
+    //   final urlDownload = await snapshot.ref.getDownloadURL();
+    //   log('Download Link:$urlDownload');
 
-      // log("encode =" + EncryptData.encryptAES("abc"));
+    //   // log("encode =" + EncryptData.encryptAES("abc"));
 
-      // log("decode =" + EncryptData.decryptAES(" 21dd8abc6894bdf6946f2fb8045f4890b74951d7a62b7068cf61eeed4d29d68f"));
-      RegisterDto dto = RegisterDto(
-          userName: userName.text,
-          userMail: email.text,
-          userPassword: digest.toString(),
-          userFullname: fullname.text,
-          userDiscription: description.text,
-          userFacebookId: idFacebook,
-          userImage: urlDownload);
-      var register = await registerService.registers(dto);
+    //   // log("decode =" + EncryptData.decryptAES(" 21dd8abc6894bdf6946f2fb8045f4890b74951d7a62b7068cf61eeed4d29d68f"));
+    //   RegisterDto dto = RegisterDto(
+    //       userName: userName.text,
+    //       userMail: email.text,
+    //       userPassword: digest.toString(),
+    //       userFullname: fullname.text,
+    //       userDiscription: description.text,
+    //       userFacebookId: idFacebook,
+    //       userImage: urlDownload);
+    //   var register = await registerService.registers(dto);
 
-      var userRegis = await _userService.getUserAll();
-      if (register.data.massage == "Register failed") {
-        log("already email $email");
-        log(jsonEncode(register.data));
+    //   var userRegis = await _userService.getUserAll();
+    //   if (register.data.massage == "Register failed") {
+    //     log("already email $email");
+    //     log(jsonEncode(register.data));
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('อีเมลนี้เคยลงทะเบียนแล้ว!!')),
-        );
-        stopLoading();
-      } else {
-        // avata.currentWidget;
-        // setState(() {
-        //   Image.file(File(pickedFile!.path));
-        // });
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       SnackBar(content: Text('อีเมลนี้เคยลงทะเบียนแล้ว!!')),
+    //     );
+    //     stopLoading();
+    //   } else {
+    //     // avata.currentWidget;
+    //     // setState(() {
+    //     //   Image.file(File(pickedFile!.path));
+    //     // });
 
-        userName.clear();
-        email.clear();
-        password.clear();
-        confirmpassword.clear();
-        fullname.clear();
-        description.clear();
-        stopLoading();
-        return showAlertDialog(context);
-      }
-    }
+    //     userName.clear();
+    //     email.clear();
+    //     password.clear();
+    //     confirmpassword.clear();
+    //     fullname.clear();
+    //     description.clear();
+    //     stopLoading();
+    //     return showAlertDialog(context);
+    //   }
+    // }
 
     //upload image
-    else {
-      passwordINDB = password.toString();
-      bytes = utf8.encode(passwordINDB); // data being hashed
+    // else {
+    if (_image != null) {
+      bytes = utf8.encode(password.text); // data being hashed
       digest = sha256.convert(bytes);
-
-      final path = 'files/${pickedFile?.path.split('/').last}';
-      final file = File(pickedFile!.path);
+//passwordINDB = password.text;
+      final path = 'files/${_image?.path.split('/').last}';
+      final file = File(_image!.path);
       final ref = FirebaseStorage.instance.ref().child(path);
       log(ref.toString());
 
@@ -450,7 +542,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
           userImage: urlDownload);
       var register = await registerService.registers(dto);
 
-      var userRegis = await _userService.getUserAll();
+      log("register.data.massage  ${register.data.massage}");
       if (register.data.massage == "Register failed") {
         log("already email $email");
         log(jsonEncode(register.data));
@@ -462,7 +554,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
       } else {
         avata.currentWidget;
         setState(() {
-          Image.file(File(pickedFile!.path));
+          Image.file(File(_image!.path));
         });
 
         userName.clear();
@@ -476,6 +568,8 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
       }
     }
   }
+
+  // }
 
   textField(final TextEditingController controller, String hintText,
       String labelText, String error, Icon icon) {

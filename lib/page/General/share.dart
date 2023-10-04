@@ -152,8 +152,14 @@ class _ShareState extends State<Share> {
       log("orderMe = $orderMe");
       for (var i = 0; i < attends.length; i++) {
         log(attends[i].user.userName);
-        player1 = attends[0].user.userName;
-        player2 = attends[1].user.userName;
+        if (attends.length < 2) {
+          log("player1");
+          player1 = attends[0].user.userName;
+        } else if (attends.length >= 2) {
+          log("player2");
+          player1 = attends[0].user.userName;
+          player2 = attends[1].user.userName;
+        }
       }
     } catch (err) {
       log('Error:$err');

@@ -146,8 +146,7 @@ class _RaceAllState extends State<RaceAll> {
                                   height: 45,
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.circular(10),
                                         color: Colors.white,
                                         boxShadow: const [
                                           BoxShadow(
@@ -163,7 +162,9 @@ class _RaceAllState extends State<RaceAll> {
                                         ]),
                                     child: InkWell(
                                       onTap: () {
-                                         showSearch(context: context, delegate: mySearchDelegate());
+                                        showSearch(
+                                            context: context,
+                                            delegate: mySearchDelegate());
                                       },
                                       child: Row(
                                         mainAxisAlignment:
@@ -231,7 +232,8 @@ class _RaceAllState extends State<RaceAll> {
                                     teamMe.contains(element.raceId) == false)
                                 .map((e) {
                               return Padding(
-                                padding: const EdgeInsets.only(right: 10,left: 10),
+                                padding:
+                                    const EdgeInsets.only(right: 10, left: 10),
                                 child: SizedBox(
                                   height: 150,
                                   width: Get.width,
@@ -247,7 +249,7 @@ class _RaceAllState extends State<RaceAll> {
                                     //  shadowColor: ,
                                     color: Colors.white,
                                     clipBehavior: Clip.hardEdge,
-                                
+
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(12.0),
                                       splashColor: Colors.blue.withAlpha(30),
@@ -257,7 +259,8 @@ class _RaceAllState extends State<RaceAll> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     DetailRace()));
-                                        context.read<AppData>().idrace = e.raceId;
+                                        context.read<AppData>().idrace =
+                                            e.raceId;
                                       },
                                       child: GridTile(
                                           // crossAxisAlignment: CrossAxisAlignment.start,
@@ -283,8 +286,8 @@ class _RaceAllState extends State<RaceAll> {
                                                           .spaceBetween,
                                                   children: [
                                                     Text(e.raceName,
-                                                        style: Get
-                                                            .textTheme.bodyMedium!
+                                                        style: Get.textTheme
+                                                            .bodyMedium!
                                                             .copyWith(
                                                                 fontWeight:
                                                                     FontWeight
@@ -294,8 +297,8 @@ class _RaceAllState extends State<RaceAll> {
                                                                     .colorScheme
                                                                     .onPrimary)),
                                                     Text("# ${e.raceId}",
-                                                        style: Get
-                                                            .textTheme.bodySmall!
+                                                        style: Get.textTheme
+                                                            .bodySmall!
                                                             .copyWith(
                                                                 color: Get
                                                                     .theme
@@ -307,7 +310,9 @@ class _RaceAllState extends State<RaceAll> {
                                                 // Text("ปิดรับสมัคร: " +
                                                 //     formatter.formatInBuddhistCalendarThai(
                                                 //         element.raceTimeFn)),
-                                                Text("สถานที่: " + e.raceLocation,
+                                                Text(
+                                                    "สถานที่: " +
+                                                        e.raceLocation,
                                                     style: Get
                                                         .textTheme.bodySmall!
                                                         .copyWith(
