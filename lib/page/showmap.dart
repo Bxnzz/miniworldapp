@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -94,22 +95,46 @@ class ShowMapPageState extends State<ShowMapPage> {
               title: "${e.team.teamName}",
               snippet: "${e.user.userName}",
               onTap: () {
-                SmartDialog.show(builder: (_) {
-                  return Dialog(
-                      child: Container(
-                    height: 200,
-                    width: 200,
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          radius: 50,
+                AwesomeDialog(
+                        customHeader: CircleAvatar(
+                          radius: Get.width / 6,
                           backgroundImage: NetworkImage("${e.user.userImage}"),
                         ),
-                        Text("ชื่อ: ${e.user.userName}"),
-                      ],
-                    ),
-                  ));
-                });
+                        desc: "${e.user.userName}",
+                        context: context,
+                        showCloseIcon: true,
+                        dismissOnBackKeyPress: true,
+                        dialogType: DialogType.noHeader,
+                        title: 'ภารกิจล้มเหลว!!!',
+                        body: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text("ชื่อในระบบ : ${e.user.userName}"),
+                            Text("ชื่อจริง : ${e.user.userFullname}"),
+                            Text("คำอธิบาย :${e.user.userDiscription}")
+                          ],
+                        ),
+                        closeIcon: FaIcon(FontAwesomeIcons.x))
+                    .show();
+
+                // SmartDialog.show(builder: (_) {
+                //   return Dialog(
+                //       child: Container(
+                //     height: 200,
+                //     width: 200,
+                //     child: Column(
+                //       children: [
+                //         Text("${e.user.userName}"),
+                //         CircleAvatar(
+                //           radius: Get.width / 6,
+                //           backgroundImage: NetworkImage("${e.user.userImage}"),
+                //         ),
+                //         Text("${e.user.userFullname}"),
+                //         Text("${e.user.userDiscription}")
+                //       ],
+                //     ),
+                //   ));
+                // });
 
                 // Get.defaultDialog(title: 'ข้อมูลสมาชิก');
               }));
