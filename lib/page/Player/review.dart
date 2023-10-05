@@ -50,13 +50,14 @@ class _ReviewPageState extends State<ReviewPage> {
     attendService =
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
     loadDataMethods = loadData();
+    raceId = context.read<AppData>().idrace;
   }
 
   Future<void> loadData() async {
     startLoading(context);
     try {
       var atn = await attendService.attendByUserID(userID: userId);
-      raceId = atn.data.first.team.raceId;
+
       userName = atn.data.first.user.userName;
 
       log("raceid = ${raceId}");
