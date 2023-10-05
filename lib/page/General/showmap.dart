@@ -42,6 +42,7 @@ class ShowMapPageState extends State<ShowMapPage> {
   late Future<void> loadDataMethod;
   List<AttendRace> attends = [];
   List<AttendRace> attendLatLng = [];
+  List<AttendRace> teamAttends = [];
   List<RewardResult> rewards = [];
   late AttendService attendService;
   late RewardService rewardService;
@@ -88,14 +89,14 @@ class ShowMapPageState extends State<ShowMapPage> {
       // isLoaded = true;
 
       imgUser = attends.first.user.userImage;
-      for (var tm in attends) {
-        log('tmmmm ' + tm.team.raceId.toString());
-        teamMe.add(tm.team.raceId);
-        //log('teamAll'+ tm.teamId.toString());
-        teamAllRegis.add(tm.teamId);
-      }
-      log('teamAll' + teamAllRegis.toString());
-      log('raceteams ' + teamMe.toString());
+      // for (var tm in attends) {
+      //   log('tmmmm ' + tm.team.raceId.toString());
+      //   teamMe.add(tm.team.raceId);
+      //   //log('teamAll'+ tm.teamId.toString());
+      //   teamAllRegis.add(tm.teamId);
+      // }
+      // log('teamAll' + teamAllRegis.toString());
+      // log('raceteams ' + teamMe.toString());
 
       var re = await rewardService.rewardAll();
       rewards = re.data;
@@ -103,34 +104,7 @@ class ShowMapPageState extends State<ShowMapPage> {
       sum2 = 0;
       sum3 = 0;
 
-      for (var element in rewards) {
-        log('RewardTeam' + element.teamId.toString());
-        // teamRe.add(element.teamId);
-        // var all = teamAllRegis.intersection(teamRe);
-        // log('all$all');
-
-        if (teamAllRegis.contains(element.teamId)) {
-          log('Name ' +
-              element.team.teamName +
-              ' no. ' +
-              element.reType.toString());
-          log('sumAll ' + teamAllRegis.length.toString());
-          if (element.reType == 1) {
-            log('sum ' + teamAllRegis.length.toString());
-            sum1 = teamAllRegis.length;
-            log('sum1 ' + sum1.toString());
-          }
-          if (element.reType == 2) {
-            log('sum2 ' + teamAllRegis.length.toString());
-            sum2 = all.length;
-          }
-          if (element.reType == 3) {
-            log('sum3 ' + teamAllRegis.length.toString());
-            sum3 = all.length;
-          } else {}
-        }
-        log('sum11111111 ' + sum1.toString());
-      }
+      
     } catch (err) {
       // isLoaded = false;
       log('Error:$err');
@@ -151,7 +125,54 @@ class ShowMapPageState extends State<ShowMapPage> {
           infoWindow: InfoWindow(
               title: "${e.team.teamName}",
               snippet: "${e.user.userName}",
-              onTap: () {
+              onTap: () async {
+                log('userrrrrrr '+e.user.userId.toString());
+                var t = await attendService.attendByUserID(userID: e.user.userId);
+                teamAttends = t.data;
+                //  hostID = t.data.first
+               
+                //teamAttends = [];
+                teamAllRegis = {};
+                for (var tm in teamAttends) {
+                  log(tm.team.raceId.toString());
+                  teamMe.add(tm.team.raceId);
+                  //log('teamAll'+ tm.teamId.toString());
+                  teamAllRegis.add(tm.teamId);
+                }
+                log('teamAll' + teamAllRegis.toString());
+                log('raceteams ' + teamMe.toString());
+
+                sum1 = 0;
+                sum2 = 0;
+                sum3 = 0;
+                all.clear();
+                for (var element in rewards) {
+                  //  log('RewardTeam'+element.teamId.toString());
+                  teamRe.add(element.teamId);
+                  var all = teamAllRegis.intersection(teamRe);
+                  log('all$all');
+
+                  if (all.contains(element.teamId)) {
+                    log('Name ' +
+                        element.team.teamName +
+                        ' no. ' +
+                        element.reType.toString());
+                    log('sumAll ' + all.length.toString());
+                    if (element.reType == 1) {
+                      log('sum ' + all.length.toString());
+                      sum1 = all.length;
+                      log('sum1 ' + sum1.toString());
+                    }
+                    if (element.reType == 2) {
+                      log('sum2 ' + all.length.toString());
+                      sum2 = all.length;
+                    }
+                    if (element.reType == 3) {
+                      log('sum3 ' + all.length.toString());
+                      sum3 = all.length;
+                    } else {}
+                  }
+                }
                 AwesomeDialog(
                         customHeader: CircleAvatar(
                           radius: Get.width / 6,

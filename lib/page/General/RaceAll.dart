@@ -36,6 +36,7 @@ class _RaceAllState extends State<RaceAll> {
   Set<int> teamAllRegis = {};
   Set<int> teamRe = {};
   Set<int> all = {};
+  String UserNames ='';
   int sum1 = 0;
   int sum2 = 0;
   int sum3 = 0;
@@ -58,7 +59,9 @@ class _RaceAllState extends State<RaceAll> {
       log(value.data.first.raceName);
     });
     idUser = context.read<AppData>().idUser;
-    log(idUser.toString());
+    log('user ' + idUser.toString());
+    UserNames = context.read<AppData>().Username;
+    log('username ' + UserNames.toString());
     attendService =
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
     rewardService =
@@ -164,7 +167,7 @@ class _RaceAllState extends State<RaceAll> {
                                       onTap: () {
                                         showSearch(
                                             context: context,
-                                            delegate: mySearchDelegate());
+                                            delegate: MySearchDelegate());
                                       },
                                       child: Row(
                                         mainAxisAlignment:
