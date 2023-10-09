@@ -59,6 +59,7 @@ class _LobbyState extends State<Lobby> {
   int idRace = 0;
   int idAttend = 0;
   int userCreate = 0;
+  String userCreateOneS = '';
   var result;
   late int status = 1;
   late int raceStatus;
@@ -67,6 +68,7 @@ class _LobbyState extends State<Lobby> {
   List<String> playerIds = [];
   List<int> IDplayers = [];
   List<String> teamIDs = [];
+  List<String> hostIDs = [];
   Map<String, dynamic> mc = {};
 
   String Username = '';
@@ -124,7 +126,7 @@ class _LobbyState extends State<Lobby> {
       'notitype': 'startgame',
       'mcid': raceStatus,
       'raceID': idRace,
-      'playerIds':IDplayers
+      'playerIds': IDplayers
     };
     var notification1 = OSCreateNotification(
         //playerID
@@ -210,7 +212,7 @@ class _LobbyState extends State<Lobby> {
                                                                   idTeamDel
                                                                       .toString());
 
-                                                       if (teamDelete
+                                                      if (teamDelete
                                                               .data.result ==
                                                           '1') {
                                                         ScaffoldMessenger.of(
@@ -218,7 +220,7 @@ class _LobbyState extends State<Lobby> {
                                                             .showSnackBar(
                                                           const SnackBar(
                                                               content: Text(
-                                                                  'delete Successful')),
+                                                                  'ลบทีมสำเร็จ')),
                                                         );
 
                                                         attendShow.removeWhere(
@@ -230,62 +232,64 @@ class _LobbyState extends State<Lobby> {
                                                                   .teamId ==
                                                               idTeamDel;
                                                         }); //go through the loop and match content to delete from list
-                                                      teamIDs.clear();
-                                                      log(attendShow[index]
-                                                          .values
-                                                          .first
-                                                          .first
-                                                          .user
-                                                          .onesingnalId
-                                                          .toString());
-                                                      teamIDs.add(
-                                                          attendShow[index]
-                                                              .values
-                                                              .first
-                                                              .first
-                                                              .user
-                                                              .onesingnalId);
-                                                      mc = {
-                                                        'notitype':
-                                                            'deleteTeam',
-                                                        'raceID': idRace,
-                                                        'teamid': idTeamDel
-                                                      };
-                                                      var notification1 =
-                                                          OSCreateNotification(
-                                                              //playerID
-                                                              additionalData:
-                                                                  mc,
-                                                              playerIds:
-                                                                  teamIDs,
-                                                              content: raceName,
-                                                              heading:
-                                                                  "ลบทีมที่เข้าแข่งขัน",
-                                                              //  iosAttachments: {"id1",urlImage},
-                                                              // bigPicture: imUrlString,
-                                                              buttons: [
-                                                            OSActionButton(
-                                                                text: "ตกลง",
-                                                                id: "id1"),
-                                                            OSActionButton(
-                                                                text: "ยกเลิก",
-                                                                id: "id2")
-                                                          ]);
-                                                      log('player ' +
-                                                          teamIDs.toString());
+                                                       teamIDs.clear();
+                                                  log(attendShow[index]
+                                                      .values
+                                                      .first
+                                                      .first
+                                                      .user
+                                                      .onesingnalId
+                                                      .toString());
+                                                  teamIDs.add(attendShow[index]
+                                                      .values
+                                                      .first
+                                                      .first
+                                                      .user
+                                                      .onesingnalId);
+                                                        mc = {
+                                                          'notitype':
+                                                              'deleteTeam',
+                                                          'raceID': idRace,
+                                                          'teamid': idTeamDel
+                                                        };
+                                                        var notification1 =
+                                                            OSCreateNotification(
+                                                                //playerID
+                                                                additionalData:
+                                                                    mc,
+                                                                playerIds:
+                                                                    teamIDs,
+                                                                content:
+                                                                    raceName,
+                                                                heading:
+                                                                    "ลบทีมที่เข้าแข่งขัน",
+                                                                //  iosAttachments: {"id1",urlImage},
+                                                                // bigPicture: imUrlString,
+                                                                buttons: [
+                                                              OSActionButton(
+                                                                  text: "ตกลง",
+                                                                  id: "id1"),
+                                                              OSActionButton(
+                                                                  text:
+                                                                      "ยกเลิก",
+                                                                  id: "id2")
+                                                            ]);
+                                                        log('player ' +
+                                                            teamIDs.toString());
 
-                                                      var response1 =
-                                                          await OneSignal.shared
-                                                              .postNotification(
-                                                                  notification1);
+                                                        var response1 =
+                                                            await OneSignal
+                                                                .shared
+                                                                .postNotification(
+                                                                    notification1);
 
-                                                      setState(() {
-                                                        loadDataMethod =
-                                                            loadData();
-                                                      });
-                                                      Navigator.pop(context);
-                                                      log("race Successful");
-                                                      return;
+                                                        setState(() {
+                                                          loadDataMethod =
+                                                              loadData();
+                                                        });
+                                                        Navigator.pop(context);
+                                                        log("race Successful");
+                                                        return;
                                                       } else {
                                                         // log("team fail");
                                                         ScaffoldMessenger.of(
@@ -293,7 +297,7 @@ class _LobbyState extends State<Lobby> {
                                                             .showSnackBar(
                                                           const SnackBar(
                                                               content: Text(
-                                                                  'delete fail try agin!')),
+                                                                  'ลบทีมไม่สำเร็จ!')),
                                                         );
                                                       }
                                                       ;
@@ -375,21 +379,136 @@ class _LobbyState extends State<Lobby> {
                                         .userId
                             ?
                             //ทีมที่เข้าร่วม
-                            Row(children: [
-                                Text(
-                                  ("${attendShow[index].values.first.first.team.teamName} (ทีมคุณ)"),
-                                  style: textTheme.bodyLarge?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Color.fromRGBO(156, 39, 176, 1),
-                                      shadows: [
-                                        Shadow(
-                                          blurRadius: 10,
-                                          color: Colors.white54,
-                                          offset: Offset(5, 3),
-                                        ),
-                                      ]),
-                                ),
-                              ])
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                    Text(
+                                      ("${attendShow[index].values.first.first.team.teamName} (ทีมคุณ)"),
+                                      style: textTheme.bodyLarge?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Color.fromRGBO(156, 39, 176, 1),
+                                          shadows: [
+                                            Shadow(
+                                              blurRadius: 10,
+                                              color: Colors.white54,
+                                              offset: Offset(5, 3),
+                                            ),
+                                          ]),
+                                    ),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                            color:
+                                                Colors.white.withOpacity(0.5),
+                                            borderRadius:
+                                                BorderRadius.circular(50)),
+                                        child: IconButton(
+                                          onPressed: () {
+                                            idTeamDel = attendShow[index]
+                                                .values
+                                                .first
+                                                .first
+                                                .team
+                                                .teamId
+                                                .toString();
+                                            log('team ID = ${idTeamDel}');
+                                             log('Useronehost: ${userCreateOneS}');
+                                            AwesomeDialog(
+                                              context: context,
+                                              dialogType: DialogType.warning,
+                                              animType: AnimType.bottomSlide,
+                                              headerAnimationLoop: false,
+                                              title: 'ต้องการออกจากการแข่งขัน?',
+                                              desc:
+                                                  'ทีมของคุณต้องการจะออกจากการแข่งขันนี้',
+                                              btnOkText: "ยกเลิก",
+                                              btnCancelText: "ตกลง",
+                                              btnOkOnPress: () async {},
+                                              btnCancelColor: Colors.lightGreen,
+                                              btnOkColor: Colors.redAccent,
+                                              btnCancelOnPress: () async {
+                                                var teamDelete =
+                                                    await teamService
+                                                        .DelbyTeamID(idTeamDel
+                                                            .toString());
+
+                                                if (teamDelete.data.result ==
+                                                    '1') {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    const SnackBar(
+                                                        content: Text(
+                                                            'ออกจากการแข่งขันสำเร็จ')),
+                                                  );
+                                                  attendShow
+                                                      .removeWhere((element) {
+                                                    return element.values.first
+                                                            .first.teamId ==
+                                                        idTeamDel;
+                                                  }); //go through the loop and match content to delete from list
+                                                  //  hostIDs.clear();
+                                                        log(userCreateOneS);
+                                                        hostIDs.add(
+                                                           userCreateOneS);
+                                                 log('team'+ attendShow[index].values.first.first.team.teamName);
+                                                  mc = {
+                                                    'notitype': 'exitTeam',
+                                                    'raceID': idRace,
+                                                    'teamid': idTeamDel,
+                                                   'teamName': attendShow[index].values.first.first.team.teamName,
+                                                  };
+                                                  var notification1 =
+                                                      OSCreateNotification(
+                                                          //playerID
+                                                          additionalData: mc,
+                                                          playerIds: hostIDs,
+                                                          content: raceName,
+                                                          heading:
+                                                              "ออกจากแข่งขัน",
+                                                          //  iosAttachments: {"id1",urlImage},
+                                                          // bigPicture: imUrlString,
+                                                          buttons: [
+                                                        OSActionButton(
+                                                            text: "ตกลง",
+                                                            id: "id1"),
+                                                        OSActionButton(
+                                                            text: "ยกเลิก",
+                                                            id: "id2")
+                                                      ]);
+                                                  log('player ' +
+                                                      teamIDs.toString());
+
+                                                  var response1 =
+                                                      await OneSignal.shared
+                                                          .postNotification(
+                                                              notification1);
+
+                                                  setState(() {
+                                                    loadDataMethod = loadData();
+                                                  });
+                                                  Navigator.pop(context);
+                                                  Navigator.pop(context);
+                                                  log("ออกจากทีมสำเร็จ");
+                                                  return;
+                                                } else {
+                                                  // log("team fail");
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    const SnackBar(
+                                                        content: Text(
+                                                            'ลบทีมไม่สำเร็จ!')),
+                                                  );
+                                                }
+                                                ;
+                                              },
+                                            ).show();
+                                          },
+                                          icon: const FaIcon(FontAwesomeIcons
+                                              .rightFromBracket),
+                                          color: Colors.redAccent,
+                                        ))
+                                  ])
                             : Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -651,8 +770,9 @@ class _LobbyState extends State<Lobby> {
 
       var r = await raceService.racesByraceID(raceID: idRace);
       userCreate = r.data.first.user.userId;
+      userCreateOneS = r.data.first.user.onesingnalId;
       raceName = r.data.first.raceName;
-
+      log('Useronehost: ${userCreateOneS}');
       var a = await attendService.attendByRaceID(raceID: idRace);
       attends = a.data;
       status = a.data.first.status;

@@ -73,7 +73,8 @@ class _LoginState extends State<Login> {
   int IDmc = 0;
   int raceID = 0;
   int idUsers = 0;
-  String UserNames = '';
+
+  String teamName = '';
   String raceName = '';
   String start = "s";
   String end = "e";
@@ -350,6 +351,13 @@ class _LoginState extends State<Login> {
                                                     loadDataMethod;
                                                   });
                                                 });
+                                              }else if (additionalData[
+                                                          'notitype']
+                                                      .toString() ==
+                                                  'exitTeam') {
+                                                // Get.defaultDialog(
+                                                //     title: additionalData[
+                                                //         'masseage']);
                                               } else if (additionalData[
                                                           'notitype']
                                                       .toString() ==
@@ -519,6 +527,27 @@ class _LoginState extends State<Login> {
                                               } else if (event.notification
                                                           .additionalData![
                                                       'notitype'] ==
+                                                  'exitTeam') {
+                                                raceID = int.parse(event
+                                                    .notification
+                                                    .additionalData!['raceID']
+                                                    .toString());
+
+                                                teamName = event.notification
+                                                        .additionalData![
+                                                    'teamName'];
+
+                                                Get.defaultDialog(
+                                                        title:
+                                                            'มีทีมออกจากการแข่งขัน!!',
+                                                        content:  Text(
+                                                            'ทีม $teamName ได้ออกจากการแข่งขันนี้แล้ว'))
+                                                    .then((value) {
+                                                  
+                                                });
+                                              } else if (event.notification
+                                                          .additionalData![
+                                                      'notitype'] ==
                                                   'endgame') {
                                                 raceName = event.notification
                                                         .additionalData![
@@ -537,7 +566,6 @@ class _LoginState extends State<Login> {
                                                   log('mmmmmmmm');
                                                   log('idddd' +
                                                       userId.toString());
-                                                 
 
                                                   Get.to(() => ChatRoomPage(
                                                       userID: userId,

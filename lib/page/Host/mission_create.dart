@@ -253,7 +253,12 @@ class _MissioncreateState extends State<Missioncreate> {
             Checkbox(
               value: _checkbox,
               onChanged: _checkbox2 == true
-                  ? null
+                  ? (value) {
+                        setState(() {
+                          _checkbox == false;
+                         
+                        });
+                      }
                   : (value) {
                       setState(() {
                         _checkbox = !_checkbox;
@@ -271,7 +276,12 @@ class _MissioncreateState extends State<Missioncreate> {
             Checkbox(
               value: _checkbox1,
               onChanged: _checkbox2 == true
-                  ? null
+                  ? (value) {
+                    setState(() {
+                      _checkbox1 == false;
+                      
+                    });
+                  }
                   : (value) {
                       setState(() {
                         _checkbox1 = !_checkbox1;
@@ -290,7 +300,12 @@ class _MissioncreateState extends State<Missioncreate> {
             Checkbox(
                 value: _checkbox2,
                 onChanged: _checkbox == true || _checkbox1 == true
-                    ? null
+                    ?(value) {
+                        setState(() {
+                          _checkbox2 == false;
+                         
+                        });
+                      }
                     : (value) {
                         setState(() {
                           _checkbox2 = !_checkbox2;
