@@ -268,6 +268,7 @@ class _DetailHostState extends State<DetailHost> {
                                   },
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8)),
+                                      offset: Offset(-6, 50),
                                   itemBuilder: (BuildContext context) {
                                     return [
                                       _buildPopupMenuEdit(

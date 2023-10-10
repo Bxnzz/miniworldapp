@@ -13,6 +13,7 @@ import 'package:miniworldapp/page/General/detil_race.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/home_create.dart';
 import 'package:miniworldapp/page/General/login.dart';
+import 'package:miniworldapp/page/General/profile.dart';
 import 'package:miniworldapp/page/General/profile_edit.dart';
 import 'package:miniworldapp/page/General/static.dart';
 import 'package:miniworldapp/service/attend.dart';
@@ -216,7 +217,7 @@ class _HomeState extends State<Home> {
           Container(
             color: Colors.blue,
             alignment: Alignment.center,
-            child: Profile_edit(),
+            child: Profile(),
           ),
         ][currentPageIndex],
         // floatingActionButton: Padding(
@@ -314,152 +315,152 @@ class _HomeState extends State<Home> {
         //     ],
         //   ),
         // ),
-        drawer: drawer(
-            userimg: userimg, Username: Username, userDescrip: userDescrip),
+        // drawer: drawer(
+        //     userimg: userimg, Username: Username, userDescrip: userDescrip),
       ),
     );
   }
 }
 
-class drawer extends StatelessWidget {
-  const drawer({
-    super.key,
-    required this.userimg,
-    required this.Username,
-    required this.userDescrip,
-  });
+// class drawer extends StatelessWidget {
+//   const drawer({
+//     super.key,
+//     required this.userimg,
+//     required this.Username,
+//     required this.userDescrip,
+//   });
 
-  final String userimg;
-  final String Username;
-  final String userDescrip;
+//   final String userimg;
+//   final String Username;
+//   final String userDescrip;
 
-  @override
-  Widget build(BuildContext context) {
-    String oneID = '';
-    late UserService userService;
-    userService = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
-    return Container(
-      child: SizedBox(
-        width: Get.width / 1.2,
-        child: Drawer(
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Column(
-                // Important: Remove any padding from the ListView.
+//   @override
+//   Widget build(BuildContext context) {
+//     String oneID = '';
+//     late UserService userService;
+//     userService = UserService(Dio(), baseUrl: context.read<AppData>().baseurl);
+//     return Container(
+//       child: SizedBox(
+//         width: Get.width / 1.2,
+//         child: Drawer(
+//           child: SafeArea(
+//             child: Padding(
+//               padding: const EdgeInsets.only(left: 10),
+//               child: Column(
+//                 // Important: Remove any padding from the ListView.
 
-                children: [
-                  Container(
-                    height: 215,
-                    child: DrawerHeader(
-                      decoration: BoxDecoration(),
-                      child: Stack(children: [
-                        Positioned(
-                            bottom: 130,
-                            left: Get.width / 1.6,
-                            child: IconButton(
-                              onPressed: () {
-                                Get.to(() => Profile_edit());
-                              },
-                              icon: FaIcon(FontAwesomeIcons.edit),
-                            )),
-                        Column(
-                          children: [
-                            Gap(20),
-                            userimg.contains('svg')
-                                ? Align(
-                                    heightFactor: 1,
-                                    alignment: Alignment.topLeft,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                              width: 5,
-                                              color: const Color.fromARGB(
-                                                  255, 255, 255, 255))),
-                                      child: SvgPicture.network(
-                                          width: 80, height: 80, userimg),
-                                    ),
-                                  )
-                                : Align(
-                                    heightFactor: 1,
-                                    alignment: Alignment.topLeft,
-                                    child: Container(
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                                width: 5,
-                                                color: const Color.fromARGB(
-                                                    255, 255, 255, 255))),
-                                        child: CircleAvatar(
-                                            radius: 40,
-                                            backgroundImage:
-                                                NetworkImage(userimg))),
-                                  ),
-                            Gap(15),
-                            Align(
-                              heightFactor: 1,
-                              alignment: Alignment.bottomLeft,
-                              child: Container(
-                                child: Text(Username,
-                                    style: Get.theme.textTheme.titleMedium!
-                                        .copyWith(fontWeight: FontWeight.bold)),
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Container(
-                                child: Text(
-                                  userDescrip,
-                                  style: Get.theme.textTheme.bodySmall!
-                                      .copyWith(
-                                          color: Color.fromARGB(
-                                              255, 104, 104, 104)),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                      ]),
-                    ),
-                  ),
-                  ListTile(
-                    leading: const FaIcon(FontAwesomeIcons.house),
-                    title: const Text('หน้าหลัก'),
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    leading: FaIcon(FontAwesomeIcons.chartSimple),
-                    title: const Text('สถิติการแข่งขัน'),
-                    onTap: () {
-                      Get.to(const Static());
-                    },
-                  ),
-                  ListTile(
-                    leading: FaIcon(FontAwesomeIcons.doorOpen),
-                    title: const Text('ออกจากระบบ'),
-                    onTap: () async {
-                      OneSignal.shared.disablePush(true);
-                      oneID = context.read<AppData>().oneID;
-                      var one = await userService.updateOneID(oneID);
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Login(),
-                          ));
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+//                 children: [
+//                   Container(
+//                     height: 215,
+//                     child: DrawerHeader(
+//                       decoration: BoxDecoration(),
+//                       child: Stack(children: [
+//                         Positioned(
+//                             bottom: 130,
+//                             left: Get.width / 1.6,
+//                             child: IconButton(
+//                               onPressed: () {
+//                                 Get.to(() => Profile_edit());
+//                               },
+//                               icon: FaIcon(FontAwesomeIcons.edit),
+//                             )),
+//                         Column(
+//                           children: [
+//                             Gap(20),
+//                             userimg.contains('svg')
+//                                 ? Align(
+//                                     heightFactor: 1,
+//                                     alignment: Alignment.topLeft,
+//                                     child: Container(
+//                                       decoration: BoxDecoration(
+//                                           shape: BoxShape.circle,
+//                                           border: Border.all(
+//                                               width: 5,
+//                                               color: const Color.fromARGB(
+//                                                   255, 255, 255, 255))),
+//                                       child: SvgPicture.network(
+//                                           width: 80, height: 80, userimg),
+//                                     ),
+//                                   )
+//                                 : Align(
+//                                     heightFactor: 1,
+//                                     alignment: Alignment.topLeft,
+//                                     child: Container(
+//                                         decoration: BoxDecoration(
+//                                             shape: BoxShape.circle,
+//                                             border: Border.all(
+//                                                 width: 5,
+//                                                 color: const Color.fromARGB(
+//                                                     255, 255, 255, 255))),
+//                                         child: CircleAvatar(
+//                                             radius: 40,
+//                                             backgroundImage:
+//                                                 NetworkImage(userimg))),
+//                                   ),
+//                             Gap(15),
+//                             Align(
+//                               heightFactor: 1,
+//                               alignment: Alignment.bottomLeft,
+//                               child: Container(
+//                                 child: Text(Username,
+//                                     style: Get.theme.textTheme.titleMedium!
+//                                         .copyWith(fontWeight: FontWeight.bold)),
+//                               ),
+//                             ),
+//                             Align(
+//                               alignment: Alignment.bottomLeft,
+//                               child: Container(
+//                                 child: Text(
+//                                   userDescrip,
+//                                   style: Get.theme.textTheme.bodySmall!
+//                                       .copyWith(
+//                                           color: Color.fromARGB(
+//                                               255, 104, 104, 104)),
+//                                 ),
+//                               ),
+//                             ),
+//                           ],
+//                         )
+//                       ]),
+//                     ),
+//                   ),
+//                   ListTile(
+//                     leading: const FaIcon(FontAwesomeIcons.house),
+//                     title: const Text('หน้าหลัก'),
+//                     onTap: () {
+//                       Navigator.pop(context);
+//                     },
+//                   ),
+//                   ListTile(
+//                     leading: FaIcon(FontAwesomeIcons.chartSimple),
+//                     title: const Text('สถิติการแข่งขัน'),
+//                     onTap: () {
+//                       Get.to(const Static());
+//                     },
+//                   ),
+//                   ListTile(
+//                     leading: FaIcon(FontAwesomeIcons.doorOpen),
+//                     title: const Text('ออกจากระบบ'),
+//                     onTap: () async {
+//                       OneSignal.shared.disablePush(true);
+//                       oneID = context.read<AppData>().oneID;
+//                       var one = await userService.updateOneID(oneID);
+//                       Navigator.pushReplacement(
+//                           context,
+//                           MaterialPageRoute(
+//                             builder: (context) => const Login(),
+//                           ));
+//                     },
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class MySearchDelegate extends SearchDelegate {
   int raceID = 0;
