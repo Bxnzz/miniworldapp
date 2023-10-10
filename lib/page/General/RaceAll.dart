@@ -104,7 +104,7 @@ class _RaceAllState extends State<RaceAll> {
                                     bottom: Radius.circular(30),
                                   ),
                                   image:  DecorationImage(
-                                    image: AssetImage('assets/image/bg2.jpg'),
+                                    image: AssetImage('assets/image/bg2.png'),
                                     opacity: 0.8,
                                     fit: BoxFit.cover,
                                   ),
