@@ -179,11 +179,7 @@ class _DetailHostState extends State<DetailHost> {
                                           color: Colors.pinkAccent)),
                                   onSelected: (result) {
                                     if (result == 0) {
-                                      // Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (context) =>
-                                      //             EditRace()));
+                                      Get.to(()=>EditRace());
                                       context.read<AppData>().idrace = idrace;
                                     }
                                     if (result == 1) {

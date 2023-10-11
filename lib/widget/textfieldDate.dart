@@ -68,20 +68,20 @@ class _TextFieldDateState extends State<TextFieldDate> {
                      log(widget.dates.text);
                     });
                   }
-                  if (dte != null) {
-                    setState(() {
-                      endDate = dte;
+                  // if (dte != null) {
+                  //   setState(() {
+                  //     endDate = dte;
                       
-                      var formatter = DateFormat.yMMMd();
-                      var dateInBuddhistCalendarFormat =
-                          formatter.formatInBuddhistCalendarThai(endDate);
-                      widget.controller.text = dateInBuddhistCalendarFormat;
+                  //     var formatter = DateFormat.yMMMd();
+                  //     var dateInBuddhistCalendarFormat =
+                  //         formatter.formatInBuddhistCalendarThai(endDate);
+                  //     widget.controller.text = dateInBuddhistCalendarFormat;
 
-                     widget.dates.text = '${endDate.toIso8601String()}Z';
-                   // context.read<AppData>().dates = dates ;
-                     log(widget.dates.text);
-                    });
-                  }
+                  //    widget.dates.text = '${endDate.toIso8601String()}Z';
+                  //  // context.read<AppData>().dates = dates ;
+                  //    log(widget.dates.text);
+                  //   });
+                  // }
                   
                   // CupertinoRoundedDatePicker.show(
                   //   context,
@@ -130,7 +130,7 @@ class _TextFieldDateState extends State<TextFieldDate> {
       firstDate = startDate;
       lastDate = initDate.add(const Duration(days: 365 * 2));
     }else if (mode == 'startEnd') {
-      firstDate = startDate;
+      firstDate = endDate;
       lastDate = initDate.add(const Duration(days: 365 * 2));
     }
     return await showRoundedDatePicker(

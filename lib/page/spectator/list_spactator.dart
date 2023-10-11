@@ -106,111 +106,188 @@ class _ListSpactatorState extends State<ListSpactator> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-      appBar: AppBar(
-        automaticallyImplyLeading: false, 
-        title: const Center(child: Text('โหมดผู้ชม')),
-      ),
+      // appBar: AppBar(
+      //   automaticallyImplyLeading: false,
+      //   title: const Center(child: Text('โหมดผู้ชม')),
+      // ),
       body: RefreshIndicator(
         onRefresh: refresh,
         child: FutureBuilder(
             future: loadDataMethod,
             builder: (context, AsyncSnapshot snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                return GridView.count(
-                  crossAxisCount: 2,
-                  padding: EdgeInsets.only(top: 10),
-                  children: races
-                      .where((element) =>
-                          element.raceStatus == 2 &&
-                          element.userId != idUser &&
-                          race_all.contains(element.raceId) &&
-                          teamMe.contains(element.raceId) == false)
-                      .map((e) {
-                    return Padding(
-                        padding: const EdgeInsets.only(
-                            left: 2.5, right: 2.5, bottom: 5),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 2,
-                              color: Colors.white,
+                return Stack(
+                  children: [
+                    Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.vertical(
+                              bottom: Radius.circular(50),
                             ),
-                            borderRadius:
-                                BorderRadius.circular(20.0), //<-- SEE HERE
+                            image: const DecorationImage(
+                              image: AssetImage('assets/image/BGhome.jpg'),
+                              opacity: 0.8,
+                              fit: BoxFit.cover,
+                            ),
+                            boxShadow: <BoxShadow>[
+                              BoxShadow(
+                                color: Color.fromARGB(255, 153, 152, 152)
+                                    .withOpacity(0.8),
+                                blurRadius: 3.0,
+                                offset: new Offset(0.0, 3.0),
+                              ),
+                            ],
                           ),
-                          //  shadowColor: ,
-                          color: Colors.white,
-                          clipBehavior: Clip.hardEdge,
-
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(12.0),
-                            splashColor: Colors.blue.withAlpha(30),
-                            onTap: () {
-                              Get.to(Spectator());
-                              context.read<AppData>().idrace = e.raceId;
-                              log(e.raceId.toString());
-                            },
-                            child: GridTile(
-                                // crossAxisAlignment: CrossAxisAlignment.start,
-                                child: Image.network(e.raceImage,
-                                    //  width: Get.width,
-                                    //  height: Get.width*0.5625/2,
-                                    fit: BoxFit.cover),
-                                footer: Container(
-                                  color: Get.theme.colorScheme.onBackground
-                                      .withOpacity(0.5),
-                                  padding:
-                                      const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Text(e.raceName,
-                                                softWrap: false,
-                                                maxLines: 1,
-                                                overflow:
-                                                    TextOverflow.ellipsis, // new
-                                                style: Get.textTheme.bodyMedium!
-                                                    .copyWith(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Get
-                                                            .theme
-                                                            .colorScheme
-                                                            .onPrimary)),
-                                          ),
-                                          Text("# ${e.raceId}",
-                                              style: Get.textTheme.bodySmall!
-                                                  .copyWith(
-                                                      color: Get
-                                                          .theme
-                                                          .colorScheme
-                                                          .onPrimary)),
-                                        ],
+                          width: Get.width,
+                          height: 100,
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 18),
+                            child: GridView.count(
+                              crossAxisCount: 2,
+                              padding: EdgeInsets.only(top: 10),
+                              children: races
+                                  .where((element) =>
+                                      element.raceStatus == 2 &&
+                                      element.userId != idUser &&
+                                      race_all.contains(element.raceId) &&
+                                      teamMe.contains(element.raceId) == false)
+                                  .map((e) {
+                                return Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 2.5, right: 2.5, bottom: 5),
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                          width: 2,
+                                          color: Colors.white,
+                                        ),
+                                        borderRadius: BorderRadius.circular(
+                                            20.0), //<-- SEE HERE
                                       ),
-                                      Container(height: 5),
-                                      // Text("ปิดรับสมัคร: " +
-                                      //     formatter.formatInBuddhistCalendarThai(
-                                      //         element.raceTimeFn)),
-                                      Text("สถานที่: " + e.raceLocation,
-                                          style: Get.textTheme.bodySmall!
-                                              .copyWith(
-                                                  color: Get.theme.colorScheme
-                                                      .onPrimary
-                                                      .withOpacity(0.8))),
-                                      Container(height: 5),
-                                    ],
-                                  ),
-                                )),
+                                      //  shadowColor: ,
+                                      color: Colors.white,
+                                      clipBehavior: Clip.hardEdge,
+
+                                      child: InkWell(
+                                        borderRadius:
+                                            BorderRadius.circular(12.0),
+                                        splashColor: Colors.blue.withAlpha(30),
+                                        onTap: () {
+                                          Get.to(Spectator());
+                                          context.read<AppData>().idrace =
+                                              e.raceId;
+                                          log(e.raceId.toString());
+                                        },
+                                        child: GridTile(
+                                            // crossAxisAlignment: CrossAxisAlignment.start,
+                                            child: Image.network(e.raceImage,
+                                                //  width: Get.width,
+                                                //  height: Get.width*0.5625/2,
+                                                fit: BoxFit.cover),
+                                            footer: Container(
+                                              color: Get.theme.colorScheme
+                                                  .onBackground
+                                                  .withOpacity(0.5),
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      10, 5, 10, 0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(e.raceName,
+                                                            softWrap: false,
+                                                            maxLines: 1,
+                                                            overflow: TextOverflow
+                                                                .ellipsis, // new
+                                                            style: Get.textTheme
+                                                                .bodyMedium!
+                                                                .copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color: Get
+                                                                        .theme
+                                                                        .colorScheme
+                                                                        .onPrimary)),
+                                                      ),
+                                                      Text("# ${e.raceId}",
+                                                          style: Get.textTheme
+                                                              .bodySmall!
+                                                              .copyWith(
+                                                                  color: Get
+                                                                      .theme
+                                                                      .colorScheme
+                                                                      .onPrimary)),
+                                                    ],
+                                                  ),
+                                                  Container(height: 5),
+                                                  // Text("ปิดรับสมัคร: " +
+                                                  //     formatter.formatInBuddhistCalendarThai(
+                                                  //         element.raceTimeFn)),
+                                                  Text(
+                                                      "สถานที่: " +
+                                                          e.raceLocation,
+                                                      style: Get
+                                                          .textTheme.bodySmall!
+                                                          .copyWith(
+                                                              color: Get
+                                                                  .theme
+                                                                  .colorScheme
+                                                                  .onPrimary
+                                                                  .withOpacity(
+                                                                      0.8))),
+                                                  Container(height: 5),
+                                                ],
+                                              ),
+                                            )),
+                                      ),
+                                    ));
+                              }).toList(),
+                            ),
                           ),
-                        ));
-                  }).toList(),
+                        ),
+                      ],
+                    ),
+                    Positioned(
+                      top: 63,
+                      right: 50,
+                      left: 50,
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.amber,
+                          border: Border.all(color: Colors.white, width: 3),
+                          shape: BoxShape.rectangle,
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Color(0xFFe8e8e8),
+                                blurRadius: 5.0,
+                                offset: Offset(0, 5)),
+                            BoxShadow(
+                                color: Colors.white, offset: Offset(-2, 0)),
+                            BoxShadow(color: Colors.white, offset: Offset(2, 0))
+                          ],
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: Center(
+                          child: Text('โหมดผู้ชม',
+                              style: Get.textTheme.headlineSmall!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Get.theme.colorScheme.onPrimary)),
+                        ),
+                      ),
+                    ),
+                  ],
                 );
               } else {
                 return Container();

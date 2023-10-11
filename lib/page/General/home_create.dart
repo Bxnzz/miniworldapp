@@ -278,27 +278,28 @@ class _TabbarRaceState extends State<TabbarRace>
                         borderRadius: BorderRadius.vertical(
                           bottom: Radius.circular(20),
                         ),
-                        //  image:  DecorationImage(
-                        //             image: AssetImage('assets/image/bgh.jpg'),
-                        //             opacity: 0.8,
-                        //             fit: BoxFit.cover,
-                        //           ),
-                        gradient: LinearGradient(
-                            begin: FractionalOffset(0.0, 0.0),
-                            end: FractionalOffset(1.0, 0.0),
-                            stops: [0.0, 1.0],
-                            tileMode: TileMode.clamp,
-                            colors: [
-                              Color.fromARGB(255, 207, 107, 244),
-                              Color.fromARGB(255, 152, 90, 238),
-                            ])
+                        
+                         image:  DecorationImage(
+                                    image: AssetImage('assets/image/BGhome.jpg'),
+                                    opacity: 0.8,
+                                    fit: BoxFit.cover,
+                                  ),
+                        // gradient: LinearGradient(
+                        //     begin: FractionalOffset(0.0, 0.0),
+                        //     end: FractionalOffset(1.0, 0.0),
+                        //     stops: [0.0, 1.0],
+                        //     tileMode: TileMode.clamp,
+                        //     colors: [
+                        //       Color.fromARGB(255, 207, 107, 244),
+                        //       Color.fromARGB(255, 152, 90, 238),
+                        //     ])
                             ),
                     width: Get.width,
                     height: 100,
                   ),
                 ),
                 Positioned(
-                    bottom: 10,
+                    bottom: 3,
                     left: 25,
                     right: 25,
                     child: SizedBox(
@@ -312,8 +313,8 @@ class _TabbarRaceState extends State<TabbarRace>
                                 blurRadius: 5.0,
                                 offset: Offset(0, 5)),
                             BoxShadow(
-                                color: Colors.white, offset: Offset(-5, 0)),
-                            BoxShadow(color: Colors.white, offset: Offset(5, 0))
+                                color: Colors.white, offset: Offset(-2, 0)),
+                            BoxShadow(color: Colors.white, offset: Offset(2, 0))
                           ],
                           borderRadius: BorderRadius.circular(
                             25.0,
