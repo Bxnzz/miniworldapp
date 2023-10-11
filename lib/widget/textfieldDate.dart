@@ -17,6 +17,7 @@ class TextFieldDate extends StatefulWidget {
   String hintText;
   String labelText;
   TextEditingController dates;
+  String mode;
 
   TextFieldDate({
     super.key,
@@ -24,6 +25,7 @@ class TextFieldDate extends StatefulWidget {
     required this.hintText,
     required this.labelText,
     required this.dates,
+    required this.mode
   });
 
   @override
@@ -40,7 +42,7 @@ class _TextFieldDateState extends State<TextFieldDate> {
     return Column(
       children: [
         SizedBox(
-          height: 33,
+          height: 40,
           child: TextFormField(
             controller: widget.controller,
             readOnly: true,
@@ -49,13 +51,38 @@ class _TextFieldDateState extends State<TextFieldDate> {
               hintText: widget.hintText,
               suffixIcon: IconButton(
                 onPressed: () async {
-                  DateTime? dt = await selectDate(startDate, 'start');
+                  DateTime? dt = await selectDate(startDate, widget.mode);
+                  DateTime? dte = await selectDate(endDate, widget.mode);
                   
                   if (dt != null) {
                     setState(() {
                       startDate = dt;
+                      
+                      var formatter = DateFormat.yMMMd();
+                      var dateInBuddhistCalendarFormat =
+                          formatter.formatInBuddhistCalendarThai(startDate);
+                      widget.controller.text = dateInBuddhistCalendarFormat;
+
+                     widget.dates.text = '${startDate.toIso8601String()}Z';
+                   // context.read<AppData>().dates = dates ;
+                     log(widget.dates.text);
                     });
                   }
+                  if (dte != null) {
+                    setState(() {
+                      endDate = dte;
+                      
+                      var formatter = DateFormat.yMMMd();
+                      var dateInBuddhistCalendarFormat =
+                          formatter.formatInBuddhistCalendarThai(endDate);
+                      widget.controller.text = dateInBuddhistCalendarFormat;
+
+                     widget.dates.text = '${endDate.toIso8601String()}Z';
+                   // context.read<AppData>().dates = dates ;
+                     log(widget.dates.text);
+                    });
+                  }
+                  
                   // CupertinoRoundedDatePicker.show(
                   //   context,
 
@@ -97,11 +124,14 @@ class _TextFieldDateState extends State<TextFieldDate> {
     
 
     if (mode == 'start') {  
-      firstDate = initDate.subtract(const Duration(days: 365 * 3));
-      lastDate = endDate;
+      firstDate = initDate.subtract(Duration(days: 0));
+      lastDate = initDate.add(const Duration(days: 365 * 2));
     } else if (mode == 'end') {
       firstDate = startDate;
-      lastDate = initDate.add(const Duration(days: 365 * 3));
+      lastDate = initDate.add(const Duration(days: 365 * 2));
+    }else if (mode == 'startEnd') {
+      firstDate = startDate;
+      lastDate = initDate.add(const Duration(days: 365 * 2));
     }
     return await showRoundedDatePicker(
       barrierDismissible: true,
@@ -111,7 +141,6 @@ class _TextFieldDateState extends State<TextFieldDate> {
       theme: ThemeData(
         
         fontFamily: GoogleFonts.notoSansThai().fontFamily,
-        
         primaryColor: Colors.purple[200],
       ),
       styleDatePicker: MaterialRoundedDatePickerStyle(

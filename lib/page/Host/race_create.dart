@@ -59,6 +59,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
   UploadTask? uploadTask;
   bool isImage = true;
   String image = '';
+ 
 
   String img = '';
 
@@ -173,7 +174,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                   controller: singUpST,
                                   hintText: '00/00/0000',
                                   labelText: 'วันที่เปิดรับสมัคร',
-                                  dates: TexttimeST)),
+                                  dates: TexttimeST,
+                                  mode: 'start',)),
                         ),
                       ),
                       Padding(
@@ -185,7 +187,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                   controller: singUpFN,
                                   hintText: '00/00/0000',
                                   labelText: 'วันที่ปิดรับสมัคร',
-                                  dates: TexttimeFN)),
+                                  dates: TexttimeFN,
+                                  mode: 'end',)),
                         ),
                       ),
                       Padding(
@@ -198,7 +201,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                     controller: eventDatetime,
                                     hintText: '00/00/0000',
                                     labelText: 'วันจัดการแข่งขัน',
-                                    dates: TexttimeDate),
+                                    dates: TexttimeDate,
+                                    mode: 'startEnd',),
                               )),
                         ),
                       ),
