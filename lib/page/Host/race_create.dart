@@ -131,13 +131,13 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                 clipBehavior: Clip.none,
                 children: [
               Card(
-                margin: EdgeInsets.fromLTRB(32, 95, 32, 32),
+                margin: EdgeInsets.fromLTRB(32, 75, 32, 5),
                 //   color: Theme.of(context).primaryColor,
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.only(top: 30),
+                        padding: const EdgeInsets.only(top: 35),
                         child: upImg(),
                       ),
                       Padding(
@@ -296,28 +296,29 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                           ),
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          SizedBox(
-                              width: 120,
-                              child: SizedBox(
-                                child: TextFieldTime(
-                                    controllers: raceTimeST,
-                                    hintText: '00:00',
-                                    labelText: 'เริ่ม',
-                                    times: TimeST),
-                              )),
-                          SizedBox(
-                              width: 120,
-                              child: SizedBox(
-                                child: TextFieldTime(
-                                    controllers: raceTimeFN,
-                                    hintText: '00:00',
-                                    labelText: 'สิ้นสุด',
-                                    times: TimeFN),
-                              )),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                            width: 240,
+                            child: SizedBox(
+                              child: TextFieldTime(
+                                  controllers: raceTimeST,
+                                  hintText: '00:00',
+                                  labelText: 'เริ่ม',
+                                  times: TimeST),
+                            )),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                            width: 240,
+                            child: SizedBox(
+                              child: TextFieldTime(
+                                  controllers: raceTimeFN,
+                                  hintText: '00:00',
+                                  labelText: 'สิ้นสุด',
+                                  times: TimeFN),
+                            )),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -489,7 +490,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                 child: Padding(
                   padding: const EdgeInsets.all(50),
                   child: Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: Color.fromARGB(255, 222, 72, 249),
                       border: Border.all(color: Colors.white, width: 3),

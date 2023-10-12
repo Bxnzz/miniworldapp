@@ -112,6 +112,7 @@ class _LobbyState extends State<Lobby> {
 
   Future refresh() async {
     setState(() {
+      CardDetailPlayer();
       attendShow = [];
       loadDataMethod = loadData();
     });
@@ -232,20 +233,21 @@ class _LobbyState extends State<Lobby> {
                                                                   .teamId ==
                                                               idTeamDel;
                                                         }); //go through the loop and match content to delete from list
-                                                       teamIDs.clear();
-                                                  log(attendShow[index]
-                                                      .values
-                                                      .first
-                                                      .first
-                                                      .user
-                                                      .onesingnalId
-                                                      .toString());
-                                                  teamIDs.add(attendShow[index]
-                                                      .values
-                                                      .first
-                                                      .first
-                                                      .user
-                                                      .onesingnalId);
+                                                        teamIDs.clear();
+                                                        log(attendShow[index]
+                                                            .values
+                                                            .first
+                                                            .first
+                                                            .user
+                                                            .onesingnalId
+                                                            .toString());
+                                                        teamIDs.add(
+                                                            attendShow[index]
+                                                                .values
+                                                                .first
+                                                                .first
+                                                                .user
+                                                                .onesingnalId);
                                                         mc = {
                                                           'notitype':
                                                               'deleteTeam',
@@ -324,8 +326,7 @@ class _LobbyState extends State<Lobby> {
             );
           } else {
             return RefreshIndicator(
-              onRefresh: refresh,
-              child: Text('ไม่มีทีม'));
+                onRefresh: refresh, child: Text('ไม่มีทีม'));
           }
         });
   }
@@ -333,255 +334,263 @@ class _LobbyState extends State<Lobby> {
   SizedBox CardDetail(int index, TextTheme textTheme, BuildContext context) {
     return SizedBox(
       width: Get.width,
-      child: RefreshIndicator(
-        onRefresh: refresh,
-        child: SingleChildScrollView(
-          child: Card(
-              clipBehavior: Clip.hardEdge,
-              child: Column(
-                children: [
-                  InkWell(
-                    borderRadius: BorderRadius.circular(12.0),
-                    splashColor: Colors.blue.withAlpha(30),
-                    child: Stack(children: [
-                      Positioned(
-                        child: Opacity(
-                          opacity: 0.3,
-                          child: Image.network(
-                            attendShow[index].values.first.first.team.teamImage,
-                            height: 60,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
+      child: SingleChildScrollView(
+        child: Card(
+            clipBehavior: Clip.hardEdge,
+            child: Column(
+              children: [
+                InkWell(
+                  borderRadius: BorderRadius.circular(12.0),
+                  splashColor: Colors.blue.withAlpha(30),
+                  child: Stack(children: [
+                    Positioned(
+                      child: Opacity(
+                        opacity: 0.3,
+                        child: Image.network(
+                          attendShow[index].values.first.first.team.teamImage,
+                          height: 60,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                      ExpansionTile(
-                          key: Key(selec.toString()),
-                          initiallyExpanded: idTeam ==
-                                  attendShow[index].values.first.first.teamId &&
-                              idUser !=
-                                  attendShow[index]
-                                      .values
-                                      .first
-                                      .first
-                                      .team
-                                      .race
-                                      .userId,
-                          title: idTeam ==
-                                      attendShow[index]
-                                          .values
-                                          .first
-                                          .first
-                                          .teamId &&
-                                  idUser !=
+                    ),
+                    ExpansionTile(
+                        key: Key(selec.toString()),
+                        initiallyExpanded: idTeam ==
+                                attendShow[index].values.first.first.teamId &&
+                            idUser !=
+                                attendShow[index]
+                                    .values
+                                    .first
+                                    .first
+                                    .team
+                                    .race
+                                    .userId,
+                        title: idTeam ==
+                                    attendShow[index]
+                                        .values
+                                        .first
+                                        .first
+                                        .teamId &&
+                                idUser !=
+                                    attendShow[index]
+                                        .values
+                                        .first
+                                        .first
+                                        .team
+                                        .race
+                                        .userId
+                            ?
+                            //ทีมที่เข้าร่วม
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                    Text(
+                                      ("${attendShow[index].values.first.first.team.teamName} (ทีมคุณ)"),
+                                      style: textTheme.bodyLarge?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Color.fromRGBO(156, 39, 176, 1),
+                                          shadows: [
+                                            Shadow(
+                                              blurRadius: 10,
+                                              color: Colors.white54,
+                                              offset: Offset(5, 3),
+                                            ),
+                                          ]),
+                                    ),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                            color:
+                                                Colors.white.withOpacity(0.5),
+                                            borderRadius:
+                                                BorderRadius.circular(50)),
+                                        child: IconButton(
+                                          onPressed: () {
+                                            idTeamDel = attendShow[index]
+                                                .values
+                                                .first
+                                                .first
+                                                .team
+                                                .teamId
+                                                .toString();
+                                            log('team ID = ${idTeamDel}');
+                                            log('Useronehost: ${userCreateOneS}');
+                                            AwesomeDialog(
+                                              context: context,
+                                              dialogType: DialogType.warning,
+                                              animType: AnimType.bottomSlide,
+                                              headerAnimationLoop: false,
+                                              title: 'ต้องการออกจากการแข่งขัน?',
+                                              desc:
+                                                  'ทีมของคุณต้องการจะออกจากการแข่งขันนี้',
+                                              btnOkText: "ยกเลิก",
+                                              btnCancelText: "ตกลง",
+                                              btnOkOnPress: () async {},
+                                              btnCancelColor: Colors.lightGreen,
+                                              btnOkColor: Colors.redAccent,
+                                              btnCancelOnPress: () async {
+                                                var teamDelete =
+                                                    await teamService
+                                                        .DelbyTeamID(idTeamDel
+                                                            .toString());
+
+                                                if (teamDelete.data.result ==
+                                                    '1') {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    const SnackBar(
+                                                        content: Text(
+                                                            'ออกจากการแข่งขันสำเร็จ')),
+                                                  );
+                                                  attendShow
+                                                      .removeWhere((element) {
+                                                    return element.values.first
+                                                            .first.teamId ==
+                                                        idTeamDel;
+                                                  }); //go through the loop and match content to delete from list
+                                                  //  hostIDs.clear();
+                                                  log(userCreateOneS);
+                                                  hostIDs.add(userCreateOneS);
+                                                  log('team' +
+                                                      attendShow[index]
+                                                          .values
+                                                          .first
+                                                          .first
+                                                          .team
+                                                          .teamName);
+                                                  mc = {
+                                                    'notitype': 'exitTeam',
+                                                    'raceID': idRace,
+                                                    'teamid': idTeamDel,
+                                                    'teamName':
+                                                        attendShow[index]
+                                                            .values
+                                                            .first
+                                                            .first
+                                                            .team
+                                                            .teamName,
+                                                  };
+                                                  var notification1 =
+                                                      OSCreateNotification(
+                                                          //playerID
+                                                          additionalData: mc,
+                                                          playerIds: hostIDs,
+                                                          content: raceName,
+                                                          heading:
+                                                              "ออกจากแข่งขัน",
+                                                          //  iosAttachments: {"id1",urlImage},
+                                                          // bigPicture: imUrlString,
+                                                          buttons: [
+                                                        OSActionButton(
+                                                            text: "ตกลง",
+                                                            id: "id1"),
+                                                        OSActionButton(
+                                                            text: "ยกเลิก",
+                                                            id: "id2")
+                                                      ]);
+                                                  log('player ' +
+                                                      teamIDs.toString());
+
+                                                  var response1 =
+                                                      await OneSignal.shared
+                                                          .postNotification(
+                                                              notification1);
+
+                                                  setState(() {
+                                                    loadDataMethod = loadData();
+                                                  });
+                                                  Navigator.pop(context);
+                                                  Navigator.pop(context);
+                                                  log("ออกจากทีมสำเร็จ");
+                                                  return;
+                                                } else {
+                                                  // log("team fail");
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    const SnackBar(
+                                                        content: Text(
+                                                            'ลบทีมไม่สำเร็จ!')),
+                                                  );
+                                                }
+                                                ;
+                                              },
+                                            ).show();
+                                          },
+                                          icon: const FaIcon(FontAwesomeIcons
+                                              .rightFromBracket),
+                                          color: Colors.redAccent,
+                                        ))
+                                  ])
+                            : Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  //Name team (Host)
+                                  //another team
+                                  Text(
                                       attendShow[index]
                                           .values
                                           .first
                                           .first
                                           .team
-                                          .race
-                                          .userId
-                              ?
-                              //ทีมที่เข้าร่วม
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                      Text(
-                                        ("${attendShow[index].values.first.first.team.teamName} (ทีมคุณ)"),
-                                        style: textTheme.bodyLarge?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color:
-                                                Color.fromRGBO(156, 39, 176, 1),
-                                            shadows: [
-                                              Shadow(
-                                                blurRadius: 10,
-                                                color: Colors.white54,
-                                                offset: Offset(5, 3),
-                                              ),
-                                            ]),
-                                      ),
-                                      Container(
-                                          decoration: BoxDecoration(
-                                              color:
-                                                  Colors.white.withOpacity(0.5),
-                                              borderRadius:
-                                                  BorderRadius.circular(50)),
-                                          child: IconButton(
-                                            onPressed: () {
-                                              idTeamDel = attendShow[index]
-                                                  .values
-                                                  .first
-                                                  .first
-                                                  .team
-                                                  .teamId
-                                                  .toString();
-                                              log('team ID = ${idTeamDel}');
-                                               log('Useronehost: ${userCreateOneS}');
-                                              AwesomeDialog(
-                                                context: context,
-                                                dialogType: DialogType.warning,
-                                                animType: AnimType.bottomSlide,
-                                                headerAnimationLoop: false,
-                                                title: 'ต้องการออกจากการแข่งขัน?',
-                                                desc:
-                                                    'ทีมของคุณต้องการจะออกจากการแข่งขันนี้',
-                                                btnOkText: "ยกเลิก",
-                                                btnCancelText: "ตกลง",
-                                                btnOkOnPress: () async {},
-                                                btnCancelColor: Colors.lightGreen,
-                                                btnOkColor: Colors.redAccent,
-                                                btnCancelOnPress: () async {
-                                                  var teamDelete =
-                                                      await teamService
-                                                          .DelbyTeamID(idTeamDel
-                                                              .toString());
-      
-                                                  if (teamDelete.data.result ==
-                                                      '1') {
-                                                    ScaffoldMessenger.of(context)
-                                                        .showSnackBar(
-                                                      const SnackBar(
-                                                          content: Text(
-                                                              'ออกจากการแข่งขันสำเร็จ')),
-                                                    );
-                                                    attendShow
-                                                        .removeWhere((element) {
-                                                      return element.values.first
-                                                              .first.teamId ==
-                                                          idTeamDel;
-                                                    }); //go through the loop and match content to delete from list
-                                                    //  hostIDs.clear();
-                                                          log(userCreateOneS);
-                                                          hostIDs.add(
-                                                             userCreateOneS);
-                                                   log('team'+ attendShow[index].values.first.first.team.teamName);
-                                                    mc = {
-                                                      'notitype': 'exitTeam',
-                                                      'raceID': idRace,
-                                                      'teamid': idTeamDel,
-                                                     'teamName': attendShow[index].values.first.first.team.teamName,
-                                                    };
-                                                    var notification1 =
-                                                        OSCreateNotification(
-                                                            //playerID
-                                                            additionalData: mc,
-                                                            playerIds: hostIDs,
-                                                            content: raceName,
-                                                            heading:
-                                                                "ออกจากแข่งขัน",
-                                                            //  iosAttachments: {"id1",urlImage},
-                                                            // bigPicture: imUrlString,
-                                                            buttons: [
-                                                          OSActionButton(
-                                                              text: "ตกลง",
-                                                              id: "id1"),
-                                                          OSActionButton(
-                                                              text: "ยกเลิก",
-                                                              id: "id2")
-                                                        ]);
-                                                    log('player ' +
-                                                        teamIDs.toString());
-      
-                                                    var response1 =
-                                                        await OneSignal.shared
-                                                            .postNotification(
-                                                                notification1);
-      
-                                                    setState(() {
-                                                      loadDataMethod = loadData();
-                                                    });
-                                                    Navigator.pop(context);
-                                                    Navigator.pop(context);
-                                                    log("ออกจากทีมสำเร็จ");
-                                                    return;
-                                                  } else {
-                                                    // log("team fail");
-                                                    ScaffoldMessenger.of(context)
-                                                        .showSnackBar(
-                                                      const SnackBar(
-                                                          content: Text(
-                                                              'ลบทีมไม่สำเร็จ!')),
-                                                    );
-                                                  }
-                                                  ;
-                                                },
-                                              ).show();
-                                            },
-                                            icon: const FaIcon(FontAwesomeIcons
-                                                .rightFromBracket),
-                                            color: Colors.redAccent,
-                                          ))
-                                    ])
-                              : Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    //Name team (Host)
-                                    //another team
-                                    Text(
-                                        attendShow[index]
-                                            .values
-                                            .first
-                                            .first
-                                            .team
-                                            .teamName,
-                                        style: textTheme.bodyLarge?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            shadows: [
-                                              Shadow(
-                                                blurRadius: 20.0,
-                                                color: Color.fromRGBO(
-                                                    253, 244, 255, 1),
-                                                offset: Offset(5, 3),
-                                              ),
-                                            ])),
-                                  ],
-                                ),
-                          children: attendShow[index].values.first.map((e) {
-                            return ListTile(
-                              title: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          showProfileAlertDialog(context, e.user);
-                                          log("tab${e.user.userName}");
-                                        },
-                                        child: CircleAvatar(
-                                            radius: 25,
-                                            backgroundImage:
-                                                NetworkImage(e.user.userImage)),
-                                      ),
-                                      Gap(5),
-                                      Text(e.user.userName),
-                                    ],
-                                  ),
-                                  e.status == 2
-                                      //statuscheck(logging in)
-                                      ? const FaIcon(
-                                          FontAwesomeIcons.solidCircleCheck,
-                                          color: Colors.green,
-                                          size: 30,
-                                        )
-                                      : const FaIcon(
-                                          FontAwesomeIcons.solidCircleXmark,
-                                          color: Colors.red,
-                                          size: 30,
-                                        ),
+                                          .teamName,
+                                      style: textTheme.bodyLarge?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          shadows: [
+                                            Shadow(
+                                              blurRadius: 20.0,
+                                              color: Color.fromRGBO(
+                                                  253, 244, 255, 1),
+                                              offset: Offset(5, 3),
+                                            ),
+                                          ])),
                                 ],
                               ),
-                            );
-                          }).toList())
-                    ]),
-                  ),
-                ],
-              )),
-        ),
+                        children: attendShow[index].values.first.map((e) {
+                          return ListTile(
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        showProfileAlertDialog(context, e.user);
+                                        log("tab${e.user.userName}");
+                                      },
+                                      child: CircleAvatar(
+                                          radius: 25,
+                                          backgroundImage:
+                                              NetworkImage(e.user.userImage)),
+                                    ),
+                                    Gap(5),
+                                    Text(e.user.userName),
+                                  ],
+                                ),
+                                e.status == 2
+                                    //statuscheck(logging in)
+                                    ? const FaIcon(
+                                        FontAwesomeIcons.solidCircleCheck,
+                                        color: Colors.green,
+                                        size: 30,
+                                      )
+                                    : const FaIcon(
+                                        FontAwesomeIcons.solidCircleXmark,
+                                        color: Colors.red,
+                                        size: 30,
+                                      ),
+                              ],
+                            ),
+                          );
+                        }).toList())
+                  ]),
+                ),
+              ],
+            )),
       ),
     );
   }
@@ -590,131 +599,128 @@ class _LobbyState extends State<Lobby> {
       int index, TextTheme textTheme, BuildContext context) {
     return SizedBox(
       width: Get.width,
-      child: RefreshIndicator(
-        onRefresh: refresh,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              InkWell(
-                borderRadius: BorderRadius.circular(12.0),
-                splashColor: Colors.blue.withAlpha(30),
-                child: Stack(children: [
-                  Positioned(
-                    child: Opacity(
-                      opacity: 0.3,
-                      child: Image.network(
-                        attendShow[index].values.first.first.team.teamImage,
-                        height: 60,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            InkWell(
+              borderRadius: BorderRadius.circular(12.0),
+              splashColor: Colors.blue.withAlpha(30),
+              child: Stack(children: [
+                Positioned(
+                  child: Opacity(
+                    opacity: 0.3,
+                    child: Image.network(
+                      attendShow[index].values.first.first.team.teamImage,
+                      height: 60,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  ExpansionTile(
-                      key: Key(selec.toString()),
-                      initiallyExpanded:
-                          idTeam == attendShow[index].values.first.first.teamId &&
-                              idUser !=
-                                  attendShow[index]
-                                      .values
-                                      .first
-                                      .first
-                                      .team
-                                      .race
-                                      .userId,
-                      title: idTeam ==
-                                  attendShow[index].values.first.first.teamId &&
-                              idUser !=
-                                  attendShow[index]
-                                      .values
-                                      .first
-                                      .first
-                                      .team
-                                      .race
-                                      .userId
-                          ?
-                          //ทีมที่เข้าร่วม
-                          Row(children: [
-                              Text(
-                                ("${attendShow[index].values.first.first.team.teamName} (ทีมคุณ)"),
-                                style: textTheme.bodyLarge?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromRGBO(156, 39, 176, 1),
-                                    shadows: [
-                                      Shadow(
-                                        blurRadius: 10,
-                                        color: Colors.white54,
-                                        offset: Offset(5, 3),
-                                      ),
-                                    ]),
-                              ),
-                            ])
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                //Name team (Host)
-                                //another team
-                                Text(
-                                    attendShow[index]
-                                        .values
-                                        .first
-                                        .first
-                                        .team
-                                        .teamName,
-                                    style: textTheme.bodyLarge?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        shadows: [
-                                          Shadow(
-                                            blurRadius: 20.0,
-                                            color:
-                                                Color.fromRGBO(253, 244, 255, 1),
-                                            offset: Offset(5, 3),
-                                          ),
-                                        ])),
-                              ],
+                ),
+                ExpansionTile(
+                    key: Key(selec.toString()),
+                    initiallyExpanded:
+                        idTeam == attendShow[index].values.first.first.teamId &&
+                            idUser !=
+                                attendShow[index]
+                                    .values
+                                    .first
+                                    .first
+                                    .team
+                                    .race
+                                    .userId,
+                    title: idTeam ==
+                                attendShow[index].values.first.first.teamId &&
+                            idUser !=
+                                attendShow[index]
+                                    .values
+                                    .first
+                                    .first
+                                    .team
+                                    .race
+                                    .userId
+                        ?
+                        //ทีมที่เข้าร่วม
+                        Row(children: [
+                            Text(
+                              ("${attendShow[index].values.first.first.team.teamName} (ทีมคุณ)"),
+                              style: textTheme.bodyLarge?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromRGBO(156, 39, 176, 1),
+                                  shadows: [
+                                    Shadow(
+                                      blurRadius: 10,
+                                      color: Colors.white54,
+                                      offset: Offset(5, 3),
+                                    ),
+                                  ]),
                             ),
-                      children: attendShow[index].values.first.map((e) {
-                        return ListTile(
-                          title: Row(
+                          ])
+                        : Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      showProfileAlertDialog(context, e.user);
-                                      log("tab${e.user.userName}");
-                                    },
-                                    child: CircleAvatar(
-                                        radius: 25,
-                                        backgroundImage:
-                                            NetworkImage(e.user.userImage)),
-                                  ),
-                                  Gap(5),
-                                  Text(e.user.userName),
-                                ],
-                              ),
-                              e.status == 2
-                                  //statuscheck(logging in)
-                                  ? const FaIcon(
-                                      FontAwesomeIcons.solidCircleCheck,
-                                      color: Colors.green,
-                                      size: 30,
-                                    )
-                                  : const FaIcon(
-                                      FontAwesomeIcons.solidCircleXmark,
-                                      color: Colors.red,
-                                      size: 30,
-                                    ),
+                              //Name team (Host)
+                              //another team
+                              Text(
+                                  attendShow[index]
+                                      .values
+                                      .first
+                                      .first
+                                      .team
+                                      .teamName,
+                                  style: textTheme.bodyLarge?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      shadows: [
+                                        Shadow(
+                                          blurRadius: 20.0,
+                                          color:
+                                              Color.fromRGBO(253, 244, 255, 1),
+                                          offset: Offset(5, 3),
+                                        ),
+                                      ])),
                             ],
                           ),
-                        );
-                      }).toList())
-                ]),
-              ),
-            ],
-          ),
+                    children: attendShow[index].values.first.map((e) {
+                      return ListTile(
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    showProfileAlertDialog(context, e.user);
+                                    log("tab${e.user.userName}");
+                                  },
+                                  child: CircleAvatar(
+                                      radius: 25,
+                                      backgroundImage:
+                                          NetworkImage(e.user.userImage)),
+                                ),
+                                Gap(5),
+                                Text(e.user.userName),
+                              ],
+                            ),
+                            e.status == 2
+                                //statuscheck(logging in)
+                                ? const FaIcon(
+                                    FontAwesomeIcons.solidCircleCheck,
+                                    color: Colors.green,
+                                    size: 30,
+                                  )
+                                : const FaIcon(
+                                    FontAwesomeIcons.solidCircleXmark,
+                                    color: Colors.red,
+                                    size: 30,
+                                  ),
+                          ],
+                        ),
+                      );
+                    }).toList())
+              ]),
+            ),
+          ],
         ),
       ),
     );
@@ -896,179 +902,198 @@ class _LobbyState extends State<Lobby> {
           return true;
         },
         child: Scaffold(
-          body: RefreshIndicator(
-            onRefresh: refresh,
-            child: FutureBuilder(
-                future: loadDataMethod,
-                builder: (context, AsyncSnapshot snapshot) {
-                  debugPrint(attendShow.toList().toString());
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    // if (snapshot.hasData) {
-                    //   return Container(
-                    //     child: Text("data"),
-                    //   );
-                    //   if (snapshot.data) {
-                    //     log('No chatroom');
-                    //     attendShow = [];
-                    //     log("datahas no");
-                    //     // SharedPreferences.getInstance().then((prefs) {
-                    //     //   prefs.setString(widget.roomID, jsonEncode({}));
-                    //     //   _messages = [];
-                    //     // });
-                    //     Container(
-                    //       child: Text("data"),
-                    //     );
-                    //   }
-                    // }
-                    attendShow = [];
-                    String tmId = '';
-                    List<AttendRace> temp = [];
-                    for (var i = 0; i < attends.length; i++) {
-                      if (attends[i].teamId.toString() != tmId) {
-                        if (temp.isNotEmpty) {
-                          var team = {tmId: temp};
-                          attendShow.add(team);
-                          temp = [];
-                        }
-                        tmId = attends[i].teamId.toString();
-                        // log(tmId.toString());
+          body: FutureBuilder(
+              future: loadDataMethod,
+              builder: (context, AsyncSnapshot snapshot) {
+                debugPrint(attendShow.toList().toString());
+                if (snapshot.connectionState == ConnectionState.done) {
+                  // if (snapshot.hasData) {
+                  //   return Container(
+                  //     child: Text("data"),
+                  //   );
+                  //   if (snapshot.data) {
+                  //     log('No chatroom');
+                  //     attendShow = [];
+                  //     log("datahas no");
+                  //     // SharedPreferences.getInstance().then((prefs) {
+                  //     //   prefs.setString(widget.roomID, jsonEncode({}));
+                  //     //   _messages = [];
+                  //     // });
+                  //     Container(
+                  //       child: Text("data"),
+                  //     );
+                  //   }
+                  // }
+                  attendShow = [];
+                  String tmId = '';
+                  List<AttendRace> temp = [];
+                  for (var i = 0; i < attends.length; i++) {
+                    if (attends[i].teamId.toString() != tmId) {
+                      if (temp.isNotEmpty) {
+                        var team = {tmId: temp};
+                        attendShow.add(team);
+                        temp = [];
                       }
-          
-                      temp.add(attends[i]);
+                      tmId = attends[i].teamId.toString();
+                      // log(tmId.toString());
                     }
-                    if (temp.isNotEmpty) {
-                      var team = {tmId: temp};
-                      attendShow.add(team);
-                    }
-                    // log(attendShow.toString());
-                    // log(attendShow[1]['102']!.first.userId.toString());
-                    //log(attendShow.length.toString());
-                    return SafeArea(
-                      child: Column(mainAxisSize: MainAxisSize.min, children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                IconButton(
+
+                    temp.add(attends[i]);
+                  }
+                  if (temp.isNotEmpty) {
+                    var team = {tmId: temp};
+                    attendShow.add(team);
+                  }
+                  // log(attendShow.toString());
+                  // log(attendShow[1]['102']!.first.userId.toString());
+                  //log(attendShow.length.toString());
+                  return SafeArea(
+                    child: Column(mainAxisSize: MainAxisSize.min,
+                     children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                icon: FaIcon(
+                                  FontAwesomeIcons.circleChevronLeft,
+                                  color: Colors.yellow,
+                                  size: 35,
+                                ),
+                              ),
+                              Text(
+                                "ล็อบบี้",
+                                style: textTheme.displayMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.purple,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: IconButton(
                                   onPressed: () {
-                                    Navigator.pop(context);
+                                    refresh();
                                   },
                                   icon: FaIcon(
-                                    FontAwesomeIcons.circleChevronLeft,
-                                    color: Colors.yellow,
-                                    size: 35,
-                                  ),
-                                ),
-                                Text(
-                                  "ล็อบบี้",
-                                  style: textTheme.displayMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
+                                    FontAwesomeIcons.rotate,
                                     color: Colors.purple,
-                                    fontSize: 20,
+                                    size: 30,
                                   ),
                                 ),
-                              ],
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                attendShow = [];
-                                Get.to(() => ChatRoomPage(
-                                      raceID: idRace,
-                                      userID: idUser,
-                                      userName: Username,
-                                      raceName: raceName,
-                                    ));
-                              },
-                              icon: FaIcon(
-                                FontAwesomeIcons.solidCommentDots,
-                                color: Colors.pink,
-                                size: 30,
                               ),
-                            ),
-                          ],
-                        ),
-                        Expanded(
-                          child: SafeArea(
-                            child: ListView(
-                              //padding: const EdgeInsets.all(8.0),
-                              physics: const BouncingScrollPhysics(),
-                              children: attendShow.map((e) {
-                                return Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 8, bottom: 8, right: 15, left: 15),
-                                    child: Container(
-                                        width: Get.width,
-                                        height: Get.height,
-                                        child: CardDetailPlayer()));
-                              }).toList(),
-                            ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: IconButton(
+                                  onPressed: () {
+                                    attendShow = [];
+                                    Get.to(() => ChatRoomPage(
+                                          raceID: idRace,
+                                          userID: idUser,
+                                          userName: Username,
+                                          raceName: raceName,
+                                        ));
+                                  },
+                                  icon: FaIcon(
+                                    FontAwesomeIcons.solidCommentDots,
+                                    color: Colors.pink,
+                                    size: 30,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Expanded(
+                        child: RefreshIndicator(
+                          onRefresh: refresh,
+                          child: ListView(
+                            //padding: const EdgeInsets.all(8.0),
+                            physics: const BouncingScrollPhysics(),
+                            children: attendShow.map((e) {
+                              return Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8, bottom: 8, right: 15, left: 15),
+                                  child: Container(
+                                      width: Get.width,
+                                      height: Get.height,
+                                      child: CardDetailPlayer()));
+                            }).toList(),
                           ),
                         ),
-                        idUser == userCreate
-                            ? Padding(
-                                padding: const EdgeInsets.only(bottom: 30),
-                                child: SizedBox(
-                                  width: 120,
-                                  child: PushableButton(
-                                    child: Text(
-                                      'เริ่มเกม',
-                                      style: textTheme.displayMedium?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                      ),
+                      ),
+                      idUser == userCreate
+                          ? Padding(
+                              padding: const EdgeInsets.only(bottom: 30),
+                              child: SizedBox(
+                                width: 120,
+                                child: PushableButton(
+                                  child: Text(
+                                    'เริ่มเกม',
+                                    style: textTheme.displayMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 20,
                                     ),
-                                    height: 40,
-                                    elevation: 8,
-                                    hslColor: const HSLColor.fromAHSL(
-                                        1.0, 120, 1.0, 0.37),
-                                    onPressed: () {
-                                      Set<int> statuslist = {};
-                                      for (var addstatus in attends) {
-                                        log(addstatus.status.toString());
-                                        if (addstatus.status == 1) {
-                                          statuslist.add(addstatus.status);
-                                        }
-                                      }
-                                      if (statuslist.contains(1)) {
-                                        AwesomeDialog(
-                                          context: context,
-                                          dialogType: DialogType.error,
-                                          animType: AnimType.bottomSlide,
-                                          headerAnimationLoop: false,
-                                          title: 'มีทีมที่ยังไม่พร้อม!!',
-                                          desc:
-                                              'กรุณารอให้ผู้เข้าแข่งขันกดพร้อม\n หรือเตะทีมที่ไม่พร้อมออกจากการแข่งขัน',
-                                        ).show();
-                                      } else if (attendShow.isEmpty) {
-                                        AwesomeDialog(
-                                          context: context,
-                                          dialogType: DialogType.error,
-                                          animType: AnimType.bottomSlide,
-                                          headerAnimationLoop: false,
-                                          title:
-                                              'ยังไม่มีทีมเข้าร่วมการแข่งขัน!!',
-                                          desc:
-                                              'กรุณารอให้ผู้เข้าแข่งขันเข้าร่วมการแข่งขัน',
-                                        ).show();
-                                      } else {
-                                        showAlertDialog(context);
-                                      }
-                                    },
                                   ),
+                                  height: 40,
+                                  elevation: 8,
+                                  hslColor: const HSLColor.fromAHSL(
+                                      1.0, 120, 1.0, 0.37),
+                                  onPressed: () {
+                                    Set<int> statuslist = {};
+                                    for (var addstatus in attends) {
+                                      log(addstatus.status.toString());
+                                      if (addstatus.status == 1) {
+                                        statuslist.add(addstatus.status);
+                                      }
+                                    }
+                                    if (statuslist.contains(1)) {
+                                      AwesomeDialog(
+                                        context: context,
+                                        dialogType: DialogType.error,
+                                        animType: AnimType.bottomSlide,
+                                        headerAnimationLoop: false,
+                                        title: 'มีทีมที่ยังไม่พร้อม!!',
+                                        desc:
+                                            'กรุณารอให้ผู้เข้าแข่งขันกดพร้อม\n หรือเตะทีมที่ไม่พร้อมออกจากการแข่งขัน',
+                                      ).show();
+                                    } else if (attendShow.isEmpty) {
+                                      AwesomeDialog(
+                                        context: context,
+                                        dialogType: DialogType.error,
+                                        animType: AnimType.bottomSlide,
+                                        headerAnimationLoop: false,
+                                        title:
+                                            'ยังไม่มีทีมเข้าร่วมการแข่งขัน!!',
+                                        desc:
+                                            'กรุณารอให้ผู้เข้าแข่งขันเข้าร่วมการแข่งขัน',
+                                      ).show();
+                                    } else {
+                                      showAlertDialog(context);
+                                    }
+                                  },
                                 ),
-                              )
-                            : chkReadyBtn(context)
-                      ]),
-                    );
-                  } else {
-                    return RefreshIndicator(
-                      onRefresh: refresh,
-                      child: ListView());
-                  }
-                }),
-          ),
+                              ),
+                            )
+                          : chkReadyBtn(context)
+                    ]),
+                  );
+                } else {
+                  return RefreshIndicator(
+                      onRefresh: refresh, child: ListView());
+                }
+              }),
         ));
   }
 }
