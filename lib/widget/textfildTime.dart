@@ -24,7 +24,7 @@ class _TextFieldTimeState extends State<TextFieldTime> {
     return Column(
       children: [
         SizedBox(
-          height: 33,
+          height: 40,
           child: TextFormField(
             controller: widget.controllers,
             readOnly: true,

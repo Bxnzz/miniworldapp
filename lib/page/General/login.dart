@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 import 'package:miniworldapp/model/DTO/userDTO.dart';
 import 'package:miniworldapp/model/result/raceResult.dart';
 import 'package:miniworldapp/page/General/Home.dart';
+import 'package:miniworldapp/page/General/const.dart';
 import 'package:miniworldapp/page/General/home_all.dart';
 import 'package:miniworldapp/page/General/rank_race.dart';
 
@@ -71,6 +72,9 @@ class _LoginState extends State<Login> {
   String McID = '';
   int IDmc = 0;
   int raceID = 0;
+  int idUsers = 0;
+
+  String teamName = '';
   String raceName = '';
   String start = "s";
   String end = "e";
@@ -347,6 +351,13 @@ class _LoginState extends State<Login> {
                                                     loadDataMethod;
                                                   });
                                                 });
+                                              }else if (additionalData[
+                                                          'notitype']
+                                                      .toString() ==
+                                                  'exitTeam') {
+                                                // Get.defaultDialog(
+                                                //     title: additionalData[
+                                                //         'masseage']);
                                               } else if (additionalData[
                                                           'notitype']
                                                       .toString() ==
@@ -516,6 +527,27 @@ class _LoginState extends State<Login> {
                                               } else if (event.notification
                                                           .additionalData![
                                                       'notitype'] ==
+                                                  'exitTeam') {
+                                                raceID = int.parse(event
+                                                    .notification
+                                                    .additionalData!['raceID']
+                                                    .toString());
+
+                                                teamName = event.notification
+                                                        .additionalData![
+                                                    'teamName'];
+
+                                                Get.defaultDialog(
+                                                        title:
+                                                            'มีทีมออกจากการแข่งขัน!!',
+                                                        content:  Text(
+                                                            'ทีม $teamName ได้ออกจากการแข่งขันนี้แล้ว'))
+                                                    .then((value) {
+                                                  
+                                                });
+                                              } else if (event.notification
+                                                          .additionalData![
+                                                      'notitype'] ==
                                                   'endgame') {
                                                 raceName = event.notification
                                                         .additionalData![
@@ -531,10 +563,14 @@ class _LoginState extends State<Login> {
                                                         content: const Text(
                                                             'รอการประมวลผล'))
                                                     .then((value) {
+                                                  log('mmmmmmmm');
+                                                  log('idddd' +
+                                                      userId.toString());
+
                                                   Get.to(() => ChatRoomPage(
-                                                      userID: userID,
+                                                      userID: userId,
                                                       raceID: raceID,
-                                                      userName: userName,
+                                                      userName: usernames,
                                                       raceName: raceName));
                                                 });
                                               } else if (event.notification
@@ -609,6 +645,8 @@ class _LoginState extends State<Login> {
                                                   !_authenticatingStatus;
                                             });
                                             log("login success");
+                                            userId = login.data.userId;
+                                            usernames = login.data.userName;
                                             Navigator.pushReplacement(
                                                 context,
                                                 MaterialPageRoute(

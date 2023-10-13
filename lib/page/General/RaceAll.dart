@@ -36,6 +36,7 @@ class _RaceAllState extends State<RaceAll> {
   Set<int> teamAllRegis = {};
   Set<int> teamRe = {};
   Set<int> all = {};
+  String UserNames = '';
   int sum1 = 0;
   int sum2 = 0;
   int sum3 = 0;
@@ -58,7 +59,9 @@ class _RaceAllState extends State<RaceAll> {
       log(value.data.first.raceName);
     });
     idUser = context.read<AppData>().idUser;
-    log(idUser.toString());
+    log('user ' + idUser.toString());
+    UserNames = context.read<AppData>().Username;
+    log('username ' + UserNames.toString());
     attendService =
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
     rewardService =
@@ -97,18 +100,15 @@ class _RaceAllState extends State<RaceAll> {
                               right: 0,
                               child: Container(
                                 decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.vertical(
-                                      bottom: Radius.circular(30),
-                                    ),
-                                    gradient: LinearGradient(
-                                        begin: FractionalOffset(0.0, 0.0),
-                                        end: FractionalOffset(1.0, 0.0),
-                                        stops: [0.0, 1.0],
-                                        tileMode: TileMode.clamp,
-                                        colors: [
-                                          Color.fromARGB(255, 207, 107, 244),
-                                          Color.fromARGB(255, 152, 90, 238),
-                                        ])),
+                                  borderRadius: BorderRadius.vertical(
+                                    bottom: Radius.circular(30),
+                                  ),
+                                  image:  DecorationImage(
+                                    image: AssetImage('assets/image/bg2.png'),
+                                    opacity: 0.8,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                                 width: Get.width,
                                 height: 150,
                               ),
@@ -164,7 +164,7 @@ class _RaceAllState extends State<RaceAll> {
                                       onTap: () {
                                         showSearch(
                                             context: context,
-                                            delegate: mySearchDelegate());
+                                            delegate: MySearchDelegate());
                                       },
                                       child: Row(
                                         mainAxisAlignment:

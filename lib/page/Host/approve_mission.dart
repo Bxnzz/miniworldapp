@@ -480,7 +480,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                               size: 15,
                             ),
                             label: Text(
-                              'ส่งให้ผู้ชม',
+                              'ส่งภาพให้ผู้ชม',
                               style: Get.textTheme.bodyMedium!.copyWith(
                                 color: Get.theme.colorScheme.onPrimary,
                               ),
@@ -602,7 +602,7 @@ class _ApproveMissionState extends State<ApproveMission> {
             builder: (BuildContext contexts) {
               return AlertDialog(
                 title: const Text(
-                  'ส่งหลักฐานให้ผู้ชม?',
+                  'ส่งภาพบรรยากาศให้ผู้ชม?',
                   textAlign: TextAlign.center,
                 ),
                 titleTextStyle: TextStyle(
