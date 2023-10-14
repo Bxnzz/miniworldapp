@@ -16,6 +16,7 @@ import 'package:miniworldapp/model/review.dart';
 import 'package:miniworldapp/service/race.dart';
 import 'package:miniworldapp/service/review.dart';
 import 'package:miniworldapp/service/reward.dart';
+import 'package:miniworldapp/service/team.dart';
 import 'package:miniworldapp/widget/loadData.dart';
 import 'package:miniworldapp/widget/ratingBar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -26,6 +27,7 @@ import '../../model/race.dart';
 import '../../model/result/attendRaceResult.dart';
 import '../../model/result/rewardResult.dart';
 import '../../model/reward.dart';
+import '../../model/team.dart';
 import '../../service/attend.dart';
 import '../../service/provider/appdata.dart';
 import 'package:crypto/crypto.dart';
@@ -42,12 +44,15 @@ class _ShareState extends State<Share> {
   late RewardService rewardService;
   late RaceService raceService;
   late ReviewService reviewService;
+  late TeamService teamService;
 
   List<AttendRace> attendUsers = [];
   List<AttendRace> attends = [];
+  List<AttendRace> attendBytid = [];
   List<RewardResult> rewards = [];
   List<RewardResult> rewardAlls = [];
   List<Race> races = [];
+  List<Team> teams = [];
   List<Map<String, List<AttendRace>>> attendShow = [];
   List<Review> reviews = [];
   List textShare = [
@@ -56,7 +61,11 @@ class _ShareState extends State<Share> {
     "เริ่ดมากกกกก😀",
     "สนุกสุดเหวี่ยง",
     "ใครแน่จริงมาแข่งกัน!",
-    "ทีมเวิร์คเป็นยอด🤣"
+    "ทีมเวิร์คเป็นยอด🤣",
+    "ใครจะไปอดใจไหวสนุกขนาดนี้",
+    "เดือดฝุดๆ 😝😜",
+    "Happy race ",
+    "So funny"
   ];
   final _random = new math.Random();
   var element;
@@ -101,6 +110,7 @@ class _ShareState extends State<Share> {
         RewardService(Dio(), baseUrl: context.read<AppData>().baseurl);
     reviewService =
         ReviewService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    teamService = TeamService(Dio(), baseUrl: context.read<AppData>().baseurl);
 
     // 2.2 async method
     element = textShare[_random.nextInt(textShare.length)];
@@ -118,8 +128,12 @@ class _ShareState extends State<Share> {
       // races = racehost.data;
       log(" id race$idrace");
       var review = await reviewService.reviewByRaceID(raceID: idrace);
+      if (review.data.isNotEmpty) {
+        reviews = review.data;
+      }
 
-      reviews = review.data;
+      var teamByrID = await teamService.teambyRaceID(raceID: idrace);
+      teams = teamByrID.data;
 
       var reall = await rewardService.rewardByRaceID(raceID: idrace);
       rewardAlls = reall.data;
@@ -128,17 +142,36 @@ class _ShareState extends State<Share> {
       raceName = reall.data.first.race.raceName;
       hostName = reall.data.first.race.user.userName;
       sumTeam = reall.data.last.reType;
-      var atUser = await attendService.attendByUserID(userID: idUser);
-      attendUsers = atUser.data;
+      var atByrID = await attendService.attendByUserID(userID: idUser);
+
+      attendUsers = atByrID.data;
+      attendUsers.map((e) async {
+        if (e.team.raceId == idrace) {
+          var atByTid =
+              await attendService.attendByTeamID(teamID: e.team.teamId);
+          attendBytid = atByTid.data;
+          if (attendBytid.length < 2) {
+            player1 = attendBytid[0].user.userName;
+          } else if (attendBytid.length >= 2) {
+            player1 = attendBytid[0].user.userName;
+            player2 = attendBytid[1].user.userName;
+          }
+
+          log("player1 = $player1");
+          log("player2 = $player2");
+          teamName = attendBytid.first.team.teamName;
+          log("${attendBytid.length}");
+          log("teamid === ${e.team.teamId}");
+          log("username1 ${e.user.userName}");
+        }
+        log('team in attend by uid${e.team.teamId}');
+      }).toList();
       var a = attendUsers.where((element) => idUser == element.userId);
-      // log('user '+a.first.teamId.toString());
+
+      //log('user ' + a.first.teamId.toString());
       playerID = a.first.userId;
       teamIDme = a.first.teamId;
 
-      var atTeam = await attendService.attendByTeamID(teamID: teamIDme);
-      log("teamIDme = $teamIDme");
-      attends = atTeam.data;
-      teamName = attends.first.team.teamName;
       // for (var att in attends) {
       //    playerName = att.user.userName;
       //   log(att.user.userName);
@@ -150,17 +183,17 @@ class _ShareState extends State<Share> {
 
       orderMe = re.data.first.reType;
       log("orderMe = $orderMe");
-      for (var i = 0; i < attends.length; i++) {
-        log(attends[i].user.userName);
-        if (attends.length < 2) {
-          log("player1");
-          player1 = attends[0].user.userName;
-        } else if (attends.length >= 2) {
-          log("player2");
-          player1 = attends[0].user.userName;
-          player2 = attends[1].user.userName;
-        }
-      }
+      // for (var i = 0; i < attends.length; i++) {
+      //   log(attends[i].user.userName);
+      //   if (attends.length < 2) {
+      //     log("player1");
+      //     player1 = attends[0].user.userName;
+      //   } else if (attends.length >= 2) {
+      //     log("player2");
+      //     player1 = attends[0].user.userName;
+      //     player2 = attends[1].user.userName;
+      //   }
+      // }
     } catch (err) {
       log('Error:$err');
     } finally {
@@ -177,7 +210,7 @@ class _ShareState extends State<Share> {
         backgroundColor: Colors.transparent,
         title: Text(
           "แชร์ผลการแข่งขัน",
-          style: Get.textTheme.headlineSmall!.copyWith(color: Colors.white),
+          style: Get.textTheme.headlineSmall!.copyWith(),
         ),
         // leading: IconButton(
         //   icon: FaIcon(
@@ -192,84 +225,218 @@ class _ShareState extends State<Share> {
           future: loadDataMethod,
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              avg = reviews.map((m) => m.revPoint).reduce((a, b) => a + b) /
-                  reviews.length;
-              log("${reviews.length}");
+              if (reviews.isNotEmpty) {
+                avg = reviews.map((m) => m.revPoint).reduce((a, b) => a + b) /
+                    reviews.length;
+                log("${reviews.length}");
+              }
               return Container(
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
-                  decoration: const BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage("assets/image/pattern.png"))),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      //host
                       idUser == hostID
-                          ? Container(
-                              width: 325,
-                              height: 470,
-                              decoration: BoxDecoration(
-                                color: Get.theme.colorScheme.onBackground,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                          ? Screenshot(
+                              controller: screenshotController,
+                              child: Stack(
                                 children: [
-                                  Screenshot(
-                                    controller: screenshotController,
+                                  Container(
+                                    width: Get.width / 1.2,
+                                    height: 500,
+                                    decoration: const BoxDecoration(
+                                      image: DecorationImage(
+                                          fit: BoxFit.fill,
+                                          image: AssetImage(
+                                              "assets/image/pattern.png")),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(0x3f000000),
+                                          offset: Offset(0, 6),
+                                          blurRadius: 0.2,
+                                        ),
+                                      ],
+                                      color: Colors.white,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(15)),
+                                    ),
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
                                       children: [
-                                        imageRace(),
                                         Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 30),
-                                          child: Text(
-                                            'ชื่อการแข่งขัน: ' + raceName,
-                                            style: Get.textTheme.bodyLarge!
-                                                .copyWith(
-                                                    color: Get.theme.colorScheme
-                                                        .onBackground,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                            textAlign: TextAlign.start,
+                                          padding: EdgeInsets.all(
+                                            10,
+                                          ),
+                                          child: imageRace(),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 15, right: 15, left: 15),
+                                          child: Card(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        'การแข่งขัน: ' +
+                                                            raceName,
+                                                        style: Get.textTheme
+                                                            .bodyLarge!
+                                                            .copyWith(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                          'ผู้สร้าง: ' +
+                                                              hostName,
+                                                          style: Get.textTheme
+                                                              .bodyLarge!
+                                                              .copyWith(
+                                                                  color: Get
+                                                                      .theme
+                                                                      .colorScheme
+                                                                      .onBackground,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                          'ทีมเข้าแข่งขัน: ' +
+                                                              sumTeam
+                                                                  .toString() +
+                                                              ' ทีม',
+                                                          style: Get.textTheme
+                                                              .bodyLarge!
+                                                              .copyWith(
+                                                                  color: Get
+                                                                      .theme
+                                                                      .colorScheme
+                                                                      .onBackground,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text("คะแนนเฉลี่ย   ",
+                                                          style: Get.textTheme
+                                                              .bodyLarge!
+                                                              .copyWith(
+                                                                  color: Get
+                                                                      .theme
+                                                                      .colorScheme
+                                                                      .onBackground,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
+                                                      ratingBar(
+                                                          point: avg,
+                                                          size: 30,
+                                                          faIcon: FaIcon(
+                                                            FontAwesomeIcons
+                                                                .solidStar,
+                                                            color: Colors.amber,
+                                                          )),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 15),
-                                          child: Text(
-                                              'ผู้สร้างการแข่งขัน: ' + hostName,
-                                              style: Get.textTheme.bodyLarge!
-                                                  .copyWith(
-                                                      color: Get
-                                                          .theme
-                                                          .colorScheme
-                                                          .onBackground,
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 15),
-                                          child: Text(
-                                              'จำนวนผู้เข้าแข่งขันทั้งหมด: ' +
-                                                  sumTeam.toString(),
-                                              style: Get.textTheme.bodyLarge!
-                                                  .copyWith(
-                                                      color: Get
-                                                          .theme
-                                                          .colorScheme
-                                                          .onBackground,
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                        )
                                       ],
                                     ),
                                   ),
+                                  // Positioned(
+                                  //   top: 483,
+                                  //   width: Get.width / 1.2,
+                                  //   height: 15,
+                                  //   child: Container(
+                                  //     height: 20,
+                                  //     decoration: BoxDecoration(
+                                  //       color: Color(0xffd3d8ff),
+                                  //       borderRadius: BorderRadius.all(
+                                  //           Radius.circular(21)),
+                                  //       boxShadow: [
+                                  //         BoxShadow(
+                                  //           color: Color(0x3f000000),
+                                  //           offset: Offset(0, 4),
+                                  //           blurRadius: 0,
+                                  //         ),
+                                  //       ],
+                                  //     ),
+                                  //   ),
+                                  // ),
+
+                                  // Screenshot(
+                                  //   controller: screenshotController,
+                                  //   child: Column(
+                                  //     mainAxisAlignment:
+                                  //         MainAxisAlignment.start,
+                                  //     children: [
+                                  //       imageRace(),
+                                  //       Padding(
+                                  //         padding:
+                                  //             const EdgeInsets.only(top: 30),
+                                  //         child: Text(
+                                  //           'ชื่อการแข่งขัน: ' + raceName,
+                                  //           style: Get.textTheme.bodyLarge!
+                                  //               .copyWith(
+                                  //                   color: Get.theme.colorScheme
+                                  //                       .onBackground,
+                                  //                   fontWeight:
+                                  //                       FontWeight.bold),
+                                  //           textAlign: TextAlign.start,
+                                  //         ),
+                                  //       ),
+                                  //       Padding(
+                                  //         padding:
+                                  //             const EdgeInsets.only(top: 15),
+                                  //         child: Text(
+                                  //             'ผู้สร้างการแข่งขัน: ' + hostName,
+                                  //             style: Get.textTheme.bodyLarge!
+                                  //                 .copyWith(
+                                  //                     color: Get
+                                  //                         .theme
+                                  //                         .colorScheme
+                                  //                         .onBackground,
+                                  //                     fontWeight:
+                                  //                         FontWeight.bold)),
+                                  //       ),
+                                  //       Padding(
+                                  //         padding:
+                                  //             const EdgeInsets.only(top: 15),
+                                  //         child: Text(
+                                  //             'จำนวนผู้เข้าแข่งขันทั้งหมด: ' +
+                                  //                 sumTeam.toString(),
+                                  //             style: Get.textTheme.bodyLarge!
+                                  //                 .copyWith(
+                                  //                     color: Get
+                                  //                         .theme
+                                  //                         .colorScheme
+                                  //                         .onBackground,
+                                  //                     fontWeight:
+                                  //                         FontWeight.bold)),
+                                  //       )
+                                  //     ],
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             )
@@ -282,7 +449,11 @@ class _ShareState extends State<Share> {
                                       Container(
                                         width: Get.width / 1.2,
                                         height: 500,
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
+                                          image: DecorationImage(
+                                              fit: BoxFit.fill,
+                                              image: AssetImage(
+                                                  "assets/image/pattern.png")),
                                           boxShadow: [
                                             BoxShadow(
                                               color: Color(0x3f000000),
@@ -529,6 +700,7 @@ class _ShareState extends State<Share> {
           padding: const EdgeInsets.only(top: 15, right: 10, left: 10),
           child: Container(
             height: 200,
+            width: Get.width,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(16.0)),
               boxShadow: <BoxShadow>[
@@ -558,27 +730,38 @@ class _ShareState extends State<Share> {
           right: 10,
           left: 10,
           child: Container(
-              width: Get.width,
-              height: 50,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color:
-                      const Color.fromARGB(255, 73, 73, 73).withOpacity(0.5))),
+            width: Get.width,
+            height: 30,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: const Color.fromARGB(255, 73, 73, 73).withOpacity(0.5)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 10, bottom: 3),
+                  child: Text('#$element',
+                      style: Get.textTheme.bodyMedium!.copyWith(
+                          color: Get.theme.colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),
+          ),
         ),
+        // Positioned(
+        //   bottom: 10,
+        //   right: 20,
+        //   left: 20,
+        //   child:
+        // ),
         Positioned(
-          bottom: 10,
-          right: 20,
-          child: Text('#มาร่วมสนุกด้วยกันสิ!!',
-              style: Get.textTheme.bodyLarge!.copyWith(
-                  color: Get.theme.colorScheme.onPrimary,
-                  fontWeight: FontWeight.bold)),
-        ),
-        Positioned(
-          top: 20,
-          left: 20,
+          top: 10,
+          left: 10,
           child: SizedBox(
-              width: 50,
-              height: 50,
+              width: 80,
+              height: 80,
               child: Image.asset("assets/image/logo.png")),
         ),
       ],

@@ -81,6 +81,7 @@ class _RankRaceState extends State<RankRace> {
       idrace = context.read<AppData>().idrace;
       log("idrace $idrace");
       idUser = context.read<AppData>().idUser;
+      log("userID =$idUser ");
       var r = await rewardService.rewardByRaceID(raceID: idrace);
       rewards = r.data;
 
@@ -427,7 +428,8 @@ class _RankRaceState extends State<RankRace> {
                                           children: <Widget>[
                                             // Stroked text as border.
                                             if (attendShow.where((att) =>
-                                                    att.keys.first ==
+                                                    att.values.first.first
+                                                        .teamId ==
                                                     e.teamId) ==
                                                 attendShow.where((atts) =>
                                                     atts.keys.first == idUser))
@@ -441,7 +443,7 @@ class _RankRaceState extends State<RankRace> {
                                               )
                                             else
                                               Text(
-                                                e.team.teamName,
+                                                e.team.teamName + " (asdfasdf)",
                                                 style: TextStyle(
                                                     fontSize: 20,
                                                     color: Colors.black,

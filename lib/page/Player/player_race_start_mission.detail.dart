@@ -58,7 +58,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
 
   Map<String, dynamic> mc = {};
   TextEditingController answerPass = TextEditingController();
-  TextEditingController textInProcesCtl = new TextEditingController();
+  TextEditingController textInProcesCtl = TextEditingController();
 
   String onesingnalId = '';
   String misName = '';
@@ -84,6 +84,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
   bool isImage = true;
   bool isSubmit = false;
   bool answerShow = false;
+  bool isText = false;
   int StSubmitDb = 0;
 
   File? _image;
@@ -132,7 +133,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
       _customVideoPlayerControllerInProcess!.dispose();
       _customVideoPlayerController!.dispose();
     }
-
+    answerPass.dispose();
     super.dispose();
   }
 
@@ -147,13 +148,15 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
       log("mission id $misID");
       var mis3 = await missionService.missionBymisID(misID: misID);
       log("idteam ====${teamID}");
-      if (context.read<AppData>().firstMis == true) {
+      //first mission
+      if (mis3.data.first.misSeq == 1) {
         context.read<AppData>().firstMis = false;
         log("firstmis");
         var a = await missionCompService.missionCompByTeamId(teamID: teamID);
-        missionComp = a.data;
+
         log("firstmis1");
-        if (a.data.last.misId != null) {
+        if (a.data.isNotEmpty) {
+          missionComp = a.data;
           log("firstmis2");
           var b = await missionCompService.missionCompBymisId(
               misID: a.data.last.misId);
@@ -179,6 +182,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
               textInProcesCtl.text = textinProcess;
               log("mc photo " + imageInProcess.toString());
               log("mc vedioProcess " + vedioProcess.toString());
+              log("mc text = " + textinProcess);
             }
           }).toList();
           videoPlayerControllerInProcess = VideoPlayerController.network(
@@ -195,10 +199,11 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
               log(error.toString());
             });
         }
-        if (a.data.last.misId == null) {
+        if (a.data.isEmpty) {
           log("firstmisnull");
         }
       }
+      //another mission
       if (mis3.data.first.misSeq != 1) {
         var a = await missionCompService.missionCompByTeamId(teamID: teamID);
         missionComp = a.data;
@@ -229,6 +234,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
             textInProcesCtl.text = textinProcess;
             log("mc photo " + imageInProcess.toString());
             log("mc vedioProcess " + vedioProcess.toString());
+            log("mc text = " + textinProcess);
           }
         }).toList();
         videoPlayerControllerInProcess = VideoPlayerController.network(
@@ -258,6 +264,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
       if (mc.data.isNotEmpty) {
         mcLastSt = mc.data.last.mcStatus;
         MCmisID = mc.data.last.misId;
+
         // context.read<AppData>().isSubmit = true;
         log("MCmisID = $MCmisID");
         log("mcLastSt${mc.data.last.mcStatus}");
@@ -500,52 +507,80 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
     // } else {
     //   Get.defaultDialog(title: 'กรุณาเลือกหลักฐาน');
     // }
+    if (_image != null) {
+      final path = 'files/${_image?.path.split('/').last}';
 
-    final path = 'files/${_image?.path.split('/').last}';
+      final file = File(_image!.path!);
 
-    final file = File(_image!.path!);
+      final ref = FirebaseStorage.instance.ref().child(path);
+      log(ref.toString());
 
-    final ref = FirebaseStorage.instance.ref().child(path);
-    log(ref.toString());
+      setState(() {
+        uploadTask = ref.putFile(file);
+      });
+      final snapshot = await uploadTask!.whenComplete(() {});
 
-    setState(() {
-      uploadTask = ref.putFile(file);
-    });
-    final snapshot = await uploadTask!.whenComplete(() {});
+      final urlDownload = await snapshot.ref.getDownloadURL();
 
-    final urlDownload = await snapshot.ref.getDownloadURL();
+      log('Download Link:$urlDownload');
+      log('mid ' + latDevice.toString());
 
-    log('Download Link:$urlDownload');
-    log('mid ' + latDevice.toString());
+      if (isImage == true) {
+        //update image
+        MissionCompDto mdto = MissionCompDto(
+            mcDatetime: DateTime.parse(dateTime),
+            mcLat: latDevice,
+            mcLng: lngDevice,
+            mcMasseage: '',
+            mcPhoto: urlDownload,
+            mcStatus: 1,
+            mcText: answerPass.text,
+            mcVideo: '',
+            misId: misID,
+            teamId: teamID);
+        debugPrint(missionCompDtoToJson(mdto));
+        var missionComp = await missionCompService.insertMissionComps(mdto);
 
-    if (isImage == true) {
-      //update image
-      MissionCompDto mdto = MissionCompDto(
-          mcDatetime: DateTime.parse(dateTime),
-          mcLat: latDevice,
-          mcLng: lngDevice,
-          mcMasseage: '',
-          mcPhoto: urlDownload,
-          mcStatus: 1,
-          mcText: answerPass.text,
-          mcVideo: '',
-          misId: misID,
-          teamId: teamID);
-      debugPrint(missionCompDtoToJson(mdto));
-      var missionComp = await missionCompService.insertMissionComps(mdto);
+        missionComp.data;
+        mcID = missionComp.data.mcId.toString();
 
-      missionComp.data;
-      mcID = missionComp.data.mcId.toString();
+        mc = {
+          'notitype': 'mission',
+          'mcid': mcID,
+          'mission': misName,
+          'team': teamName
+        };
+        log('img ${missionComp.data.misId}');
+      } else {
+        //update video
+        MissionCompDto mdto = MissionCompDto(
+            mcDatetime: DateTime.parse(dateTime),
+            mcLat: latDevice,
+            mcLng: lngDevice,
+            mcMasseage: '',
+            mcPhoto: '',
+            mcStatus: 1,
+            mcText: answerPass.text,
+            mcVideo: urlDownload,
+            misId: misID,
+            teamId: teamID);
+        var missionComp = await missionCompService.insertMissionComps(mdto);
+        mcID = missionComp.data.mcId.toString();
 
-      mc = {
-        'notitype': 'mission',
-        'mcid': mcID,
-        'mission': misName,
-        'team': teamName
-      };
-      log('img ${missionComp.data.misId}');
-    } else {
-      //update video
+        mc = {
+          'notitype': 'mission',
+          'mcid': mcID,
+          'mission': misName,
+          'team': teamName
+        };
+        log('mcc$mc');
+        log('one $onesingnalId');
+      }
+      _image = null;
+    } else if (_image == null) {
+      log("upload");
+      //upload type mission Text
+      isText = true;
       MissionCompDto mdto = MissionCompDto(
           mcDatetime: DateTime.parse(dateTime),
           mcLat: latDevice,
@@ -554,7 +589,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
           mcPhoto: '',
           mcStatus: 1,
           mcText: answerPass.text,
-          mcVideo: urlDownload,
+          mcVideo: '',
           misId: misID,
           teamId: teamID);
       var missionComp = await missionCompService.insertMissionComps(mdto);
@@ -568,9 +603,9 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
       };
       log('mcc$mc');
       log('one $onesingnalId');
+      setState(() {});
     }
-    _image = null;
-
+    answerPass.clear();
     if (deviceState == null || deviceState.userId == null) return;
 
     var playerId = deviceState.userId!;
@@ -638,6 +673,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           cardDetailMis(),
+                          //type mission is 12
                           if (StSubmitDb != 1 && misType == "12")
                             SizedBox(
                               width: Get.width,
@@ -663,7 +699,47 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
                                   maxLines: 3,
                                   textInputAction: TextInputAction.done,
                                   decoration: InputDecoration(
-                                    hintText: ' คำอธิบาย...',
+                                    hintText: ' คำอธิบาย...textandmedia',
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 3,
+                                            color:
+                                                Get.theme.colorScheme.primary)),
+                                  ),
+                                ),
+                              ),
+                            )
+                          else
+                            Container(),
+                          // //messege only
+                          if (StSubmitDb != 1 &&
+                              misType == '1' &&
+                              StSubmitDb != 3)
+                            SizedBox(
+                              width: Get.width,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 15, right: 15, bottom: 15),
+                                child: TextField(
+                                  onChanged: (value) {
+                                    if (value.isNotEmpty) {
+                                      log("onChange");
+                                      log("$answerPass");
+                                      log("${answerPass.text}");
+                                      answerShow = true;
+                                      setState(() {});
+                                    } else {
+                                      log("anserShow false");
+                                      answerShow = false;
+                                      setState(() {});
+                                    }
+                                  },
+                                  controller: answerPass,
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: 3,
+                                  textInputAction: TextInputAction.done,
+                                  decoration: InputDecoration(
+                                    hintText: ' คำอธิบาย...textonly',
                                     focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
                                             width: 3,
@@ -677,7 +753,8 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
                             Container(),
                           misfind(),
                           Gap(15),
-                          StSubmitDb == 3
+                          //mission fail media
+                          StSubmitDb == 3 && misType != '1'
                               ? Column(
                                   children: [
                                     Center(
@@ -698,9 +775,53 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
                                     ),
                                   ],
                                 )
-                              : Container(),
+                              //mission fail text
+                              : StSubmitDb == 3
+                                  ? SizedBox(
+                                      width: Get.width,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 15, right: 15, bottom: 15),
+                                        child: TextField(
+                                          onChanged: (value) {
+                                            if (value.isNotEmpty) {
+                                              log("onChange");
+                                              log("$answerPass");
+                                              log("${answerPass.text}");
+                                              answerShow = true;
+                                              setState(() {});
+                                            } else {
+                                              log("anserShow false");
+                                              answerShow = false;
+                                              setState(() {});
+                                            }
+                                          },
+                                          controller: answerPass,
+                                          keyboardType: TextInputType.multiline,
+                                          maxLines: 3,
+                                          textInputAction: TextInputAction.done,
+                                          decoration: InputDecoration(
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  width: 3,
+                                                  color: Colors
+                                                      .red), //<-- SEE HERE
+                                            ),
+                                            hintText: 'ตอบคำถามใหม่อีกทีนะ....',
+                                            focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    width: 3,
+                                                    color: Colors.amber)),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : Container(),
                           if (_image == null)
-                            if (StSubmitDb == 0 || StSubmitDb == 2)
+                            if (StSubmitDb == 0 && StSubmitDb == 2 ||
+                                misType != '1' &&
+                                    StSubmitDb != 1 &&
+                                    StSubmitDb != 3)
                               AnimatedButton(
                                   height: 150,
                                   shape: BoxShape.circle,
@@ -859,8 +980,9 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
             : Container()
         //oldmission
         ,
-        //Text
-        if (StSubmitDb == 1 && textinProcess != '')
+        if (StSubmitDb == 1 &&
+            textInProcesCtl.text.isNotEmpty &&
+            misType != '2')
           SizedBox(
             width: Get.width,
             child: Padding(
@@ -880,6 +1002,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
               ),
             ),
           ),
+
         StSubmitDb == 1 && imageInProcess != ''
             //photo
             ? SizedBox(
@@ -1042,7 +1165,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
       children: [
         SizedBox(
           width: 200,
-          child: (StSubmitDb == 4 || StSubmitDb == 5)
+          child: (answerPass.text.isNotEmpty || _image != null)
               ? ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Get.theme.colorScheme.primary,
@@ -1050,17 +1173,21 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
                   onPressed: () async {
                     //  _handleSendNotification();
 
-                    await uploadFile();
                     StSubmitDb = 1;
+                    await uploadFile();
+
                     setState(() {
                       loadDataMethod = loadData();
                     });
                   },
-                  child: Text('ส่งหลักฐาน',
-                      style: Get.textTheme.bodyLarge!.copyWith(
-                          color: Get.theme.colorScheme.onPrimary,
-                          fontWeight: FontWeight.bold)))
-              : StSubmitDb == 1
+                  child: Text(
+                    'ส่งหลักฐานaaa',
+                    style: Get.textTheme.bodyLarge!.copyWith(
+                        color: Get.theme.colorScheme.onPrimary,
+                        fontWeight: FontWeight.bold),
+                  ),
+                )
+              : StSubmitDb == 1 || textInProcesCtl.text.isNotEmpty
                   ? ElevatedButton(
                       onPressed: null,
                       child: Text(
@@ -1071,6 +1198,40 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
                     )
                   : Container(),
         ),
+        // isText == true
+        //     ? SizedBox(
+        //         width: 200,
+        //         child: (StSubmitDb == 4 || StSubmitDb == 5)
+        //             ? ElevatedButton(
+        //                 style: ElevatedButton.styleFrom(
+        //                   backgroundColor: Get.theme.colorScheme.primary,
+        //                 ),
+        //                 onPressed: () async {
+        //                   //  _handleSendNotification();
+
+        //                   await uploadFile();
+        //                   StSubmitDb = 1;
+        //                   setState(() {
+        //                     loadDataMethod = loadData();
+        //                   });
+        //                 },
+        //                 child: Text('ส่งหลักฐานdd',
+        //                     style: Get.textTheme.bodyLarge!.copyWith(
+        //                         color: Get.theme.colorScheme.onPrimary,
+        //                         fontWeight: FontWeight.bold)))
+        //             : StSubmitDb == 1 || textInProcesCtl.text.isNotEmpty
+        //                 ? ElevatedButton(
+        //                     onPressed: null,
+        //                     child: Text(
+        //                       "ส่งแล้วรอประมวลผล",
+        //                       style: Get.textTheme.bodyLarge!.copyWith(
+        //                           color: Colors.grey,
+        //                           fontWeight: FontWeight.bold),
+        //                     ),
+        //                   )
+        //                 : Container(),
+        //       )
+        //     : Container()
       ],
     );
   }
