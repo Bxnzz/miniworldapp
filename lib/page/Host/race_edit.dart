@@ -201,19 +201,19 @@ class _EditRaceState extends State<EditRace> {
                       clipBehavior: Clip.none,
                       children: [
                     Card(
-                      margin: EdgeInsets.fromLTRB(20, 70, 20, 15),
+                      margin: EdgeInsets.fromLTRB(25, 75, 25, 5),
                       color: Colors.white,
                       child: SingleChildScrollView(
                         child: Column(
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.only(top: 25),
+                              padding: const EdgeInsets.only(top: 35),
                               child: upImg(),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 10,bottom: 10),
+                              padding: const EdgeInsets.all(8.0),
                               child: SizedBox(
-                                width: 240,
+                                width: 328,
                                 child: textField(
                                     raceName,
                                     'ชื่อการแข่งขัน...',
@@ -222,9 +222,9 @@ class _EditRaceState extends State<EditRace> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
+                              padding: const EdgeInsets.all(8.0),
                               child: SizedBox(
-                                width: 240,
+                                width: 328,
                                 child: textField(
                                     raceLocation,
                                     'สถานที่แข่งขัน...',
@@ -233,165 +233,210 @@ class _EditRaceState extends State<EditRace> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  SizedBox(
-                                    width: 140,
-                                    child: textFieldteam(raceLimit, 'จำนวนทีม...',
-                                        'จำนวนทีม', 'กรุณากรอกจำนวนทีม'),
+                              padding: const EdgeInsets.all(8),
+                              child: SizedBox(
+                                width: 330,
+                                child: textFieldteam(raceLimit, 'จำนวนทีม...',
+                                    'จำนวนทีม', 'กรุณากรอกจำนวนทีม'),
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 20, top: 8),
+                                  child: Text('วันที่เปิด-ปิดลงทะเบียน*'),
+                                ),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 8, left: 18),
+                                      child: SizedBox(
+                                        width: 158,
+                                        height: 40,
+                                        child: TextFormField(
+                                          controller: singUpST,
+                                          readOnly: true,
+                                          style: Get.textTheme.bodyLarge,
+                                          decoration: InputDecoration(
+                                            hintText: 'วันที่เปิด',
+                                            suffixIcon: IconButton(
+                                              onPressed: () async {
+                                                DateTime? dt = await selectDate(
+                                                    startDate, 'start');
+
+                                                if (dt != null) {
+                                                  setState(() {
+                                                    startDate = dt;
+
+                                                    var formatter =
+                                                        DateFormat.yMMMd();
+                                                    var dateInBuddhistCalendarFormat =
+                                                        formatter
+                                                            .formatInBuddhistCalendarThai(
+                                                                startDate);
+                                                    singUpST.text =
+                                                        dateInBuddhistCalendarFormat;
+
+                                                    TexttimeST.text =
+                                                        '${startDate.toIso8601String()}Z';
+                                                    // context.read<AppData>().dates = dates ;
+                                                    log('stttt ' +
+                                                        TexttimeST.text);
+                                                  });
+                                                }
+                                              },
+                                              icon: const Icon(
+                                                  FontAwesomeIcons.calendar),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 8, left: 8),
+                                      child: SizedBox(
+                                        width: 158,
+                                        height: 40,
+                                        child: TextFormField(
+                                          controller: singUpFN,
+                                          readOnly: true,
+                                          style: Get.textTheme.bodyLarge,
+                                          decoration: InputDecoration(
+                                            //  labelText: 'วันที่ปิดรับสมัคร',
+                                            hintText: 'วันที่เปิด',
+                                            suffixIcon: IconButton(
+                                              onPressed: () async {
+                                                DateTime? dt = await selectDate(
+                                                    endDate, 'end');
+
+                                                if (dt != null) {
+                                                  setState(() {
+                                                    endDate = dt;
+
+                                                    var formatter =
+                                                        DateFormat.yMMMd();
+                                                    var dateInBuddhistCalendarFormat =
+                                                        formatter
+                                                            .formatInBuddhistCalendarThai(
+                                                                endDate);
+                                                    singUpFN.text =
+                                                        dateInBuddhistCalendarFormat;
+
+                                                    TexttimeFN.text =
+                                                        '${endDate.toIso8601String()}Z';
+                                                    // context.read<AppData>().dates = dates ;
+                                                    log('Fnnn ' +
+                                                        TexttimeFN.text);
+                                                  });
+                                                }
+                                              },
+                                              icon: const Icon(
+                                                  FontAwesomeIcons.calendar),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 20, top: 8),
+                                  child: Text('วันจัดการแข่งขัน*'),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: Center(
+                                    child: SizedBox(
+                                      width: 320,
+                                      height: 40,
+                                      child: TextFormField(
+                                        controller: eventDatetime,
+                                        readOnly: true,
+                                        style: Get.textTheme.bodyLarge,
+                                        decoration: InputDecoration(
+                                          hintText: 'วันจัดการแข่งขัน...',
+                                          suffixIcon: IconButton(
+                                            onPressed: () async {
+                                              DateTime? dt = await selectDate(
+                                                  eventDate, 'eventdate');
+
+                                              if (dt != null) {
+                                                setState(() {
+                                                  eventDate = dt;
+
+                                                  var formatter =
+                                                      DateFormat.yMMMd();
+                                                  var dateInBuddhistCalendarFormat =
+                                                      formatter
+                                                          .formatInBuddhistCalendarThai(
+                                                              eventDate);
+                                                  eventDatetime.text =
+                                                      dateInBuddhistCalendarFormat;
+
+                                                  TexttimeDate.text =
+                                                      '${eventDate.toIso8601String()}Z';
+                                                  // context.read<AppData>().dates = dates ;
+                                                  log('Fnnn ' +
+                                                      TexttimeDate.text);
+                                                });
+                                              }
+                                            },
+                                            icon: const Icon(
+                                                FontAwesomeIcons.calendar),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                  Text('ทีม')
-                                ],
-                              ),
-                            ),
-                           Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                          child: SizedBox(
-                            width: 240,
-                            child: TextFormField(
-                              controller: singUpST,
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                labelText: 'วันที่เปิดรับสมัคร',
-                                hintText: '00/00/0000',
-                                suffixIcon: IconButton(
-                                  onPressed: () async {
-                                    DateTime? dt =
-                                        await selectDate(startDate, 'start');
-
-                                    if (dt != null) {
-                                      setState(() {
-                                        startDate = dt;
-
-                                        var formatter = DateFormat.yMMMd();
-                                        var dateInBuddhistCalendarFormat =
-                                            formatter
-                                                .formatInBuddhistCalendarThai(
-                                                    startDate);
-                                        singUpST.text =
-                                            dateInBuddhistCalendarFormat;
-
-                                        TexttimeST.text =
-                                            '${startDate.toIso8601String()}Z';
-                                        // context.read<AppData>().dates = dates ;
-                                        log('stttt '+TexttimeST.text);
-                                      });
-                                    }
-                                  },
-                                  icon: const Icon(FontAwesomeIcons.calendar),
                                 ),
-                              ),
+                              ],
                             ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                          child: SizedBox(
-                            width: 240,
-                            child: TextFormField(
-                              controller: singUpFN,
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                labelText: 'วันที่ปิดรับสมัคร',
-                                hintText: '00/00/0000',
-                                suffixIcon: IconButton(
-                                  onPressed: () async {
-                                    DateTime? dt =
-                                        await selectDate(endDate, 'end');
-
-                                    if (dt != null) {
-                                      setState(() {
-                                        endDate = dt;
-
-                                        var formatter = DateFormat.yMMMd();
-                                        var dateInBuddhistCalendarFormat =
-                                            formatter
-                                                .formatInBuddhistCalendarThai(
-                                                    endDate);
-                                        singUpFN.text =
-                                            dateInBuddhistCalendarFormat;
-
-                                        TexttimeFN.text =
-                                            '${endDate.toIso8601String()}Z';
-                                        // context.read<AppData>().dates = dates ;
-                                        log('Fnnn ' + TexttimeFN.text);
-                                      });
-                                    }
-                                  },
-                                  icon: const Icon(FontAwesomeIcons.calendar),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                          child: SizedBox(
-                              width: 240,
-                              child: TextFormField(
-                              controller: eventDatetime,
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                labelText: 'วันจัดการแข่งขัน',
-                                hintText: '00/00/0000',
-                                suffixIcon: IconButton(
-                                  onPressed: () async {
-                                    DateTime? dt =
-                                        await selectDate(eventDate, 'eventdate');
-
-                                    if (dt != null) {
-                                      setState(() {
-                                        eventDate = dt;
-
-                                        var formatter = DateFormat.yMMMd();
-                                        var dateInBuddhistCalendarFormat =
-                                            formatter
-                                                .formatInBuddhistCalendarThai(
-                                                    eventDate);
-                                        eventDatetime.text =
-                                            dateInBuddhistCalendarFormat;
-
-                                        TexttimeDate.text =
-                                            '${eventDate.toIso8601String()}Z';
-                                        // context.read<AppData>().dates = dates ;
-                                        log('Fnnn ' + TexttimeDate.text);
-                                      });
-                                    }
-                                  },
-                                  icon: const Icon(FontAwesomeIcons.calendar),
-                                ),
-                              ),
-                            ),),
-                        ),
-                      ),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: SizedBox(
-                                  width: 240,
-                                  child: TextFieldTime(
-                                      controllers: raceTimeST,
-                                      hintText: '00:00',
-                                      labelText: 'เริ่ม',
-                                      times: TimeST)),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: SizedBox(
-                                  width: 240,
-                                  child: TextFieldTime(
-                                      controllers: raceTimeFN,
-                                      hintText: '00:00',
-                                      labelText: 'สิ้นสุด',
-                                      times: TimeFN)),
-                            ),
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 20, top: 8),
+                                    child: Text('เวลาเริ่ม-สิ้นสุดการแข่งขัน*'),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            bottom: 8, left: 18),
+                                        child: SizedBox(
+                                            width: 158,
+                                            child: SizedBox(
+                                              child: TextFieldTime(
+                                                  controllers: raceTimeST,
+                                                  hintText: '00:00',
+                                                  labelText: 'เริ่ม',
+                                                  times: TimeST),
+                                            )),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            bottom: 8, left: 8),
+                                        child: SizedBox(
+                                            width: 158,
+                                            child: SizedBox(
+                                              child: TextFieldTime(
+                                                  controllers: raceTimeFN,
+                                                  hintText: '00:00',
+                                                  labelText: 'สิ้นสุด',
+                                                  times: TimeFN),
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                                ]),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 10),
                               child: SizedBox(
@@ -499,7 +544,7 @@ class _EditRaceState extends State<EditRace> {
                                       );
                                       var race = await raceservice.updateRaces(
                                           dto, idR);
-                                      
+
                                       //   log('raceee'+race.response.statusCode.toString());
                                       raceResult = race.data;
                                       stopLoading();
@@ -527,9 +572,9 @@ class _EditRaceState extends State<EditRace> {
                     ),
                     Positioned(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 30),
+                        padding: const EdgeInsets.all(50),
                         child: Container(
-                          padding: const EdgeInsets.all(13),
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: Color.fromARGB(255, 222, 72, 249),
                             border: Border.all(color: Colors.white, width: 3),
@@ -564,13 +609,19 @@ class _EditRaceState extends State<EditRace> {
     return Form(
       //key: keys,
       child: Column(
-        //  crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(right: 18),
+            child: Text(labelText + '*'),
+          ),
           TextFormField(
+            style: Get.textTheme.bodyLarge,
             controller: controller,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             decoration: InputDecoration(
-                isDense: true, hintText: hintText, labelText: labelText),
+              hintText: hintText,
+            ),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return error;
@@ -668,16 +719,16 @@ class _EditRaceState extends State<EditRace> {
               )
             ],
           );
-          
   }
-    Future<DateTime?> selectDate(DateTime initDate, String mode) async {
+
+  Future<DateTime?> selectDate(DateTime initDate, String mode) async {
     DateTime firstDate = DateTime.now();
     DateTime lastDate = DateTime.now();
     if (mode == 'start') {
       // initDate = initDate;
       firstDate = firstDate.subtract(const Duration(days: 1));
       lastDate = initDate.add(const Duration(days: 365 * 3));
-      log('stDate '+startDate.toString());
+      log('stDate ' + startDate.toString());
     } else if (mode == 'end') {
       initDate = startDate;
       firstDate = startDate;
@@ -697,7 +748,6 @@ class _EditRaceState extends State<EditRace> {
       imageHeader: AssetImage("assets/image/pink.jpg"),
       theme: ThemeData(
         fontFamily: GoogleFonts.notoSansThai().fontFamily,
-        
       ),
       styleDatePicker: MaterialRoundedDatePickerStyle(
         decorationDateSelected: BoxDecoration(
@@ -719,6 +769,7 @@ class _EditRaceState extends State<EditRace> {
       era: EraMode.BUDDHIST_YEAR,
     );
   }
+
   textFieldteam(final TextEditingController controller, String hintText,
       String labelText, String error) {
     return Form(
@@ -726,7 +777,12 @@ class _EditRaceState extends State<EditRace> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(right: 18),
+            child: Text(labelText + '*'),
+          ),
           TextFormField(
+            style: Get.textTheme.bodyLarge,
             inputFormatters: [
               LengthLimitingTextInputFormatter(2),
               FilteringTextInputFormatter.digitsOnly
@@ -734,8 +790,7 @@ class _EditRaceState extends State<EditRace> {
             keyboardType: TextInputType.number,
             controller: controller,
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            decoration:
-                InputDecoration(hintText: hintText, labelText: labelText),
+            decoration: InputDecoration(hintText: hintText),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return error;
@@ -746,5 +801,5 @@ class _EditRaceState extends State<EditRace> {
         ],
       ),
     );
-}
+  }
 }
