@@ -258,8 +258,8 @@ class _Profile_editState extends State<Profile_edit> {
     final textTheme = theme.textTheme;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: Text(
           "แก้ไขโปรไฟล์",
           style: textTheme.displayMedium?.copyWith(
@@ -268,37 +268,53 @@ class _Profile_editState extends State<Profile_edit> {
             fontSize: 20,
           ),
         ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
         centerTitle: false,
       ),
-      body: FutureBuilder(
-          future: loadDataMethod,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return ListView(
-                children: [
-                  Column(
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          image: const DecorationImage(
+            image: AssetImage("assets/image/BGall.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: FutureBuilder(
+            future: loadDataMethod,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: ListView(
                     children: [
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                                bottom:
-                                    MediaQuery.of(context).viewInsets.bottom,
-                                left: 20,
-                                right: 20),
-                            child: _editFrom(context),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom,
+                                    left: 20,
+                                    right: 20),
+                                child: _editFrom(context),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ],
                   ),
-                ],
-              );
-            } else {
-              return Container();
-            }
-          }),
+                );
+              } else {
+                return Container();
+              }
+            }),
+      ),
     );
   }
 
@@ -374,46 +390,85 @@ class _Profile_editState extends State<Profile_edit> {
                         radius: 50,
                         backgroundImage: FileImage(File(_image!.path)),
                       )),
-        const Gap(20),
-        TextFormField(
-          controller: userName,
-          decoration: const InputDecoration(label: Text("ชื่อในระบบ")),
-        ),
-        const Gap(20),
-        // Align(
-        //   alignment: Alignment.centerLeft,
-        //   child: Text(userMail.text)),
-        // FocusScope(
-        //     node: new FocusScopeNode(),
-        //     child: new TextFormField(
-        //       controller: _controller,
-        //       style: theme.textTheme.subhead.copyWith(
-        //         color: theme.disabledColor,
-        //       ),
-        //       decoration: new InputDecoration(
-        //         hintText:'You cannot focus me',
-        //       ),
-        //     )),
-        TextFormField(
-          enabled: false,
-          controller: userMail,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.black,
+        const Gap(10),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('ชื่อในระบบ*',
+                style: Get.textTheme.bodyLarge!
+                    .copyWith(color: Get.theme.colorScheme.onBackground)),
+            SizedBox(
+              width: Get.width / 1.1,
+              child: TextFormField(
+                style: Get.textTheme.bodyLarge,
+                controller: userName,
+                decoration: const InputDecoration(
+                  hintText: 'ชื่อในระบบ...',
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
               ),
-          decoration: const InputDecoration(
-              label: Text(
-            "อีเมล",
-          )),
+            ),
+          ],
         ),
-        const Gap(20),
-        TextFormField(
-          controller: userFullName,
-          decoration: const InputDecoration(label: Text(" ชื่อ-นามสกุล")),
+        const Gap(10),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('อีเมล*',
+                style: Get.textTheme.bodyLarge!
+                    .copyWith(color: Get.theme.colorScheme.onBackground)),
+            TextFormField(
+              enabled: false,
+              controller: userMail,
+              style: Get.textTheme.bodyLarge!,
+              decoration: const InputDecoration(
+                hintText: "อีเมล",
+                filled: true,
+                fillColor: Colors.white,
+              ),
+            ),
+          ],
         ),
-        const Gap(20),
-        TextFormField(
-          controller: userDis,
-          decoration: const InputDecoration(label: Text("คำอธิบายตัวเอง")),
+        const Gap(10),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('ชื่อ-นามสกุล*',
+                style: Get.textTheme.bodyLarge!
+                    .copyWith(color: Get.theme.colorScheme.onBackground)),
+            TextFormField(
+              style: Get.textTheme.bodyLarge!,
+              controller: userFullName,
+              decoration: const InputDecoration(
+                hintText: " ชื่อ-นามสกุล",
+                filled: true,
+                fillColor: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        const Gap(10),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('คำอธิบายตัวเอง',
+                style: Get.textTheme.bodyLarge!
+                    .copyWith(color: Get.theme.colorScheme.onBackground)),
+            TextFormField(
+              controller: userDis,
+              style: Get.textTheme.bodyLarge,
+              decoration: InputDecoration(
+                hintText: 'Ex.สวัสดีB1เรามาเล่นเกมด้วยกันนะ...',
+                contentPadding: EdgeInsets.all(15),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+              keyboardType: TextInputType.multiline,
+              minLines: 3,
+              maxLines: 4,
+            ),
+          ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -438,14 +493,21 @@ class _Profile_editState extends State<Profile_edit> {
           ],
         ),
         SizedBox(
-          width: 150,
-          child: ElevatedButton(
+          width: 300,
+          child: FilledButton(
+              // style: const ButtonStyle(
+              //   backgroundColor:
+              //       MaterialStatePropertyAll<Color>(Colors.amberAccent),
+              // ),
               onPressed: () async {
                 await uploadFile();
 
                 Navigator.of(context).pop();
               },
-              child: Text("แก้ไขโปรไฟล์")),
+              child: Text("แก้ไขโปรไฟล์",
+                  style: Get.textTheme.bodyLarge!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Get.theme.colorScheme.background))),
         ),
       ],
     );

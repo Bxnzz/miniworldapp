@@ -280,10 +280,11 @@ class _TabbarRaceState extends State<TabbarRace>
                         ),
                         
                          image:  DecorationImage(
-                                    image: AssetImage('assets/image/BGhome.jpg'),
+                                    image: AssetImage('assets/image/TOP2.png'),
                                     opacity: 0.8,
                                     fit: BoxFit.cover,
                                   ),
+                                  
                         // gradient: LinearGradient(
                         //     begin: FractionalOffset(0.0, 0.0),
                         //     end: FractionalOffset(1.0, 0.0),

@@ -108,12 +108,8 @@ class _MissioncreateState extends State<Missioncreate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // Overide the default Back button
-        // automaticallyImplyLeading: false,
-        // leadingWidth: 100,
-        // actions: [
-
-        // ],
+        backgroundColor: Color.fromARGB(255, 239, 150, 255),
+        foregroundColor: Colors.white,
         title: const Text('สร้างภารกิจ'),
       ),
       body: raceMap(),
@@ -133,51 +129,53 @@ class _MissioncreateState extends State<Missioncreate> {
               return Container();
             }
             return Scaffold(
+                backgroundColor: Color.fromARGB(255, 239, 150, 255),
                 body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 300,
-                    child: Stack(children: [
-                      GoogleMap(
-                       // myLocationEnabled: false,
-                        myLocationButtonEnabled: false,
-                        mapType: MapType.hybrid,
-                        gestureRecognizers: {
-                          Factory<OneSequenceGestureRecognizer>(
-                              () => EagerGestureRecognizer())
-                        },
-                        initialCameraPosition: CameraPosition(
-                          target: LatLng(
-                              currentLatLng.latitude, currentLatLng.longitude),
-                          zoom: 16,
-                        ),
-                        onMapCreated: (GoogleMapController controller) {
-                          _controller.complete(controller);
-                        },
-                        markers: markerss.map((e) => e).toSet(),
-                        polylines: _polylines,
-                        onCameraMove: (position) {
-                          lats = position.target.latitude.toString();
-                          longs = position.target.longitude.toString();
-                          log('lat' + position.target.latitude.toString());
-                        },
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 300,
+                        child: Stack(children: [
+                          GoogleMap(
+                            // myLocationEnabled: false,
+                            myLocationButtonEnabled: false,
+                            mapType: MapType.hybrid,
+                            gestureRecognizers: {
+                              Factory<OneSequenceGestureRecognizer>(
+                                  () => EagerGestureRecognizer())
+                            },
+                            initialCameraPosition: CameraPosition(
+                              target: LatLng(currentLatLng.latitude,
+                                  currentLatLng.longitude),
+                              zoom: 16,
+                            ),
+                            onMapCreated: (GoogleMapController controller) {
+                              _controller.complete(controller);
+                            },
+                            markers: markerss.map((e) => e).toSet(),
+                            polylines: _polylines,
+                            onCameraMove: (position) {
+                              lats = position.target.latitude.toString();
+                              longs = position.target.longitude.toString();
+                              log('lat' + position.target.latitude.toString());
+                            },
+                          ),
+                          Positioned(
+                              top: (300 / 2) - 32,
+                              left:
+                                  (MediaQuery.of(context).size.width / 2) - 16,
+                              child: Column(
+                                children: [
+                                  Image.asset("assets/image/target.png"),
+                                  // Text('Lat:'+lat+',Long:'+long),
+                                ],
+                              )),
+                        ]),
                       ),
-                      Positioned(
-                          top: (300 / 2) - 32,
-                          left: (MediaQuery.of(context).size.width / 2) - 16,
-                          child: Column(
-                            children: [
-                              Image.asset("assets/image/target.png"),
-                              // Text('Lat:'+lat+',Long:'+long),
-                            ],
-                          )),
-                    ]),
+                      missionInput(),
+                    ],
                   ),
-                  missionInput(),
-                ],
-              ),
-            ));
+                ));
           }),
     );
   }
@@ -189,46 +187,62 @@ class _MissioncreateState extends State<Missioncreate> {
           padding: const EdgeInsets.only(top: 15),
           child: upImg(),
         ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text('ชื่อภารกิจ'),
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: Text(
+                'ชื่อภารกิจ*',
+                style: Get.textTheme.bodyLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Get.theme.colorScheme.onPrimary),
+              ),
             ),
             SizedBox(
-              width: 250,
+              width: 340,
               child: TextFormField(
+                style: Get.textTheme.bodyLarge!
+                    .copyWith(color: Get.theme.colorScheme.onPrimary),
                 controller: nameMission,
                 decoration: const InputDecoration(
-                  hintText: 'ชื่อภารกิจ',
-                ),
+                    border: InputBorder.none,
+                    focusColor: Colors.white,
+                    filled: true,
+                    fillColor: Colors.purpleAccent,
+                    hintText: 'ชื่อภารกิจ...',
+                    hintStyle: TextStyle(color: Colors.white)),
               ),
             ),
           ],
         ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text('คำอธิบาย'),
-            ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                width: 250,
-                child: TextFormField(
-                  controller: discripText,
-                  decoration: InputDecoration(
-                      contentPadding: EdgeInsets.all(15),
-                      hintText: 'คำอธิบาย...'),
-                  keyboardType: TextInputType.multiline,
-                  minLines: 3,
-                  maxLines: 4,
-                ),
+              padding: EdgeInsets.only(top: 10),
+              child: Text('คำอธิบาย*',
+                  style: Get.textTheme.bodyLarge!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Get.theme.colorScheme.onPrimary)),
+            ),
+            SizedBox(
+              width: 340,
+              child: TextFormField(
+                controller: discripText,
+                style: Get.textTheme.bodyLarge!
+                    .copyWith(color: Get.theme.colorScheme.onPrimary),
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(15),
+                    filled: true,
+                    fillColor: Colors.purpleAccent,
+                    hintText: 'คำอธิบาย...',
+                    hintStyle: TextStyle(color: Colors.white)),
+                keyboardType: TextInputType.multiline,
+                minLines: 3,
+                maxLines: 4,
               ),
             ),
           ],
@@ -236,29 +250,41 @@ class _MissioncreateState extends State<Missioncreate> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text('รัศมีแจ้งเตือนภารกิจ'),
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: Text(
+                'รัศมีแจ้งเตือนภารกิจ*',
+                style: Get.textTheme.bodyLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Get.theme.colorScheme.onPrimary),
+              ),
             ),
-            dropdownRadius()
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: dropdownRadius(),
+            )
           ],
         ),
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('กรุณาเลือกประเภทภารกิจ'),
+        Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Text('กรุณาเลือกประเภทภารกิจ*',
+              style: Get.textTheme.bodyLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Get.theme.colorScheme.onPrimary)),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Checkbox(
+              fillColor: MaterialStateProperty.resolveWith(getColor),
+              checkColor: Colors.white, // color of tick Mark
               value: _checkbox,
               onChanged: _checkbox2 == true
                   ? (value) {
-                        setState(() {
-                          _checkbox == false;
-                         
-                        });
-                      }
+                      setState(() {
+                        _checkbox == false;
+                      });
+                    }
                   : (value) {
                       setState(() {
                         _checkbox = !_checkbox;
@@ -272,16 +298,20 @@ class _MissioncreateState extends State<Missioncreate> {
                       });
                     },
             ),
-            const Text('ข้อความ'),
+            Text('ข้อความ',
+                style: Get.textTheme.bodyLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Get.theme.colorScheme.onPrimary)),
             Checkbox(
+              fillColor: MaterialStateProperty.resolveWith(getColor),
+              checkColor: Colors.white, // color of tick Mark
               value: _checkbox1,
               onChanged: _checkbox2 == true
                   ? (value) {
-                    setState(() {
-                      _checkbox1 == false;
-                      
-                    });
-                  }
+                      setState(() {
+                        _checkbox1 == false;
+                      });
+                    }
                   : (value) {
                       setState(() {
                         _checkbox1 = !_checkbox1;
@@ -296,14 +326,19 @@ class _MissioncreateState extends State<Missioncreate> {
                       });
                     },
             ),
-            const Text('สื่อ'),
+            Text('สื่อ',
+                style: Get.textTheme.bodyLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Get.theme.colorScheme.onPrimary)),
             Checkbox(
                 value: _checkbox2,
+                fillColor: MaterialStateProperty.resolveWith(getColor),
+                checkColor: Colors.white, // color of tick Mark
+                //activeColor: Colors.amber,
                 onChanged: _checkbox == true || _checkbox1 == true
-                    ?(value) {
+                    ? (value) {
                         setState(() {
                           _checkbox2 == false;
-                         
                         });
                       }
                     : (value) {
@@ -319,104 +354,121 @@ class _MissioncreateState extends State<Missioncreate> {
                           log('cc3: ' + cb3.toString());
                         });
                       }),
-            const Text('ไม่มีการส่ง'),
+            Text('ไม่มีการส่ง',
+                style: Get.textTheme.bodyLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Get.theme.colorScheme.onPrimary)),
           ],
         ),
         Center(
-          child: ElevatedButton(
-              child: const Text('สร้างภารกิจ'),
-              onPressed: () async {
-                sqnum = 0;
-                fristMis == 0;
-                setState(() {
-                  if (sqnum == 2) {
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: SizedBox(
+              width: 300,
+              child: ElevatedButton(
+                  style: const ButtonStyle(
+                    backgroundColor:
+                        MaterialStatePropertyAll<Color>(Colors.amberAccent),
+                  ),
+                  child: Text('สร้างภารกิจ',
+                      style: Get.textTheme.bodyLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Get.theme.colorScheme.onPrimary)),
+                  onPressed: () async {
                     sqnum = 0;
-                  }
-                });
-                if (_image == null) {
-                  // log("team fail");
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('กรุณาใส่รูปภาพ...')),
-                  );
-                  return;
-                }
-                final path = 'files/${_image?.path.split('/').last}';
-                final file = File(_image!.path);
-                final ref = FirebaseStorage.instance.ref().child(path);
-                log(ref.toString());
+                    fristMis == 0;
+                    setState(() {
+                      if (sqnum == 2) {
+                        sqnum = 0;
+                      }
+                    });
+                    if (_image == null) {
+                      // log("team fail");
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('กรุณาใส่รูปภาพ...')),
+                      );
+                      return;
+                    }
+                    final path = 'files/${_image?.path.split('/').last}';
+                    final file = File(_image!.path);
+                    final ref = FirebaseStorage.instance.ref().child(path);
+                    log(ref.toString());
 
-                setState(() {
-                  uploadTask = ref.putFile(file);
-                });
-                final snapshot = await uploadTask!.whenComplete(() {});
+                    setState(() {
+                      uploadTask = ref.putFile(file);
+                    });
+                    final snapshot = await uploadTask!.whenComplete(() {});
 
-                final urlDownload = await snapshot.ref.getDownloadURL();
-                log('Download Link:$urlDownload');
+                    final urlDownload = await snapshot.ref.getDownloadURL();
+                    log('Download Link:$urlDownload');
 
-                img = urlDownload;
+                    img = urlDownload;
 
-                fristMis = lastNum;
-                log('numold ' + fristMis.toString());
+                    fristMis = lastNum;
+                    log('numold ' + fristMis.toString());
 
-                if (fristMis == 0) {
-                  fristMis = fristMis + 1;
-                } else if (fristMis >= 1) {
-                  fristMis++;
-                }
-                log('num ' + fristMis.toString());
+                    if (fristMis == 0) {
+                      fristMis = fristMis + 1;
+                    } else if (fristMis >= 1) {
+                      fristMis++;
+                    }
+                    log('num ' + fristMis.toString());
 
-                if (lats == '' && longs == '') {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('กรุณาหาจุดภารกิจ...')),
-                  );
-                }
+                    if (lats == '' && longs == '') {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('กรุณาหาจุดภารกิจ...')),
+                      );
+                    }
 
-                cb = cb1 + cb2 + cb3;
-                log('ch ' + cb);
-                mType = int.parse(cb);
-                log('ty: ' + mType.toString());
+                    cb = cb1 + cb2 + cb3;
+                    log('ch ' + cb);
+                    mType = int.parse(cb);
+                    log('ty: ' + mType.toString());
 
-                MissionDto missionDto = MissionDto(
-                    misName: nameMission.text,
-                    misDiscrip: discripText.text,
-                    misDistance: int.parse(selectedValue!),
-                    misType: mType,
-                    misSeq: sqMis,
-                    misMediaUrl: urlDownload,
-                    misLat: double.parse(lats),
-                    misLng: double.parse(longs),
-                    raceId: idrace);
+                    MissionDto missionDto = MissionDto(
+                        misName: nameMission.text,
+                        misDiscrip: discripText.text,
+                        misDistance: int.parse(selectedValue!),
+                        misType: mType,
+                        misSeq: sqMis,
+                        misMediaUrl: urlDownload,
+                        misLat: double.parse(lats),
+                        misLng: double.parse(longs),
+                        raceId: idrace);
 
-                log(lats);
-                //print(double.parse('lat'+lats));
-                startLoading(context);
-                var mission = await missionService.insertMissions(missionDto);
-                stopLoading();
-                if (mission.response.statusCode == 200) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('สร้างภารกิจสำเร็จ')),
-                  );
-                  Navigator.of(context).pop();
-                  Get.off(() => DetailMission());
+                    log(lats);
+                    //print(double.parse('lat'+lats));
+                    startLoading(context);
+                    var mission =
+                        await missionService.insertMissions(missionDto);
+                    stopLoading();
+                    if (mission.response.statusCode == 200) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('สร้างภารกิจสำเร็จ')),
+                      );
+                      Navigator.of(context).pop();
+                      Get.off(() => DetailMission());
 
-                  log("race Successful");
+                      log("race Successful");
 
-                  // if (fristMis == 0) {
-                  //   Get.to(DetailMission());
-                  // } else {
-                  //   Navigator.of(context).pop();
-                  // }
-                  //  if()
-                  return;
-                } else {
-                  // log("team fail");
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('mission fail try agin!')),
-                  );
+                      // if (fristMis == 0) {
+                      //   Get.to(DetailMission());
+                      // } else {
+                      //   Navigator.of(context).pop();
+                      // }
+                      //  if()
+                      return;
+                    } else {
+                      // log("team fail");
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('mission fail try agin!')),
+                      );
 
-                  return;
-                }
-              }),
+                      return;
+                    }
+                  }),
+            ),
+          ),
         ),
       ],
     );
@@ -498,24 +550,25 @@ class _MissioncreateState extends State<Missioncreate> {
     return SingleChildScrollView(
       child: DropdownButtonHideUnderline(
         child: DropdownButton2(
-          hint: Center(
+          hint: Padding(
+            padding: const EdgeInsets.only(left: 50),
             child: Text(
               'รัศมี',
-              style: TextStyle(
-                //  fontSize: 12,
-                color: Theme.of(context).hintColor,
-              ),
+              style: Get.textTheme.bodyLarge!
+                  .copyWith(color: Get.theme.colorScheme.onPrimary),
+                  textAlign: TextAlign.center,
             ),
           ),
+          alignment: Alignment.center, 
           items: items
               .map((item) => DropdownMenuItem<String>(
                     value: item,
                     child: Center(
                       child: Text(
                         item,
-                        style: const TextStyle(
-                            //  fontSize: 14,
-                            ),
+                        style: Get.textTheme.bodyLarge!.copyWith(
+                            color: Get.theme.colorScheme.onPrimary),
+                            textAlign: TextAlign.center,
                       ),
                     ),
                   ))
@@ -530,13 +583,18 @@ class _MissioncreateState extends State<Missioncreate> {
           },
           buttonStyleData: ButtonStyleData(
               height: 30,
-              width: 100,
+              width: 140,
+             
               // padding: const EdgeInsets.only(left: 14, right: 14),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.amber,
                   border: Border.all(color: Colors.purpleAccent))),
           dropdownStyleData: DropdownStyleData(
-            decoration: BoxDecoration(
+            offset: Offset(0, 0),
+            decoration: BoxDecoration(  
+
+              color: Colors.amber,
               borderRadius: BorderRadius.circular(5),
             ),
           ),
@@ -546,6 +604,18 @@ class _MissioncreateState extends State<Missioncreate> {
         ),
       ),
     );
+  }
+
+  Color getColor(Set<MaterialState> states) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.selected,
+      MaterialState.focused,
+      MaterialState.pressed,
+    };
+    if (states.any(interactiveStates.contains)) {
+      return Colors.amber;
+    }
+    return Colors.yellow;
   }
 
   Future<void> loadData() async {

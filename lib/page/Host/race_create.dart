@@ -117,22 +117,21 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-              Colors.purpleAccent,
-              Colors.blue,
-            ])),
+        decoration: BoxDecoration(
+          image: const DecorationImage(
+            image: AssetImage("assets/image/BGall.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Center(
             child: Stack(
                 alignment: AlignmentDirectional.topCenter,
-                clipBehavior: Clip.none,
+                //clipBehavior: Clip.none,
                 children: [
               Card(
+                elevation: 0,
                 margin: EdgeInsets.fromLTRB(25, 75, 25, 5),
-                //   color: Theme.of(context).primaryColor,
+                color: Colors.white,
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
@@ -184,6 +183,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                     readOnly: true,
                                     style: Get.textTheme.bodyLarge,
                                     decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Colors.white,
                                       hintText: 'วันที่เปิด',
                                       suffixIcon: IconButton(
                                         onPressed: () async {
@@ -228,8 +229,10 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                     readOnly: true,
                                     style: Get.textTheme.bodyLarge,
                                     decoration: InputDecoration(
-                                      //  labelText: 'วันที่ปิดรับสมัคร',
                                       hintText: 'วันที่เปิด',
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      //  labelText: 'วันที่ปิดรับสมัคร',
                                       suffixIcon: IconButton(
                                         onPressed: () async {
                                           DateTime? dt =
@@ -284,6 +287,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                   readOnly: true,
                                   style: Get.textTheme.bodyLarge,
                                   decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.white,
                                     hintText: 'วันจัดการแข่งขัน...',
                                     suffixIcon: IconButton(
                                       onPressed: () async {
@@ -322,14 +327,15 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                           const Padding(
+                          const Padding(
                             padding: EdgeInsets.only(left: 20, top: 8),
                             child: Text('เวลาเริ่ม-สิ้นสุดการแข่งขัน*'),
                           ),
                           Row(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 8, left: 18),
+                                padding:
+                                    const EdgeInsets.only(bottom: 8, left: 18),
                                 child: SizedBox(
                                     width: 158,
                                     child: SizedBox(
@@ -341,7 +347,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                     )),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 8, left: 8),
+                                padding:
+                                    const EdgeInsets.only(bottom: 8, left: 8),
                                 child: SizedBox(
                                     width: 158,
                                     child: SizedBox(
@@ -357,7 +364,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                         ],
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.only(bottom: 8),
                         child: FilledButton(
                             onPressed: () async {
                               startLoading(context);
@@ -477,43 +484,6 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                 }
                               });
 
-                              // Get.defaultDialog(
-                              //     title: 'สร้างการแข่งขันสำเร็จ!!',
-                              //     content: Text('กรุณาสร้างภารกิจต่อไป'),
-                              //     actions: [
-                              //       TextButton(
-                              //           onPressed: () async {
-                              //             startLoading(context);
-                              //             var race = await raceservice
-                              //                 .insertRaces(dto);
-                              //             context.read<AppData>().idrace =
-                              //                 race.data.raceId;
-                              //             Get.to(Missioncreate());
-                              //             stopLoading();
-                              //           },
-                              //           child: Text('สร้างภารกิจ')),
-                              //       TextButton(
-                              //           onPressed: () async {
-                              //             Navigator.of(context).pop();
-                              //           },
-                              //           child: Text('ยกเลิก')),
-                              //     ]);
-
-                              //race.data.raceName.toString();
-                              // if (race.) {
-                              //   log("race Successful");
-
-                              //   //
-                              //   return;
-                              // } else {
-                              //   // log("team fail");
-                              //   ScaffoldMessenger.of(context).showSnackBar(
-                              //     const SnackBar(
-                              //         content: Text('race fail try agin!')),
-                              //   );
-
-                              //   return;
-                              // }
                               stopLoading();
                             },
                             child: const Text("สร้างการแข่งขัน")),
@@ -571,6 +541,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
             controller: controller,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
               hintText: hintText,
             ),
             validator: (value) {
@@ -655,7 +627,11 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
             keyboardType: TextInputType.number,
             controller: controller,
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            decoration: InputDecoration(hintText: hintText),
+            decoration: InputDecoration(
+              hintText: hintText,
+              filled: true,
+              fillColor: Colors.white,
+            ),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return error;

@@ -133,7 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registers'),
+        title: const Text('สมัครสมาชิก'),
       ),
       body: SingleChildScrollView(
           child: Form(

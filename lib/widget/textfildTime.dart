@@ -37,6 +37,8 @@ class _TextFieldTimeState extends State<TextFieldTime> {
             readOnly: true,
             style: Get.textTheme.bodyLarge,
             decoration: InputDecoration(
+               filled: true,
+              fillColor: Colors.white,
               // enabled: false,
               // labelText: widget.,
               hintText: widget.labelText,

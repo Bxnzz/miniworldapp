@@ -187,14 +187,12 @@ class _EditRaceState extends State<EditRace> {
             return Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
-              decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                    Colors.purpleAccent,
-                    Colors.blue,
-                  ])),
+              decoration: BoxDecoration(
+                image: const DecorationImage(
+                  image: AssetImage("assets/image/NewBG.jpg"),
+                  fit: BoxFit.cover,
+                ),
+              ),
               child: Center(
                   child: Stack(
                       alignment: AlignmentDirectional.topCenter,
@@ -202,6 +200,7 @@ class _EditRaceState extends State<EditRace> {
                       children: [
                     Card(
                       margin: EdgeInsets.fromLTRB(25, 75, 25, 5),
+                      elevation: 0,
                       color: Colors.white,
                       child: SingleChildScrollView(
                         child: Column(
@@ -260,6 +259,8 @@ class _EditRaceState extends State<EditRace> {
                                           readOnly: true,
                                           style: Get.textTheme.bodyLarge,
                                           decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: Colors.white,
                                             hintText: 'วันที่เปิด',
                                             suffixIcon: IconButton(
                                               onPressed: () async {
@@ -305,6 +306,8 @@ class _EditRaceState extends State<EditRace> {
                                           readOnly: true,
                                           style: Get.textTheme.bodyLarge,
                                           decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: Colors.white,
                                             //  labelText: 'วันที่ปิดรับสมัคร',
                                             hintText: 'วันที่เปิด',
                                             suffixIcon: IconButton(
@@ -362,6 +365,8 @@ class _EditRaceState extends State<EditRace> {
                                         readOnly: true,
                                         style: Get.textTheme.bodyLarge,
                                         decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
                                           hintText: 'วันจัดการแข่งขัน...',
                                           suffixIcon: IconButton(
                                             onPressed: () async {
@@ -620,6 +625,8 @@ class _EditRaceState extends State<EditRace> {
             controller: controller,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
               hintText: hintText,
             ),
             validator: (value) {
@@ -790,7 +797,11 @@ class _EditRaceState extends State<EditRace> {
             keyboardType: TextInputType.number,
             controller: controller,
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            decoration: InputDecoration(hintText: hintText),
+            decoration: InputDecoration(
+              hintText: hintText,
+              filled: true,
+              fillColor: Colors.white,
+            ),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return error;
