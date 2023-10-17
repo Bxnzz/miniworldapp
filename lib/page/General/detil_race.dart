@@ -113,7 +113,7 @@ class _DetailRaceState extends State<DetailRace> {
                     right: 0,
                     child: SizedBox(
                       width: double.maxFinite,
-                      height: 250,
+                      height: 300,
                       child: Image.network(
                         UrlImg,
                         fit: BoxFit.cover,

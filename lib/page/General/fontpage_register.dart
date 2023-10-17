@@ -146,242 +146,325 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
   Widget build(BuildContext context) {
     _write(svg);
     return Scaffold(
-      appBar: AppBar(title: Text('Register')),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: Text('สมัครสมาชิก'),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+      ),
       body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 10),
-            child: Column(
-              children: [
-                _image != null
-                    ? GestureDetector(
-                        onTap: () {
-                          showModalBottomSheet_photo_or_camera(context);
-                        },
-                        child: CircleAvatar(
-                            key: avata,
-                            radius: MediaQuery.of(context).size.width * 0.15,
-                            backgroundImage: FileImage(_image!)),
-                      )
-                    : Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Positioned(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            image: const DecorationImage(
+              image: AssetImage("assets/image/NewBG.jpg"),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Form(
+            key: _formKey,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 80),
+                child: Column(
+                  children: [
+                    _image != null
+                        ? GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet_photo_or_camera(context);
+                            },
                             child: CircleAvatar(
-                              radius: MediaQuery.of(context).size.width * 0.15,
-                              child: GestureDetector(
-                                child: SvgPicture.string('''$svg'''),
+                                key: avata,
+                                radius:
+                                    MediaQuery.of(context).size.width * 0.15,
+                                backgroundImage: FileImage(_image!)),
+                          )
+                        : Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Positioned(
+                                child: CircleAvatar(
+                                  radius:
+                                      MediaQuery.of(context).size.width * 0.15,
+                                  child: GestureDetector(
+                                    child: SvgPicture.string('''$svg'''),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                child: CircleAvatar(
+                                  radius:
+                                      MediaQuery.of(context).size.width * 0.15,
+                                  backgroundColor: Get
+                                      .theme.colorScheme.onBackground
+                                      .withOpacity(0.5),
+                                  child: IconButton(
+                                      splashRadius: 100,
+                                      onPressed: () {
+                                        showModalBottomSheet_photo_or_camera(
+                                            context);
+                                        log('messadfffge');
+                                      },
+                                      icon: Icon(
+                                        CupertinoIcons.plus_circle_fill,
+                                        color: Colors.white,
+                                        size: 40.0,
+                                      )),
+                                ),
+                              )
+                            ],
+                          ),
+                    Gap(5),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('ชื่อในระบบ*',
+                            style: Get.textTheme.bodyLarge!.copyWith(
+                                color: Get.theme.colorScheme.onBackground)),
+                        SizedBox(
+                          width: Get.width / 1.1,
+                          child: textField(
+                              userName,
+                              'ชื่อในระบบ',
+                              'ชื่อในระบบ...',
+                              'ใส่ชื่อในระบบ',
+                              Icon(Icons.account_box_sharp)),
+                        ),
+                      ],
+                    ),
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('ชื่อ-นามสกุล*',
+                            style: Get.textTheme.bodyLarge!.copyWith(
+                                color: Get.theme.colorScheme.onBackground)),
+                        SizedBox(
+                          width: Get.width / 1.1,
+                          child: textField(
+                              fullname,
+                              'ชื่อ-นามสกุล',
+                              'ชื่อ-นามสกุล',
+                              'ใส่ชื่อ-นามสกุล.',
+                              Icon(Icons.person_outline)),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('อีเมล*',
+                            style: Get.textTheme.bodyLarge!.copyWith(
+                                color: Get.theme.colorScheme.onBackground)),
+                        SizedBox(
+                          width: Get.width / 1.1,
+                          child: TextFormField(
+                            style: Get.textTheme.bodyLarge,
+                            controller: email,
+                            decoration: const InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: 'อีเมล...',
+                              prefixIcon: Icon(Icons.email_outlined),
+                            ),
+                            keyboardType: TextInputType.emailAddress,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'กรุณาใส่อีเมล.';
+                              }
+                              if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+                                return "ใส่อีเมลให้ถูกต้อง";
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    Gap(8),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('รหัสผ่าน*',
+                            style: Get.textTheme.bodyLarge!.copyWith(
+                                color: Get.theme.colorScheme.onBackground)),
+                        SizedBox(
+                          width: Get.width / 1.1,
+                          child: TextFormField(
+                            style: Get.textTheme.bodyLarge,
+                            obscureText: !_isHidden,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            controller: password,
+                            decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _isHidden =
+                                        !_isHidden; // เมื่อกดก็เปลี่ยนค่าตรงกันข้าม
+                                  });
+                                },
+                                icon: Icon(
+                                  _isHidden // เงื่อนไขการสลับ icon
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  size: 16,
+                                ),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: '********',
+                              prefixIcon: Icon(Icons.password),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'ใส่รหัสผ่าน.';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    Gap(8),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('ยืนยันรหัสผ่าน*',
+                            style: Get.textTheme.bodyLarge!.copyWith(
+                                color: Get.theme.colorScheme.onBackground)),
+                        SizedBox(
+                          width: Get.width / 1.1,
+                          child: TextFormField(
+                            obscureText: !_isHiddenConf,
+                            style: Get.textTheme.bodyLarge,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            controller: confirmpassword,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: '********',
+                              prefixIcon: Icon(Icons.password),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _isHiddenConf =
+                                        !_isHiddenConf; // เมื่อกดก็เปลี่ยนค่าตรงกันข้าม
+                                  });
+                                },
+                                icon: Icon(
+                                  _isHiddenConf // เงื่อนไขการสลับ icon
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  size: 16,
+                                ),
                               ),
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'ยืนยันรหัสผ่าน.';
+                              }
+                              if (value != password.text) {
+                                return 'รหัสยืนยันไม่ถูกต้อง.';
+                              }
+                              return null;
+                            },
                           ),
-                          Positioned(
-                            child: CircleAvatar(
-                              radius: MediaQuery.of(context).size.width * 0.15,
-                              backgroundColor: Get
-                                  .theme.colorScheme.onBackground
-                                  .withOpacity(0.5),
-                              child: IconButton(
-                                  splashRadius: 100,
-                                  onPressed: () {
-                                    showModalBottomSheet_photo_or_camera(
-                                        context);
-                                    log('messadfffge');
-                                  },
-                                  icon: Icon(
-                                    CupertinoIcons.plus_circle_fill,
-                                    color: Colors.white,
-                                    size: 40.0,
-                                  )),
+                        ),
+                      ],
+                    ),
+                    Gap(8),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('คำอธิบายตัวเอง',
+                            style: Get.textTheme.bodyLarge!.copyWith(
+                                color: Get.theme.colorScheme.onBackground)),
+                        SizedBox(
+                          width: Get.width / 1.1,
+                          child: TextFormField(
+                            controller: description,
+                            style: Get.textTheme.bodyLarge,
+                            decoration: InputDecoration(
+                              hintText: 'Ex.สวัสดีB1เรามาเล่นเกมด้วยกันนะ...',
+                              contentPadding: EdgeInsets.all(15),
+                              filled: true,
+                              fillColor: Colors.white,
                             ),
-                          )
-                        ],
-                      ),
-                Gap(20),
-                SizedBox(
-                  width: Get.width / 1.1,
-                  child: textField(userName, '', 'ชื่อในระบบ', 'ใส่ชื่อในระบบ',
-                      Icon(Icons.account_box_sharp)),
-                ),
-                SizedBox(
-                  width: Get.width / 1.1,
-                  child: TextFormField(
-                    controller: email,
-                    decoration: const InputDecoration(
-                      labelText: 'อีเมล',
-                      icon: Icon(Icons.email_outlined),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'กรุณาใส่อีเมล.';
-                      }
-                      if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
-                        return "ใส่อีเมลให้ถูกต้อง";
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                Gap(15),
-                SizedBox(
-                  width: Get.width / 1.1,
-                  child: TextFormField(
-                    obscureText: !_isHidden,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    controller: password,
-                    decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _isHidden =
-                                !_isHidden; // เมื่อกดก็เปลี่ยนค่าตรงกันข้าม
-                          });
-                        },
-                        icon: Icon(
-                          _isHidden // เงื่อนไขการสลับ icon
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          size: 16,
+                            keyboardType: TextInputType.multiline,
+                            minLines: 3,
+                            maxLines: 4,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'แนะนำตัวคุณหน่อย.';
+                              }
+
+                              return null;
+                            },
+                          ),
                         ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: SizedBox(
+                        width: 250,
+                        child: ElevatedButton(
+                            style: const ButtonStyle(
+                              backgroundColor: MaterialStatePropertyAll<Color>(
+                                  Colors.amberAccent),
+                            ),
+                            onPressed: () async {
+                              if (await _formKey.currentState!.validate()) {
+                                if (_image != null) {
+                                  uploadFile();
+                                  log("password =  $digest");
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content:
+                                            Text('กรุณาเลือกรูปภาพ!!! !!')),
+                                  );
+                                }
+
+                                // RegisterDto dto = RegisterDto(
+                                //     userName: userName.text,
+                                //     userMail: email.text,
+                                //     userPassword: password.text,
+                                //     userFullname: fullname.text,
+                                //     userDiscription: description.text,
+                                //     userFacebookId: idFacebook,
+                                //     userImage: img);
+                                // log(jsonEncode(dto));
+
+                                // var register = await registerService.registers(dto);
+                                // log(jsonEncode(register.data));
+
+                                // if (register.data.massage == "Register failed") {
+                                //   log("Register failed");
+                                // }
+                              }
+                            },
+                            child: Text('ลงทะเบียน',
+                                style: Get.textTheme.bodyLarge!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Get.theme.colorScheme.background))),
                       ),
-                      labelText: 'รหัสผ่าน',
-                      icon: Icon(Icons.password),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'ใส่รหัสผ่าน.';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                Gap(15),
-                SizedBox(
-                  width: Get.width / 1.1,
-                  child: TextFormField(
-                    obscureText: !_isHiddenConf,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    controller: confirmpassword,
-                    decoration: InputDecoration(
-                      labelText: 'ยืนยันรหัสผ่าน',
-                      icon: Icon(Icons.password),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _isHiddenConf =
-                                !_isHiddenConf; // เมื่อกดก็เปลี่ยนค่าตรงกันข้าม
-                          });
-                        },
-                        icon: Icon(
-                          _isHiddenConf // เงื่อนไขการสลับ icon
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          size: 16,
-                        ),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'ยืนยันรหัสผ่าน.';
-                      }
-                      if (value != password.text) {
-                        return 'รหัสยืนยันไม่ถูกต้อง.';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                Gap(15),
-                SizedBox(
-                  width: Get.width / 1.1,
-                  child: textField(fullname, '', 'ชื่อ-นามสกุล',
-                      'ใส่ชื่อ-นามสกุล.', Icon(Icons.person_outline)),
-                ),
-                SizedBox(
-                  width: Get.width / 1.1,
-                  child: TextFormField(
-                    controller: description,
-                    decoration: InputDecoration(
-                      labelText: 'คำอธิบาย',
-                      icon: Icon(Icons.description_outlined),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'แนะนำตัวคุณหน่อย.';
-                      }
-
-                      return null;
-                    },
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                        onPressed: () async {
-                          if (await _formKey.currentState!.validate()) {
-                            if (_image != null) {
-                              uploadFile();
-                              log("password =  $digest");
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text('กรุณาเลือกรูปภาพ!!! !!')),
-                              );
-                            }
-
-                            // RegisterDto dto = RegisterDto(
-                            //     userName: userName.text,
-                            //     userMail: email.text,
-                            //     userPassword: password.text,
-                            //     userFullname: fullname.text,
-                            //     userDiscription: description.text,
-                            //     userFacebookId: idFacebook,
-                            //     userImage: img);
-                            // log(jsonEncode(dto));
-
-                            // var register = await registerService.registers(dto);
-                            // log(jsonEncode(register.data));
-
-                            // if (register.data.massage == "Register failed") {
-                            //   log("Register failed");
-                            // }
-                          }
-                        },
-                        child: Text('ลงทะเบียน')),
-                    Gap(50),
-                    ElevatedButton(
-                        onPressed: () async {
-                          Navigator.pop(context);
-                        },
-                        child: Text('ยกเลิก')),
-                    // ElevatedButton(
-                    //     onPressed: () async {
-                    //       svg = RandomAvatarString(
-                    //         DateTime.now().toIso8601String(),
-                    //         trBackground: false,
-                    //       );
-                    //       await _write(svg);
-                    //       log(svgFile!.path);
-                    //       setState(() {
-
-                    //       });
-                    //     },
-                    //     child: Text("Test"))
+                    // CircleAvatar(
+                    //     radius: MediaQuery.of(context).size.width * 0.15,
+                    //     child: svgFile != null
+                    //         ? GestureDetector(
+                    //             child: SvgPicture.file(
+                    //             File(svgFile!.path),
+                    //           ))
+                    //         : widget),
                   ],
                 ),
-                // CircleAvatar(
-                //     radius: MediaQuery.of(context).size.width * 0.15,
-                //     child: svgFile != null
-                //         ? GestureDetector(
-                //             child: SvgPicture.file(
-                //             File(svgFile!.path),
-                //           ))
-                //         : widget),
-              ],
+              ),
             ),
           ),
         ),
@@ -574,13 +657,17 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
   textField(final TextEditingController controller, String hintText,
       String labelText, String error, Icon icon) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Column(
         children: [
           TextFormField(
+            style: Get.textTheme.bodyLarge,
             controller: controller,
             decoration: InputDecoration(
-                hintText: hintText, labelText: labelText, icon: icon),
+                filled: true,
+                fillColor: Colors.white,
+                hintText: hintText,
+                prefixIcon: icon),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return error;

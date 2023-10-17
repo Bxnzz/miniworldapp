@@ -126,7 +126,7 @@ class _ListSpactatorState extends State<ListSpactator> {
                               bottom: Radius.circular(50),
                             ),
                             image: const DecorationImage(
-                              image: AssetImage('assets/image/BGhome.jpg'),
+                              image: AssetImage('assets/image/TOP2.png'),
                               opacity: 0.8,
                               fit: BoxFit.cover,
                             ),

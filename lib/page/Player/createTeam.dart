@@ -138,207 +138,260 @@ class _CeateTeamState extends State<CeateTeam> {
         return true;
       },
       child: Scaffold(
-        appBar: AppBar(title: Text("ลงทะเบียนการแข่งขัน")),
-        body: FutureBuilder(
-            future: loadDataMethods,
-            builder: (context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return Form(
-                  key: _formKey,
-                  child: Card(
-                    margin: EdgeInsets.fromLTRB(32, 20, 32, 32),
-                    color: Colors.purple.shade50,
-                    child: SingleChildScrollView(
-                      child: Column(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: FaIcon(
+              FontAwesomeIcons.circleChevronLeft,
+              color: Colors.yellow,
+              size: 30,
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            image: const DecorationImage(
+              image: AssetImage("assets/image/BGall.jpg"),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: FutureBuilder(
+              future: loadDataMethods,
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return Form(
+                    key: _formKey,
+                    child: Center(
+                      child: Stack(
+                        alignment: AlignmentDirectional.topCenter,
                         children: [
-                          // GestureDetector(
-                          //     onTap: () {
-                          //       selectFile();
-                          //     },
-                          //     child: pickedFile != null
-                          //         ? CircleAvatar(
-                          //             key: avata,
-                          //             radius:
-                          //                 MediaQuery.of(context).size.width *
-                          //                     0.15,
-                          //             backgroundImage: FileImage(pickedFile!))
-                          //         : CircleAvatar(
-                          //             radius:
-                          //                 MediaQuery.of(context).size.width *
-                          //                     0.15,
-                          //             child: GestureDetector(
-                          //               onTap: () {
-                          //                 selectFile();
-                          //                 log('message');
-                          //               },
-                          //               child: Icon(
-                          //                 Icons.add_photo_alternate,
-                          //                 size: MediaQuery.of(context)
-                          //                         .size
-                          //                         .width *
-                          //                     0.15,
-                          //               ),
-                          //             ),
-                          //           )),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 30),
-                            child: upImg(),
+                          Card(
+                            elevation: 0,
+                            color: Colors.white,
+                            clipBehavior: Clip.hardEdge,
+                            margin: EdgeInsets.fromLTRB(32, 60, 32, 32),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 50),
+                                    child: upImg(),
+                                  ),
+                                  Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 30, right: 30, left: 30),
+                                      child: textField(
+                                          nameTeam,
+                                          'ชื่อทีม',
+                                          'ชื่อทีม*',
+                                          'กรุณาใส่ชื่อทีม',
+                                          false)),
+                                  Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 30, right: 30, left: 30),
+                                      child: textField(nameMember1, 'ตัวฉันเอง',
+                                          'ตัวฉันเอง', '', true)),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 30),
+                                    child: SizedBox(
+                                        width: 300,
+                                        child: SelectAndSearchmember()),
+                                  ),
+                                  SizedBox(
+                                    width: 250,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(30),
+                                      child: FilledButton(
+                                          onPressed: () async {
+                                            log("message");
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              log("message2");
+                                              //regis race  first team
+                                              // var b = await attendService
+                                              //     .attendByUserID(userID: idUser);
+                                              // attends = b.data;
+                                              //  log("asdfasdf  ${attends.first.atId}");
+                                              if (attends.isEmpty) {
+                                                log("Can join first attend");
+                                                setState(() {
+                                                  uploadFile();
+                                                });
+                                              }
+                                              if (attends.isNotEmpty) {
+                                                for (var j in attends) {
+                                                  log("message1");
+                                                  log("${j.atId}");
+                                                  // log("attend${j.datetime}");
+                                                  log("ST${raceST}");
+                                                  log("FN${raceFN}");
+                                                  log("stJoin${j.team.race.raceTimeSt}");
+                                                  log("fnJoin${j.team.race.raceTimeFn}");
+                                                  if (raceST.isAfter(j.team.race.raceTimeSt) &&
+                                                      raceST.isBefore(j.team.race
+                                                          .raceTimeFn) &&
+                                                      raceFN.isAfter(j.team.race
+                                                          .raceTimeSt) &&
+                                                      raceFN.isBefore(j.team.race
+                                                          .raceTimeFn)) {
+                                                    isJoin = true;
+                                                    log("can't join chk 4 condition");
+                                                    ScaffoldMessenger.of(context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                          content: Text(
+                                                              'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
+                                                    );
+                                                    break;
+                                                  }
+                                                }
+                                                if (isJoin == false) {
+                                                  uploadFile();
+                                                }
+                                              }
+                                            }
+                                          },
+                                          child: Text(
+                                            'สร้างทีม',
+                                            style: Get.textTheme.bodyLarge!
+                                                .copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Get.theme.colorScheme
+                                                        .onPrimary),
+                                          )),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
                           ),
-                          Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 30, right: 30, left: 30),
-                              child: textField(nameTeam, '', 'ชื่อทีม',
-                                  'กรุณาใส่ชื่อทีม', false)),
-                          Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 30, right: 30, left: 30),
-                              child: textField(
-                                  nameMember1, '', 'ตัวฉันเอง', '', true)),
-                          SelectAndSearchmember(),
-                          Padding(
-                            padding: const EdgeInsets.all(30),
-                            child: ElevatedButton(
-                                onPressed: () async {
-                                  log("message");
-                                  if (_formKey.currentState!.validate()) {
-                                    log("message2");
-                                    //regis race  first team
-                                    // var b = await attendService
-                                    //     .attendByUserID(userID: idUser);
-                                    // attends = b.data;
-                                    //  log("asdfasdf  ${attends.first.atId}");
-                                    if (attends.isEmpty) {
-                                      log("Can join first attend");
-                                      setState(() {
-                                        uploadFile();
-                                      });
-                                    }
-                                    if (attends.isNotEmpty) {
-                                      for (var j in attends) {
-                                        log("message1");
-                                        log("${j.atId}");
-                                        // log("attend${j.datetime}");
-                                        log("ST${raceST}");
-                                        log("FN${raceFN}");
-                                        log("stJoin${j.team.race.raceTimeSt}");
-                                        log("fnJoin${j.team.race.raceTimeFn}");
-                                        if (raceST.isAfter(
-                                                j.team.race.raceTimeSt) &&
-                                            raceST.isBefore(
-                                                j.team.race.raceTimeFn) &&
-                                            raceFN.isAfter(
-                                                j.team.race.raceTimeSt) &&
-                                            raceFN.isBefore(
-                                                j.team.race.raceTimeFn)) {
-                                          isJoin = true;
-                                          log("can't join chk 4 condition");
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                                content: Text(
-                                                    'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
-                                          );
-                                          break;
-                                        }
-                                      }
-                                      if (isJoin == false) {
-                                        uploadFile();
-                                      }
-                                    }
-                                  }
-                                },
-                                child: Text('สร้างทีม')),
+                          Positioned(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 15, bottom: 15),
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 222, 72, 249),
+                                  border:
+                                      Border.all(color: Colors.white, width: 3),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                child: Text('ลงทะเบียนการแข่งขัน',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        fontSize: 18)),
+                              ),
+                            ),
                           )
                         ],
                       ),
                     ),
-                  ),
-                );
-              } else {
-                return Container();
-              }
-            }),
+                  );
+                } else {
+                  return Container();
+                }
+              }),
+        ),
       ),
     );
   }
 
-  Padding SelectAndSearchmember() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(32, 20, 32, 32),
-      child: Column(
-        children: [
-          DropdownButtonHideUnderline(
-            child: DropdownButton2<User>(
-              isExpanded: true,
-              hint: const Text(
-                'เพิ่มสมาชิก',
-              ),
-              items: items
-                  .map((item) => DropdownMenuItem(
-                        value: item,
-                        child: Text(item.userName),
-                      ))
-                  .toList(),
-
-              value: selectedValue,
-              onChanged: (value) {
-                setState(() {
-                  idUser2 = value!.userId;
-                  selectedValue = value;
-                  log(idUser2.toString());
-                });
-              },
-
-              dropdownStyleData: const DropdownStyleData(
-                maxHeight: 200,
-              ),
-              menuItemStyleData: const MenuItemStyleData(
-                height: 40,
-              ),
-              dropdownSearchData: DropdownSearchData(
-                searchController: textEditingController,
-                searchInnerWidgetHeight: 50,
-                searchInnerWidget: Container(
-                  height: 50,
-                  padding: const EdgeInsets.only(
-                    top: 8,
-                    bottom: 4,
-                    right: 8,
-                    left: 8,
-                  ),
-                  child: TextFormField(
-                    expands: true,
-                    maxLines: null,
-                    controller: textEditingController,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 8,
+  Widget SelectAndSearchmember() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 20),
+          child: Text('เพิ่มสมาชิก*'),
+        ),
+        DropdownButtonHideUnderline(
+          child: DropdownButton2<User>(
+            isExpanded: true,
+            hint: Text(
+              'เพิ่มสมาชิก...',
+              style: Get.textTheme.bodyLarge!,
+            ),
+            items: items
+                .map((item) => DropdownMenuItem(
+                      value: item,
+                      child: Text(
+                        item.userName,
+                        style: Get.textTheme.bodyLarge!,
                       ),
-                      hintText: 'ค้นหาผู้เล่น.',
-                      hintStyle: const TextStyle(fontSize: 12),
+                    ))
+                .toList(),
+
+            value: selectedValue,
+            onChanged: (value) {
+              setState(() {
+                idUser2 = value!.userId;
+                selectedValue = value;
+                log(idUser2.toString());
+              });
+            },
+            buttonStyleData: ButtonStyleData(
+                height: 40,
+
+                // padding: const EdgeInsets.only(left: 14, right: 14),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    border: Border.all(color: Get.theme.colorScheme.primary))),
+            dropdownStyleData: const DropdownStyleData(
+              maxHeight: 200,
+            ),
+            menuItemStyleData: const MenuItemStyleData(
+              height: 40,
+            ),
+            dropdownSearchData: DropdownSearchData(
+              searchController: textEditingController,
+              searchInnerWidgetHeight: 50,
+              searchInnerWidget: Container(
+                height: 50,
+                padding: const EdgeInsets.only(
+                  top: 8,
+                  bottom: 4,
+                  right: 8,
+                  left: 8,
+                ),
+                child: TextFormField(
+                  expands: true,
+                  maxLines: null,
+                  controller: textEditingController,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 8,
                     ),
+                    hintText: 'ค้นหาผู้เล่น.',
+                    hintStyle: const TextStyle(fontSize: 12),
                   ),
                 ),
-                searchMatchFn: (item, searchValue) {
-                  return (item.value!.userName
-                      .toString()
-                      .contains(searchValue));
-                },
               ),
-              //This to clear the search value when you close the menu
-              onMenuStateChange: (isOpen) {
-                if (!isOpen) {
-                  textEditingController.clear();
-                }
-                //     textEditingController.clear();
-                //   }
+              searchMatchFn: (item, searchValue) {
+                return (item.value!.userName.toString().contains(searchValue));
               },
             ),
+            //This to clear the search value when you close the menu
+            onMenuStateChange: (isOpen) {
+              if (!isOpen) {
+                textEditingController.clear();
+              }
+              //     textEditingController.clear();
+              //   }
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -533,20 +586,29 @@ class _CeateTeamState extends State<CeateTeam> {
 
   textField(final TextEditingController controller, String hintText,
       String labelText, String error, bool readON) {
-    return TextFormField(
-      readOnly: readON,
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: hintText,
-        labelText: labelText,
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return error;
-        }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 20),
+          child: Text(labelText),
+        ),
+        TextFormField(
+          readOnly: readON,
+          controller: controller,
+          style: Get.textTheme.bodyLarge,
+          decoration: InputDecoration(
+            hintText: hintText,
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return error;
+            }
 
-        return null;
-      },
+            return null;
+          },
+        ),
+      ],
     );
   }
 }

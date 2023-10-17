@@ -140,7 +140,7 @@ class _DetailHostState extends State<DetailHost> {
                       right: 0,
                       child: SizedBox(
                         width: double.maxFinite,
-                        height: 250,
+                        height: 300,
                         child: Image.network(
                           UrlImg,
                           fit: BoxFit.cover,
@@ -179,7 +179,7 @@ class _DetailHostState extends State<DetailHost> {
                                           color: Colors.pinkAccent)),
                                   onSelected: (result) {
                                     if (result == 0) {
-                                      Get.to(()=>EditRace());
+                                      Get.to(()=>const EditRace());
                                       context.read<AppData>().idrace = idrace;
                                     }
                                     if (result == 1) {

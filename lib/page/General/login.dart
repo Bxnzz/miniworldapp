@@ -157,14 +157,12 @@ class _LoginState extends State<Login> {
               return Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                      Colors.purpleAccent,
-                      Colors.blue,
-                    ])),
+                decoration: BoxDecoration(
+                  image: const DecorationImage(
+                    image: AssetImage("assets/image/BGlogin.jpg"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
                 child: Form(
                   key: _formKey,
                   child: Padding(
@@ -174,41 +172,21 @@ class _LoginState extends State<Login> {
                         alignment: AlignmentDirectional.topCenter,
                         clipBehavior: Clip.none,
                         children: [
-                          //  const Padding(
-                          //    padding: EdgeInsets.only(top: 30),
-                          //    child: FlutterLogo(
-                          //      size: 50,
-                          //    ),
-                          //  ),
-                          //  const Text(
-                          //    "Login",
-                          //  ),
                           Card(
-                            margin: EdgeInsets.fromLTRB(32, 100, 32, 32),
+                            elevation: 0,
+                            margin: EdgeInsets.fromLTRB(32, 390, 32, 50),
                             color: Colors.white,
                             child: Column(
                               children: [
                                 const SizedBox(
-                                  height: 30,
+                                  height: 15,
                                 ),
-                                const Text(
-                                  "สวัสดี!",
-                                  style: TextStyle(
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.bold),
-                                ),
+                                Text("เข้าสู่ระบบโดย",
+                                    style: Get.textTheme.bodyLarge!.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Get.theme.colorScheme.primary)),
                                 const SizedBox(
-                                  height: 10,
-                                ),
-                                const Text(
-                                  "กรุณาเข้าสู่ระบบด้วยบัญชีของท่าน",
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 30,
+                                  height: 15,
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
@@ -260,17 +238,23 @@ class _LoginState extends State<Login> {
                                     obscureText: _isHidden,
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 150,
-                                  ),
-                                  child: TextButton(
-                                      onPressed: () {},
-                                      child: Text("รีเซ็ตรหัสผ่าน")),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    TextButton(
+                                        onPressed: () {},
+                                        child: Text("รีเซ็ตรหัสผ่าน")),
+                                    const Text('หรือ'),
+                                    TextButton(
+                                        onPressed: () {
+                                          Get.to(() => FontRegisterPage());
+                                        },
+                                        child: const Text('สมัครสมาชิก'))
+                                  ],
                                 ),
                                 SizedBox(
                                   width: 240,
-                                  child: ElevatedButton(
+                                  child: FilledButton(
                                       onPressed: () async {
                                         // เปลี่ยนสถานะเป็นกำลังล็อกอิน
                                         passwordINDB = password.text;
@@ -351,7 +335,7 @@ class _LoginState extends State<Login> {
                                                     loadDataMethod;
                                                   });
                                                 });
-                                              }else if (additionalData[
+                                              } else if (additionalData[
                                                           'notitype']
                                                       .toString() ==
                                                   'exitTeam') {
@@ -540,11 +524,9 @@ class _LoginState extends State<Login> {
                                                 Get.defaultDialog(
                                                         title:
                                                             'มีทีมออกจากการแข่งขัน!!',
-                                                        content:  Text(
+                                                        content: Text(
                                                             'ทีม $teamName ได้ออกจากการแข่งขันนี้แล้ว'))
-                                                    .then((value) {
-                                                  
-                                                });
+                                                    .then((value) {});
                                               } else if (event.notification
                                                           .additionalData![
                                                       'notitype'] ==
@@ -689,47 +671,32 @@ class _LoginState extends State<Login> {
                                       },
                                       child: const Text('เข้าสู่ระบบ')),
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text('ไม่มีบัญชีใช่หรือไม่?'),
-                                    TextButton(
-                                        onPressed: () {
-                                          Get.to(() => FontRegisterPage());
-                                        },
-                                        child: const Text('คลิกที่นี้'))
-                                  ],
-                                ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: const Divider(),
-                                ),
-                                SizedBox(
-                                  width: 240,
-                                  child: ElevatedButton.icon(
-                                    onPressed: () {},
-                                    label: const Text('Login Facebook'),
-                                    icon: FaIcon(FontAwesomeIcons.facebook),
+                                  child: SizedBox(
+                                    width: 240,
+                                    child: ElevatedButton.icon(
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Color.fromARGB(255, 66, 103,
+                                            178), // Background color
+                                      ),
+                                      onPressed: () {},
+                                      label: Text('Login Facebook',
+                                          style: Get.textTheme.bodyLarge!
+                                              .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Get.theme.colorScheme
+                                                      .onPrimary)),
+                                      icon: FaIcon(
+                                        FontAwesomeIcons.facebook,
+                                        color: Get.theme.colorScheme.onPrimary,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          //      Positioned(
-                          //   child: Padding(
-                          //     padding: const EdgeInsets.all(50),
-                          //     child: Container(
-                          //       padding: const EdgeInsets.all(16),
-                          //       decoration: BoxDecoration(
-                          //         color: Colors.white,
-                          //         border:
-                          //             Border.all(color: Colors.purple.shade50, width: 3),
-                          //         shape: BoxShape.circle,
-                          //       ),
-                          //       child: const Text('เข้าสู่ระบบ'),
-                          //     ),
-                          //   ),
-                          // )
                         ],
                       ),
                     ),
