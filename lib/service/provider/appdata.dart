@@ -22,6 +22,7 @@ class AppData with ChangeNotifier {
   String misName = '';
   String misDetail = '';
   String misType = '';
+  String authenUname = '';
   bool isFinished = false;
   int remainMC = 0;
   int statusRace = 0;

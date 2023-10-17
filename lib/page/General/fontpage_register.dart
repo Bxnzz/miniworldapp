@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:miniworldapp/page/General/authenGG.dart';
 import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/service/user.dart';
 import 'package:path_provider/path_provider.dart';
@@ -62,6 +63,7 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
   String passwordDecode = '';
   String svg = '';
   late String svgInDB = '';
+  String authenUname = 'player';
   late var bytes;
   late var digest;
   late Future readSvg;
@@ -152,22 +154,22 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            image: const DecorationImage(
-              image: AssetImage("assets/image/NewBG.jpg"),
-              fit: BoxFit.cover,
-            ),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          image: const DecorationImage(
+            image: AssetImage("assets/image/NewBG.jpg"),
+            fit: BoxFit.cover,
           ),
-          child: Form(
-            key: _formKey,
+        ),
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 80),
+              padding: const EdgeInsets.only(top: 80),
+              child: SingleChildScrollView(
                 child: Column(
                   children: [
                     _image != null
@@ -397,13 +399,13 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                             keyboardType: TextInputType.multiline,
                             minLines: 3,
                             maxLines: 4,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'แนะนำตัวคุณหน่อย.';
-                              }
+                            // validator: (value) {
+                            //   if (value == null || value.isEmpty) {
+                            //     return 'แนะนำตัวคุณหน่อย.';
+                            //   }
 
-                              return null;
-                            },
+                            //   return null;
+                            // },
                           ),
                         ),
                       ],
@@ -462,6 +464,12 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                     //             File(svgFile!.path),
                     //           ))
                     //         : widget),
+                    ElevatedButton(
+                        onPressed: () {
+                          context.read<AppData>().authenUname = authenUname;
+                          Get.to(() => AuthenGG());
+                        },
+                        child: Text("authen"))
                   ],
                 ),
               ),
@@ -499,23 +507,19 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
       Widget okButton = TextButton(
         child: const Text("OK"),
         onPressed: () {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const Login(),
-                settings: const RouteSettings(arguments: null),
-              ));
+          Get.to(Login());
+          // Navigator.pushReplacement(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => const Login(),
+          //       settings: const RouteSettings(arguments: null),
+          //     ));
         },
       );
 
       // set up the AlertDialog
       AlertDialog alert01 = AlertDialog(
-        title: const Text("ลงทะเบียนสำเร็จ !!"),
-        content: const Text(""),
-        actions: [
-          okButton,
-        ],
-      );
+          title: const Text("ลงทะเบียนสำเร็จ !!"), content: okButton);
 
       // show the dialog
       showDialog(

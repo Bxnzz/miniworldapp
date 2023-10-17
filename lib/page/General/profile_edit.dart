@@ -486,8 +486,8 @@ class _Profile_editState extends State<Profile_edit> {
                   // getGoogleAuthenticatorUri(
                   //     "mnrace", userMail.text, users.first.userPassword);
                   // log(getTotp(userMail.text + users.first.userPassword));
-
-                  passwordRenew(context);
+                  editpass(context);
+                  //   passwordRenew(context);
                 },
                 child: Text("เปลี่ยนรหัสผ่าน")),
           ],

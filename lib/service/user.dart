@@ -14,23 +14,23 @@ part 'user.g.dart';
 abstract class UserService {
   factory UserService(Dio dio, {String baseUrl}) = _UserService;
 
-  @GET("/user/{userName}")
+  @GET("/user/")
   Future<HttpResponse<List<User>>> getUserByName(
-      @Path("userName") String userName);
+      {@Query("userID") required String userName});
 
   @GET("/user")
   Future<HttpResponse<List<User>>> getUserAll();
 
   @GET("/user/")
-  Future<HttpResponse<List<User>>> getUserByID({@Query("userID") required int userID});
+  Future<HttpResponse<List<User>>> getUserByID(
+      {@Query("userID") required int userID});
 
   @PUT("/user/{userID}")
   Future<HttpResponse<RaceResult>> updateUsers(
       @Body() UserDto userDto, @Path("userID") String userID);
 
-   @PUT("/user/oneID/{oneID}")
-  Future<HttpResponse<RaceResult>> updateOneID(
-       @Path("oneID") String oneID);
+  @PUT("/user/oneID/{oneID}")
+  Future<HttpResponse<RaceResult>> updateOneID(@Path("oneID") String oneID);
 
   @PUT("/user/{userID}")
   Future<HttpResponse<RaceResult>> chengePassword(
