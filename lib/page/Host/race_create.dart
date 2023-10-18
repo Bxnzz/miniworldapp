@@ -129,7 +129,8 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                 //clipBehavior: Clip.none,
                 children: [
               Card(
-                elevation: 0,
+                surfaceTintColor: Colors.transparent,
+                elevation: 10,
                 margin: EdgeInsets.fromLTRB(25, 75, 25, 5),
                 color: Colors.white,
                 child: SingleChildScrollView(

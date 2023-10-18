@@ -359,6 +359,9 @@ class _ApproveMissionState extends State<ApproveMission> {
                                       setdialog(() {
                                         _selected = index;
                                         log(message[_selected].masseage);
+                                        if(message[_selected].masseage == 'อื่นๆ...'){
+                                           message[_selected].masseage == anothor.text;
+                                        }
                                       });
                                     });
                               }),

@@ -173,7 +173,8 @@ class _LoginState extends State<Login> {
                         clipBehavior: Clip.none,
                         children: [
                           Card(
-                            elevation: 0,
+                            surfaceTintColor: Colors.transparent,
+                            elevation: 15,
                             margin: EdgeInsets.fromLTRB(32, 390, 32, 50),
                             color: Colors.white,
                             child: Column(
@@ -238,18 +239,21 @@ class _LoginState extends State<Login> {
                                     obscureText: _isHidden,
                                   ),
                                 ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      TextButton(
-                                            onPressed: () {},
-                                            child: Text("รีเซ็ตรหัสผ่าน")),
-                                      Padding(
-                                        padding: const EdgeInsets.only(right:40),
-                                        child: FaIcon(FontAwesomeIcons.solidCircleQuestion,color: Get.theme.colorScheme.primary,),
-                                      )
-                                    ],
-                                  ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                        onPressed: () {},
+                                        child: Text("รีเซ็ตรหัสผ่าน")),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 40),
+                                      child: FaIcon(
+                                        FontAwesomeIcons.solidCircleQuestion,
+                                        color: Get.theme.colorScheme.primary,
+                                      ),
+                                    )
+                                  ],
+                                ),
                                 SizedBox(
                                   width: 240,
                                   child: FilledButton(
@@ -260,7 +264,7 @@ class _LoginState extends State<Login> {
                                             passwordINDB); // data being hashed
                                         log("byte $bytes");
                                         digest = sha256.convert(bytes);
-                                  
+
                                         log(digest.toString());
                                         // อ้างอิงฟอร์มที่กำลังใช้งาน ตรวจสอบความถูกต้องข้อมูลในฟอร์ม
                                         if (_formKey.currentState!.validate()) {
@@ -270,12 +274,12 @@ class _LoginState extends State<Login> {
                                           LoginDto dto = LoginDto(
                                               email: email.text,
                                               password: digest.toString());
-                                  
+
                                           //log(jsonEncode(dto));
-                                  
+
                                           var login =
                                               await loginService.loginser(dto);
-                                  
+
                                           if (login.data.userId != 0) {
                                             OneSignal.shared
                                                 .setNotificationOpenedHandler(
@@ -317,7 +321,7 @@ class _LoginState extends State<Login> {
                                                                   '/Lobby') {
                                                                 Get.back();
                                                                 Get.back();
-                                  
+
                                                                 Get.to(() =>
                                                                     PlayerRaceStartMenu());
                                                               } else {
@@ -365,17 +369,17 @@ class _LoginState extends State<Login> {
                                                 log('YYYY');
                                               }
                                             });
-                                  
+
                                             OneSignal.shared
                                                 .setNotificationWillShowInForegroundHandler(
                                                     (OSNotificationReceivedEvent
                                                         event) {
                                               log('qqqqq' +
                                                   'FOREGROUND HANDLER CALLED WITH: ${event.notification.additionalData}');
-                                  
+
                                               /// Display Notification, send null to not display
                                               event.complete(null);
-                                  
+
                                               // Get.to(() => CheckMisNoti());
                                               if (event.notification
                                                           .additionalData![
@@ -386,7 +390,7 @@ class _LoginState extends State<Login> {
                                                     .notification
                                                     .additionalData!['mcid']);
                                                 log('qqqqqqqqqq');
-                                  
+
                                                 Fluttertoast.showToast(
                                                     msg:
                                                         "มีหลักฐานที่ต้องตรวจสอบ?\n ภารกิจ: ${event.notification.additionalData!['mission']} ทีม: ${event.notification.additionalData!['team']}       ",
@@ -398,7 +402,7 @@ class _LoginState extends State<Login> {
                                                         Colors.black,
                                                     textColor: Colors.white,
                                                     fontSize: 16.0);
-                                  
+
                                                 log('nnnnnnnnnnn');
                                               } else if (event.notification
                                                           .additionalData![
@@ -465,7 +469,7 @@ class _LoginState extends State<Login> {
                                                                   '/Lobby') {
                                                                 Get.back();
                                                                 Get.back();
-                                  
+
                                                                 Get.to(() =>
                                                                     PlayerRaceStartMenu());
                                                               } else {
@@ -481,13 +485,13 @@ class _LoginState extends State<Login> {
                                                     loadDataMethod;
                                                   });
                                                 });
-                                  
+
                                                 // .then(
                                                 //   (value) => Get.off(() =>
                                                 //     const PlayerRaceStartMenu())
                                                 //     );
                                                 log('toasttt');
-                                  
+
                                                 log('ภารกิจจ');
                                               } else if (event.notification
                                                           .additionalData![
@@ -497,7 +501,7 @@ class _LoginState extends State<Login> {
                                                     .notification
                                                     .additionalData!['raceID']
                                                     .toString());
-                                  
+
                                                 Get.defaultDialog(
                                                         title:
                                                             'ทีมของคุณออกจากการแข่งขัน!!',
@@ -514,11 +518,11 @@ class _LoginState extends State<Login> {
                                                     .notification
                                                     .additionalData!['raceID']
                                                     .toString());
-                                  
+
                                                 teamName = event.notification
                                                         .additionalData![
                                                     'teamName'];
-                                  
+
                                                 Get.defaultDialog(
                                                         title:
                                                             'มีทีมออกจากการแข่งขัน!!',
@@ -532,12 +536,12 @@ class _LoginState extends State<Login> {
                                                 raceName = event.notification
                                                         .additionalData![
                                                     'raceName'];
-                                  
+
                                                 raceID = int.parse(event
                                                     .notification
                                                     .additionalData!['raceID']
                                                     .toString());
-                                  
+
                                                 Get.defaultDialog(
                                                         title: 'จบการแข่งขัน',
                                                         content: const Text(
@@ -546,7 +550,7 @@ class _LoginState extends State<Login> {
                                                   log('mmmmmmmm');
                                                   log('idddd' +
                                                       userId.toString());
-                                  
+
                                                   Get.to(() => ChatRoomPage(
                                                       userID: userId,
                                                       raceID: raceID,
@@ -589,12 +593,12 @@ class _LoginState extends State<Login> {
                                             if (deviceState != null &&
                                                 deviceState.userId != null) {
                                               //   _externalUserId = status.userId!;
-                                  
+
                                               _externalUserId =
                                                   deviceState.userId!;
                                               log('oneID ' + _externalUserId);
                                             }
-                                  
+
                                             OneSignal.shared.disablePush(false);
                                             UserDto userDto = UserDto(
                                               userName: login.data.userName,
@@ -606,7 +610,7 @@ class _LoginState extends State<Login> {
                                               onesingnalId: _externalUserId,
                                               userMail: login.data.userMail,
                                             );
-                                  
+
                                             var updateOnesignal =
                                                 await userService.updateUsers(
                                                     userDto,
@@ -619,7 +623,7 @@ class _LoginState extends State<Login> {
                                             //   const SnackBar(
                                             //       content: Text('Login Successful')),
                                             // );
-                                  
+
                                             setState(() {
                                               _authenticatingStatus =
                                                   !_authenticatingStatus;
@@ -637,7 +641,7 @@ class _LoginState extends State<Login> {
                                                 ));
                                             context.read<AppData>().Username =
                                                 login.data.userName;
-                                  
+
                                             context.read<AppData>().idUser =
                                                 login.data.userId;
                                             context.read<AppData>().userImage =
@@ -650,7 +654,7 @@ class _LoginState extends State<Login> {
                                                     .read<AppData>()
                                                     .userDescrip =
                                                 login.data.userDiscription;
-                                  
+
                                             context.read<AppData>().oneID =
                                                 _externalUserId;
                                             return;
@@ -659,10 +663,10 @@ class _LoginState extends State<Login> {
                                               content: const Text(
                                                   'เข้าสู่ระบบล้มเหลว อีเมลหรือรหัสผ่านไม่ถูก'),
                                             );
-                                  
+
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(snackBar);
-                                  
+
                                             return;
                                           }
                                         }
@@ -670,13 +674,13 @@ class _LoginState extends State<Login> {
                                       child: const Text('เข้าสู่ระบบ')),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 10,right: 20,left: 20),
+                                  padding: const EdgeInsets.only(
+                                      top: 10, right: 20, left: 20),
                                   child: Divider(),
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                  
                                     const Text('ไม่มีบัญชีผู้ใช้ใช่หรือไม่? '),
                                     TextButton(
                                         onPressed: () {

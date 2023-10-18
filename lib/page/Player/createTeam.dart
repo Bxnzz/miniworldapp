@@ -171,8 +171,8 @@ class _CeateTeamState extends State<CeateTeam> {
                         alignment: AlignmentDirectional.topCenter,
                         children: [
                           Card(
-                            elevation: 0,
-                            color: Colors.white,
+                            surfaceTintColor: Colors.transparent,
+                            elevation: 10,
                             clipBehavior: Clip.hardEdge,
                             margin: EdgeInsets.fromLTRB(32, 60, 32, 32),
                             child: SingleChildScrollView(
@@ -233,15 +233,16 @@ class _CeateTeamState extends State<CeateTeam> {
                                                   log("stJoin${j.team.race.raceTimeSt}");
                                                   log("fnJoin${j.team.race.raceTimeFn}");
                                                   if (raceST.isAfter(j.team.race.raceTimeSt) &&
-                                                      raceST.isBefore(j.team.race
-                                                          .raceTimeFn) &&
+                                                      raceST.isBefore(j.team
+                                                          .race.raceTimeFn) &&
                                                       raceFN.isAfter(j.team.race
                                                           .raceTimeSt) &&
-                                                      raceFN.isBefore(j.team.race
-                                                          .raceTimeFn)) {
+                                                      raceFN.isBefore(j.team
+                                                          .race.raceTimeFn)) {
                                                     isJoin = true;
                                                     log("can't join chk 4 condition");
-                                                    ScaffoldMessenger.of(context)
+                                                    ScaffoldMessenger.of(
+                                                            context)
                                                         .showSnackBar(
                                                       SnackBar(
                                                           content: Text(

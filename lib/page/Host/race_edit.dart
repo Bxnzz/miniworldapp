@@ -200,7 +200,8 @@ class _EditRaceState extends State<EditRace> {
                       children: [
                     Card(
                       margin: EdgeInsets.fromLTRB(25, 75, 25, 5),
-                      elevation: 0,
+                      surfaceTintColor: Colors.transparent,
+                      elevation: 10,
                       color: Colors.white,
                       child: SingleChildScrollView(
                         child: Column(
