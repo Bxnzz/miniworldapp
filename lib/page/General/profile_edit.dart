@@ -581,7 +581,7 @@ class _Profile_editState extends State<Profile_edit> {
                           }
                           //  await launchUrl(Uri.parse(uri2));
                         },
-                        child: Text("เปิด Authenicator",
+                        child: Text("เปิด Authenticator",
                             style: Get.textTheme.bodyLarge!.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: Get.theme.colorScheme.background)),
@@ -625,7 +625,7 @@ class _Profile_editState extends State<Profile_edit> {
                   children: [
                     Gap(20),
                     Text(
-                      "ใส่รหัส PIN แอบพลิเคชั่น\n\"Authenicator \"",
+                      "ใส่รหัส PIN แอบพลิเคชั่น\n\"Authenticator \"",
                       textAlign: TextAlign.center,
                       style: Get.theme.textTheme.displayMedium?.copyWith(
                         fontWeight: FontWeight.bold,
