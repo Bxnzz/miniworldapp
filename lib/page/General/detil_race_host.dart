@@ -129,402 +129,407 @@ class _DetailHostState extends State<DetailHost> {
         return true;
       },
       child: Scaffold(
-        body: FutureBuilder(
-            future: loadDataMethod,
-            builder: (context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return Stack(
-                  children: [
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      child: SizedBox(
-                        width: double.maxFinite,
-                        height: 300,
-                        child: Image.network(
-                          UrlImg,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 15,
-                      left: 10,
-                      right: 5,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            
-                            IconButton(
-                              onPressed: () {
-                                Get.to(() => const Home());
-                              },
-                              icon: FaIcon(
-                                FontAwesomeIcons.circleChevronLeft,
-                                color: Colors.yellow,
-                                size: 35,
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              child: PopupMenuButton(
-                                  icon: Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                          color: Colors.white),
-                                      child: const FaIcon(
-                                          FontAwesomeIcons.elementor,
-                                          size: 38,
-                                          color: Colors.pinkAccent)),
-                                  onSelected: (result) {
-                                    if (result == 0) {
-                                      Get.to(()=>const EditRace());
-                                      context.read<AppData>().idrace = idrace;
-                                    }
-                                    if (result == 1) {
-                                      //  Navigator.pop(context);
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          backgroundColor: Color.fromARGB(
-                                              255, 255, 255, 255),
-                                          title: Center(
-                                              child: Text('ลบการแข่งขัน?')),
-                                          content: Text(
-                                              'คุณต้องการจะลบการแข่งขันนี้หรือไม่?'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () => Navigator.pop(
-                                                  context, 'Cancel'),
-                                              child: const Text('ยกเลิก',
-                                                  style: TextStyle(
-                                                      color: Colors.black)),
-                                            ),
-                                            SizedBox(
-                                                width: 120,
-                                                child: ElevatedButton(
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                            backgroundColor:
-                                                                Colors
-                                                                    .redAccent),
-                                                    onPressed: () async {
-                                                      log('race' +
-                                                          idrace.toString());
-                                                      //  try {
-                                                      //
-                                                      //  }on DioError catch (e) {
-                                                      //    //throw Exception(e);
-                                                      //    log(e.response!.data);
-                                                      //  }
-                                                      var race =
-                                                          await raceService
-                                                              .deleteRace(idrace
-                                                                  .toString());
-                                                      log(race.toString());
-                                                      raceRe = race.data;
-                                                      if (raceRe.result ==
-                                                          '1') {
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                          const SnackBar(
-                                                              content: Text(
-                                                                  'delete Successful')),
-                                                        );
-                                                        //  setState(() {});
-                                                        Navigator.pop(context);
-                                                        Navigator.pop(context);
-
-                                                        // log("race Successful");
-                                                        return;
-                                                      } else {
-                                                        // log("team fail");
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                          const SnackBar(
-                                                              content: Text(
-                                                                  'delete fail try agin!')),
-                                                        );
-
-                                                        return;
-                                                      }
-                                                    },
-                                                    child: const Text(
-                                                      'ลบ',
-                                                      style: TextStyle(
-                                                          color: Colors.white),
-                                                    )))
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8)),
-                                      offset: Offset(-6, 50),
-                                  itemBuilder: (BuildContext context) {
-                                    return [
-                                      _buildPopupMenuEdit(
-                                          'แก้ไข', Icons.edit, 0),
-                                      _buildPopupMenuDelete(
-                                          'ลบ', Icons.delete, 1),
-                                    ];
-                                  }),
-                            ),
-                          ]),
-                    ),
-                    Positioned(
+        body: SafeArea(
+          child: FutureBuilder(
+              future: loadDataMethod,
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return Stack(
+                    children: [
+                      Positioned(
                         left: 0,
                         right: 0,
-                        top: height / 3.25,
-                        bottom: 0,
-                        child: Container(
-                          padding: EdgeInsets.only(
-                              left: height / 42.2,
-                              right: height / 42.2,
-                              //  bottom: 600,
-                              top: 0),
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(40),
-                                topRight: Radius.circular(35)),
-                            color: Colors.white,
+                        child: SizedBox(
+                          width: double.maxFinite,
+                          height: 300,
+                          child: Image.network(
+                            UrlImg,
+                            fit: BoxFit.cover,
                           ),
-                          child: Column(children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 6),
-                              child: Center(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(Rname,
-                                    style: Get.textTheme.bodyLarge!.copyWith(
-                                        color: Get.theme.colorScheme.primary,
-                                        fontWeight: FontWeight.bold)),
-                              )),
-                            ),
-                            const Divider(),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 8, bottom: 4),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const FaIcon(
-                                    FontAwesomeIcons.locationDot,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 17),
-                                    child: Text(Rlocation),
-                                  )
-                                ],
+                        ),
+                      ),
+                      Positioned(
+                        top: 15,
+                        left: 10,
+                        right: 5,
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  Get.to(() => const Home());
+                                },
+                                icon: FaIcon(
+                                  FontAwesomeIcons.circleChevronLeft,
+                                  color: Colors.yellow,
+                                  size: 35,
+                                ),
                               ),
-                            ),
-                            const Divider(),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 8, bottom: 4),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const FaIcon(
-                                    FontAwesomeIcons.peopleGroup,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: Text('$team ทีม'),
-                                  )
-                                ],
+                              Container(
+                                padding: EdgeInsets.all(8),
+                                child: PopupMenuButton(
+                                    icon: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(100),
+                                            color: Colors.white),
+                                        child: const FaIcon(
+                                            FontAwesomeIcons.elementor,
+                                            size: 38,
+                                            color: Colors.pinkAccent)),
+                                    onSelected: (result) {
+                                      if (result == 0) {
+                                        Get.to(() => const EditRace());
+                                        context.read<AppData>().idrace = idrace;
+                                      }
+                                      if (result == 1) {
+                                        //  Navigator.pop(context);
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            backgroundColor: Color.fromARGB(
+                                                255, 255, 255, 255),
+                                            title: Center(
+                                                child: Text('ลบการแข่งขัน?')),
+                                            content: Text(
+                                                'คุณต้องการจะลบการแข่งขันนี้หรือไม่?'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, 'Cancel'),
+                                                child: const Text('ยกเลิก',
+                                                    style: TextStyle(
+                                                        color: Colors.black)),
+                                              ),
+                                              SizedBox(
+                                                  width: 120,
+                                                  child: ElevatedButton(
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                              backgroundColor:
+                                                                  Colors
+                                                                      .redAccent),
+                                                      onPressed: () async {
+                                                        log('race' +
+                                                            idrace.toString());
+                                                        //  try {
+                                                        //
+                                                        //  }on DioError catch (e) {
+                                                        //    //throw Exception(e);
+                                                        //    log(e.response!.data);
+                                                        //  }
+                                                        var race =
+                                                            await raceService
+                                                                .deleteRace(idrace
+                                                                    .toString());
+                                                        log(race.toString());
+                                                        raceRe = race.data;
+                                                        if (raceRe.result ==
+                                                            '1') {
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .showSnackBar(
+                                                            const SnackBar(
+                                                                content: Text(
+                                                                    'delete Successful')),
+                                                          );
+                                                          //  setState(() {});
+                                                          Navigator.pop(
+                                                              context);
+                                                          Navigator.pop(
+                                                              context);
+
+                                                          // log("race Successful");
+                                                          return;
+                                                        } else {
+                                                          // log("team fail");
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .showSnackBar(
+                                                            const SnackBar(
+                                                                content: Text(
+                                                                    'delete fail try agin!')),
+                                                          );
+
+                                                          return;
+                                                        }
+                                                      },
+                                                      child: const Text(
+                                                        'ลบ',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      )))
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    offset: Offset(-6, 50),
+                                    itemBuilder: (BuildContext context) {
+                                      return [
+                                        _buildPopupMenuEdit(
+                                            'แก้ไข', Icons.edit, 0),
+                                        _buildPopupMenuDelete(
+                                            'ลบ', Icons.delete, 1),
+                                      ];
+                                    }),
                               ),
+                            ]),
+                      ),
+                      Positioned(
+                          left: 0,
+                          right: 0,
+                          top: height / 3.25,
+                          bottom: 0,
+                          child: Container(
+                            padding: EdgeInsets.only(
+                                left: height / 42.2,
+                                right: height / 42.2,
+                                //  bottom: 600,
+                                top: 0),
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(40),
+                                  topRight: Radius.circular(35)),
+                              color: Colors.white,
                             ),
-                            const Divider(),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 8, bottom: 4),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const FaIcon(
-                                    FontAwesomeIcons.solidCalendarPlus,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 13),
-                                    child: Text(singUpST),
-                                  )
-                                ],
+                            child: Column(children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 6),
+                                child: Center(
+                                    child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(Rname,
+                                      style: Get.textTheme.bodyLarge!.copyWith(
+                                          color: Get.theme.colorScheme.primary,
+                                          fontWeight: FontWeight.bold)),
+                                )),
                               ),
-                            ),
-                            const Divider(),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 8, bottom: 4),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const FaIcon(
-                                    FontAwesomeIcons.solidCalendarXmark,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 13),
-                                    child: Text(singUpFN),
-                                  )
-                                ],
+                              const Divider(),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 8, bottom: 4),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const FaIcon(
+                                      FontAwesomeIcons.locationDot,
+                                      size: 18,
+                                      color: Colors.grey,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 17),
+                                      child: Text(Rlocation),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                            const Divider(),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 8, bottom: 4),
-                              child: Row(
-                                children: [
-                                  const FaIcon(
-                                    FontAwesomeIcons.solidClock,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 13),
-                                    child: Text(raceTimeST),
-                                  )
-                                ],
+                              const Divider(),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 8, bottom: 4),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const FaIcon(
+                                      FontAwesomeIcons.peopleGroup,
+                                      size: 18,
+                                      color: Colors.grey,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8),
+                                      child: Text('$team ทีม'),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                            const Divider(),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 8, bottom: 4),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  FaIcon(
-                                    FontAwesomeIcons.solidCircleXmark,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 13),
-                                    child: Text(raceTimeFN),
-                                  )
-                                ],
+                              const Divider(),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 8, bottom: 4),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const FaIcon(
+                                      FontAwesomeIcons.solidCalendarPlus,
+                                      size: 18,
+                                      color: Colors.grey,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 13),
+                                      child: Text(singUpST),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                            const Divider(),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 8, bottom: 4),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  FaIcon(
-                                    FontAwesomeIcons.solidCalendarCheck,
-                                    size: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 13),
-                                    child: Text(eventDatetime),
-                                  ),
-                                ],
+                              const Divider(),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 8, bottom: 4),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const FaIcon(
+                                      FontAwesomeIcons.solidCalendarXmark,
+                                      size: 18,
+                                      color: Colors.grey,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 13),
+                                      child: Text(singUpFN),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                            const Divider(),
-                            Center(
-                              child: SizedBox(
-                                width: 200,
-                                child: races.first.raceStatus == 1
-                                    ? ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const DetailMission()));
-                                          context.read<AppData>().idrace =
-                                              idrace;
-                                        },
-                                        child: Text('ภารกิจทั้งหมด'))
-                                    : Container(),
+                              const Divider(),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 8, bottom: 4),
+                                child: Row(
+                                  children: [
+                                    const FaIcon(
+                                      FontAwesomeIcons.solidClock,
+                                      size: 18,
+                                      color: Colors.grey,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 13),
+                                      child: Text(raceTimeST),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                            Center(
-                                child: races.first.raceStatus == 1
-                                    ? SizedBox(
-                                        width: 200,
-                                        child: ElevatedButton(
-                                            onPressed: () {
-                                              context.read<AppData>().idrace =
-                                                  idrace;
-                                              context.read<AppData>().idUser =
-                                                  idUser;
-                                              context.read<AppData>().idAt =
-                                                  idAttend;
-                                              context.read<AppData>().idTeam =
-                                                  idTeam;
-                                              Get.to(const Lobby());
-                                            },
-                                            child: Text('เข้าล็อบบี้')),
-                                      )
-                                    : races.first.raceStatus == 2
-                                        ? SizedBox(
-                                            width: 200,
-                                            child: ElevatedButton(
-                                                onPressed: () {
-                                                  Get.to(CheckMissionList());
-                                                  context
-                                                      .read<AppData>()
-                                                      .idrace = idrace;
-                                                  context
-                                                      .read<AppData>()
-                                                      .idUser = idUser;
-                                                  context.read<AppData>().idAt =
-                                                      idAttend;
-                                                  context
-                                                      .read<AppData>()
-                                                      .idTeam = idTeam;
-                                                  context
-                                                          .read<AppData>()
-                                                          .raceStatus =
-                                                      races.first.raceStatus;
-                                                },
-                                                child: Text(
-                                                    'การแข่งขันกำลังดำเนินการ')),
-                                          )
-                                        : races.first.raceStatus == 3
-                                            ? SizedBox(
-                                                width: 200,
-                                                child: ElevatedButton(
-                                                    onPressed: () {
-                                                      context
-                                                          .read<AppData>()
-                                                          .idrace = idrace;
-                                                      context
-                                                          .read<AppData>()
-                                                          .idUser = idUser;
-                                                      Get.to(
-                                                          CheckMissionList());
-                                                    },
-                                                    child:
-                                                        Text('กำลังประมวนผล')),
-                                              )
-                                            : Container())
-                          ]),
-                        ))
-                  ],
-                );
-              } else {
-                return Container();
-              }
-            }),
+                              const Divider(),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 8, bottom: 4),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    FaIcon(
+                                      FontAwesomeIcons.solidCircleXmark,
+                                      size: 18,
+                                      color: Colors.grey,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 13),
+                                      child: Text(raceTimeFN),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              const Divider(),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 8, bottom: 4),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    FaIcon(
+                                      FontAwesomeIcons.solidCalendarCheck,
+                                      size: 18,
+                                      color: Colors.grey,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 13),
+                                      child: Text(eventDatetime),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Divider(),
+                              Center(
+                                child: SizedBox(
+                                  width: 200,
+                                  child: races.first.raceStatus == 1
+                                      ? ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const DetailMission()));
+                                            context.read<AppData>().idrace =
+                                                idrace;
+                                          },
+                                          child: Text('ภารกิจทั้งหมด'))
+                                      : Container(),
+                                ),
+                              ),
+                              Center(
+                                  child: races.first.raceStatus == 1
+                                      ? SizedBox(
+                                          width: 200,
+                                          child: ElevatedButton(
+                                              onPressed: () {
+                                                context.read<AppData>().idrace =
+                                                    idrace;
+                                                context.read<AppData>().idUser =
+                                                    idUser;
+                                                context.read<AppData>().idAt =
+                                                    idAttend;
+                                                context.read<AppData>().idTeam =
+                                                    idTeam;
+                                                Get.to(const Lobby());
+                                              },
+                                              child: Text('เข้าล็อบบี้')),
+                                        )
+                                      : races.first.raceStatus == 2
+                                          ? SizedBox(
+                                              width: 200,
+                                              child: ElevatedButton(
+                                                  onPressed: () {
+                                                    Get.to(CheckMissionList());
+                                                    context
+                                                        .read<AppData>()
+                                                        .idrace = idrace;
+                                                    context
+                                                        .read<AppData>()
+                                                        .idUser = idUser;
+                                                    context
+                                                        .read<AppData>()
+                                                        .idAt = idAttend;
+                                                    context
+                                                        .read<AppData>()
+                                                        .idTeam = idTeam;
+                                                    context
+                                                            .read<AppData>()
+                                                            .raceStatus =
+                                                        races.first.raceStatus;
+                                                  },
+                                                  child: Text(
+                                                      'การแข่งขันกำลังดำเนินการ')),
+                                            )
+                                          : races.first.raceStatus == 3
+                                              ? SizedBox(
+                                                  width: 200,
+                                                  child: ElevatedButton(
+                                                      onPressed: () {
+                                                        context
+                                                            .read<AppData>()
+                                                            .idrace = idrace;
+                                                        context
+                                                            .read<AppData>()
+                                                            .idUser = idUser;
+                                                        Get.to(
+                                                            CheckMissionList());
+                                                      },
+                                                      child: Text(
+                                                          'กำลังประมวนผล')),
+                                                )
+                                              : Container())
+                            ]),
+                          ))
+                    ],
+                  );
+                } else {
+                  return Container();
+                }
+              }),
+        ),
       ),
     );
   }

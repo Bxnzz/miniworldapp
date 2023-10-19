@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:miniworldapp/page/General/rank_race.dart';
 import 'package:miniworldapp/page/spectator/rank_spectator.dart';
@@ -82,10 +83,23 @@ class _SpectatorState extends State<Spectator> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-       extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-  
         title: Text('โหมดผู้ชม'),
+        leading: IconButton(
+          onPressed: () {
+            try {
+              Get.back();
+            } catch (e) {
+              log('ERRx ' + e.toString());
+            }
+          },
+          icon: const FaIcon(
+            FontAwesomeIcons.circleChevronLeft,
+            color: Colors.yellow,
+            size: 35,
+          ),
+        ),
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.only(right: 15),

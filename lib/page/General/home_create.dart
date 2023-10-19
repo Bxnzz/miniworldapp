@@ -80,11 +80,11 @@ class _Home_createState extends State<Home_create> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Get.to(() => RaceCreatePage());
-        },     
+        },
         icon: const Icon(Icons.add, color: Colors.white),
         label: Text("สร้างห้อง",
             style: Get.theme.textTheme.bodyMedium!
-                .copyWith(fontWeight: FontWeight.bold,color: Colors.white)),
+                .copyWith(fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.amber,
       ),
       body: RefreshIndicator(
@@ -95,10 +95,9 @@ class _Home_createState extends State<Home_create> {
               if (snapshot.connectionState == ConnectionState.done) {
                 return ListView(
                   padding: EdgeInsets.only(top: 10),
-                  children:
-                      race.where((e) => e.raceStatus != 4).map((element) {
+                  children: race.where((e) => e.raceStatus != 4).map((element) {
                     //IDrace = element.raceId;
-                 
+
                     return Padding(
                       padding: const EdgeInsets.only(right: 10, left: 10),
                       //child: Stack(
@@ -152,8 +151,7 @@ class _Home_createState extends State<Home_create> {
                                                 maxLines: 1,
                                                 overflow: TextOverflow
                                                     .ellipsis, // new
-                                                style: Get
-                                                    .textTheme.bodyMedium!
+                                                style: Get.textTheme.bodyMedium!
                                                     .copyWith(
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -262,29 +260,30 @@ class _TabbarRaceState extends State<TabbarRace>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(
-            height: 130, //30 for bottom
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  // bottom: 150, // to shift little up
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    decoration: const BoxDecoration(
+      body: SafeArea(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 130, //30 for bottom
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    // bottom: 150, // to shift little up
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      decoration: const BoxDecoration(
                         borderRadius: BorderRadius.vertical(
                           bottom: Radius.circular(20),
                         ),
-                        
-                         image:  DecorationImage(
-                                    image: AssetImage('assets/image/TOP2.png'),
-                                    opacity: 0.8,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  
+
+                        image: DecorationImage(
+                          image: AssetImage('assets/image/TOP2.png'),
+                          opacity: 0.8,
+                          fit: BoxFit.cover,
+                        ),
+
                         // gradient: LinearGradient(
                         //     begin: FractionalOffset(0.0, 0.0),
                         //     end: FractionalOffset(1.0, 0.0),
@@ -294,78 +293,80 @@ class _TabbarRaceState extends State<TabbarRace>
                         //       Color.fromARGB(255, 207, 107, 244),
                         //       Color.fromARGB(255, 152, 90, 238),
                         //     ])
-                            ),
-                    width: Get.width,
-                    height: 100,
+                      ),
+                      width: Get.width,
+                      height: 100,
+                    ),
                   ),
-                ),
-                Positioned(
-                    bottom: 3,
-                    left: 25,
-                    right: 25,
-                    child: SizedBox(
-                      height: 45,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: const [
-                            BoxShadow(
-                                color: Color(0xFFe8e8e8),
-                                blurRadius: 5.0,
-                                offset: Offset(0, 5)),
-                            BoxShadow(
-                                color: Colors.white, offset: Offset(-2, 0)),
-                            BoxShadow(color: Colors.white, offset: Offset(2, 0))
-                          ],
-                          borderRadius: BorderRadius.circular(
-                            25.0,
-                          ),
-                        ),
-                        child: TabBar(
-                          dividerColor: Colors.transparent,
-                          indicatorPadding: EdgeInsets.zero,
-                          indicatorSize: TabBarIndicatorSize.tab,
-                          controller: _tabController,
-                          // give the indicator a decoration (color and border radius)
-                          indicator: BoxDecoration(
+                  Positioned(
+                      bottom: 3,
+                      left: 25,
+                      right: 25,
+                      child: SizedBox(
+                        height: 45,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: const [
+                              BoxShadow(
+                                  color: Color(0xFFe8e8e8),
+                                  blurRadius: 5.0,
+                                  offset: Offset(0, 5)),
+                              BoxShadow(
+                                  color: Colors.white, offset: Offset(-2, 0)),
+                              BoxShadow(
+                                  color: Colors.white, offset: Offset(2, 0))
+                            ],
                             borderRadius: BorderRadius.circular(
                               25.0,
                             ),
-                            color: Colors.amber,
                           ),
-
-                          labelColor: Colors.white,
-
-                          // unselectedLabelColor: Colors.black,
-                          tabs: [
-                            // first tab [you can add an icon using the icon property]
-                            const Tab(
-                              text: 'การแข่งขันที่สร้าง',
+                          child: TabBar(
+                            dividerColor: Colors.transparent,
+                            indicatorPadding: EdgeInsets.zero,
+                            indicatorSize: TabBarIndicatorSize.tab,
+                            controller: _tabController,
+                            // give the indicator a decoration (color and border radius)
+                            indicator: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                25.0,
+                              ),
+                              color: Colors.amber,
                             ),
-                            // second tab [you can add an icon using the icon property]
-                            const Tab(
-                              text: 'การแข่งขันที่เข้าร่วม',
-                            ),
-                          ],
+
+                            labelColor: Colors.white,
+
+                            // unselectedLabelColor: Colors.black,
+                            tabs: [
+                              // first tab [you can add an icon using the icon property]
+                              const Tab(
+                                text: 'การแข่งขันที่สร้าง',
+                              ),
+                              // second tab [you can add an icon using the icon property]
+                              const Tab(
+                                text: 'การแข่งขันที่เข้าร่วม',
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    )),
-              ],
+                      )),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                // first tab bar view widget
-                Center(child: Home_create()),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  // first tab bar view widget
+                  Center(child: Home_create()),
 
-                // second tab bar view widget
-                Center(child: Home_join()),
-              ],
+                  // second tab bar view widget
+                  Center(child: Home_join()),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

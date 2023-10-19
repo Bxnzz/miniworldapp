@@ -148,157 +148,167 @@ class _CeateTeamState extends State<CeateTeam> {
             ),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          backgroundColor: Colors.transparent,
+          //backgroundColor: Colors.transparent,
           elevation: 0,
         ),
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            image: const DecorationImage(
-              image: AssetImage("assets/image/BGall.jpg"),
-              fit: BoxFit.cover,
+        body: SafeArea(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              image: const DecorationImage(
+                image: AssetImage("assets/image/BGall.jpg"),
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          child: FutureBuilder(
-              future: loadDataMethods,
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Form(
-                    key: _formKey,
-                    child: Center(
-                      child: Stack(
-                        alignment: AlignmentDirectional.topCenter,
-                        children: [
-                          Card(
-                            elevation: 0,
-                            color: Colors.white,
-                            clipBehavior: Clip.hardEdge,
-                            margin: EdgeInsets.fromLTRB(32, 60, 32, 32),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 50),
-                                    child: upImg(),
-                                  ),
-                                  Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 30, right: 30, left: 30),
-                                      child: textField(
-                                          nameTeam,
-                                          'ชื่อทีม',
-                                          'ชื่อทีม*',
-                                          'กรุณาใส่ชื่อทีม',
-                                          false)),
-                                  Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 30, right: 30, left: 30),
-                                      child: textField(nameMember1, 'ตัวฉันเอง',
-                                          'ตัวฉันเอง', '', true)),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 30),
-                                    child: SizedBox(
-                                        width: 300,
-                                        child: SelectAndSearchmember()),
-                                  ),
-                                  SizedBox(
-                                    width: 250,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(30),
-                                      child: FilledButton(
-                                          onPressed: () async {
-                                            log("message");
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              log("message2");
-                                              //regis race  first team
-                                              // var b = await attendService
-                                              //     .attendByUserID(userID: idUser);
-                                              // attends = b.data;
-                                              //  log("asdfasdf  ${attends.first.atId}");
-                                              if (attends.isEmpty) {
-                                                log("Can join first attend");
-                                                setState(() {
-                                                  uploadFile();
-                                                });
-                                              }
-                                              if (attends.isNotEmpty) {
-                                                for (var j in attends) {
-                                                  log("message1");
-                                                  log("${j.atId}");
-                                                  // log("attend${j.datetime}");
-                                                  log("ST${raceST}");
-                                                  log("FN${raceFN}");
-                                                  log("stJoin${j.team.race.raceTimeSt}");
-                                                  log("fnJoin${j.team.race.raceTimeFn}");
-                                                  if (raceST.isAfter(j.team.race.raceTimeSt) &&
-                                                      raceST.isBefore(j.team.race
-                                                          .raceTimeFn) &&
-                                                      raceFN.isAfter(j.team.race
-                                                          .raceTimeSt) &&
-                                                      raceFN.isBefore(j.team.race
-                                                          .raceTimeFn)) {
-                                                    isJoin = true;
-                                                    log("can't join chk 4 condition");
-                                                    ScaffoldMessenger.of(context)
-                                                        .showSnackBar(
-                                                      SnackBar(
-                                                          content: Text(
-                                                              'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
-                                                    );
-                                                    break;
+            child: FutureBuilder(
+                future: loadDataMethods,
+                builder: (context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return Form(
+                      key: _formKey,
+                      child: Center(
+                        child: Stack(
+                          alignment: AlignmentDirectional.topCenter,
+                          children: [
+                            Card(
+                              elevation: 0,
+                              color: Colors.white,
+                              clipBehavior: Clip.hardEdge,
+                              margin: EdgeInsets.fromLTRB(32, 60, 32, 32),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 50),
+                                      child: upImg(),
+                                    ),
+                                    Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 30, right: 30, left: 30),
+                                        child: textField(
+                                            nameTeam,
+                                            'ชื่อทีม',
+                                            'ชื่อทีม*',
+                                            'กรุณาใส่ชื่อทีม',
+                                            false)),
+                                    Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 30, right: 30, left: 30),
+                                        child: textField(
+                                            nameMember1,
+                                            'ตัวฉันเอง',
+                                            'ตัวฉันเอง',
+                                            '',
+                                            true)),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 30),
+                                      child: SizedBox(
+                                          width: 300,
+                                          child: SelectAndSearchmember()),
+                                    ),
+                                    SizedBox(
+                                      width: 250,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(30),
+                                        child: FilledButton(
+                                            onPressed: () async {
+                                              log("message");
+                                              if (_formKey.currentState!
+                                                  .validate()) {
+                                                log("message2");
+                                                //regis race  first team
+                                                // var b = await attendService
+                                                //     .attendByUserID(userID: idUser);
+                                                // attends = b.data;
+                                                //  log("asdfasdf  ${attends.first.atId}");
+                                                if (attends.isEmpty) {
+                                                  log("Can join first attend");
+                                                  setState(() {
+                                                    uploadFile();
+                                                  });
+                                                }
+                                                if (attends.isNotEmpty) {
+                                                  for (var j in attends) {
+                                                    log("message1");
+                                                    log("${j.atId}");
+                                                    // log("attend${j.datetime}");
+                                                    log("ST${raceST}");
+                                                    log("FN${raceFN}");
+                                                    log("stJoin${j.team.race.raceTimeSt}");
+                                                    log("fnJoin${j.team.race.raceTimeFn}");
+                                                    if (raceST.isAfter(j.team.race.raceTimeSt) &&
+                                                        raceST.isBefore(j.team
+                                                            .race.raceTimeFn) &&
+                                                        raceFN.isAfter(j.team
+                                                            .race.raceTimeSt) &&
+                                                        raceFN.isBefore(j.team
+                                                            .race.raceTimeFn)) {
+                                                      isJoin = true;
+                                                      log("can't join chk 4 condition");
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        SnackBar(
+                                                            content: Text(
+                                                                'เคยลงทะเบียนเข้าร่วมในเวลานี้ไปแล้ว!!')),
+                                                      );
+                                                      break;
+                                                    }
+                                                  }
+                                                  if (isJoin == false) {
+                                                    uploadFile();
                                                   }
                                                 }
-                                                if (isJoin == false) {
-                                                  uploadFile();
-                                                }
                                               }
-                                            }
-                                          },
-                                          child: Text(
-                                            'สร้างทีม',
-                                            style: Get.textTheme.bodyLarge!
-                                                .copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Get.theme.colorScheme
-                                                        .onPrimary),
-                                          )),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 15, bottom: 15),
-                              child: Container(
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: Color.fromARGB(255, 222, 72, 249),
-                                  border:
-                                      Border.all(color: Colors.white, width: 3),
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(100),
+                                            },
+                                            child: Text(
+                                              'สร้างทีม',
+                                              style: Get.textTheme.bodyLarge!
+                                                  .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Get
+                                                          .theme
+                                                          .colorScheme
+                                                          .onPrimary),
+                                            )),
+                                      ),
+                                    )
+                                  ],
                                 ),
-                                child: Text('ลงทะเบียนการแข่งขัน',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        fontSize: 18)),
                               ),
                             ),
-                          )
-                        ],
+                            Positioned(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 15, bottom: 15),
+                                child: Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Color.fromARGB(255, 222, 72, 249),
+                                    border: Border.all(
+                                        color: Colors.white, width: 3),
+                                    shape: BoxShape.rectangle,
+                                    borderRadius: BorderRadius.circular(100),
+                                  ),
+                                  child: Text('ลงทะเบียนการแข่งขัน',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                          fontSize: 18)),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                } else {
-                  return Container();
-                }
-              }),
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
+          ),
         ),
       ),
     );

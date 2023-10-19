@@ -77,12 +77,13 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     try {
       idUser = context.read<AppData>().idUser;
       log('user ' + idUser.toString());
-      userName = context.read<AppData>().Username;
-      log('username ' + userName.toString());
+      // userName = context.read<AppData>().Username;
+      // log('username ' + userName.toString());
       var user = await userService.getUserByID(userID: idUser);
       users = user.data;
       imageUser = users.first.userImage;
       userFullName = users.first.userFullname;
+      userName = users.first.userName;
       userDescrip = users.first.userDiscription;
       var t = await attendService.attendByUserID(userID: idUser);
       teamAttends = t.data;
@@ -146,275 +147,284 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Scaffold(
-          backgroundColor: const Color.fromARGB(255, 245, 244, 244),
-          body: FutureBuilder(
-              future: loadDataMethod,
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 25),
-                    child: Column(
-                      children: [
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              PopupMenuButton(
-                                  icon: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(100),
-                                        color: Colors.white,
-                                        boxShadow: <BoxShadow>[
-                                          BoxShadow(
-                                            color: Color.fromARGB(
-                                                    255, 153, 152, 152)
-                                                .withOpacity(0.8),
-                                            blurRadius: 3.0,
-                                            offset: new Offset(0.0, 3.0),
-                                          ),
-                                        ],
-                                      ),
-                                      child: const FaIcon(
-                                          FontAwesomeIcons.elementor,
-                                          size: 38,
-                                          color: Colors.purpleAccent)),
-                                  onSelected: (result) {
-                                    if (result == 0) {
-                                      Get.to(() => Profile_edit());
-                                    }
-                                    if (result == 1) {
-                                      //  Navigator.pop(context);
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          backgroundColor: Color.fromARGB(
-                                              255, 255, 255, 255),
-                                          title:
-                                              Center(child: Text('ออกจากระบบ')),
-                                          content: Text(
-                                              'คุณต้องการจะออกจากระบบหรือไม่?'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () => Navigator.pop(
-                                                  context, 'Cancel'),
-                                              child: const Text('ยกเลิก',
-                                                  style: TextStyle(
-                                                      color: Colors.black)),
-                                            ),
-                                            SizedBox(
-                                                width: 120,
-                                                child: ElevatedButton(
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                            backgroundColor:
-                                                                Colors
-                                                                    .redAccent),
-                                                    onPressed: () async {
-                                                      Get.offAll(() => Login());
-                                                    },
-                                                    child: const Text(
-                                                      'ตกลง',
-                                                      style: TextStyle(
-                                                          color: Colors.white),
-                                                    )))
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8)),
-                                  offset: Offset(-6, 50),
-                                  itemBuilder: (BuildContext context) {
-                                    return [
-                                      _buildPopupMenuEdit(
-                                          'แก้ไขโปรไฟล์', Icons.edit, 0),
-                                      _buildPopupMenuExit('ออกจากระบบ',
-                                          Icons.exit_to_app_rounded, 1),
-                                    ];
-                                  }),
-                            ]),
-                        Container(
-                          height: height * 0.35,
-                          child: LayoutBuilder(
-                            builder: (context, constraints) {
-                              double innerHeight = constraints.maxHeight;
-                              double innerWidth = constraints.maxWidth;
-                              return Stack(
-                                fit: StackFit.expand,
-                                children: [
-                                  Positioned(
-                                    bottom: 0,
-                                    left: 0,
-                                    right: 0,
-                                    child: Container(
-                                      height: innerHeight * 0.73,
-                                      width: innerWidth,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(30),
-                                        color: Colors.white,
-                                        boxShadow: <BoxShadow>[
-                                          new BoxShadow(
-                                            color: Color.fromARGB(
-                                                    255, 153, 152, 152)
-                                                .withOpacity(0.8),
-                                            blurRadius: 3.0,
-                                            offset: new Offset(0.0, 3.0),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          SizedBox(
-                                            height: 80,
-                                          ),
-                                          Text('$userFullName ($userName)',
-                                              style: Get.textTheme.titleMedium!
-                                                  .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Get
-                                                          .theme
-                                                          .colorScheme
-                                                          .onBackground)),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(userDescrip,
-                                              style: Get.textTheme.titleSmall!
-                                                  .copyWith(
-                                                      color:
-                                                          const Color.fromARGB(
-                                                              255,
-                                                              118,
-                                                              118,
-                                                              118))),
-                                          Gap(5),
-                                          Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Image.asset(
-                                                  "assets/image/crown1.png",
-                                                  width: 35,
-                                                ),
-                                                Text(sum1.toString()),
-                                                Image.asset(
-                                                  "assets/image/crown2.png",
-                                                  width: 35,
-                                                ),
-                                                Text(sum2.toString()),
-                                                Image.asset(
-                                                  "assets/image/crown3.png",
-                                                  width: 35,
-                                                ),
-                                                Text(sum3.toString()),
-                                              ]),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    child: Center(
-                                      child: Container(
+    return SafeArea(
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Scaffold(
+            backgroundColor: const Color.fromARGB(255, 245, 244, 244),
+            body: FutureBuilder(
+                future: loadDataMethod,
+                builder: (context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        children: [
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                PopupMenuButton(
+                                    icon: Container(
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(100),
+                                          color: Colors.white,
                                           boxShadow: <BoxShadow>[
-                                            new BoxShadow(
-                                              color: const Color.fromARGB(
-                                                  255, 121, 121, 121),
+                                            BoxShadow(
+                                              color: Color.fromARGB(
+                                                      255, 153, 152, 152)
+                                                  .withOpacity(0.8),
                                               blurRadius: 3.0,
                                               offset: new Offset(0.0, 3.0),
                                             ),
                                           ],
                                         ),
-                                        child: CircleAvatar(
-                                          radius: Get.width / 6,
-                                          backgroundImage:
-                                              NetworkImage(imageUser),
+                                        child: const FaIcon(
+                                            FontAwesomeIcons.elementor,
+                                            size: 38,
+                                            color: Colors.purpleAccent)),
+                                    onSelected: (result) {
+                                      if (result == 0) {
+                                        Get.to(() => Profile_edit())!
+                                            .then((value) {
+                                          setState(() {
+                                            loadDataMethod = loadData();
+                                            log('Goback');
+                                          });
+                                        });
+                                      }
+                                      if (result == 1) {
+                                        //  Navigator.pop(context);
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            backgroundColor: Color.fromARGB(
+                                                255, 255, 255, 255),
+                                            title: Center(
+                                                child: Text('ออกจากระบบ')),
+                                            content: Text(
+                                                'คุณต้องการจะออกจากระบบหรือไม่?'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, 'Cancel'),
+                                                child: const Text('ยกเลิก',
+                                                    style: TextStyle(
+                                                        color: Colors.black)),
+                                              ),
+                                              SizedBox(
+                                                  width: 120,
+                                                  child: ElevatedButton(
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                              backgroundColor:
+                                                                  Colors
+                                                                      .redAccent),
+                                                      onPressed: () async {
+                                                        Get.offAll(
+                                                            () => Login());
+                                                      },
+                                                      child: const Text(
+                                                        'ตกลง',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      )))
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    offset: Offset(-6, 50),
+                                    itemBuilder: (BuildContext context) {
+                                      return [
+                                        _buildPopupMenuEdit(
+                                            'แก้ไขโปรไฟล์', Icons.edit, 0),
+                                        _buildPopupMenuExit('ออกจากระบบ',
+                                            Icons.exit_to_app_rounded, 1),
+                                      ];
+                                    }),
+                              ]),
+                          Container(
+                            height: height * 0.35,
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                double innerHeight = constraints.maxHeight;
+                                double innerWidth = constraints.maxWidth;
+                                return Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    Positioned(
+                                      bottom: 0,
+                                      left: 0,
+                                      right: 0,
+                                      child: Container(
+                                        height: innerHeight * 0.73,
+                                        width: innerWidth,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                          color: Colors.white,
+                                          boxShadow: <BoxShadow>[
+                                            new BoxShadow(
+                                              color: Color.fromARGB(
+                                                      255, 153, 152, 152)
+                                                  .withOpacity(0.8),
+                                              blurRadius: 3.0,
+                                              offset: new Offset(0.0, 3.0),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            SizedBox(
+                                              height: 80,
+                                            ),
+                                            Text('$userFullName ($userName)',
+                                                style: Get
+                                                    .textTheme.titleMedium!
+                                                    .copyWith(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Get
+                                                            .theme
+                                                            .colorScheme
+                                                            .onBackground)),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Text(userDescrip,
+                                                style: Get.textTheme.titleSmall!
+                                                    .copyWith(
+                                                        color: const Color
+                                                                .fromARGB(255,
+                                                            118, 118, 118))),
+                                            Gap(5),
+                                            Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  Image.asset(
+                                                    "assets/image/crown1.png",
+                                                    width: 35,
+                                                  ),
+                                                  Text(sum1.toString()),
+                                                  Image.asset(
+                                                    "assets/image/crown2.png",
+                                                    width: 35,
+                                                  ),
+                                                  Text(sum2.toString()),
+                                                  Image.asset(
+                                                    "assets/image/crown3.png",
+                                                    width: 35,
+                                                  ),
+                                                  Text(sum3.toString()),
+                                                ]),
+                                          ],
                                         ),
                                       ),
                                     ),
+                                    Positioned(
+                                      top: 0,
+                                      left: 0,
+                                      right: 0,
+                                      child: Center(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(100),
+                                            boxShadow: <BoxShadow>[
+                                              new BoxShadow(
+                                                color: const Color.fromARGB(
+                                                    255, 121, 121, 121),
+                                                blurRadius: 3.0,
+                                                offset: new Offset(0.0, 3.0),
+                                              ),
+                                            ],
+                                          ),
+                                          child: CircleAvatar(
+                                            radius: Get.width / 6,
+                                            backgroundImage:
+                                                NetworkImage(imageUser),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          SizedBox(
+                            height: 45,
+                            child: TabBar(
+                              dividerColor: Colors.transparent,
+                              indicatorPadding: EdgeInsets.zero,
+                              indicatorSize: TabBarIndicatorSize.label,
+                              indicator: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: Colors.purpleAccent),
+                              controller: _tabController,
+                              // give the indicator a decoration (color and border radius)
+
+                              labelColor: Colors.white,
+
+                              // unselectedLabelColor: Colors.black,
+                              tabs: [
+                                Tab(
+                                  child: Container(
+                                    // decoration: BoxDecoration(
+                                    //     borderRadius: BorderRadius.circular(50),
+                                    //     border: Border.all(color: Colors.redAccent, width: 1)),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text("เคยสร้าง"),
+                                    ),
                                   ),
-                                ],
-                              );
-                            },
+                                ),
+                                Tab(
+                                  child: Container(
+                                    // decoration: BoxDecoration(
+                                    //     borderRadius: BorderRadius.circular(50),
+                                    //     border: Border.all(color: Colors.redAccent, width: 1)),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text("เคยเข้าร่วม"),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        SizedBox(
-                          height: 45,
-                          child: TabBar(
-                            dividerColor: Colors.transparent,
-                            indicatorPadding: EdgeInsets.zero,
-                            indicatorSize: TabBarIndicatorSize.label,
-                            indicator: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: Colors.purpleAccent),
-                            controller: _tabController,
-                            // give the indicator a decoration (color and border radius)
-                            
-                            labelColor: Colors.white,
+                          Expanded(
+                            child: TabBarView(
+                              controller: _tabController,
+                              children: [
+                                // first tab bar view widget
+                                Center(child: Static_create()),
 
-                            // unselectedLabelColor: Colors.black,
-                            tabs: [
-                             Tab(
-                  child: Container(
-                    // decoration: BoxDecoration(
-                    //     borderRadius: BorderRadius.circular(50),
-                    //     border: Border.all(color: Colors.redAccent, width: 1)),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text("เคยสร้าง"),
-                    ),
-                  ),
-                ),
-                Tab(
-                  child: Container(
-                    // decoration: BoxDecoration(
-                    //     borderRadius: BorderRadius.circular(50),
-                    //     border: Border.all(color: Colors.redAccent, width: 1)),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text("เคยเข้าร่วม"),
-                    ),
-                  ),
-                ),
-                            ],
+                                // second tab bar view widget
+                                Center(child: Static_join()),
+                              ],
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: TabBarView(
-                            controller: _tabController,
-                            children: [
-                              // first tab bar view widget
-                              Center(child: Static_create()),
-
-                              // second tab bar view widget
-                              Center(child: Static_join()),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                } else {
-                  return Container();
-                }
-              }),
-        )
-      ],
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
+          )
+        ],
+      ),
     );
   }
 

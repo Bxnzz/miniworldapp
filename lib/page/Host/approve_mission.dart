@@ -199,11 +199,11 @@ class _ApproveMissionState extends State<ApproveMission> {
 
       playerIds.clear();
       for (var element in at.data) {
-        if(element.user.onesingnalId != ''){
-         playerIds.add(element.user.onesingnalId);
-      }
+        if (element.user.onesingnalId != '') {
+          playerIds.add(element.user.onesingnalId);
         }
-        
+      }
+
       log('att ' + playerIds.toString());
 
       var u = await userService.getUserByID(userID: iduser);
@@ -264,10 +264,9 @@ class _ApproveMissionState extends State<ApproveMission> {
           OSActionButton(text: "ยกเลิก", id: "id2")
         ]);
 
-      var response1 = await OneSignal.shared.postNotification(notification1);
+    var response1 = await OneSignal.shared.postNotification(notification1);
 
-     Navigator.of(context).pop();
-     
+    Navigator.of(context).pop();
 
     stopLoading();
     // Navigator.of(context).pop();
@@ -315,10 +314,9 @@ class _ApproveMissionState extends State<ApproveMission> {
 
                     var response1 =
                         await OneSignal.shared.postNotification(notification1);
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
                     stopLoading();
-                    
                   },
                   child: Text('ส่ง',
                       style: TextStyle(color: Get.theme.colorScheme.onPrimary)),
@@ -359,6 +357,11 @@ class _ApproveMissionState extends State<ApproveMission> {
                                       setdialog(() {
                                         _selected = index;
                                         log(message[_selected].masseage);
+                                        if (message[_selected].masseage ==
+                                            'อื่นๆ ...') {
+                                          message[_selected].masseage ==
+                                              anothor.text;
+                                        }
                                       });
                                     });
                               }),
@@ -671,7 +674,6 @@ class _ApproveMissionState extends State<ApproveMission> {
                       }
                       Navigator.of(context).pop();
                       stopLoading();
-                    
                     },
                     child: Text('ตกลง'.toUpperCase()),
                   ),
