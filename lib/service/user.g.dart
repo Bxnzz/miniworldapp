@@ -19,9 +19,9 @@ class _UserService implements UserService {
   String? baseUrl;
 
   @override
-  Future<HttpResponse<List<User>>> getUserByName(userName) async {
+  Future<HttpResponse<List<User>>> getUserByName({required userName}) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'userID': userName};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio
@@ -32,7 +32,7 @@ class _UserService implements UserService {
     )
             .compose(
               _dio.options,
-              '/user/${userName}',
+              '/user/',
               queryParameters: queryParameters,
               data: _data,
             )

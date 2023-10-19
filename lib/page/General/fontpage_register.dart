@@ -12,9 +12,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:hex/hex.dart';
 import 'package:http/http.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:miniworldapp/page/General/authenGG.dart';
 import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/service/user.dart';
 import 'package:path_provider/path_provider.dart';
@@ -25,6 +27,7 @@ import '../../model/DTO/registerDTO.dart';
 import '../../service/Register.dart';
 import '../../service/provider/appdata.dart';
 import 'package:random_avatar/random_avatar.dart';
+import 'package:base32/base32.dart';
 
 import '../../widget/loadData.dart';
 
@@ -61,7 +64,9 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
   String passwordINDB = '';
   String passwordDecode = '';
   String svg = '';
+  String uri = '';
   late String svgInDB = '';
+  String authenUname = 'player';
   late var bytes;
   late var digest;
   late Future readSvg;
@@ -82,6 +87,18 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
       DateTime.now().toIso8601String(),
       trBackground: false,
     );
+  }
+
+  String getGoogleAuthenticatorUri(String appname, String email, String key) {
+    List<int> list = utf8.encode(email + key);
+    String hex = HEX.encode(list);
+    String secret = base32.encodeHexString(hex);
+    log('secret $secret');
+    uri =
+        'otpauth://totp/${Uri.encodeComponent('$appname:$email?secret=$secret&issuer=$appname')}';
+    //uri2 = 'otpauth://totp/$appname:$email?secret=$secret&issuer=$appname';
+
+    return uri;
   }
 
   _write(String text) async {
@@ -148,26 +165,26 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('สมัครสมาชิก'),
+        title: Text('สมัครสมาชิก 1/2'),
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            image: const DecorationImage(
-              image: AssetImage("assets/image/NewBG.jpg"),
-              fit: BoxFit.cover,
-            ),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          image: const DecorationImage(
+            image: AssetImage("assets/image/NewBG.jpg"),
+            fit: BoxFit.cover,
           ),
-          child: Form(
-            key: _formKey,
+        ),
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 80),
+              padding: const EdgeInsets.only(top: 80),
+              child: SingleChildScrollView(
                 child: Column(
                   children: [
                     _image != null
@@ -397,13 +414,13 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                             keyboardType: TextInputType.multiline,
                             minLines: 3,
                             maxLines: 4,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'แนะนำตัวคุณหน่อย.';
-                              }
+                            // validator: (value) {
+                            //   if (value == null || value.isEmpty) {
+                            //     return 'แนะนำตัวคุณหน่อย.';
+                            //   }
 
-                              return null;
-                            },
+                            //   return null;
+                            // },
                           ),
                         ),
                       ],
@@ -462,6 +479,22 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
                     //             File(svgFile!.path),
                     //           ))
                     //         : widget),
+
+                    ///   TEST authen GG//
+                    // ElevatedButton(
+                    //     onPressed: () {
+                    //       context.read<AppData>().authenUPass =
+                    //           '678e82d907d3e6e71f81d5cf3ddacc3671dc618c38a1b7a9f9393a83d025b296';
+                    //       context.read<AppData>().authenUMail =
+                    //           'test01@gmail.com';
+                    //       getGoogleAuthenticatorUri(
+                    //           "mnrace",
+                    //           'test01@gmail.com',
+                    //           '678e82d907d3e6e71f81d5cf3ddacc3671dc618c38a1b7a9f9393a83d025b296');
+                    //       context.read<AppData>().authenUri = uri;
+                    //       Get.off(() => AuthenGG());
+                    //     },
+                    //     child: Text("authen"))
                   ],
                 ),
               ),
@@ -499,23 +532,24 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
       Widget okButton = TextButton(
         child: const Text("OK"),
         onPressed: () {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const Login(),
-                settings: const RouteSettings(arguments: null),
-              ));
+          context.read<AppData>().authenUPass = digest.toString();
+          context.read<AppData>().authenUMail = email.text;
+          getGoogleAuthenticatorUri("mnrace", email.text, digest.toString());
+          context.read<AppData>().authenUri = uri;
+          Get.off(() => AuthenGG());
+
+          // Navigator.pushReplacement(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => const Login(),
+          //       settings: const RouteSettings(arguments: null),
+          //     ));
         },
       );
 
       // set up the AlertDialog
       AlertDialog alert01 = AlertDialog(
-        title: const Text("ลงทะเบียนสำเร็จ !!"),
-        content: const Text(""),
-        actions: [
-          okButton,
-        ],
-      );
+          title: const Text("ลงทะเบียนสำเร็จ !!"), content: okButton);
 
       // show the dialog
       showDialog(
@@ -641,8 +675,8 @@ class _FontRegisterPageState extends State<FontRegisterPage> {
         });
 
         userName.clear();
-        email.clear();
-        password.clear();
+        // email.clear();
+        //  password.clear();
         confirmpassword.clear();
         fullname.clear();
         description.clear();

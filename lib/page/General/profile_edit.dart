@@ -12,6 +12,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:hex/hex.dart';
+
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:installed_apps/app_info.dart';
@@ -25,6 +26,8 @@ import 'package:miniworldapp/page/General/login.dart';
 import 'package:miniworldapp/service/provider/appdata.dart';
 import 'package:miniworldapp/service/user.dart';
 import 'package:otp/otp.dart';
+import 'package:crypto/crypto.dart';
+
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
@@ -68,6 +71,7 @@ class _Profile_editState extends State<Profile_edit> {
   String uri2 = '';
   String value = '';
   CroppedFile? croppedImage;
+  String urlDownload = '';
 
   @override
   void initState() {
@@ -147,20 +151,22 @@ class _Profile_editState extends State<Profile_edit> {
       );
     }
 
-    final path = 'files/${_image?.path.split('/').last}';
-    final file = File(_image!.path!);
-    final ref = FirebaseStorage.instance.ref().child(path);
-    log(ref.toString());
+    if (_image != null) {
+      final path = 'files/${_image?.path.split('/').last}';
+      final file = File(_image!.path!);
+      final ref = FirebaseStorage.instance.ref().child(path);
+      log(ref.toString());
 
-    setState(() {
-      uploadTask = ref.putFile(file);
-    });
-    final snapshot = await uploadTask!.whenComplete(() {});
+      setState(() {
+        uploadTask = ref.putFile(file);
+      });
+      final snapshot = await uploadTask!.whenComplete(() {});
 
-    String urlDownload = await snapshot.ref.getDownloadURL();
-    log('Download Link:$urlDownload');
+      urlDownload = await snapshot.ref.getDownloadURL();
+      log('Download Link:$urlDownload');
+    }
     img = urlDownload;
-    if (urlDownload == null) {
+    if (urlDownload == '') {
       urlDownload = '';
     }
     avata.currentWidget;
@@ -268,9 +274,22 @@ class _Profile_editState extends State<Profile_edit> {
             fontSize: 20,
           ),
         ),
-        elevation: 0,
         backgroundColor: Colors.transparent,
         centerTitle: false,
+        leading: IconButton(
+          onPressed: () {
+            try {
+              Get.back();
+            } catch (e) {
+              log('ERRx ' + e.toString());
+            }
+          },
+          icon: const FaIcon(
+            FontAwesomeIcons.circleChevronLeft,
+            color: Colors.yellow,
+            size: 35,
+          ),
+        ),
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -486,8 +505,8 @@ class _Profile_editState extends State<Profile_edit> {
                   // getGoogleAuthenticatorUri(
                   //     "mnrace", userMail.text, users.first.userPassword);
                   // log(getTotp(userMail.text + users.first.userPassword));
-
-                  passwordRenew(context);
+                  editpass(context);
+                  //   passwordRenew(context);
                 },
                 child: Text("เปลี่ยนรหัสผ่าน")),
           ],
@@ -529,9 +548,9 @@ class _Profile_editState extends State<Profile_edit> {
                 height: Get.height,
                 child: Column(
                   children: [
-                    Gap(20),
+                    Gap(50),
                     Text(
-                      "สแกน QRCODE\nแอบพลิเคชั่น \"Authenicator\"",
+                      "สแกน QRCODE\nแอบพลิเคชั่น \"Authenticator\"",
                       textAlign: TextAlign.center,
                       style: Get.theme.textTheme.displayMedium?.copyWith(
                         fontWeight: FontWeight.bold,
@@ -539,24 +558,34 @@ class _Profile_editState extends State<Profile_edit> {
                         fontSize: 20,
                       ),
                     ),
-                    Gap(20),
+                    Gap(50),
                     Image.network(
                         'https://www.google.com/chart?chs=200x200&chld=M|0&cht=qr&chl=$uri'),
+                    Gap(20),
+                    Text(
+                      "ใช้ Google Authenticator \nเพื่อสร้างรหัสยืนยันตัวตนเมื่อต้องการเปลี่ยนรหัสผ่าน",
+                      textAlign: TextAlign.center,
+                    ),
+
                     Padding(
-                      padding: const EdgeInsets.only(left: 70),
-                      child: TextButton(
-                          onPressed: () async {
-                            AppInfo app = await InstalledApps.getAppInfo(
-                                'com.google.android.apps.authenticator2');
-                            if (app.name!.isEmpty) {
-                              log('Not installed. Show QR');
-                            } else {
-                              log(app.name!);
-                              await launchUrl(Uri.parse(uri2));
-                            }
-                            //  await launchUrl(Uri.parse(uri2));
-                          },
-                          child: Text("เปิด Authenicator")),
+                      padding: EdgeInsets.only(top: 80),
+                      child: FilledButton(
+                        onPressed: () async {
+                          AppInfo app = await InstalledApps.getAppInfo(
+                              'com.google.android.apps.authenticator2');
+                          if (app.name!.isEmpty) {
+                            log('Not installed. Show QR');
+                          } else {
+                            log(app.name!);
+                            await launchUrl(Uri.parse(uri2));
+                          }
+                          //  await launchUrl(Uri.parse(uri2));
+                        },
+                        child: Text("เปิด Authenicator",
+                            style: Get.textTheme.bodyLarge!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Get.theme.colorScheme.background)),
+                      ),
                     ),
 
                     Gap(20),
@@ -695,7 +724,7 @@ class _Profile_editState extends State<Profile_edit> {
                           if (await _formKey2.currentState!.validate()) {
                             setState(() {});
                             await chengePassword();
-                            Get.to(() => Login());
+                            Get.offAll(() => Login());
                           }
                         },
                         child: Text("เปลี่ยนรหัสผ่าน"))
@@ -731,8 +760,12 @@ class _Profile_editState extends State<Profile_edit> {
   }
 
   Future<void> chengePassword() async {
+    late var bytes;
+    late var digest;
+    bytes = utf8.encode(newPassword.text); // data being hashed
+    digest = sha256.convert(bytes);
     PasswordChengeDto passChenge =
-        PasswordChengeDto(userPassword: newPassword.text);
+        PasswordChengeDto(userPassword: digest.toString());
 
     var userChangePass = await userservice.chengePassword(
       passChenge,

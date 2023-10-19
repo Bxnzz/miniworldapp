@@ -102,243 +102,252 @@ class _DetailRaceState extends State<DetailRace> {
     height = size.height;
     width = size.width;
     return Scaffold(
-      body: FutureBuilder(
-          future: loadDataMethod,
-          builder: (context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return Stack(
-                children: [
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    child: SizedBox(
-                      width: double.maxFinite,
-                      height: 300,
-                      child: Image.network(
-                        UrlImg,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 15,
-                    left: 10,
-                    right: 5,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            icon: FaIcon(
-                              FontAwesomeIcons.circleChevronLeft,
-                              color: Colors.yellow,
-                              size: 35,
-                            ),
-                          ),
-                          // Container(
-                          //   padding: EdgeInsets.all(8),
-                          //   decoration: BoxDecoration(
-                          //     color: Colors.white,
-                          // borderRadius: BorderRadius.circular(100)
-                          //   ),
-                          //   child: FaIcon(FontAwesomeIcons.arrowLeft),
-                          // )
-                        ]),
-                  ),
-                  Positioned(
+      body: SafeArea(
+        child: FutureBuilder(
+            future: loadDataMethod,
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return Stack(
+                  children: [
+                    Positioned(
                       left: 0,
                       right: 0,
-                      top: height / 3.25,
-                      bottom: 0,
-                      child: Container(
-                        padding: EdgeInsets.only(
-                            left: height / 42.2,
-                            right: height / 42.2,
-                            //  bottom: 600,
-                            top: 0),
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(35),
-                              topRight: Radius.circular(35)),
-                          color: Colors.white,
+                      child: SizedBox(
+                        width: double.maxFinite,
+                        height: 300,
+                        child: Image.network(
+                          UrlImg,
+                          fit: BoxFit.cover,
                         ),
-                        child: Column(children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 6),
-                            child: Center(
-                                child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                Rname,
-                                style: textTheme.bodyText1?.copyWith(
-                                  fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Positioned(
+                      top: 15,
+                      left: 10,
+                      right: 5,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              icon: FaIcon(
+                                FontAwesomeIcons.circleChevronLeft,
+                                color: Colors.yellow,
+                                size: 35,
+                              ),
+                            ),
+                            // Container(
+                            //   padding: EdgeInsets.all(8),
+                            //   decoration: BoxDecoration(
+                            //     color: Colors.white,
+                            // borderRadius: BorderRadius.circular(100)
+                            //   ),
+                            //   child: FaIcon(FontAwesomeIcons.arrowLeft),
+                            // )
+                          ]),
+                    ),
+                    Positioned(
+                        left: 0,
+                        right: 0,
+                        top: height / 3.25,
+                        bottom: 0,
+                        child: Container(
+                          padding: EdgeInsets.only(
+                              left: height / 42.2,
+                              right: height / 42.2,
+                              //  bottom: 600,
+                              top: 0),
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(35),
+                                topRight: Radius.circular(35)),
+                            color: Colors.white,
+                          ),
+                          child: Column(children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6),
+                              child: Center(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  Rname,
+                                  style: textTheme.bodyText1?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
+                              )),
+                            ),
+                            const Divider(),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 8, bottom: 4),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const FaIcon(
+                                    FontAwesomeIcons.locationDot,
+                                    size: 18,
+                                    color: Colors.grey,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 17),
+                                    child: Text(Rlocation),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const Divider(),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 8, bottom: 4),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const FaIcon(
+                                    FontAwesomeIcons.peopleGroup,
+                                    size: 18,
+                                    color: Colors.grey,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8),
+                                    child: Text('$team ทีม'),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const Divider(),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 8, bottom: 4),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const FaIcon(
+                                    FontAwesomeIcons.solidCalendarPlus,
+                                    size: 18,
+                                    color: Colors.grey,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 13),
+                                    child: Text(singUpST),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const Divider(),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 8, bottom: 4),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const FaIcon(
+                                    FontAwesomeIcons.solidCalendarXmark,
+                                    size: 18,
+                                    color: Colors.grey,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 13),
+                                    child: Text(singUpFN),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const Divider(),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 8, bottom: 4),
+                              child: Row(
+                                children: [
+                                  const FaIcon(
+                                    FontAwesomeIcons.solidClock,
+                                    size: 18,
+                                    color: Colors.grey,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 13),
+                                    child: Text(raceTimeST),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const Divider(),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 8, bottom: 4),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  FaIcon(
+                                    FontAwesomeIcons.solidCircleXmark,
+                                    size: 18,
+                                    color: Colors.grey,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 13),
+                                    child: Text(raceTimeFN),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const Divider(),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 8, bottom: 4),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  FaIcon(
+                                    FontAwesomeIcons.solidCalendarCheck,
+                                    size: 18,
+                                    color: Colors.grey,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 13),
+                                    child: Text(eventDatetime),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Divider(),
+                            Center(
+                                child: SizedBox(
+                              width: 200,
+                              child: Column(
+                                children: [
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    CeateTeam()));
+                                        context.read<AppData>().idrace = idrace;
+                                      },
+                                      child: Text('ลงทะเบียน')),
+                                  // ElevatedButton(
+                                  // onPressed: () {
+                                  //   Navigator.push(
+                                  //       context,
+                                  //       MaterialPageRoute(
+                                  //           builder: (context) => Home()));
+                                  //   context.read<AppData>().idrace = idrace;
+                                  // },
+                                  // child: Text('test')),
+                                ],
                               ),
                             )),
-                          ),
-                          const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8, bottom: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const FaIcon(
-                                  FontAwesomeIcons.locationDot,
-                                  size: 18,
-                                  color: Colors.grey,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 17),
-                                  child: Text(Rlocation),
-                                )
-                              ],
-                            ),
-                          ),
-                          const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8, bottom: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const FaIcon(
-                                  FontAwesomeIcons.peopleGroup,
-                                  size: 18,
-                                  color: Colors.grey,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8),
-                                  child: Text('$team ทีม'),
-                                )
-                              ],
-                            ),
-                          ),
-                          const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8, bottom: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const FaIcon(
-                                  FontAwesomeIcons.solidCalendarPlus,
-                                  size: 18,
-                                  color: Colors.grey,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 13),
-                                  child: Text(singUpST),
-                                )
-                              ],
-                            ),
-                          ),
-                          const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8, bottom: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const FaIcon(
-                                  FontAwesomeIcons.solidCalendarXmark,
-                                  size: 18,
-                                  color: Colors.grey,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 13),
-                                  child: Text(singUpFN),
-                                )
-                              ],
-                            ),
-                          ),
-                          const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8, bottom: 4),
-                            child: Row(
-                              children: [
-                                const FaIcon(
-                                  FontAwesomeIcons.solidClock,
-                                  size: 18,
-                                  color: Colors.grey,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 13),
-                                  child: Text(raceTimeST),
-                                )
-                              ],
-                            ),
-                          ),
-                          const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8, bottom: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                FaIcon(
-                                  FontAwesomeIcons.solidCircleXmark,
-                                  size: 18,
-                                  color: Colors.grey,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 13),
-                                  child: Text(raceTimeFN),
-                                )
-                              ],
-                            ),
-                          ),
-                          const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8, bottom: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                FaIcon(
-                                  FontAwesomeIcons.solidCalendarCheck,
-                                  size: 18,
-                                  color: Colors.grey,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 13),
-                                  child: Text(eventDatetime),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Divider(),
-                          Center(
-                              child: SizedBox(
-                            width: 200,
-                            child: Column(
-                              children: [
-                                ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CeateTeam()));
-                                      context.read<AppData>().idrace = idrace;
-                                    },
-                                    child: Text('ลงทะเบียน')),
-                                // ElevatedButton(
-                                // onPressed: () {
-                                //   Navigator.push(
-                                //       context,
-                                //       MaterialPageRoute(
-                                //           builder: (context) => Home()));
-                                //   context.read<AppData>().idrace = idrace;
-                                // },
-                                // child: Text('test')),
-                              ],
-                            ),
-                          )),
-                        ]),
-                      ))
-                ],
-              );
-            } else {
-              return const CircularProgressIndicator();
-            }
-          }),
+                          ]),
+                        ))
+                  ],
+                );
+              } else {
+                return const CircularProgressIndicator();
+              }
+            }),
+      ),
     );
   }
 }

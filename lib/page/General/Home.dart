@@ -215,7 +215,7 @@ class _HomeState extends State<Home> {
             child: ListSpactator(),
           ),
           Container(
-            color: Colors.blue,
+            // color: Colors.blue,
             alignment: Alignment.center,
             child: Profile(),
           ),
