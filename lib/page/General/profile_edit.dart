@@ -250,7 +250,7 @@ class _Profile_editState extends State<Profile_edit> {
           if (value == null || value.isEmpty) {
             return 'ใส่Pin.';
           }
-          if (value != getTotp(userMail.text + users.first.userPassword)) {
+          if (value != getTotp(userMail.text)) {
             return 'ใส่ PIN ไม่ถูกต้อง.';
           }
 
@@ -494,9 +494,8 @@ class _Profile_editState extends State<Profile_edit> {
           children: [
             TextButton(
                 onPressed: () async {
-                  getGoogleAuthenticatorUri(
-                      "mnrace", userMail.text, users.first.userPassword);
-                  log(getTotp(userMail.text + users.first.userPassword));
+                  getGoogleAuthenticatorUri("mnrace", userMail.text, '');
+                  log(getTotp(userMail.text));
                   regisOTP(context);
                 },
                 child: Text("ลงทะเบียน OTP")),

@@ -18,6 +18,10 @@ abstract class UserService {
   Future<HttpResponse<List<User>>> getUserByName(
       {@Query("userID") required String userName});
 
+  @GET("/user/")
+  Future<HttpResponse<List<User>>> getUserByEmail(
+      {@Query("userMail") required String userMail});
+
   @GET("/user")
   Future<HttpResponse<List<User>>> getUserAll();
 
