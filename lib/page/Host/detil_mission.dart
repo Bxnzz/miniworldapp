@@ -52,7 +52,7 @@ class _DetailMissionState extends State<DetailMission> {
   String type2 = '';
   String type3 = '';
   String mType = '';
-  String types = '';
+  String misType = '';
 
   bool isLoaded = false;
 
@@ -146,7 +146,19 @@ class _DetailMissionState extends State<DetailMission> {
     try {
       var a = await missionService.missionByraceID(raceID: idrace);
       missions = a.data;
-      mType = a.data.first.misType.toString();
+      //mType = a.data.first.misType.toString();
+
+      // if (mType.contains('12')) {
+      //   misType = 'ข้อความ,สื่อ';
+      // } else if (misType.contains('1')) {
+      //   misType = 'ข้อความ';
+      // } else if (misType.contains('2')) {
+      //   misType = 'รูป,คลิป';
+      // } else if (misType.contains('3')) {
+      //   misType = 'ไม่มีการส่ง';
+      // } else {
+      //   return;
+      // }
 
       isLoaded = true;
     } catch (err) {
@@ -168,11 +180,12 @@ class _DetailMissionState extends State<DetailMission> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async{
-        Get.to(()=> Home());
-      return true;
+      onWillPop: () async {
+        Get.to(() => Home());
+        return true;
       },
       child: Scaffold(
+        // backgroundColor: Color.fromARGB(255, 243, 216, 248),
         appBar: AppBar(
           // Overide the default Back button
           // automaticallyImplyLeading: false,
@@ -205,7 +218,7 @@ class _DetailMissionState extends State<DetailMission> {
                   // Prevent the ListView from scrolling when an item is
                   // currently being dragged.
                   padding: const EdgeInsets.only(bottom: 24),
-    
+
                   children: [
                     const Divider(height: 0),
                     const Padding(padding: EdgeInsets.only(bottom: 8)),
@@ -304,7 +317,23 @@ class _DetailMissionState extends State<DetailMission> {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final number = <int>[mis.misSeq];
-
+  mType = mis.misType.toString();
+  if (mType == '12' ) {
+        misType = 'ข้อความ,สื่อ';
+        log('aaaa');
+      } else if (misType == '1') {
+        log('22222222');
+        misType = 'ข้อความ';
+      } else if (misType == '2') {
+        log('3333333');
+        misType = 'รูป,คลิป';
+      } else if (misType =='3') {
+        log('555555');
+        misType = 'ไม่มีการส่ง';
+      } else {
+        log('asasasasas');
+      }
+    log('ประเภท '+mType);
     return Slidable(
       endActionPane: ActionPane(motion: const BehindMotion(), children: [
         SlidableAction(
@@ -360,7 +389,7 @@ class _DetailMissionState extends State<DetailMission> {
                             if (misRe.result == '1') {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                    content: Text('delete Successful')),
+                                    content: Text('ลบภารกิจสำเร็จ!!')),
                               );
 
                               // missions.removeWhere((element) {
@@ -375,7 +404,7 @@ class _DetailMissionState extends State<DetailMission> {
                               // log("team fail");
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                    content: Text('delete fail try agin!')),
+                                    content: Text('ลบภารกิจไม่สำเร็จ!')),
                               );
 
                               return;
@@ -396,64 +425,102 @@ class _DetailMissionState extends State<DetailMission> {
           label: 'แก้ไข',
           backgroundColor: Colors.amberAccent,
           onPressed: (BuildContext context) {
-          showDialog<void>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const Dialog.fullscreen(
-                        child: EditMission(),
-                      );
-                    },
-                  ).then((value) {
-                    setState(() {
-                      _buildVerticalLanguageList();
-                      loadDataMethod = loadData();
-                    });
-                  });
+            showDialog<void>(
+              context: context,
+              builder: (BuildContext context) {
+                return const Dialog.fullscreen(
+                  child: EditMission(),
+                );
+              },
+            ).then((value) {
+              setState(() {
+                _buildVerticalLanguageList();
+                loadDataMethod = loadData();
+              });
+            });
             context.read<AppData>().idMis = mis.misId;
           },
           icon: Icons.edit,
         ),
       ]),
-      child: Container(
-        alignment: Alignment.center,
-        // For testing different size item. You can comment this line
-        padding: mis.misName == mis.misName
-            ? const EdgeInsets.symmetric(vertical: 16.0)
-            : EdgeInsets.zero,
-        child: ListTile(
-          title: Text(
-            mis.misDiscrip,
-            style: textTheme.bodyText2?.copyWith(
-              fontSize: 16,
-            ),
-          ),
-          subtitle: Text(
-            mis.misName,
-            style: textTheme.bodyText1?.copyWith(
-              fontSize: 15,
-            ),
-          ),
-          leading: SizedBox(
-            width: 36,
-            height: 36,
-            child: Center(
-              child: Text(
-                //int sortn = mis.misSeq,
-                '${missions.indexOf(mis) + 1}',
-                style: textTheme.bodyLarge?.copyWith(
-                  color: Colors.purple,
-                  fontSize: 16,
+      child: ClipRRect(
+        
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          height: 120,
+          color: Colors.white,
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 100,
+                height: 120,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(mis.misMediaUrl),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-            ),
-          ),
-          trailing: const Handle(
-            delay: Duration(milliseconds: 0),
-            capturePointer: true,
-            child: Icon(
-              Icons.drag_handle,
-              color: Colors.grey,
-            ),
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        //int sortn = mis.misSeq,
+                        '# ${missions.indexOf(mis) + 1} ${mis.misName}',
+                        style: textTheme.bodyLarge?.copyWith(
+                          color: Colors.purple,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 8, bottom: 8, left: 10,right: 10),
+                          child: FaIcon(FontAwesomeIcons.filePen),
+                        ),
+           
+                        Container(
+                          width: 180,
+                          child: Text(
+                            mis.misDiscrip,
+                            overflow: TextOverflow.ellipsis,
+                            style: textTheme.bodyLarge!,
+                            maxLines: 1,
+                            // new),
+                          ),
+                        )
+                      ],
+                    ),
+                    
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Text('ประเภท ' + mis.misType.toString(),
+                      
+                          style: textTheme.bodyLarge!
+                              .copyWith(color: Colors.grey)),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 15),
+                child: Handle(
+                  delay: Duration(milliseconds: 0),
+                  capturePointer: true,
+                  child: Icon(
+                    Icons.drag_handle,
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
