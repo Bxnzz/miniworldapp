@@ -6,7 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:miniworldapp/model/result/attendRaceResult.dart';
+import 'package:miniworldapp/model/team.dart';
 import 'package:miniworldapp/page/General/Home.dart';
+import 'package:miniworldapp/service/attend.dart';
+import 'package:miniworldapp/service/team.dart';
 import 'package:miniworldapp/widget/loadData.dart';
 
 import 'package:provider/provider.dart';
@@ -27,8 +31,11 @@ class _DetailRaceState extends State<DetailRace> {
   // 1. กำหนดตัวแปร
   var size, height, width;
   List<Race> races = [];
+  List<AttendRace> attends = [];
+  List<Team> teams = [];
   int idUser = 0;
   int idrace = 0;
+  int limitTeam = 0;
   String UrlImg = '';
   String Rname = '';
   String team = '';
@@ -38,9 +45,12 @@ class _DetailRaceState extends State<DetailRace> {
   String singUpST = '';
   String singUpFN = '';
   String eventDatetime = '';
+  bool chkLimitTeam = false;
 
   late Future<void> loadDataMethod;
   late RaceService raceService;
+  late AttendService attendService;
+  late TeamService teamService;
 
   var formatter = DateFormat.yMEd();
   // var dateInBuddhistCalendarFormat = formatter.formatInBuddhistCalendarThai(now);
@@ -57,7 +67,9 @@ class _DetailRaceState extends State<DetailRace> {
     });
     idUser = context.read<AppData>().idUser;
     log(idUser.toString());
-
+    attendService =
+        AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
+    teamService = TeamService(Dio(), baseUrl: context.read<AppData>().baseurl);
     // 2.2 async method
     loadDataMethod = loadData();
   }
@@ -84,11 +96,24 @@ class _DetailRaceState extends State<DetailRace> {
       singUpST = dateFormat01;
       singUpFN = dateFormat02;
       eventDatetime = dateFormat03;
+      log(UrlImg);
 
       a.data.first.raceName;
       UrlImg = a.data.first.raceImage;
 
-      log(UrlImg);
+      var b = await teamService.teambyRaceID(raceID: idrace);
+      teams = b.data;
+      limitTeam = teams.length;
+      limitTeam = limitTeam;
+      log("limitTeam $limitTeam/$team");
+
+      if (limitTeam.toString() == team) {
+        log("race Full");
+        chkLimitTeam = true;
+      } else {
+        log("race Not Full");
+        chkLimitTeam = false;
+      }
     } catch (err) {
       log('Error:$err');
     }
@@ -212,7 +237,7 @@ class _DetailRaceState extends State<DetailRace> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(left: 8),
-                                    child: Text('$team ทีม'),
+                                    child: Text('$limitTeam/$team ทีม'),
                                   )
                                 ],
                               ),
@@ -312,33 +337,38 @@ class _DetailRaceState extends State<DetailRace> {
                               ),
                             ),
                             const Divider(),
-                            Center(
-                                child: SizedBox(
-                              width: 200,
-                              child: Column(
-                                children: [
-                                  ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    CeateTeam()));
-                                        context.read<AppData>().idrace = idrace;
-                                      },
-                                      child: Text('ลงทะเบียน')),
-                                  // ElevatedButton(
-                                  // onPressed: () {
-                                  //   Navigator.push(
-                                  //       context,
-                                  //       MaterialPageRoute(
-                                  //           builder: (context) => Home()));
-                                  //   context.read<AppData>().idrace = idrace;
-                                  // },
-                                  // child: Text('test')),
-                                ],
-                              ),
-                            )),
+                            chkLimitTeam == false
+                                ? Center(
+                                    child: SizedBox(
+                                    width: 200,
+                                    child: Column(
+                                      children: [
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          CeateTeam()));
+                                              context.read<AppData>().idrace =
+                                                  idrace;
+                                            },
+                                            child: Text('ลงทะเบียน')),
+                                        // ElevatedButton(
+                                        // onPressed: () {
+                                        //   Navigator.push(
+                                        //       context,
+                                        //       MaterialPageRoute(
+                                        //           builder: (context) => Home()));
+                                        //   context.read<AppData>().idrace = idrace;
+                                        // },
+                                        // child: Text('test')),
+                                      ],
+                                    ),
+                                  ))
+                                : ElevatedButton(
+                                    onPressed: null,
+                                    child: Text("มีจำนวนทีมเต็มแล้ว"))
                           ]),
                         ))
                   ],
