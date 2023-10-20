@@ -38,7 +38,7 @@ class _DetailRaceState extends State<DetailRace> {
   int limitTeam = 0;
   String UrlImg = '';
   String Rname = '';
-  String team = '';
+  int team = 0;
   String Rlocation = '';
   String raceTimeST = '';
   String raceTimeFN = '';
@@ -81,7 +81,7 @@ class _DetailRaceState extends State<DetailRace> {
       Rname = a.data.first.raceName;
       log(Rname);
       Rlocation = a.data.first.raceLocation;
-      team = a.data.first.raceLimitteam.toString();
+      team = a.data.first.raceLimitteam;
       String formattedDate01 = DateFormat.Hm().format(a.data.first.raceTimeSt);
       raceTimeST = formattedDate01;
       String formattedDate02 = DateFormat.Hm().format(a.data.first.raceTimeFn);
@@ -107,7 +107,7 @@ class _DetailRaceState extends State<DetailRace> {
       limitTeam = limitTeam;
       log("limitTeam $limitTeam/$team");
 
-      if (limitTeam.toString() == team) {
+      if (limitTeam >= team) {
         log("race Full");
         chkLimitTeam = true;
       } else {
