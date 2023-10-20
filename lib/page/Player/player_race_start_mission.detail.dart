@@ -699,7 +699,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
                                   maxLines: 3,
                                   textInputAction: TextInputAction.done,
                                   decoration: InputDecoration(
-                                    hintText: ' คำอธิบาย...textandmedia',
+                                    hintText: ' คำอธิบาย...',
                                     focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
                                             width: 3,
@@ -739,7 +739,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
                                   maxLines: 3,
                                   textInputAction: TextInputAction.done,
                                   decoration: InputDecoration(
-                                    hintText: ' คำอธิบาย...textonly',
+                                    hintText: ' คำอธิบาย...',
                                     focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
                                             width: 3,
@@ -1181,7 +1181,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
                     });
                   },
                   child: Text(
-                    'ส่งหลักฐานaaa',
+                    'ส่งหลักฐาน',
                     style: Get.textTheme.bodyLarge!.copyWith(
                         color: Get.theme.colorScheme.onPrimary,
                         fontWeight: FontWeight.bold),

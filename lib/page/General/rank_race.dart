@@ -443,7 +443,7 @@ class _RankRaceState extends State<RankRace> {
                                               )
                                             else
                                               Text(
-                                                e.team.teamName + " (asdfasdf)",
+                                                e.team.teamName + " ",
                                                 style: TextStyle(
                                                     fontSize: 20,
                                                     color: Colors.black,

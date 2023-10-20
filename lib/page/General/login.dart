@@ -568,6 +568,8 @@ class _LoginState extends State<Login> {
                                                               false,
                                                           title:
                                                               'เริ่มการแข่งขัน',
+                                                          content: Text(
+                                                              "การแข่งขันได้เริ่มขึ้นแล้วไปสนุกกัน"),
                                                           confirm:
                                                               ElevatedButton(
                                                                   onPressed:

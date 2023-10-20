@@ -651,7 +651,7 @@ class _PlayerRaceStartHintState extends State<PlayerRaceStartHint> {
       zoomControlsEnabled: disableGmap,
 
       initialCameraPosition: CameraPosition(
-        target: LatLng(lat, lng),
+        target: LatLng(latDevice, lngDevice),
         zoom: 16,
       ),
       // onMapCreated: (GoogleMapController controller) {

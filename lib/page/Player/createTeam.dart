@@ -567,7 +567,7 @@ class _CeateTeamState extends State<CeateTeam> {
 
     if (team.data.teamId > 0 && attends.data.massage == "Insert Success") {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('team Successful')),
+        const SnackBar(content: Text('สร้างทีมสำเร็จ')),
       );
       log("team success");
       context.read<AppData>().idUser = idUser;

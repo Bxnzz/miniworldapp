@@ -229,7 +229,7 @@ class _RaceCreatePageState extends State<RaceCreatePage> {
                                     readOnly: true,
                                     style: Get.textTheme.bodyLarge,
                                     decoration: InputDecoration(
-                                      hintText: 'วันที่เปิด',
+                                      hintText: 'วันที่ปิด',
                                       filled: true,
                                       fillColor: Colors.white,
                                       //  labelText: 'วันที่ปิดรับสมัคร',
