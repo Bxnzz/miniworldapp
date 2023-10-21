@@ -294,33 +294,33 @@ class _ApproveMissionState extends State<ApproveMission> {
                        log('message '+message[_selected].masseage);
                     }
                    
-                    // MissionCompStatus missionComDto = MissionCompStatus(
-                    //     mcMasseage: masseageMC,
-                    //     mcStatus: 3,
-                    //     misId: misID,
-                    //     teamId: teamID);
-                    // //log(lats);
-                    // //print(double.parse('lat'+lats));
-                    // mc = {'notitype': 'checkUnMis', 'masseage': masseageMC};
-                    // var missionComp =
-                    //     await missionCompService.updateStatusMisCom(
-                    //         missionComDto, widget.IDmc.toString());
+                    MissionCompStatus missionComDto = MissionCompStatus(
+                        mcMasseage: masseageMC,
+                        mcStatus: 3,
+                        misId: misID,
+                        teamId: teamID);
+                    //log(lats);
+                    //print(double.parse('lat'+lats));
+                    mc = {'notitype': 'checkUnMis', 'masseage': masseageMC};
+                    var missionComp =
+                        await missionCompService.updateStatusMisCom(
+                            missionComDto, widget.IDmc.toString());
 
-                    // var notification1 = OSCreateNotification(
-                    //     //playerID
-                    //     additionalData: mc,
-                    //     playerIds: playerIds,
-                    //     content: 'ส่งจากผู้สร้างการแข่งขัน: $hostName',
-                    //     heading: "หลักฐานภารกิจ: ไม่ผ่าน",
-                    //     //  iosAttachments: {"id1",urlImage},
-                    //     // bigPicture: imUrlString,
-                    //     buttons: [
-                    //       OSActionButton(text: "ตกลง", id: "id1"),
-                    //       OSActionButton(text: "ยกเลิก", id: "id2")
-                    //     ]);
+                    var notification1 = OSCreateNotification(
+                        //playerID
+                        additionalData: mc,
+                        playerIds: playerIds,
+                        content: 'ส่งจากผู้สร้างการแข่งขัน: $hostName',
+                        heading: "หลักฐานภารกิจ: ไม่ผ่าน",
+                        //  iosAttachments: {"id1",urlImage},
+                        // bigPicture: imUrlString,
+                        buttons: [
+                          OSActionButton(text: "ตกลง", id: "id1"),
+                          OSActionButton(text: "ยกเลิก", id: "id2")
+                        ]);
 
-                    // var response1 =
-                    //     await OneSignal.shared.postNotification(notification1);
+                    var response1 =
+                        await OneSignal.shared.postNotification(notification1);
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
                     stopLoading();
