@@ -640,19 +640,53 @@ class _LoginState extends State<Login> {
                                                     .toString());
 
                                                 Get.defaultDialog(
+                                                        cancel: ElevatedButton(
+                                                            onPressed: () {
+                                                              log("outcontext");
+
+                                                              if (Get.currentRoute ==
+                                                                  '/PlayerRaceStartMenu') {
+                                                                Get.back();
+                                                                Get.back();
+                                                                Get.back();
+                                                                Get.to(() => ChatRoomPage(
+                                                                    userID:
+                                                                        userId,
+                                                                    raceID:
+                                                                        raceID,
+                                                                    userName:
+                                                                        usernames,
+                                                                    raceName:
+                                                                        raceName));
+                                                              } else {
+                                                                Get.back();
+                                                                Get.back();
+                                                                Get.back();
+                                                                Get.to(() => ChatRoomPage(
+                                                                    userID:
+                                                                        userId,
+                                                                    raceID:
+                                                                        raceID,
+                                                                    userName:
+                                                                        usernames,
+                                                                    raceName:
+                                                                        raceName));
+                                                              }
+                                                            },
+                                                            child:
+                                                                Text("ตกลง")),
                                                         title: 'จบการแข่งขัน',
                                                         content: const Text(
-                                                            'รอการประมวลผล'))
+                                                            'รอการประมวลผล'),
+                                                        barrierDismissible:
+                                                            false)
                                                     .then((value) {
                                                   log('mmmmmmmm');
                                                   log('idddd' +
                                                       userId.toString());
-
-                                                  Get.to(() => ChatRoomPage(
-                                                      userID: userId,
-                                                      raceID: raceID,
-                                                      userName: usernames,
-                                                      raceName: raceName));
+                                                  setState(() {
+                                                    loadDataMethod;
+                                                  });
                                                 });
                                               } else if (event.notification
                                                           .additionalData![
@@ -666,11 +700,37 @@ class _LoginState extends State<Login> {
                                                     .additionalData!['raceID']
                                                     .toString());
                                                 Get.defaultDialog(
+                                                        cancel: ElevatedButton(
+                                                            onPressed: () {
+                                                              log("outcontext");
+
+                                                              if (Get.currentRoute ==
+                                                                  '/PlayerRaceStartMenu') {
+                                                                Get.back();
+                                                                Get.back();
+                                                                Get.back();
+                                                                Get.to(() =>
+                                                                    RankRace());
+                                                              } else {
+                                                                Get.back();
+                                                                Get.back();
+                                                                Get.back();
+                                                                Get.to(() =>
+                                                                    RankRace());
+                                                              }
+                                                            },
+                                                            child:
+                                                                Text("ตกลง")),
                                                         title: 'จบการแข่งขัน',
                                                         content: Text(
-                                                            'ประมวลผลเสร็จสิ้น'))
-                                                    .then((value) => Get.to(
-                                                        () => RankRace()));
+                                                            'ประมวลผลเสร็จสิ้น'),
+                                                        barrierDismissible:
+                                                            false)
+                                                    .then((value) {
+                                                  setState(() {
+                                                    loadDataMethod;
+                                                  });
+                                                });
                                                 // AwesomeDialog(
                                                 //   context: context,
                                                 //   dialogType:
@@ -869,6 +929,7 @@ class _LoginState extends State<Login> {
               Get.back();
               Get.to(() => PlayerRaceStartMenu());
             } else if (Get.currentRoute == '/PlayerRaceStartMenu') {
+              Get.back();
               Get.back();
               Get.to(() => PlayerRaceStartMenu());
               log("currentroute is ${Get.currentRoute}");

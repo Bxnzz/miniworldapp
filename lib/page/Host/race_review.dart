@@ -45,6 +45,7 @@ class _raceReviewState extends State<raceReview> {
 
   late DateTime revDateTime;
   late bool showBtnRev = false;
+  bool hostchk = false;
 
   @override
   void initState() {
@@ -67,6 +68,10 @@ class _raceReviewState extends State<raceReview> {
       var review = await reviewservice.reviewByRaceID(raceID: raceID);
       // log(review.data.first.raceId.toString());
       log("Err1");
+      if (races.first.userId == userID) {
+        hostchk = true;
+        log("host true");
+      }
       if (review.data.isNotEmpty) {
         reviews = review.data;
         revText = review.data.first.revText;
@@ -84,11 +89,15 @@ class _raceReviewState extends State<raceReview> {
           alert_dialog();
         }
       } else {
-        if (showBtnRev == false) {
-          alert_dialog();
+        if (hostchk) {
+          log("host chkkk");
+        } else {
+          if (showBtnRev == false) {
+            alert_dialog();
+          }
+          reviews = [];
+          log("list review Emptyr");
         }
-        reviews = [];
-        log("list review Emptyr");
       }
     } catch (err) {
       log("Eror:$err");
@@ -238,7 +247,7 @@ class _raceReviewState extends State<raceReview> {
                             ),
                           ),
                         ),
-                        showBtnRev == false
+                        showBtnRev == false && hostchk == false
                             ? Padding(
                                 padding: const EdgeInsets.only(right: 50),
                                 child: AnimatedButton(
