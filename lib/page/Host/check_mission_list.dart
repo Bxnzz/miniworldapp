@@ -390,9 +390,6 @@ class _CheckMissionListState extends State<CheckMissionList> {
                                                         vertical: 16.0)
                                                     : EdgeInsets.zero,
                                                 child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
                                                   children: [
                                                     Padding(
                                                       padding:
@@ -416,17 +413,13 @@ class _CheckMissionListState extends State<CheckMissionList> {
                                                         ),
                                                       ),
                                                     ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 100),
-                                                      child: Text(
-                                                        element.misName,
-                                                        style: textTheme
-                                                            .bodyText2
-                                                            ?.copyWith(
-                                                          fontSize: 16,
-                                                        ),
+                                                    Text(
+                                                      element.misName,
+                                                      style: textTheme.bodyText2
+                                                          ?.copyWith(
+                                                        fontSize: 16,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                       ),
                                                     ),
                                                     element.misType != 3
@@ -434,7 +427,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
                                                             padding:
                                                                 const EdgeInsets
                                                                         .only(
-                                                                    right: 10),
+                                                                    left: 90),
                                                             child: FilledButton(
                                                               child: Text(
                                                                   'ดูหลักฐาน'),
@@ -469,7 +462,6 @@ class _CheckMissionListState extends State<CheckMissionList> {
                                                                     desc:
                                                                         'เนื่องจากคุณได้ตรวจไปแล้ว\n หรือยังไม่มีหลักฐานที่ส่งเข้ามา',
                                                                   ).show();
-                                                                  
                                                                 }
                                                                 showDialog<
                                                                     void>(
@@ -503,7 +495,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
                                                         : const Padding(
                                                             padding:
                                                                 EdgeInsets.only(
-                                                                    right: 10),
+                                                                    left: 110),
                                                             child:
                                                                 ElevatedButton(
                                                               onPressed: null,

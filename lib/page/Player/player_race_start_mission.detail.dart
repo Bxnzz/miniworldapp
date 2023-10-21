@@ -650,6 +650,7 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
@@ -659,249 +660,282 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
               fontWeight: FontWeight.bold,
               fontSize: 25),
         ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
-      body: FutureBuilder(
-          future: loadDataMethod,
-          builder: (context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return RefreshIndicator(
-                onRefresh: loadData,
-                child: SingleChildScrollView(
-                  child: Stack(
-                    children: [
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          cardDetailMis(),
-                          //type mission is 12
-                          if (StSubmitDb != 1 && misType == "12")
-                            SizedBox(
-                              width: Get.width,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 15, right: 15, bottom: 15),
-                                child: TextField(
-                                  onChanged: (value) {
-                                    if (value.isNotEmpty) {
-                                      log("onChange");
-                                      log("$answerPass");
-                                      log("${answerPass.text}");
-                                      answerShow = true;
-                                      setState(() {});
-                                    } else {
-                                      log("anserShow false");
-                                      answerShow = false;
-                                      setState(() {});
-                                    }
-                                  },
-                                  controller: answerPass,
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: 3,
-                                  textInputAction: TextInputAction.done,
-                                  decoration: InputDecoration(
-                                    hintText: ' คำอธิบาย...',
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 3,
-                                            color:
-                                                Get.theme.colorScheme.primary)),
-                                  ),
-                                ),
-                              ),
-                            )
-                          else
-                            Container(),
-                          // //messege only
-                          if (StSubmitDb != 1 &&
-                              misType == '1' &&
-                              StSubmitDb != 3)
-                            SizedBox(
-                              width: Get.width,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 15, right: 15, bottom: 15),
-                                child: TextField(
-                                  onChanged: (value) {
-                                    if (value.isNotEmpty) {
-                                      log("onChange");
-                                      log("$answerPass");
-                                      log("${answerPass.text}");
-                                      answerShow = true;
-                                      setState(() {});
-                                    } else {
-                                      log("anserShow false");
-                                      answerShow = false;
-                                      setState(() {});
-                                    }
-                                  },
-                                  controller: answerPass,
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: 3,
-                                  textInputAction: TextInputAction.done,
-                                  decoration: InputDecoration(
-                                    hintText: ' คำอธิบาย...',
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 3,
-                                            color:
-                                                Get.theme.colorScheme.primary)),
-                                  ),
-                                ),
-                              ),
-                            )
-                          else
-                            Container(),
-                          misfind(),
-                          Gap(15),
-                          //mission fail media
-                          StSubmitDb == 3 && misType != '1'
-                              ? Column(
-                                  children: [
-                                    Center(
-                                      child: AnimatedButton(
-                                          height: 150,
-                                          shape: BoxShape.circle,
-                                          color: Colors.red,
-                                          onPressed: () {
-                                            selectmedia();
-                                          },
-                                          child: Text(
-                                            '      ทำ\nภารกิจใหม่',
-                                            style: TextStyle(
-                                              fontSize: 22,
-                                              color: Colors.white,
-                                            ),
-                                          )),
-                                    ),
-                                  ],
-                                )
-                              //mission fail text
-                              : StSubmitDb == 3
-                                  ? SizedBox(
-                                      width: Get.width,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 15, right: 15, bottom: 15),
-                                        child: TextField(
-                                          onChanged: (value) {
-                                            if (value.isNotEmpty) {
-                                              log("onChange");
-                                              log("$answerPass");
-                                              log("${answerPass.text}");
-                                              answerShow = true;
-                                              setState(() {});
-                                            } else {
-                                              log("anserShow false");
-                                              answerShow = false;
-                                              setState(() {});
-                                            }
-                                          },
-                                          controller: answerPass,
-                                          keyboardType: TextInputType.multiline,
-                                          maxLines: 3,
-                                          textInputAction: TextInputAction.done,
-                                          decoration: InputDecoration(
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  width: 3,
-                                                  color: Colors
-                                                      .red), //<-- SEE HERE
-                                            ),
-                                            hintText: 'ตอบคำถามใหม่อีกทีนะ....',
-                                            focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    width: 3,
-                                                    color: Colors.amber)),
-                                          ),
-                                        ),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          image: const DecorationImage(
+            image: AssetImage("assets/image/NewBG.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: FutureBuilder(
+            future: loadDataMethod,
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return RefreshIndicator(
+                  onRefresh: loadData,
+                  child: SingleChildScrollView(
+                    child: Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 95),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              cardDetailMis(),
+                              //type mission is 12
+                              if (StSubmitDb != 1 && misType == "12")
+                                //ข้อความและสื่อ
+                                SizedBox(
+                                  width: Get.width,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 15, right: 15, bottom: 15),
+                                    child: TextField(
+                                      onChanged: (value) {
+                                        if (value.isNotEmpty) {
+                                          log("onChange");
+                                          log("$answerPass");
+                                          log("${answerPass.text}");
+                                          answerShow = true;
+                                          setState(() {});
+                                        } else {
+                                          log("anserShow false");
+                                          answerShow = false;
+                                          setState(() {});
+                                        }
+                                      },
+                                      controller: answerPass,
+                                      keyboardType: TextInputType.multiline,
+                                      maxLines: 3,
+                                      textInputAction: TextInputAction.done,
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                        hintText: ' คำอธิบายหลักฐาน...',
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 3,
+                                                color: Get.theme.colorScheme
+                                                    .primary)),
                                       ),
+                                    ),
+                                  ),
+                                )
+                              else
+                                Container(),
+                              // //messege only
+                              if (StSubmitDb != 1 &&
+                                  misType == '1' &&
+                                  StSubmitDb != 3)
+                                SizedBox(
+                                  width: Get.width,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 15, right: 15, bottom: 15),
+
+                                    ///ข้อความเท่านั้น
+                                    child: TextField(
+                                      onChanged: (value) {
+                                        if (value.isNotEmpty) {
+                                          log("onChange");
+                                          log("$answerPass");
+                                          log("${answerPass.text}");
+                                          answerShow = true;
+                                          setState(() {});
+                                        } else {
+                                          log("anserShow false");
+                                          answerShow = false;
+                                          setState(() {});
+                                        }
+                                      },
+                                      controller: answerPass,
+                                      keyboardType: TextInputType.multiline,
+                                      maxLines: 3,
+                                      textInputAction: TextInputAction.done,
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                        hintText: ' คำอธิบายหลักฐาน...',
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 3,
+                                                color: Get.theme.colorScheme
+                                                    .primary)),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              else
+                                Container(),
+                              misfind(),
+                              Gap(15),
+                              //mission fail media
+                              StSubmitDb == 3 && misType != '1'
+                                  ? Column(
+                                      children: [
+                                        Center(
+                                          child: AnimatedButton(
+                                              height: 150,
+                                              shape: BoxShape.circle,
+                                              color: Colors.red,
+                                              onPressed: () {
+                                                selectmedia();
+                                              },
+                                              child: Text(
+                                                '      ทำ\nภารกิจใหม่',
+                                                style: TextStyle(
+                                                  fontSize: 22,
+                                                  color: Colors.white,
+                                                ),
+                                              )),
+                                        ),
+                                      ],
                                     )
-                                  : Container(),
-                          if (_image == null)
-                            if (StSubmitDb == 0 && StSubmitDb == 2 ||
-                                misType != '1' &&
-                                    StSubmitDb != 1 &&
-                                    StSubmitDb != 3)
-                              AnimatedButton(
-                                  height: 150,
-                                  shape: BoxShape.circle,
-                                  color: Colors.orange,
+                                  //mission fail text
+                                  : StSubmitDb == 3
+                                      ? SizedBox(
+                                          width: Get.width,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 15,
+                                                right: 15,
+                                                bottom: 15),
+                                            child: TextField(
+                                              onChanged: (value) {
+                                                if (value.isNotEmpty) {
+                                                  log("onChange");
+                                                  log("$answerPass");
+                                                  log("${answerPass.text}");
+                                                  answerShow = true;
+                                                  setState(() {});
+                                                } else {
+                                                  log("anserShow false");
+                                                  answerShow = false;
+                                                  setState(() {});
+                                                }
+                                              },
+                                              controller: answerPass,
+                                              keyboardType:
+                                                  TextInputType.multiline,
+                                              maxLines: 3,
+                                              textInputAction:
+                                                  TextInputAction.done,
+                                              decoration: InputDecoration(
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      width: 3,
+                                                      color: Colors
+                                                          .red), //<-- SEE HERE
+                                                ),
+                                                hintText:
+                                                    'ตอบคำถามใหม่อีกทีนะ....',
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            width: 3,
+                                                            color:
+                                                                Colors.amber)),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
+                              if (_image == null)
+                                if (StSubmitDb == 0 && StSubmitDb == 2 ||
+                                    misType != '1' &&
+                                        StSubmitDb != 1 &&
+                                        StSubmitDb != 3)
+                                  AnimatedButton(
+                                      height: 150,
+                                      shape: BoxShape.circle,
+                                      color: Colors.orange,
+                                      onPressed: () {
+                                        selectmedia();
+                                      },
+                                      child: Text(
+                                        '   เพิ่ม\nหลักฐาน',
+                                        style: TextStyle(
+                                          fontSize: 22,
+                                          color: Colors.white,
+                                        ),
+                                      ))
+                                else
+                                  Container(),
+                              btnSend(),
+                            ],
+                          ),
+                        ),
+                        if (_image != null && StSubmitDb == 4 ||
+                            StSubmitDb == 5)
+                          Positioned(
+                            bottom: 210,
+                            right: 50,
+                            child: Container(
+                              width: 55,
+                              height: 55,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(40),
+                                  color: Colors.white),
+                              child: IconButton(
                                   onPressed: () {
                                     selectmedia();
                                   },
-                                  child: Text(
-                                    '   เพิ่ม\nหลักฐาน',
-                                    style: TextStyle(
-                                      fontSize: 22,
-                                      color: Colors.white,
-                                    ),
-                                  ))
-                            else
-                              Container(),
-                          btnSend(),
-                        ],
-                      ),
-                      if (_image != null && StSubmitDb == 4 || StSubmitDb == 5)
-                        Positioned(
-                          bottom: 210,
-                          right: 50,
-                          child: Container(
-                            width: 55,
-                            height: 55,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(40),
-                                color: Colors.white),
-                            child: IconButton(
-                                onPressed: () {
-                                  selectmedia();
-                                },
-                                tooltip: "เลือกหลักฐานใหม่",
-                                iconSize: 35,
-                                constraints: BoxConstraints.expand(),
-                                color: Colors.amber,
-                                icon: Icon(Icons.add_photo_alternate_rounded)),
+                                  tooltip: "เลือกหลักฐานใหม่",
+                                  iconSize: 35,
+                                  constraints: BoxConstraints.expand(),
+                                  color: Colors.amber,
+                                  icon:
+                                      Icon(Icons.add_photo_alternate_rounded)),
+                            ),
                           ),
-                        ),
-                      if (_image != null && StSubmitDb == 4 || StSubmitDb == 5)
-                        Positioned(
-                          bottom: 210,
-                          left: 50,
-                          child: Container(
-                            width: 55,
-                            height: 55,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(40),
-                                color: Colors.white.withOpacity(0.8)),
-                            child: IconButton(
-                                onPressed: () {
-                                  _image = null;
-                                  log("StSubmitDb = $StSubmitDb");
-                                  if (StSubmitDb == 5) {
-                                    log("StSubmitDb in if =$StSubmitDb");
-                                    StSubmitDb = 3;
-                                  }
-                                  if (StSubmitDb == 4) {
-                                    log("StSubmitDb in if =$StSubmitDb");
-                                    StSubmitDb = 0;
-                                  }
+                        if (_image != null && StSubmitDb == 4 ||
+                            StSubmitDb == 5)
+                          Positioned(
+                            bottom: 210,
+                            left: 50,
+                            child: Container(
+                              width: 55,
+                              height: 55,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(40),
+                                  color: Colors.white.withOpacity(0.8)),
+                              child: IconButton(
+                                  onPressed: () {
+                                    _image = null;
+                                    log("StSubmitDb = $StSubmitDb");
+                                    if (StSubmitDb == 5) {
+                                      log("StSubmitDb in if =$StSubmitDb");
+                                      StSubmitDb = 3;
+                                    }
+                                    if (StSubmitDb == 4) {
+                                      log("StSubmitDb in if =$StSubmitDb");
+                                      StSubmitDb = 0;
+                                    }
 
-                                  setState(() {});
-                                },
-                                tooltip: "ลบหลักฐาน",
-                                iconSize: 25,
-                                constraints: BoxConstraints.expand(),
-                                color: Colors.red,
-                                icon: FaIcon(FontAwesomeIcons.trash)),
-                          ),
-                        )
-                    ],
+                                    setState(() {});
+                                  },
+                                  tooltip: "ลบหลักฐาน",
+                                  iconSize: 25,
+                                  constraints: BoxConstraints.expand(),
+                                  color: Colors.red,
+                                  icon: FaIcon(FontAwesomeIcons.trash)),
+                            ),
+                          )
+                      ],
+                    ),
                   ),
-                ),
-              );
-            } else {
-              return Scaffold();
-            }
-          }),
+                );
+              } else {
+                return Scaffold();
+              }
+            }),
+      ),
     );
   }
 
@@ -994,6 +1028,8 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
                 maxLines: 3,
                 textInputAction: TextInputAction.done,
                 decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
                   hintText: ' คำอธิบาย...',
                   focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -1047,6 +1083,8 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
 
   Card cardDetailMis() {
     return Card(
+      surfaceTintColor: Colors.transparent,
+      elevation: 5,
       margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
       child: Column(
         children: <Widget>[
@@ -1181,12 +1219,12 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
                     });
                   },
                   child: Text(
-                    'ส่งหลักฐาน',
+                    'ส่งหลักฐานaaa',
                     style: Get.textTheme.bodyLarge!.copyWith(
                         color: Get.theme.colorScheme.onPrimary,
                         fontWeight: FontWeight.bold),
                   ),
-                )
+              )
               : StSubmitDb == 1 || textInProcesCtl.text.isNotEmpty
                   ? ElevatedButton(
                       onPressed: null,

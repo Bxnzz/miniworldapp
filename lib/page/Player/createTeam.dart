@@ -172,8 +172,8 @@ class _CeateTeamState extends State<CeateTeam> {
                           alignment: AlignmentDirectional.topCenter,
                           children: [
                             Card(
-                              elevation: 0,
-                              color: Colors.white,
+                              surfaceTintColor: Colors.transparent,
+                              elevation: 10,
                               clipBehavior: Clip.hardEdge,
                               margin: EdgeInsets.fromLTRB(32, 60, 32, 32),
                               child: SingleChildScrollView(
@@ -195,12 +195,8 @@ class _CeateTeamState extends State<CeateTeam> {
                                     Padding(
                                         padding: const EdgeInsets.only(
                                             top: 30, right: 30, left: 30),
-                                        child: textField(
-                                            nameMember1,
-                                            'ตัวฉันเอง',
-                                            'ตัวฉันเอง',
-                                            '',
-                                            true)),
+                                        child: textField(nameMember1, 'ตัวฉันเอง',
+                                            'ตัวฉันเอง', '', true)),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 30),
                                       child: SizedBox(
@@ -240,8 +236,8 @@ class _CeateTeamState extends State<CeateTeam> {
                                                     if (raceST.isAfter(j.team.race.raceTimeSt) &&
                                                         raceST.isBefore(j.team
                                                             .race.raceTimeFn) &&
-                                                        raceFN.isAfter(j.team
-                                                            .race.raceTimeSt) &&
+                                                        raceFN.isAfter(j.team.race
+                                                            .raceTimeSt) &&
                                                         raceFN.isBefore(j.team
                                                             .race.raceTimeFn)) {
                                                       isJoin = true;
@@ -266,11 +262,8 @@ class _CeateTeamState extends State<CeateTeam> {
                                               'สร้างทีม',
                                               style: Get.textTheme.bodyLarge!
                                                   .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Get
-                                                          .theme
-                                                          .colorScheme
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Get.theme.colorScheme
                                                           .onPrimary),
                                             )),
                                       ),
@@ -287,8 +280,8 @@ class _CeateTeamState extends State<CeateTeam> {
                                   padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
                                     color: Color.fromARGB(255, 222, 72, 249),
-                                    border: Border.all(
-                                        color: Colors.white, width: 3),
+                                    border:
+                                        Border.all(color: Colors.white, width: 3),
                                     shape: BoxShape.rectangle,
                                     borderRadius: BorderRadius.circular(100),
                                   ),

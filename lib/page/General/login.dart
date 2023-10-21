@@ -210,627 +210,555 @@ class _LoginState extends State<Login> {
                   key: _formKey,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: SingleChildScrollView(
-                      child: Center(
-                        child: Stack(
-                          alignment: AlignmentDirectional.topCenter,
-                          clipBehavior: Clip.none,
-                          children: [
-                            Card(
-                              elevation: 0,
-                              margin: EdgeInsets.fromLTRB(32, 390, 32, 50),
-                              color: Colors.white,
-                              child: Column(
-                                children: [
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text("เข้าสู่ระบบโดย",
-                                      style: Get.textTheme.bodyLarge!.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color:
-                                              Get.theme.colorScheme.primary)),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 40, right: 40),
-                                    child: TextFormField(
-                                        decoration: const InputDecoration(
-                                          hintText: 'กรุณาใส่อีเมล...',
-                                          label: Text('อีเมล'),
-                                          //  prefixIcon: FaIcon(FontAwesomeIcons.envelope)
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'กรุณากรอกอีเมล';
-                                          }
-                                          return null;
-                                        },
-                                        controller: email),
-                                  ),
-                                  Gap(20),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 40, right: 40),
-                                    child: TextFormField(
-                                      decoration: InputDecoration(
-                                        hintText: 'กรุณาใส่รหัสผ่าน',
-                                        label: Text('รหัสผ่าน'),
-                                        suffixIcon: IconButton(
-                                          // padding: EdgeInsets.all(0),
-                                          onPressed: () {
-                                            setState(() {
-                                              _isHidden = !_isHidden;
-                                            });
-                                          },
-                                          icon: Icon(
-                                            _isHidden // เงื่อนไขการสลับ icon
-                                                ? Icons.visibility_off
-                                                : Icons.visibility,
-                                            size: 16,
-                                          ),
-                                        ),
+                    child: Center(
+                      child: Stack(
+                        alignment: AlignmentDirectional.topCenter,
+                        clipBehavior: Clip.none,
+                        children: [
+                          Card(
+                            surfaceTintColor: Colors.transparent,
+                            elevation: 15,
+                            margin: EdgeInsets.fromLTRB(32, 390, 32, 50),
+                            color: Colors.white,
+                            child: Column(
+                              children: [
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Text("เข้าสู่ระบบโดย",
+                                    style: Get.textTheme.bodyLarge!.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Get.theme.colorScheme.primary)),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 40, right: 40),
+                                  child: TextFormField(
+                                      decoration: const InputDecoration(
+                                        hintText: 'กรุณาใส่อีเมล...',
+                                        label: Text('อีเมล'),
+                                        //  prefixIcon: FaIcon(FontAwesomeIcons.envelope)
                                       ),
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
-                                          return 'กรุณากรอกรหัสผ่าน';
+                                          return 'กรุณากรอกอีเมล';
                                         }
                                         return null;
                                       },
-                                      controller: password,
-                                      obscureText: _isHidden,
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Get.defaultDialog(
-                                                title: 'กรอกอีเมล',
-                                                content: Form(
-                                                  key: _formKey4,
-                                                  child: Column(
-                                                    children: [
-                                                      TextFormField(
-                                                        controller: mailReset,
-                                                        validator: (value) {
-                                                          if (value == null ||
-                                                              value.isEmpty) {
-                                                            return 'กรุณากรอกอีเมล';
-                                                          }
-                                                          return null;
-                                                        },
-                                                      ),
-                                                      Gap(20),
-                                                      ElevatedButton(
-                                                          onPressed: () async {
-                                                            if (_formKey4
-                                                                .currentState!
-                                                                .validate()) {
-                                                              Get.back();
-                                                              log(getTotp(
-                                                                  mailReset
-                                                                      .text));
-                                                              Get.defaultDialog(
-                                                                  title:
-                                                                      'กรอกรหัส PIN',
-                                                                  content: Form(
-                                                                    key:
-                                                                        _formKey3,
-                                                                    child:
-                                                                        Column(
-                                                                      children: [
-                                                                        buildPinPut(),
-                                                                        TextButton(
-                                                                            onPressed:
-                                                                                () {
-                                                                              setState(() {
-                                                                                pin.clear();
-                                                                              });
-                                                                            },
-                                                                            child:
-                                                                                Text("ล้างค่าPIN")),
-                                                                      ],
-                                                                    ),
-                                                                  ));
-                                                            }
-                                                          },
-                                                          child: Text("ถัดไป"))
-                                                    ],
-                                                  ),
-                                                ));
-                                          },
-                                          child: Text("รีเซ็ตรหัสผ่าน")),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 40),
-                                        child: FaIcon(
-                                          FontAwesomeIcons.solidCircleQuestion,
-                                          color: Get.theme.colorScheme.primary,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: 240,
-                                    child: FilledButton(
-                                        onPressed: () async {
-                                          // เปลี่ยนสถานะเป็นกำลังล็อกอิน
-                                          passwordINDB = password.text;
-                                          bytes = utf8.encode(
-                                              passwordINDB); // data being hashed
-                                          log("byte $bytes");
-                                          digest = sha256.convert(bytes);
-
-                                          log(digest.toString());
-                                          // อ้างอิงฟอร์มที่กำลังใช้งาน ตรวจสอบความถูกต้องข้อมูลในฟอร์ม
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            //หากผ่าน
-                                            FocusScope.of(context)
-                                                .unfocus(); // ยกเลิดโฟกัส ให้แป้นพิมพ์ซ่อนไป
-                                            LoginDto dto = LoginDto(
-                                                email: email.text,
-                                                password: digest.toString());
-
-                                            //log(jsonEncode(dto));
-
-                                            var login = await loginService
-                                                .loginser(dto);
-
-                                            if (login.data.userId != 0) {
-                                              OneSignal.shared
-                                                  .setNotificationOpenedHandler(
-                                                      (OSNotificationOpenedResult
-                                                          result) {
-                                                var additionalData = result
-                                                    .notification
-                                                    .additionalData;
-                                                log('xxxxxxxxx ${additionalData.toString()}');
-                                                //  log('yyyyyy ${additionalData!['notitype'].toString()}');
-                                                if (additionalData![
-                                                        'notitype'] ==
-                                                    'mission') {
-                                                  log('zzz');
-                                                  additionalData['mcid'];
-                                                  Get.to(() => ApproveMission(
-                                                      IDmc: int.parse(
-                                                          additionalData[
-                                                              'mcid'])));
-                                                } else if (additionalData[
-                                                            'notitype']
-                                                        .toString() ==
-                                                    'checkMis') {
-                                                  Get.defaultDialog(
-                                                      title: additionalData[
-                                                          'masseage']);
-                                                } else if (additionalData[
-                                                            'notitype']
-                                                        .toString() ==
-                                                    'startgame') {
-                                                  Get.defaultDialog(
-                                                          barrierDismissible:
-                                                              false,
-                                                          title:
-                                                              'เริ่มการแข่งขัน',
-                                                          content: Text(
-                                                              "การแข่งขันได้เริ่มขึ้นแล้วไปสนุกกัน"),
-                                                          confirm:
-                                                              ElevatedButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    if (Get.currentRoute ==
-                                                                        '/Lobby') {
-                                                                      Get.back();
-                                                                      Get.back();
-
-                                                                      Get.to(() =>
-                                                                          PlayerRaceStartMenu());
-                                                                    } else {
-                                                                      Get.back();
-                                                                      Get.to(() =>
-                                                                          PlayerRaceStartMenu());
-                                                                    }
-                                                                  },
-                                                                  child: Text(
-                                                                      'เข้าการแข่งขัน')))
-                                                      .then((value) {
-                                                    setState(() {
-                                                      loadDataMethod;
-                                                    });
-                                                  });
-                                                } else if (additionalData[
-                                                            'notitype']
-                                                        .toString() ==
-                                                    'exitTeam') {
-                                                  // Get.defaultDialog(
-                                                  //     title: additionalData[
-                                                  //         'masseage']);
-                                                } else if (additionalData[
-                                                            'notitype']
-                                                        .toString() ==
-                                                    'deleteTeam') {
-                                                  Get.defaultDialog(
-                                                      title: additionalData[
-                                                          'masseage']);
-                                                } else if (additionalData[
-                                                            'notitype']
-                                                        .toString() ==
-                                                    'endgame') {
-                                                  Get.defaultDialog(
-                                                      title: additionalData[
-                                                          'masseage']);
-                                                } else if (additionalData[
-                                                            'notitype']
-                                                        .toString() ==
-                                                    'processgame') {
-                                                  Get.defaultDialog(
-                                                      title: additionalData[
-                                                          'masseage']);
-                                                } else {
-                                                  log('YYYY');
-                                                }
-                                              });
-
-                                              OneSignal.shared
-                                                  .setNotificationWillShowInForegroundHandler(
-                                                      (OSNotificationReceivedEvent
-                                                          event) {
-                                                log('qqqqq' +
-                                                    'FOREGROUND HANDLER CALLED WITH: ${event.notification.additionalData}');
-
-                                                /// Display Notification, send null to not display
-                                                event.complete(null);
-
-                                                // Get.to(() => CheckMisNoti());
-                                                if (event.notification
-                                                            .additionalData![
-                                                        'notitype'] ==
-                                                    'mission') {
-                                                  log('dddddd');
-                                                  IDmc = int.parse(event
-                                                      .notification
-                                                      .additionalData!['mcid']);
-                                                  log('qqqqqqqqqq');
-
-                                                  Fluttertoast.showToast(
-                                                      msg:
-                                                          "มีหลักฐานที่ต้องตรวจสอบ?\n ภารกิจ: ${event.notification.additionalData!['mission']} ทีม: ${event.notification.additionalData!['team']}       ",
-                                                      toastLength:
-                                                          Toast.LENGTH_LONG,
-                                                      gravity: ToastGravity.TOP,
-                                                      timeInSecForIosWeb: 3,
-                                                      backgroundColor:
-                                                          Colors.black,
-                                                      textColor: Colors.white,
-                                                      fontSize: 16.0);
-
-                                                  log('nnnnnnnnnnn');
-                                                } else if (event.notification
-                                                            .additionalData![
-                                                        'notitype'] ==
-                                                    'checkMis') {
-                                                  Get.defaultDialog(
-                                                          cancel:
-                                                              Btn_in_success_mission(),
-                                                          title:
-                                                              'ภารกิจสำเร็จ!!!',
-                                                          content: dialog_alert(
-                                                              asset:
-                                                                  'assets/image/correctmsg.json',
-                                                              width: 200,
-                                                              height: 200),
-                                                          barrierDismissible:
-                                                              false)
-                                                      .then((value) {
-                                                    setState(() {
-                                                      loadDataMethod;
-                                                    });
-                                                  });
-                                                }
-                                                //notify mission Fail!!!
-                                                else if (event.notification
-                                                            .additionalData![
-                                                        'notitype'] ==
-                                                    'checkUnMis') {
-                                                  Get.defaultDialog(
-                                                          cancel:
-                                                              Btn_in_fail_mission(),
-                                                          title:
-                                                              'ภารกิจล้มเหลว!!!',
-                                                          content: Column(
-                                                            children: [
-                                                              dialog_alert(
-                                                                  asset:
-                                                                      'assets/image/failmsg.json',
-                                                                  width: 200,
-                                                                  height: 200),
-                                                              Text(
-                                                                  '${event.notification.additionalData!['masseage']}'),
-                                                            ],
-                                                          ),
-                                                          barrierDismissible:
-                                                              false)
-                                                      .then((value) {
-                                                    setState(() {
-                                                      loadDataMethod;
-                                                    });
-                                                  });
-                                                } else if (event.notification
-                                                            .additionalData![
-                                                        'notitype'] ==
-                                                    'startgame') {
-                                                  Get.defaultDialog(
-                                                          barrierDismissible:
-                                                              false,
-                                                          title:
-                                                              'เริ่มการแข่งขัน',
-                                                          content: Text(
-                                                              "การแข่งขันได้เริ่มขึ้นแล้วไปสนุกกัน"),
-                                                          confirm:
-                                                              ElevatedButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    if (Get.currentRoute ==
-                                                                        '/Lobby') {
-                                                                      Get.back();
-                                                                      Get.back();
-
-                                                                      Get.to(() =>
-                                                                          PlayerRaceStartMenu());
-                                                                    } else {
-                                                                      Get.back();
-                                                                      Get.to(() =>
-                                                                          PlayerRaceStartMenu());
-                                                                    }
-                                                                  },
-                                                                  child: Text(
-                                                                      'เข้าการแข่งขัน')))
-                                                      .then((value) {
-                                                    setState(() {
-                                                      loadDataMethod;
-                                                    });
-                                                  });
-
-                                                  // .then(
-                                                  //   (value) => Get.off(() =>
-                                                  //     const PlayerRaceStartMenu())
-                                                  //     );
-                                                  log('toasttt');
-
-                                                  log('ภารกิจจ');
-                                                } else if (event.notification
-                                                            .additionalData![
-                                                        'notitype'] ==
-                                                    'deleteTeam') {
-                                                  raceID = int.parse(event
-                                                      .notification
-                                                      .additionalData!['raceID']
-                                                      .toString());
-
-                                                  Get.defaultDialog(
-                                                          title:
-                                                              'ทีมของคุณออกจากการแข่งขัน!!',
-                                                          content: const Text(
-                                                              'ทีมของคุณได้ออกจากการแข่งขันนี้แล้ว'))
-                                                      .then((value) {
-                                                    Get.off(() => Home());
-                                                  });
-                                                } else if (event.notification
-                                                            .additionalData![
-                                                        'notitype'] ==
-                                                    'exitTeam') {
-                                                  raceID = int.parse(event
-                                                      .notification
-                                                      .additionalData!['raceID']
-                                                      .toString());
-
-                                                  teamName = event.notification
-                                                          .additionalData![
-                                                      'teamName'];
-
-                                                  Get.defaultDialog(
-                                                          title:
-                                                              'มีทีมออกจากการแข่งขัน!!',
-                                                          content: Text(
-                                                              'ทีม $teamName ได้ออกจากการแข่งขันนี้แล้ว'))
-                                                      .then((value) {});
-                                                } else if (event.notification
-                                                            .additionalData![
-                                                        'notitype'] ==
-                                                    'endgame') {
-                                                  raceName = event.notification
-                                                          .additionalData![
-                                                      'raceName'];
-
-                                                  raceID = int.parse(event
-                                                      .notification
-                                                      .additionalData!['raceID']
-                                                      .toString());
-
-                                                  Get.defaultDialog(
-                                                          title: 'จบการแข่งขัน',
-                                                          content: const Text(
-                                                              'รอการประมวลผล'))
-                                                      .then((value) {
-                                                    log('mmmmmmmm');
-                                                    log('idddd' +
-                                                        userId.toString());
-
-                                                    Get.to(() => ChatRoomPage(
-                                                        userID: userId,
-                                                        raceID: raceID,
-                                                        userName: usernames,
-                                                        raceName: raceName));
-                                                  });
-                                                } else if (event.notification
-                                                            .additionalData![
-                                                        'notitype'] ==
-                                                    'processgame') {
-                                                  raceName = event.notification
-                                                          .additionalData![
-                                                      'raceName'];
-                                                  raceID = int.parse(event
-                                                      .notification
-                                                      .additionalData!['raceID']
-                                                      .toString());
-                                                  Get.defaultDialog(
-                                                          title: 'จบการแข่งขัน',
-                                                          content: Text(
-                                                              'ประมวลผลเสร็จสิ้น'))
-                                                      .then((value) => Get.to(
-                                                          () => RankRace()));
-                                                  // AwesomeDialog(
-                                                  //   context: context,
-                                                  //   dialogType:
-                                                  //       DialogType.success,
-                                                  //   animType: AnimType.rightSlide,
-                                                  //   headerAnimationLoop: false,
-                                                  //   title: 'จบการแข่งขัน',
-                                                  //   desc:
-                                                  //       'ประมวลผลการแข่งขันเสร็จสิ้น',
-                                                  // ).show().then((value) =>
-                                                  //     Get.to(RankRace()));
-                                                }
-                                              });
-                                              var deviceState = await OneSignal
-                                                  .shared
-                                                  .getDeviceState();
-                                              if (deviceState != null &&
-                                                  deviceState.userId != null) {
-                                                //   _externalUserId = status.userId!;
-
-                                                _externalUserId =
-                                                    deviceState.userId!;
-                                                log('oneID ' + _externalUserId);
-                                              }
-
-                                              OneSignal.shared
-                                                  .disablePush(false);
-                                              UserDto userDto = UserDto(
-                                                userName: login.data.userName,
-                                                userDiscription:
-                                                    login.data.userDiscription,
-                                                userFullname:
-                                                    login.data.userFullname,
-                                                userImage: login.data.userImage,
-                                                onesingnalId: _externalUserId,
-                                                userMail: login.data.userMail,
-                                              );
-
-                                              var updateOnesignal =
-                                                  await userService.updateUsers(
-                                                      userDto,
-                                                      login.data.userId
-                                                          .toString());
-                                              // log(jsonEncode(updateOnesignal));
-                                              userResult = updateOnesignal.data;
-                                              //  log(userResult.toString());
-                                              // ScaffoldMessenger.of(context).showSnackBar(
-                                              //   const SnackBar(
-                                              //       content: Text('Login Successful')),
-                                              // );
-
-                                              setState(() {
-                                                _authenticatingStatus =
-                                                    !_authenticatingStatus;
-                                              });
-                                              log("login success");
-                                              userId = login.data.userId;
-                                              usernames = login.data.userName;
-                                              Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const Home(),
-                                                    settings:
-                                                        const RouteSettings(
-                                                            arguments: null),
-                                                  ));
-                                              context.read<AppData>().Username =
-                                                  login.data.userName;
-
-                                              context.read<AppData>().idUser =
-                                                  login.data.userId;
-                                              context
-                                                      .read<AppData>()
-                                                      .userImage =
-                                                  login.data.userImage;
-                                              context
-                                                      .read<AppData>()
-                                                      .userFullName =
-                                                  login.data.userFullname;
-                                              context
-                                                      .read<AppData>()
-                                                      .userDescrip =
-                                                  login.data.userDiscription;
-
-                                              context.read<AppData>().oneID =
-                                                  _externalUserId;
-                                              return;
-                                            } else {
-                                              final snackBar = SnackBar(
-                                                content: const Text(
-                                                    'เข้าสู่ระบบล้มเหลว อีเมลหรือรหัสผ่านไม่ถูก'),
-                                              );
-
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(snackBar);
-
-                                              return;
-                                            }
-                                          }
+                                      controller: email),
+                                ),
+                                Gap(20),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 40, right: 40),
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                      hintText: 'กรุณาใส่รหัสผ่าน',
+                                      label: Text('รหัสผ่าน'),
+                                      suffixIcon: IconButton(
+                                        // padding: EdgeInsets.all(0),
+                                        onPressed: () {
+                                          setState(() {
+                                            _isHidden = !_isHidden;
+                                          });
                                         },
-                                        child: const Text('เข้าสู่ระบบ')),
+                                        icon: Icon(
+                                          _isHidden // เงื่อนไขการสลับ icon
+                                              ? Icons.visibility_off
+                                              : Icons.visibility,
+                                          size: 16,
+                                        ),
+                                      ),
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'กรุณากรอกรหัสผ่าน';
+                                      }
+                                      return null;
+                                    },
+                                    controller: password,
+                                    obscureText: _isHidden,
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10, right: 20, left: 20),
-                                    child: Divider(),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                          'ไม่มีบัญชีผู้ใช้ใช่หรือไม่? '),
-                                      TextButton(
-                                          onPressed: () {
-                                            Get.to(() => FontRegisterPage());
-                                          },
-                                          child: const Text('คลิกที่นี้'))
-                                    ],
-                                  ),
-                                  // Padding(
-                                  //   padding: const EdgeInsets.all(8.0),
-                                  //   child: SizedBox(
-                                  //     width: 240,
-                                  //     child: ElevatedButton.icon(
-                                  //       style: ElevatedButton.styleFrom(
-                                  //         primary: Color.fromARGB(255, 66, 103,
-                                  //             178), // Background color
-                                  //       ),
-                                  //       onPressed: () {},
-                                  //       label: Text('Login Facebook',
-                                  //           style: Get.textTheme.bodyLarge!
-                                  //               .copyWith(
-                                  //                   fontWeight: FontWeight.bold,
-                                  //                   color: Get.theme.colorScheme
-                                  //                       .onPrimary)),
-                                  //       icon: FaIcon(
-                                  //         FontAwesomeIcons.facebook,
-                                  //         color: Get.theme.colorScheme.onPrimary,
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  // ),
-                                ],
-                              ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                        onPressed: () {},
+                                        child: Text("รีเซ็ตรหัสผ่าน")),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 40),
+                                      child: FaIcon(
+                                        FontAwesomeIcons.solidCircleQuestion,
+                                        color: Get.theme.colorScheme.primary,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(
+                                  width: 240,
+                                  child: FilledButton(
+                                      onPressed: () async {
+                                        // เปลี่ยนสถานะเป็นกำลังล็อกอิน
+                                        passwordINDB = password.text;
+                                        bytes = utf8.encode(
+                                            passwordINDB); // data being hashed
+                                        log("byte $bytes");
+                                        digest = sha256.convert(bytes);
+
+                                        log(digest.toString());
+                                        // อ้างอิงฟอร์มที่กำลังใช้งาน ตรวจสอบความถูกต้องข้อมูลในฟอร์ม
+                                        if (_formKey.currentState!.validate()) {
+                                          //หากผ่าน
+                                          FocusScope.of(context)
+                                              .unfocus(); // ยกเลิดโฟกัส ให้แป้นพิมพ์ซ่อนไป
+                                          LoginDto dto = LoginDto(
+                                              email: email.text,
+                                              password: digest.toString());
+
+                                          //log(jsonEncode(dto));
+
+                                          var login =
+                                              await loginService.loginser(dto);
+
+                                          if (login.data.userId != 0) {
+                                            OneSignal.shared
+                                                .setNotificationOpenedHandler(
+                                                    (OSNotificationOpenedResult
+                                                        result) {
+                                              var additionalData = result
+                                                  .notification.additionalData;
+                                              log('xxxxxxxxx ${additionalData.toString()}');
+                                              //  log('yyyyyy ${additionalData!['notitype'].toString()}');
+                                              if (additionalData!['notitype'] ==
+                                                  'mission') {
+                                                log('zzz');
+                                                additionalData['mcid'];
+                                                Get.to(() => ApproveMission(
+                                                    IDmc: int.parse(
+                                                        additionalData[
+                                                            'mcid'])));
+                                              } else if (additionalData[
+                                                          'notitype']
+                                                      .toString() ==
+                                                  'checkMis') {
+                                                Get.defaultDialog(
+                                                    title: additionalData[
+                                                        'masseage']);
+                                              } else if (additionalData[
+                                                          'notitype']
+                                                      .toString() ==
+                                                  'startgame') {
+                                                Get.defaultDialog(
+                                                        barrierDismissible:
+                                                            false,
+                                                        title:
+                                                            'เริ่มการแข่งขัน',
+                                                        content: Text(
+                                                            "การแข่งขันได้เริ่มขึ้นแล้วไปสนุกกัน"),
+                                                        confirm: ElevatedButton(
+                                                            onPressed: () {
+                                                              if (Get.currentRoute ==
+                                                                  '/Lobby') {
+                                                                Get.back();
+                                                                Get.back();
+
+                                                                Get.to(() =>
+                                                                    PlayerRaceStartMenu());
+                                                              } else {
+                                                                Get.back();
+                                                                Get.to(() =>
+                                                                    PlayerRaceStartMenu());
+                                                              }
+                                                            },
+                                                            child: Text(
+                                                                'เข้าการแข่งขัน')))
+                                                    .then((value) {
+                                                  setState(() {
+                                                    loadDataMethod;
+                                                  });
+                                                });
+                                              } else if (additionalData[
+                                                          'notitype']
+                                                      .toString() ==
+                                                  'exitTeam') {
+                                                // Get.defaultDialog(
+                                                //     title: additionalData[
+                                                //         'masseage']);
+                                              } else if (additionalData[
+                                                          'notitype']
+                                                      .toString() ==
+                                                  'deleteTeam') {
+                                                Get.defaultDialog(
+                                                    title: additionalData[
+                                                        'masseage']);
+                                              } else if (additionalData[
+                                                          'notitype']
+                                                      .toString() ==
+                                                  'endgame') {
+                                                Get.defaultDialog(
+                                                    title: additionalData[
+                                                        'masseage']);
+                                              } else if (additionalData[
+                                                          'notitype']
+                                                      .toString() ==
+                                                  'processgame') {
+                                                Get.defaultDialog(
+                                                    title: additionalData[
+                                                        'masseage']);
+                                              } else {
+                                                log('YYYY');
+                                              }
+                                            });
+
+                                            OneSignal.shared
+                                                .setNotificationWillShowInForegroundHandler(
+                                                    (OSNotificationReceivedEvent
+                                                        event) {
+                                              log('qqqqq' +
+                                                  'FOREGROUND HANDLER CALLED WITH: ${event.notification.additionalData}');
+
+                                              /// Display Notification, send null to not display
+                                              event.complete(null);
+
+                                              // Get.to(() => CheckMisNoti());
+                                              if (event.notification
+                                                          .additionalData![
+                                                      'notitype'] ==
+                                                  'mission') {
+                                                log('dddddd');
+                                                IDmc = int.parse(event
+                                                    .notification
+                                                    .additionalData!['mcid']);
+                                                log('qqqqqqqqqq');
+
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                        "มีหลักฐานที่ต้องตรวจสอบ?\n ภารกิจ: ${event.notification.additionalData!['mission']} ทีม: ${event.notification.additionalData!['team']}       ",
+                                                    toastLength:
+                                                        Toast.LENGTH_LONG,
+                                                    gravity: ToastGravity.TOP,
+                                                    timeInSecForIosWeb: 3,
+                                                    backgroundColor:
+                                                        Colors.black,
+                                                    textColor: Colors.white,
+                                                    fontSize: 16.0);
+
+                                                log('nnnnnnnnnnn');
+                                              } else if (event.notification
+                                                          .additionalData![
+                                                      'notitype'] ==
+                                                  'checkMis') {
+                                                Get.defaultDialog(
+                                                        cancel:
+                                                            Btn_in_success_mission(),
+                                                        title:
+                                                            'ภารกิจสำเร็จ!!!',
+                                                        content: dialog_alert(
+                                                            asset:
+                                                                'assets/image/correctmsg.json',
+                                                            width: 200,
+                                                            height: 200),
+                                                        barrierDismissible:
+                                                            false)
+                                                    .then((value) {
+                                                  setState(() {
+                                                    loadDataMethod;
+                                                  });
+                                                });
+                                              }
+                                              //notify mission Fail!!!
+                                              else if (event.notification
+                                                          .additionalData![
+                                                      'notitype'] ==
+                                                  'checkUnMis') {
+                                                Get.defaultDialog(
+                                                        cancel:
+                                                            Btn_in_fail_mission(),
+                                                        title:
+                                                            'ภารกิจล้มเหลว!!!',
+                                                        content: Column(
+                                                          children: [
+                                                            dialog_alert(
+                                                                asset:
+                                                                    'assets/image/failmsg.json',
+                                                                width: 200,
+                                                                height: 200),
+                                                            Text(
+                                                                '${event.notification.additionalData!['masseage']}'),
+                                                          ],
+                                                        ),
+                                                        barrierDismissible:
+                                                            false)
+                                                    .then((value) {
+                                                  setState(() {
+                                                    loadDataMethod;
+                                                  });
+                                                });
+                                              } else if (event.notification
+                                                          .additionalData![
+                                                      'notitype'] ==
+                                                  'startgame') {
+                                                Get.defaultDialog(
+                                                        barrierDismissible:
+                                                            false,
+                                                        title:
+                                                            'เริ่มการแข่งขัน',
+                                                        confirm: ElevatedButton(
+                                                            onPressed: () {
+                                                              if (Get.currentRoute ==
+                                                                  '/Lobby') {
+                                                                Get.back();
+                                                                Get.back();
+
+                                                                Get.to(() =>
+                                                                    PlayerRaceStartMenu());
+                                                              } else {
+                                                                Get.back();
+                                                                Get.to(() =>
+                                                                    PlayerRaceStartMenu());
+                                                              }
+                                                            },
+                                                            child: Text(
+                                                                'เข้าการแข่งขัน')))
+                                                    .then((value) {
+                                                  setState(() {
+                                                    loadDataMethod;
+                                                  });
+                                                });
+
+                                                // .then(
+                                                //   (value) => Get.off(() =>
+                                                //     const PlayerRaceStartMenu())
+                                                //     );
+                                                log('toasttt');
+
+                                                log('ภารกิจจ');
+                                              } else if (event.notification
+                                                          .additionalData![
+                                                      'notitype'] ==
+                                                  'deleteTeam') {
+                                                raceID = int.parse(event
+                                                    .notification
+                                                    .additionalData!['raceID']
+                                                    .toString());
+
+                                                Get.defaultDialog(
+                                                        title:
+                                                            'ทีมของคุณออกจากการแข่งขัน!!',
+                                                        content: const Text(
+                                                            'ทีมของคุณได้ออกจากการแข่งขันนี้แล้ว'))
+                                                    .then((value) {
+                                                  Get.off(() => Home());
+                                                });
+                                              } else if (event.notification
+                                                          .additionalData![
+                                                      'notitype'] ==
+                                                  'exitTeam') {
+                                                raceID = int.parse(event
+                                                    .notification
+                                                    .additionalData!['raceID']
+                                                    .toString());
+
+                                                teamName = event.notification
+                                                        .additionalData![
+                                                    'teamName'];
+
+                                                Get.defaultDialog(
+                                                        title:
+                                                            'มีทีมออกจากการแข่งขัน!!',
+                                                        content: Text(
+                                                            'ทีม $teamName ได้ออกจากการแข่งขันนี้แล้ว'))
+                                                    .then((value) {});
+                                              } else if (event.notification
+                                                          .additionalData![
+                                                      'notitype'] ==
+                                                  'endgame') {
+                                                raceName = event.notification
+                                                        .additionalData![
+                                                    'raceName'];
+
+                                                raceID = int.parse(event
+                                                    .notification
+                                                    .additionalData!['raceID']
+                                                    .toString());
+
+                                                Get.defaultDialog(
+                                                        title: 'จบการแข่งขัน',
+                                                        content: const Text(
+                                                            'รอการประมวลผล'))
+                                                    .then((value) {
+                                                  log('mmmmmmmm');
+                                                  log('idddd' +
+                                                      userId.toString());
+
+                                                  Get.to(() => ChatRoomPage(
+                                                      userID: userId,
+                                                      raceID: raceID,
+                                                      userName: usernames,
+                                                      raceName: raceName));
+                                                });
+                                              } else if (event.notification
+                                                          .additionalData![
+                                                      'notitype'] ==
+                                                  'processgame') {
+                                                raceName = event.notification
+                                                        .additionalData![
+                                                    'raceName'];
+                                                raceID = int.parse(event
+                                                    .notification
+                                                    .additionalData!['raceID']
+                                                    .toString());
+                                                Get.defaultDialog(
+                                                        title: 'จบการแข่งขัน',
+                                                        content: Text(
+                                                            'ประมวลผลเสร็จสิ้น'))
+                                                    .then((value) => Get.to(
+                                                        () => RankRace()));
+                                                // AwesomeDialog(
+                                                //   context: context,
+                                                //   dialogType:
+                                                //       DialogType.success,
+                                                //   animType: AnimType.rightSlide,
+                                                //   headerAnimationLoop: false,
+                                                //   title: 'จบการแข่งขัน',
+                                                //   desc:
+                                                //       'ประมวลผลการแข่งขันเสร็จสิ้น',
+                                                // ).show().then((value) =>
+                                                //     Get.to(RankRace()));
+                                              }
+                                            });
+                                            var deviceState = await OneSignal
+                                                .shared
+                                                .getDeviceState();
+                                            if (deviceState != null &&
+                                                deviceState.userId != null) {
+                                              //   _externalUserId = status.userId!;
+
+                                              _externalUserId =
+                                                  deviceState.userId!;
+                                              log('oneID ' + _externalUserId);
+                                            }
+
+                                            OneSignal.shared.disablePush(false);
+                                            UserDto userDto = UserDto(
+                                              userName: login.data.userName,
+                                              userDiscription:
+                                                  login.data.userDiscription,
+                                              userFullname:
+                                                  login.data.userFullname,
+                                              userImage: login.data.userImage,
+                                              onesingnalId: _externalUserId,
+                                              userMail: login.data.userMail,
+                                            );
+
+                                            var updateOnesignal =
+                                                await userService.updateUsers(
+                                                    userDto,
+                                                    login.data.userId
+                                                        .toString());
+                                            // log(jsonEncode(updateOnesignal));
+                                            userResult = updateOnesignal.data;
+                                            //  log(userResult.toString());
+                                            // ScaffoldMessenger.of(context).showSnackBar(
+                                            //   const SnackBar(
+                                            //       content: Text('Login Successful')),
+                                            // );
+
+                                            setState(() {
+                                              _authenticatingStatus =
+                                                  !_authenticatingStatus;
+                                            });
+                                            log("login success");
+                                            userId = login.data.userId;
+                                            usernames = login.data.userName;
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const Home(),
+                                                  settings: const RouteSettings(
+                                                      arguments: null),
+                                                ));
+                                            context.read<AppData>().Username =
+                                                login.data.userName;
+
+                                            context.read<AppData>().idUser =
+                                                login.data.userId;
+                                            context.read<AppData>().userImage =
+                                                login.data.userImage;
+                                            context
+                                                    .read<AppData>()
+                                                    .userFullName =
+                                                login.data.userFullname;
+                                            context
+                                                    .read<AppData>()
+                                                    .userDescrip =
+                                                login.data.userDiscription;
+
+                                            context.read<AppData>().oneID =
+                                                _externalUserId;
+                                            return;
+                                          } else {
+                                            final snackBar = SnackBar(
+                                              content: const Text(
+                                                  'เข้าสู่ระบบล้มเหลว อีเมลหรือรหัสผ่านไม่ถูก'),
+                                            );
+
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(snackBar);
+
+                                            return;
+                                          }
+                                        }
+                                      },
+                                      child: const Text('เข้าสู่ระบบ')),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 10, right: 20, left: 20),
+                                  child: Divider(),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text('ไม่มีบัญชีผู้ใช้ใช่หรือไม่? '),
+                                    TextButton(
+                                        onPressed: () {
+                                          Get.to(() => FontRegisterPage());
+                                        },
+                                        child: const Text('คลิกที่นี้'))
+                                  ],
+                                ),
+                                // Padding(
+                                //   padding: const EdgeInsets.all(8.0),
+                                //   child: SizedBox(
+                                //     width: 240,
+                                //     child: ElevatedButton.icon(
+                                //       style: ElevatedButton.styleFrom(
+                                //         primary: Color.fromARGB(255, 66, 103,
+                                //             178), // Background color
+                                //       ),
+                                //       onPressed: () {},
+                                //       label: Text('Login Facebook',
+                                //           style: Get.textTheme.bodyLarge!
+                                //               .copyWith(
+                                //                   fontWeight: FontWeight.bold,
+                                //                   color: Get.theme.colorScheme
+                                //                       .onPrimary)),
+                                //       icon: FaIcon(
+                                //         FontAwesomeIcons.facebook,
+                                //         color: Get.theme.colorScheme.onPrimary,
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

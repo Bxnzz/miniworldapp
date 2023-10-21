@@ -108,8 +108,7 @@ class _MissioncreateState extends State<Missioncreate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 239, 150, 255),
-        foregroundColor: Colors.white,
+        backgroundColor: Color.fromARGB(255, 251, 233, 254),
         title: const Text('สร้างภารกิจ'),
       ),
       body: raceMap(),
@@ -129,53 +128,52 @@ class _MissioncreateState extends State<Missioncreate> {
               return Container();
             }
             return Scaffold(
-                backgroundColor: Color.fromARGB(255, 239, 150, 255),
+                backgroundColor: Color.fromARGB(255, 251, 233, 254),
                 body: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 300,
-                        child: Stack(children: [
-                          GoogleMap(
-                            // myLocationEnabled: false,
-                            myLocationButtonEnabled: false,
-                            mapType: MapType.hybrid,
-                            gestureRecognizers: {
-                              Factory<OneSequenceGestureRecognizer>(
-                                  () => EagerGestureRecognizer())
-                            },
-                            initialCameraPosition: CameraPosition(
-                              target: LatLng(currentLatLng.latitude,
-                                  currentLatLng.longitude),
-                              zoom: 16,
-                            ),
-                            onMapCreated: (GoogleMapController controller) {
-                              _controller.complete(controller);
-                            },
-                            markers: markerss.map((e) => e).toSet(),
-                            polylines: _polylines,
-                            onCameraMove: (position) {
-                              lats = position.target.latitude.toString();
-                              longs = position.target.longitude.toString();
-                              log('lat' + position.target.latitude.toString());
-                            },
-                          ),
-                          Positioned(
-                              top: (300 / 2) - 32,
-                              left:
-                                  (MediaQuery.of(context).size.width / 2) - 16,
-                              child: Column(
-                                children: [
-                                  Image.asset("assets/image/target.png"),
-                                  // Text('Lat:'+lat+',Long:'+long),
-                                ],
-                              )),
-                        ]),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 300,
+                    child: Stack(children: [
+                      GoogleMap(
+                        // myLocationEnabled: false,
+                        myLocationButtonEnabled: false,
+                        mapType: MapType.hybrid,
+                        gestureRecognizers: {
+                          Factory<OneSequenceGestureRecognizer>(
+                              () => EagerGestureRecognizer())
+                        },
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(
+                              currentLatLng.latitude, currentLatLng.longitude),
+                          zoom: 16,
+                        ),
+                        onMapCreated: (GoogleMapController controller) {
+                          _controller.complete(controller);
+                        },
+                        markers: markerss.map((e) => e).toSet(),
+                        polylines: _polylines,
+                        onCameraMove: (position) {
+                          lats = position.target.latitude.toString();
+                          longs = position.target.longitude.toString();
+                          log('lat' + position.target.latitude.toString());
+                        },
                       ),
-                      missionInput(),
-                    ],
+                      Positioned(
+                          top: (300 / 2) - 32,
+                          left: (MediaQuery.of(context).size.width / 2) - 16,
+                          child: Column(
+                            children: [
+                              Image.asset("assets/image/target.png"),
+                              // Text('Lat:'+lat+',Long:'+long),
+                            ],
+                          )),
+                    ]),
                   ),
-                ));
+                  missionInput(),
+                ],
+              ),
+            ));
           }),
     );
   }
@@ -196,23 +194,25 @@ class _MissioncreateState extends State<Missioncreate> {
               child: Text(
                 'ชื่อภารกิจ*',
                 style: Get.textTheme.bodyLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Get.theme.colorScheme.onPrimary),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             SizedBox(
               width: 340,
-              child: TextFormField(
-                style: Get.textTheme.bodyLarge!
-                    .copyWith(color: Get.theme.colorScheme.onPrimary),
-                controller: nameMission,
-                decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    focusColor: Colors.white,
+              child: Material(
+                borderRadius: BorderRadius.circular(10),
+                elevation: 5,
+                shadowColor: Colors.purpleAccent,
+                child: TextFormField(
+                  style: Get.textTheme.bodyLarge!,
+                  controller: nameMission,
+                  decoration: InputDecoration(
                     filled: true,
-                    fillColor: Colors.purpleAccent,
+                    fillColor: Colors.white,
                     hintText: 'ชื่อภารกิจ...',
-                    hintStyle: TextStyle(color: Colors.white)),
+                  ),
+                ),
               ),
             ),
           ],
@@ -225,24 +225,28 @@ class _MissioncreateState extends State<Missioncreate> {
               padding: EdgeInsets.only(top: 10),
               child: Text('คำอธิบาย*',
                   style: Get.textTheme.bodyLarge!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Get.theme.colorScheme.onPrimary)),
+                    fontWeight: FontWeight.bold,
+                  )),
             ),
             SizedBox(
               width: 340,
-              child: TextFormField(
-                controller: discripText,
-                style: Get.textTheme.bodyLarge!
-                    .copyWith(color: Get.theme.colorScheme.onPrimary),
-                decoration: InputDecoration(
+              child: Material(
+                borderRadius: BorderRadius.circular(10),
+                elevation: 5,
+                shadowColor: Colors.purpleAccent,
+                child: TextFormField(
+                  controller: discripText,
+                  style: Get.textTheme.bodyLarge!,
+                  decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(15),
                     filled: true,
-                    fillColor: Colors.purpleAccent,
+                    fillColor: Colors.white,
                     hintText: 'คำอธิบาย...',
-                    hintStyle: TextStyle(color: Colors.white)),
-                keyboardType: TextInputType.multiline,
-                minLines: 3,
-                maxLines: 4,
+                  ),
+                  keyboardType: TextInputType.multiline,
+                  minLines: 3,
+                  maxLines: 4,
+                ),
               ),
             ),
           ],
@@ -255,8 +259,8 @@ class _MissioncreateState extends State<Missioncreate> {
               child: Text(
                 'รัศมีแจ้งเตือนภารกิจ*',
                 style: Get.textTheme.bodyLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Get.theme.colorScheme.onPrimary),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             Padding(
@@ -269,8 +273,8 @@ class _MissioncreateState extends State<Missioncreate> {
           padding: EdgeInsets.only(top: 10),
           child: Text('กรุณาเลือกประเภทภารกิจ*',
               style: Get.textTheme.bodyLarge!.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Get.theme.colorScheme.onPrimary)),
+                fontWeight: FontWeight.bold,
+              )),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -299,9 +303,7 @@ class _MissioncreateState extends State<Missioncreate> {
                     },
             ),
             Text('ข้อความ',
-                style: Get.textTheme.bodyLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Get.theme.colorScheme.onPrimary)),
+                style: Get.textTheme.bodyLarge!),
             Checkbox(
               fillColor: MaterialStateProperty.resolveWith(getColor),
               checkColor: Colors.white, // color of tick Mark
@@ -327,9 +329,7 @@ class _MissioncreateState extends State<Missioncreate> {
                     },
             ),
             Text('สื่อ',
-                style: Get.textTheme.bodyLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Get.theme.colorScheme.onPrimary)),
+                style: Get.textTheme.bodyLarge!),
             Checkbox(
                 value: _checkbox2,
                 fillColor: MaterialStateProperty.resolveWith(getColor),
@@ -355,9 +355,7 @@ class _MissioncreateState extends State<Missioncreate> {
                         });
                       }),
             Text('ไม่มีการส่ง',
-                style: Get.textTheme.bodyLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Get.theme.colorScheme.onPrimary)),
+                style: Get.textTheme.bodyLarge!),
           ],
         ),
         Center(
@@ -365,11 +363,11 @@ class _MissioncreateState extends State<Missioncreate> {
             padding: const EdgeInsets.only(bottom: 8),
             child: SizedBox(
               width: 300,
-              child: ElevatedButton(
-                  style: const ButtonStyle(
-                    backgroundColor:
-                        MaterialStatePropertyAll<Color>(Colors.amberAccent),
-                  ),
+              child: FilledButton(
+                  // style: const ButtonStyle(
+                  //   backgroundColor:
+                  //       MaterialStatePropertyAll<Color>(Colors.amberAccent),
+                  // ),
                   child: Text('สร้างภารกิจ',
                       style: Get.textTheme.bodyLarge!.copyWith(
                           fontWeight: FontWeight.bold,
@@ -496,6 +494,14 @@ class _MissioncreateState extends State<Missioncreate> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       border: Border.all(color: Colors.white, width: 5),
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                          color: Color.fromARGB(255, 153, 152, 152)
+                              .withOpacity(0.8),
+                          blurRadius: 3.0,
+                          offset: new Offset(0.0, 3.0),
+                        ),
+                      ],
                     ),
                     key: keys,
                     child: Image.file(
@@ -510,6 +516,14 @@ class _MissioncreateState extends State<Missioncreate> {
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.8),
                       borderRadius: BorderRadius.circular(100),
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                          color: Color.fromARGB(255, 153, 152, 152)
+                              .withOpacity(0.8),
+                          blurRadius: 3.0,
+                          offset: new Offset(0.0, 3.0),
+                        ),
+                      ],
                     ),
                     child: IconButton(
                         onPressed: () {
@@ -531,6 +545,14 @@ class _MissioncreateState extends State<Missioncreate> {
                   borderRadius: BorderRadius.circular(15),
                   border: Border.all(color: Colors.white, width: 5),
                   color: Colors.purpleAccent,
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                      color:
+                          Color.fromARGB(255, 153, 152, 152).withOpacity(0.8),
+                      blurRadius: 3.0,
+                      offset: new Offset(0.0, 3.0),
+                    ),
+                  ],
                 ),
                 key: keys,
                 child: IconButton(
@@ -547,59 +569,61 @@ class _MissioncreateState extends State<Missioncreate> {
   }
 
   Widget dropdownRadius() {
-    return SingleChildScrollView(
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton2(
-          hint: Padding(
-            padding: const EdgeInsets.only(left: 50),
-            child: Text(
-              'รัศมี',
-              style: Get.textTheme.bodyLarge!
-                  .copyWith(color: Get.theme.colorScheme.onPrimary),
-                  textAlign: TextAlign.center,
+    return Material(
+      elevation: 5,
+      shadowColor: Colors.purpleAccent,
+      borderRadius: BorderRadius.circular(20),
+      child: SingleChildScrollView(
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton2(
+            hint: Padding(
+              padding: const EdgeInsets.only(left: 50),
+              child: Text(
+                'รัศมี',
+                style: Get.textTheme.bodyLarge!,
+                textAlign: TextAlign.center,
+              ),
             ),
-          ),
-          alignment: Alignment.center, 
-          items: items
-              .map((item) => DropdownMenuItem<String>(
-                    value: item,
-                    child: Center(
-                      child: Text(
-                        item,
-                        style: Get.textTheme.bodyLarge!.copyWith(
-                            color: Get.theme.colorScheme.onPrimary),
-                            textAlign: TextAlign.center,
+            alignment: Alignment.center,
+            items: items
+                .map((item) => DropdownMenuItem<String>(
+                      value: item,
+                      child: Center(
+                        child: Text(
+                          item,
+                          style: Get.textTheme.bodyLarge!,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
-                  ))
-              .toList(),
-          value: selectedValue,
-          onChanged: (value) {
-            setState(() {
-              selectedValue = value as String;
+                    ))
+                .toList(),
+            value: selectedValue,
+            onChanged: (value) {
+              setState(() {
+                selectedValue = value as String;
 
-              //    log('radi'+selectedValue.toString());
-            });
-          },
-          buttonStyleData: ButtonStyleData(
-              height: 30,
-              width: 140,
-             
-              // padding: const EdgeInsets.only(left: 14, right: 14),
+                //    log('radi'+selectedValue.toString());
+              });
+            },
+            buttonStyleData: ButtonStyleData(
+                height: 30,
+                width: 140,
+
+                // padding: const EdgeInsets.only(left: 14, right: 14),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white,
+                    border: Border.all(color: Colors.purpleAccent))),
+            dropdownStyleData: DropdownStyleData(
+              offset: Offset(0, 0),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.amber,
-                  border: Border.all(color: Colors.purpleAccent))),
-          dropdownStyleData: DropdownStyleData(
-            offset: Offset(0, 0),
-            decoration: BoxDecoration(  
-
-              color: Colors.amber,
-              borderRadius: BorderRadius.circular(5),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(5),
+              ),
             ),
-          ),
-          menuItemStyleData: const MenuItemStyleData(
-            height: 30,
+            menuItemStyleData: const MenuItemStyleData(
+              height: 30,
+            ),
           ),
         ),
       ),
@@ -613,9 +637,9 @@ class _MissioncreateState extends State<Missioncreate> {
       MaterialState.pressed,
     };
     if (states.any(interactiveStates.contains)) {
-      return Colors.amber;
+      return Get.theme.colorScheme.primary;
     }
-    return Colors.yellow;
+    return Get.theme.colorScheme.primary;
   }
 
   Future<void> loadData() async {
