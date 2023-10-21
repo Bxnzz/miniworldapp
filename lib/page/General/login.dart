@@ -870,6 +870,7 @@ class _LoginState extends State<Login> {
               Get.to(() => PlayerRaceStartMenu());
             } else if (Get.currentRoute == '/PlayerRaceStartMenu') {
               Get.back();
+              Get.back();
               Get.to(() => PlayerRaceStartMenu());
               log("currentroute is ${Get.currentRoute}");
             } else {

@@ -1219,12 +1219,12 @@ class _PlayerRaceStMisDetailState extends State<PlayerRaceStMisDetail>
                     });
                   },
                   child: Text(
-                    'ส่งหลักฐานaaa',
+                    'ส่งหลักฐาน',
                     style: Get.textTheme.bodyLarge!.copyWith(
                         color: Get.theme.colorScheme.onPrimary,
                         fontWeight: FontWeight.bold),
                   ),
-              )
+                )
               : StSubmitDb == 1 || textInProcesCtl.text.isNotEmpty
                   ? ElevatedButton(
                       onPressed: null,
