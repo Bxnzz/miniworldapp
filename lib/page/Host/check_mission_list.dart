@@ -71,6 +71,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
   String type3 = '';
   String mType = '';
   String types = '';
+  String misType = '';
   int misStatus = 0;
   int raceStatus = 0;
   int rStatus = 0;
@@ -285,6 +286,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
           return true;
         },
         child: Scaffold(
+          backgroundColor: Color.fromARGB(255, 238, 238, 238),
           appBar: AppBar(
             actions: <Widget>[
               IconButton(
@@ -332,7 +334,15 @@ class _CheckMissionListState extends State<CheckMissionList> {
                                       e.mission.misId == element.misId &&
                                       e.mcStatus == 1)
                                   .length;
-
+                              if (element.misType.isEqual(12)) {
+                                misType = 'ข้อความ,สื่อ';
+                              } else if (element.misType.isEqual(1)) {
+                                misType = 'ข้อความ';
+                              } else if (element.misType.isEqual(2)) {
+                                misType = 'รูป,คลิป';
+                              } else if (element.misType.isEqual(3)) {
+                                misType = 'ไม่มีการส่ง';
+                              } else {}
                               log(element.misId.toString());
                               log(missionComs.length.toString());
 
@@ -351,166 +361,324 @@ class _CheckMissionListState extends State<CheckMissionList> {
                                   padding: const EdgeInsets.only(
                                       left: 8, right: 8, bottom: 8),
                                   child: badges.Badge(
-                                      position: badges.BadgePosition.topEnd(
-                                          top: -5, end: 5),
-                                      badgeAnimation: badges.BadgeAnimation.slide(
-                                          // disappearanceFadeAnimationDuration: Duration(milliseconds: 200),
-                                          // curve: Curves.easeInCubic,
-                                          ),
-                                      // showBadge: _showCartBadge,
-                                      badgeStyle: badges.BadgeStyle(
-                                        badgeColor: Colors.red,
-                                      ),
-                                      badgeContent: Text(
-                                        mcStatus.toString(),
-                                        style: textTheme.bodyText2?.copyWith(
-                                            fontSize: 16, color: Colors.white),
-                                      ),
-                                      child: Card(
-                                        //  shadowColor: ,
-
-                                        clipBehavior: Clip.hardEdge,
-
-                                        child: InkWell(
-                                          borderRadius:
-                                              BorderRadius.circular(12.0),
-                                          splashColor:
-                                              Colors.blue.withAlpha(30),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Container(
-                                                alignment: Alignment.center,
-                                                // For testing different size item. You can comment this line
-                                                padding: element.misName ==
-                                                        element.misName
-                                                    ? const EdgeInsets
-                                                            .symmetric(
-                                                        vertical: 16.0)
-                                                    : EdgeInsets.zero,
-                                                child: Row(
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 15),
-                                                      child: SizedBox(
-                                                        width: 36,
-                                                        height: 36,
-                                                        child: Center(
+                                    position: badges.BadgePosition.topEnd(
+                                        top: -15, end: 5),
+                                    badgeAnimation:
+                                        badges.BadgeAnimation.slide(),
+                                    // showBadge: _showCartBadge,
+                                    badgeStyle: badges.BadgeStyle(
+                                      badgeColor: Colors.red,
+                                    ),
+                                    badgeContent: Text(
+                                      mcStatus.toString(),
+                                      style: textTheme.bodyText2?.copyWith(
+                                          fontSize: 16, color: Colors.white),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: 3, left: 3),
+                                      child: InkWell(
+                                        onTap: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return Dialog(
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20)),
+                                                    height: 400,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceEvenly,
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Container(
+                                                            width: 300,
+                                                            height: 150,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20),
+                                                              image:
+                                                                  DecorationImage(
+                                                                image: NetworkImage(
+                                                                    element
+                                                                        .misMediaUrl),
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 10),
                                                           child: Text(
                                                             //int sortn = mis.misSeq,
-                                                            '${missions.indexOf(element) + 1}',
+                                                            '# ${missions.indexOf(element) + 1} ${element.misName}',
                                                             style: textTheme
                                                                 .bodyLarge
                                                                 ?.copyWith(
                                                               color:
                                                                   Colors.purple,
-                                                              fontSize: 16,
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  right: 20,
+                                                                  left: 20),
+                                                          child: Divider(),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 10),
+                                                          child: Text(
+                                                              'รายละเอียด: ',
+                                                              style: textTheme
+                                                                  .bodyLarge!),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Text(
+                                                            element.misDiscrip,
+                                                            style: textTheme
+                                                                .bodyLarge!,
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  right: 20,
+                                                                  left: 20),
+                                                          child: Divider(),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 10),
+                                                          child: Text(
+                                                              'ประเภท: ' +
+                                                                  misType,
+                                                              style: textTheme
+                                                                  .bodyLarge!),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  right: 20,
+                                                                  left: 20),
+                                                          child: Divider(),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 10,
+                                                                  bottom: 10),
+                                                          child: Text(
+                                                              'ระยะภารกิจ: ' +
+                                                                  element
+                                                                      .misDistance
+                                                                      .toString() +
+                                                                  ' เมตร',
+                                                              style: textTheme
+                                                                  .bodyLarge!),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    Text(
-                                                      element.misName,
-                                                      style: textTheme.bodyText2
-                                                          ?.copyWith(
-                                                        fontSize: 16,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                    ),
-                                                    element.misType != 3
-                                                        ? Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 90),
-                                                            child: FilledButton(
-                                                              child: Text(
-                                                                  'ดูหลักฐาน'),
-                                                              onPressed:
-                                                                  () async {
-                                                                var mcStatus = missionComs
-                                                                    .where((e) =>
-                                                                        e.mission.misId ==
-                                                                            element
-                                                                                .misId &&
-                                                                        e.mcStatus ==
-                                                                            1)
-                                                                    .length;
-                                                                log('assssss ' +
-                                                                    mcStatus
-                                                                        .toString());
-                                                                if (mcStatus ==
-                                                                    0) {
-                                                                  AwesomeDialog(
-                                                                    context:
-                                                                        context,
-                                                                    dialogType:
-                                                                        DialogType
-                                                                            .warning,
-                                                                    animType:
-                                                                        AnimType
-                                                                            .bottomSlide,
-                                                                    headerAnimationLoop:
-                                                                        false,
-                                                                    title:
-                                                                        'ไม่มีหลักฐานให้ตรวจสอบ',
-                                                                    desc:
-                                                                        'เนื่องจากคุณได้ตรวจไปแล้ว\n หรือยังไม่มีหลักฐานที่ส่งเข้ามา',
-                                                                  ).show();
-                                                                }
-                                                                showDialog<
-                                                                    void>(
-                                                                  context:
-                                                                      context,
-                                                                  builder:
-                                                                      (BuildContext
-                                                                          context) {
-                                                                    return Dialog
-                                                                        .fullscreen(
-                                                                      child:
-                                                                          ListApprove(),
-                                                                    );
-                                                                  },
-                                                                ).then((value) {
-                                                                  setState(() {
-                                                                    loadDataMethod =
-                                                                        loadData();
-                                                                  });
-                                                                });
-
-                                                                context
-                                                                        .read<
-                                                                            AppData>()
-                                                                        .misID =
-                                                                    element
-                                                                        .misId;
-                                                              },
-                                                            ),
-                                                          )
-                                                        : const Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    left: 110),
-                                                            child:
-                                                                ElevatedButton(
-                                                              onPressed: null,
-                                                              child: Text(
-                                                                'ไม่ต้องตรวจสอบ',
-                                                              ),
+                                                  ),
+                                                );
+                                              });
+                                        },
+                                        child: Material(
+                                          elevation: 10,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            child: Container(
+                                              height: 120,
+                                              color: Colors.white,
+                                              child: Row(
+                                                children: <Widget>[
+                                                  SizedBox(width: 10),
+                                                  Expanded(
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 10),
+                                                          child: Text(
+                                                            //int sortn = mis.misSeq,
+                                                            '# ${missions.indexOf(element) + 1} ${element.misName}',
+                                                            style: textTheme
+                                                                .bodyLarge
+                                                                ?.copyWith(
+                                                              color:
+                                                                  Colors.purple,
                                                             ),
                                                           ),
-                                                  ],
-                                                ),
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      top: 8,
+                                                                      bottom: 8,
+                                                                      left: 10,
+                                                                      right:
+                                                                          10),
+                                                              child: FaIcon(
+                                                                  FontAwesomeIcons
+                                                                      .filePen),
+                                                            ),
+                                                            Container(
+                                                              width: 180,
+                                                              child: Text(
+                                                                element
+                                                                    .misDiscrip,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                style: textTheme
+                                                                    .bodyLarge!,
+                                                                maxLines: 1,
+                                                                // new),
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 8),
+                                                          child: Text(
+                                                              'ประเภท ' +
+                                                                  misType,
+                                                              style: textTheme
+                                                                  .bodyLarge!
+                                                                  .copyWith(
+                                                                      color: Colors
+                                                                          .grey)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  element.misType != 3
+                                                      ? Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  right: 8),
+                                                          child: FilledButton(
+                                                            child: Text(
+                                                                'ดูหลักฐาน'),
+                                                            onPressed:
+                                                                () async {
+                                                              var mcStatus = missionComs
+                                                                  .where((e) =>
+                                                                      e.mission
+                                                                              .misId ==
+                                                                          element
+                                                                              .misId &&
+                                                                      e.mcStatus ==
+                                                                          1)
+                                                                  .length;
+                                                              log('assssss ' +
+                                                                  mcStatus
+                                                                      .toString());
+                                                              if (mcStatus ==
+                                                                  0) {
+                                                                AwesomeDialog(
+                                                                  context:
+                                                                      context,
+                                                                  dialogType:
+                                                                      DialogType
+                                                                          .warning,
+                                                                  animType: AnimType
+                                                                      .bottomSlide,
+                                                                  headerAnimationLoop:
+                                                                      false,
+                                                                  title:
+                                                                      'ไม่มีหลักฐานให้ตรวจสอบ',
+                                                                  desc:
+                                                                      'เนื่องจากคุณได้ตรวจไปแล้ว\n หรือยังไม่มีหลักฐานที่ส่งเข้ามา',
+                                                                ).show();
+                                                              }
+                                                              showDialog<void>(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  return Dialog
+                                                                      .fullscreen(
+                                                                    child:
+                                                                        ListApprove(),
+                                                                  );
+                                                                },
+                                                              ).then((value) {
+                                                                setState(() {
+                                                                  loadDataMethod =
+                                                                      loadData();
+                                                                });
+                                                              });
+
+                                                              context
+                                                                      .read<
+                                                                          AppData>()
+                                                                      .misID =
+                                                                  element.misId;
+                                                            },
+                                                          ),
+                                                        )
+                                                      : ElevatedButton(
+                                                          onPressed: null,
+                                                          child: Text(
+                                                            'ไม่ต้องตรวจสอบ',
+                                                          ),
+                                                        ),
+                                                ],
                                               ),
-                                            ],
+                                            ),
                                           ),
                                         ),
-                                      )));
+                                      ),
+                                    ),
+                                  ));
                             }).toList(),
                           ),
                         ),

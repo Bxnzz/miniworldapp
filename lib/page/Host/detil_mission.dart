@@ -317,23 +317,24 @@ class _DetailMissionState extends State<DetailMission> {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final number = <int>[mis.misSeq];
-  mType = mis.misType.toString();
-  if (mType == '12' ) {
-        misType = 'ข้อความ,สื่อ';
-        log('aaaa');
-      } else if (misType == '1') {
-        log('22222222');
-        misType = 'ข้อความ';
-      } else if (misType == '2') {
-        log('3333333');
-        misType = 'รูป,คลิป';
-      } else if (misType =='3') {
-        log('555555');
-        misType = 'ไม่มีการส่ง';
-      } else {
-        log('asasasasas');
-      }
-    log('ประเภท '+mType);
+    mType = mis.misType.toString();
+
+    if (mis.misType.isEqual(12)) {
+      misType = 'ข้อความ,สื่อ';
+      log('aaaa');
+    } else if (mis.misType.isEqual(1)) {
+      log('22222222');
+      misType = 'ข้อความ';
+    } else if (mis.misType.isEqual(2)) {
+      log('3333333');
+      misType = 'รูป,คลิป';
+    } else if (mis.misType.isEqual(3)) {
+      log('555555');
+      misType = 'ไม่มีการส่ง';
+    } else {
+      log('asasasasas');
+    }
+    log('ประเภท ' + misType);
     return Slidable(
       endActionPane: ActionPane(motion: const BehindMotion(), children: [
         SlidableAction(
@@ -443,84 +444,163 @@ class _DetailMissionState extends State<DetailMission> {
           icon: Icons.edit,
         ),
       ]),
-      child: ClipRRect(
-        
-        borderRadius: BorderRadius.circular(10),
-        child: Container(
-          height: 120,
-          color: Colors.white,
-          child: Row(
-            children: <Widget>[
-              Container(
-                width: 100,
-                height: 120,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(mis.misMediaUrl),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Text(
-                        //int sortn = mis.misSeq,
-                        '# ${missions.indexOf(mis) + 1} ${mis.misName}',
-                        style: textTheme.bodyLarge?.copyWith(
-                          color: Colors.purple,
-                        ),
-                      ),
-                    ),
-                    Row(
+      child: InkWell(
+        onTap: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return Dialog(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20)),
+                    height: 400,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(
-                              top: 8, bottom: 8, left: 10,right: 10),
-                          child: FaIcon(FontAwesomeIcons.filePen),
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            width: 300,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              image: DecorationImage(
+                                image: NetworkImage(mis.misMediaUrl),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
                         ),
-           
-                        Container(
-                          width: 180,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text(
+                            //int sortn = mis.misSeq,
+                            '# ${missions.indexOf(mis) + 1} ${mis.misName}',
+                            style: textTheme.bodyLarge?.copyWith(
+                              color: Colors.purple,
+                            ),
+                          ),
+                        ),
+                         Padding(
+                          padding: const EdgeInsets.only(right: 20,left: 20),
+                          child: Divider(),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text('รายละเอียด: ',
+                              style: textTheme.bodyLarge!),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
                           child: Text(
                             mis.misDiscrip,
-                            overflow: TextOverflow.ellipsis,
                             style: textTheme.bodyLarge!,
-                            maxLines: 1,
-                            // new),
                           ),
-                        )
+                        ),
+                         Padding(
+                          padding: const EdgeInsets.only(right: 20,left: 20),
+                          child: Divider(),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text('ประเภท: ' + misType,
+                              style: textTheme.bodyLarge!),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20,left: 20),
+                          child: Divider(),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10,bottom: 10),
+                          child: Text(
+                              'ระยะภารกิจ: ' +
+                                  mis.misDistance.toString() +
+                                  ' เมตร',
+                              style: textTheme.bodyLarge!),
+                        ),
+                       
                       ],
                     ),
-                    
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Text('ประเภท ' + mis.misType.toString(),
-                      
-                          style: textTheme.bodyLarge!
-                              .copyWith(color: Colors.grey)),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 15),
-                child: Handle(
-                  delay: Duration(milliseconds: 0),
-                  capturePointer: true,
-                  child: Icon(
-                    Icons.drag_handle,
-                    color: Colors.grey,
+                  ),
+                );
+              });
+        },
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            height: 120,
+            color: Colors.white,
+            child: Row(
+              children: <Widget>[
+                Container(
+                  width: 100,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(mis.misMediaUrl),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
-            ],
+                SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Text(
+                          //int sortn = mis.misSeq,
+                          '# ${missions.indexOf(mis) + 1} ${mis.misName}',
+                          style: textTheme.bodyLarge?.copyWith(
+                            color: Colors.purple,
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 8, bottom: 8, left: 10, right: 10),
+                            child: FaIcon(FontAwesomeIcons.filePen),
+                          ),
+                          Container(
+                            width: 180,
+                            child: Text(
+                              mis.misDiscrip,
+                              overflow: TextOverflow.ellipsis,
+                              style: textTheme.bodyLarge!,
+                              maxLines: 1,
+                              // new),
+                            ),
+                          )
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Text('ประเภท ' + misType,
+                            style: textTheme.bodyLarge!
+                                .copyWith(color: Colors.grey)),
+                      )
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: Handle(
+                    delay: Duration(milliseconds: 0),
+                    capturePointer: true,
+                    child: Icon(
+                      Icons.drag_handle,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
