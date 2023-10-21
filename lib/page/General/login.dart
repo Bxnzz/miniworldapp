@@ -286,7 +286,61 @@ class _LoginState extends State<Login> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     TextButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Get.defaultDialog(
+                                              title: 'กรอกอีเมล',
+                                              content: Form(
+                                                key: _formKey4,
+                                                child: Column(
+                                                  children: [
+                                                    TextFormField(
+                                                      controller: mailReset,
+                                                      validator: (value) {
+                                                        if (value == null ||
+                                                            value.isEmpty) {
+                                                          return 'กรุณากรอกอีเมล';
+                                                        }
+                                                        return null;
+                                                      },
+                                                    ),
+                                                    Gap(20),
+                                                    ElevatedButton(
+                                                        onPressed: () async {
+                                                          if (_formKey4
+                                                              .currentState!
+                                                              .validate()) {
+                                                            Get.back();
+                                                            log(getTotp(
+                                                                mailReset
+                                                                    .text));
+                                                            Get.defaultDialog(
+                                                                title:
+                                                                    'กรอกรหัส PIN',
+                                                                content: Form(
+                                                                  key:
+                                                                      _formKey3,
+                                                                  child: Column(
+                                                                    children: [
+                                                                      buildPinPut(),
+                                                                      TextButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            setState(() {
+                                                                              pin.clear();
+                                                                            });
+                                                                          },
+                                                                          child:
+                                                                              Text("ล้างค่าPIN")),
+                                                                    ],
+                                                                  ),
+                                                                ));
+                                                          }
+                                                        },
+                                                        child: Text("ถัดไป"))
+                                                  ],
+                                                ),
+                                              ));
+                                        },
                                         child: Text("รีเซ็ตรหัสผ่าน")),
                                     Padding(
                                       padding: const EdgeInsets.only(right: 40),
