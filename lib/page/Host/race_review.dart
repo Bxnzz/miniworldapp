@@ -144,262 +144,275 @@ class _raceReviewState extends State<raceReview> {
                     reviews.length;
               }
 
-              return Scaffold(
-                appBar: AppBar(
-                  elevation: 0,
-                  backgroundColor: Colors.transparent,
-                  titleSpacing: 5,
-                  title: Text(
-                    "รีวิวการแข่งขัน",
-                    style: textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.amber,
+              return SafeArea(
+                child: Scaffold(
+                  
+                  appBar: AppBar(
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                    titleSpacing: 5,
+                    title: Text(
+                      "รีวิวการแข่งขัน",
+                      style: textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.amber,
+                      ),
+                    ),
+                    leading: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const FaIcon(
+                        FontAwesomeIcons.circleChevronLeft,
+                        color: Colors.yellow,
+                        size: 35,
+                      ),
+                    ),
+                    // actions: [
+                    //   showBtnRev == false
+                    //       ? IconButton(
+                    //           onPressed: () {
+                    //             Get.to(
+                    //               () => ReviewPage(),
+                    //               fullscreenDialog: true,
+                    //             );
+                    //           },
+                    //           icon: Icon(
+                    //             Icons.add_comment,
+                    //             size: 35,
+                    //             color: Colors.white,
+                    //           ))
+                    //       : SizedBox()
+                    // ],
+                  ),
+              
+                  //  PreferredSize(
+                  //   preferredSize: Size(Get.width, Get.height),
+                  //   child: SafeArea(
+                  //     child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //       children: [
+                  //         Row(
+                  //           children: [
+                  //             IconButton(
+                  //               onPressed: () {
+                  //                 Navigator.of(context).pop();
+                  //               },
+                  //               icon: const FaIcon(
+                  //                 FontAwesomeIcons.solidCircleLeft,
+                  //                 color: Colors.yellow,
+                  //                 size: 35,
+                  //               ),
+                  //             ),
+                  //             Text(
+                  //               "รีวิวการแข่งขัน",
+                  //               style: textTheme.headlineSmall?.copyWith(
+                  //                 fontWeight: FontWeight.bold,
+                  //                 color: Colors.amber,
+                  //               ),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //         showBtnRev == false
+                  //             ? IconButton(
+                  //                 onPressed: () {
+                  //                   Get.to(() => ReviewPage(),
+                  //                       fullscreenDialog: true,
+                  //                       transition: Transition.fadeIn);
+                  //                 },
+                  //                 icon: Icon(
+                  //                   Icons.add_comment,
+                  //                   size: 35,
+                  //                   color: Colors.white,
+                  //                 ))
+                  //             : SizedBox()
+                  //       ],
+                  //     ),
+                  //   ),
+                  // )
+                 // backgroundColor: Colors.purpleAccent[700],
+                  body: Container(
+                      height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    image: const DecorationImage(
+                      image: AssetImage("assets/image/NewBG.jpg"),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  leading: IconButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    icon: const FaIcon(
-                      FontAwesomeIcons.circleChevronLeft,
-                      color: Colors.yellow,
-                      size: 35,
-                    ),
-                  ),
-                  // actions: [
-                  //   showBtnRev == false
-                  //       ? IconButton(
-                  //           onPressed: () {
-                  //             Get.to(
-                  //               () => ReviewPage(),
-                  //               fullscreenDialog: true,
-                  //             );
-                  //           },
-                  //           icon: Icon(
-                  //             Icons.add_comment,
-                  //             size: 35,
-                  //             color: Colors.white,
-                  //           ))
-                  //       : SizedBox()
-                  // ],
-                ),
-
-                //  PreferredSize(
-                //   preferredSize: Size(Get.width, Get.height),
-                //   child: SafeArea(
-                //     child: Row(
-                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //       children: [
-                //         Row(
-                //           children: [
-                //             IconButton(
-                //               onPressed: () {
-                //                 Navigator.of(context).pop();
-                //               },
-                //               icon: const FaIcon(
-                //                 FontAwesomeIcons.solidCircleLeft,
-                //                 color: Colors.yellow,
-                //                 size: 35,
-                //               ),
-                //             ),
-                //             Text(
-                //               "รีวิวการแข่งขัน",
-                //               style: textTheme.headlineSmall?.copyWith(
-                //                 fontWeight: FontWeight.bold,
-                //                 color: Colors.amber,
-                //               ),
-                //             ),
-                //           ],
-                //         ),
-                //         showBtnRev == false
-                //             ? IconButton(
-                //                 onPressed: () {
-                //                   Get.to(() => ReviewPage(),
-                //                       fullscreenDialog: true,
-                //                       transition: Transition.fadeIn);
-                //                 },
-                //                 icon: Icon(
-                //                   Icons.add_comment,
-                //                   size: 35,
-                //                   color: Colors.white,
-                //                 ))
-                //             : SizedBox()
-                //       ],
-                //     ),
-                //   ),
-                // )
-                backgroundColor: Colors.purpleAccent[700],
-                body: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    child: Column(
                       children: [
-                        Container(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 60),
-                            child: Text(
-                              "${races.first.raceName}",
-                              style: textTheme.titleLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: const Color.fromARGB(255, 255, 255, 255),
-                              ),
-                            ),
-                          ),
-                        ),
-                        showBtnRev == false && hostchk == false
-                            ? Padding(
-                                padding: const EdgeInsets.only(right: 50),
-                                child: AnimatedButton(
-                                    color: Colors.white,
-                                    width: 80,
-                                    height: 80,
-                                    shadowDegree: ShadowDegree.dark,
-                                    shape: BoxShape.circle,
-                                    onPressed: () {
-                                      context.read<AppData>().idrace = raceID;
-                                      Get.to(
-                                        () => ReviewPage(),
-                                        fullscreenDialog: true,
-                                      );
-                                    },
-                                    child: Text(
-                                      "รีวิว",
-                                      style: TextStyle(
-                                        color: Colors.amber,
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    )),
-                              )
-                            : Container()
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 60),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                "${avg.toStringAsFixed(1) ?? 0}",
-                                style: textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color:
-                                      const Color.fromARGB(255, 255, 255, 255),
-                                ),
-                              ),
-                              Text("/5",
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 60),
+                                child: Text(
+                                  "${races.first.raceName}",
                                   style: textTheme.titleLarge?.copyWith(
                                     fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 206, 206, 206),
-                                  )),
-                              Gap(10),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 5),
-                                child: ratingBar(
-                                    point: avg,
-                                    size: 25,
-                                    faIcon: FaIcon(
-                                      FontAwesomeIcons.solidStar,
-                                      color: Colors.amber,
-                                    )),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    reviews.isEmpty
-                        ? Padding(
-                            padding: EdgeInsets.only(top: Get.height / 3),
-                            child: Text(
-                              "ยังไม่มีการรีวิวในการแข่งขันนี้",
-                              style: textTheme.titleLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromARGB(255, 185, 185, 185),
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                  ),
+                                ),
                               ),
                             ),
-                          )
-                        : SizedBox(
-                            width: Get.width,
-                            height: Get.height / 1.4,
-                            child: ListView(
-                              children: reviews.map((e) {
-                                return Stack(
-                                  alignment: AlignmentDirectional.topEnd,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 8, left: 8, top: 4, bottom: 4),
-                                      child: Container(
-                                        width: Get.width,
-                                        height: Get.height / 6,
-                                        child: Card(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              CircleAvatar(
-                                                  radius: Get.width / 9,
-                                                  backgroundImage: NetworkImage(
-                                                      "${e.user.userImage ?? ""}")),
-                                              Column(
+                            showBtnRev == false && hostchk == false
+                                ? Padding(
+                                    padding: const EdgeInsets.only(right: 50,top: 15),
+                                    child: AnimatedButton(
+                                        color: Colors.white,
+                                        width: 80,
+                                        height: 80,
+                                        shadowDegree: ShadowDegree.dark,
+                                        shape: BoxShape.circle,
+                                        onPressed: () {
+                                          context.read<AppData>().idrace = raceID;
+                                          Get.to(
+                                            () => ReviewPage(),
+                                            fullscreenDialog: true,
+                                          );
+                                        },
+                                        child: Text(
+                                          "รีวิว",
+                                          style: TextStyle(
+                                            color: Colors.amber,
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                        )),
+                                  )
+                                : Container()
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 60),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "${avg.toStringAsFixed(1) ?? 0}",
+                                    style: textTheme.titleLarge?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          Color.fromARGB(255, 0, 0, 0),
+                                    ),
+                                  ),
+                                  Text("/5",
+                                      style: textTheme.titleLarge?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromARGB(255, 206, 206, 206),
+                                      )),
+                                  Gap(10),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    child: ratingBar(
+                                        point: avg,
+                                        size: 25,
+                                        faIcon: FaIcon(
+                                          FontAwesomeIcons.solidStar,
+                                          color: Colors.amber,
+                                        )),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        reviews.isEmpty
+                            ? Padding(
+                                padding: EdgeInsets.only(top: Get.height / 3),
+                                child: Text(
+                                  "ยังไม่มีการรีวิวในการแข่งขันนี้",
+                                  style: textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 185, 185, 185),
+                                  ),
+                                ),
+                              )
+                            : SizedBox(
+                                width: Get.width,
+                                height: Get.height / 1.4,
+                                child: ListView(
+                                  children: reviews.map((e) {
+                                    return Stack(
+                                      alignment: AlignmentDirectional.topEnd,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: 8, left: 8, top: 4, bottom: 4),
+                                          child: Container(
+                                            width: Get.width,
+                                            height: Get.height / 6,
+                                            child: Card(
+                                              child: Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
+                                                    MainAxisAlignment.spaceAround,
                                                 children: [
-                                                  Container(
-                                                    height: Get.height / 10,
-                                                    width: Get.width / 1.8,
-                                                    // decoration: BoxDecoration(
-                                                    //   border: Border.all(
-                                                    //       width: 1.5, color: Colors.purple),
-                                                    //   borderRadius: BorderRadius.all(
-                                                    //       Radius.elliptical(10, 10)),
-                                                    // ),
-                                                    child: Scrollbar(
-                                                      child:
-                                                          SingleChildScrollView(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 10),
-                                                          child: Text(
-                                                            "${e.revText ?? ""}",
+                                                  CircleAvatar(
+                                                      radius: Get.width / 9,
+                                                      backgroundImage: NetworkImage(
+                                                          "${e.user.userImage ?? ""}")),
+                                                  Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: [
+                                                      Container(
+                                                        height: Get.height / 10,
+                                                        width: Get.width / 1.8,
+                                                        // decoration: BoxDecoration(
+                                                        //   border: Border.all(
+                                                        //       width: 1.5, color: Colors.purple),
+                                                        //   borderRadius: BorderRadius.all(
+                                                        //       Radius.elliptical(10, 10)),
+                                                        // ),
+                                                        child: Scrollbar(
+                                                          child:
+                                                              SingleChildScrollView(
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 10),
+                                                              child: Text(
+                                                                "${e.revText ?? ""}",
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ),
+                                                    ],
+                                                  )
                                                 ],
-                                              )
-                                            ],
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                        top: 10,
-                                        right: 15,
-                                        child: ratingBarStar(
-                                            e.revPoint.toDouble() ?? 0.0,
-                                            20.0)),
-                                    Positioned(
-                                      top: 10,
-                                      right: 115,
-                                      child: Text(
-                                        "${e.user.userName ?? ""}\t",
-                                      ),
-                                    )
-                                  ],
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                  ],
+                                        Positioned(
+                                            top: 10,
+                                            right: 15,
+                                            child: ratingBarStar(
+                                                e.revPoint.toDouble() ?? 0.0,
+                                                20.0)),
+                                        Positioned(
+                                          top: 10,
+                                          right: 115,
+                                          child: Text(
+                                            "${e.user.userName ?? ""}\t",
+                                          ),
+                                        )
+                                      ],
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                      ],
+                    ),
+                  ),
                 ),
               );
             } else {

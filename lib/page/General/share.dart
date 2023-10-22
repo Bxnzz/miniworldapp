@@ -249,7 +249,7 @@ class _ShareState extends State<Share> {
                                       image: DecorationImage(
                                           fit: BoxFit.fill,
                                           image: AssetImage(
-                                              "assets/image/pattern.png")),
+                                              "assets/image/NewBG.jpg")),
                                       boxShadow: [
                                         BoxShadow(
                                           color: Color(0x3f000000),
@@ -453,7 +453,7 @@ class _ShareState extends State<Share> {
                                           image: DecorationImage(
                                               fit: BoxFit.fill,
                                               image: AssetImage(
-                                                  "assets/image/pattern.png")),
+                                                  "assets/image/NewBG.jpg")),
                                           boxShadow: [
                                             BoxShadow(
                                               color: Color(0x3f000000),
@@ -762,7 +762,7 @@ class _ShareState extends State<Share> {
           child: SizedBox(
               width: 80,
               height: 80,
-              child: Image.asset("assets/image/logo.png")),
+              child: Image.asset("assets/image/Logominirace.png")),
         ),
       ],
     );
@@ -856,7 +856,7 @@ class _ShareState extends State<Share> {
           child: SizedBox(
               width: 80,
               height: 80,
-              child: Image.asset("assets/image/logo.png")),
+              child: Image.asset("assets/image/Logominirace.png")),
         ),
       ],
     );

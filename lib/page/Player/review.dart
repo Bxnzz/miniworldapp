@@ -73,8 +73,8 @@ class _ReviewPageState extends State<ReviewPage> {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     return Scaffold(
-      extendBodyBehindAppBar: false,
-      backgroundColor: Color.fromARGB(255, 189, 75, 255),
+      extendBodyBehindAppBar: true,
+      backgroundColor: Color.fromARGB(255, 36, 33, 37),
       appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -108,127 +108,145 @@ class _ReviewPageState extends State<ReviewPage> {
       //         ],
       //       ),
       //     )),
-      body: SingleChildScrollView(
-        child: FutureBuilder(
-            future: loadDataMethods,
-            builder: (context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return SafeArea(
-                  child: Center(
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          left: Get.width / 4,
-                          top: 20,
-                          child: circleSmile(),
-                        ),
-                        Card(
-                          margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
-                          elevation: 0.0,
-                          child: SizedBox(
-                            height: Get.height / 2 + 50,
-                            width: Get.width / 1.3,
-                            child: InkWell(
-                              onTap: () {},
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 20),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text("\" ${userName} \""),
-                                    Text("คุณชอบการแข่งขันนี้ไหม?",
-                                        style: Get.textTheme.headlineMedium!
-                                            .copyWith()),
-                                    Text("ให้คะแนนเราสิ",
-                                        style: Get.textTheme.headlineMedium!
-                                            .copyWith()),
-                                    ratungBar(),
-                                    SizedBox(
-                                      height: Get.height / 5,
-                                      width: Get.width / 1.5,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: TextFormField(
-                                          controller: revText,
-                                          decoration: InputDecoration(
-                                              contentPadding:
-                                                  EdgeInsets.all(15),
-                                              hintText:
-                                                  'กิจกรรมเป็นอย่างไร....'),
-                                          keyboardType: TextInputType.multiline,
-                                          minLines: 7,
-                                          maxLines: 8,
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          image: const DecorationImage(
+            image: AssetImage("assets/image/NewBG.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: FutureBuilder(
+              future: loadDataMethods,
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return SafeArea(
+                    child: Center(
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            left: Get.width / 4,
+                            top: 20,
+                            child: circleSmile(),
+                          ),
+                          Card(
+                            margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                            surfaceTintColor: Colors.transparent,
+                            elevation: 10,
+                            child: SizedBox(
+                              height: Get.height / 2 + 50,
+                              width: Get.width / 1.3,
+                              child: InkWell(
+                                onTap: () {},
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 20),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Text("\" ${userName} \""),
+                                      Text("คุณชอบการแข่งขันนี้ไหม?",
+                                          style: Get.textTheme.headlineMedium!
+                                              .copyWith()),
+                                      Text("ให้คะแนนเราสิ",
+                                          style: Get.textTheme.headlineMedium!
+                                              .copyWith()),
+                                      ratungBar(),
+                                      SizedBox(
+                                        height: Get.height / 5,
+                                        width: Get.width / 1.5,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: TextFormField(
+                                            controller: revText,
+                                            decoration: InputDecoration(
+                                                filled: true,
+                                                fillColor: Colors.white,
+                                                contentPadding:
+                                                    EdgeInsets.all(15),
+                                                hintText:
+                                                    'กิจกรรมเป็นอย่างไร....'),
+                                            keyboardType:
+                                                TextInputType.multiline,
+                                            minLines: 7,
+                                            maxLines: 8,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        cancleBtns(context),
-                                        Container(
-                                          width: 100,
-                                          child: ElevatedButton(
-                                              onPressed: () async {
-                                                Reviewdto reviewdto = Reviewdto(
-                                                  revText: revText.text,
-                                                  revPoint: latingPoint.toInt(),
-                                                  revDatetime: DateTime.now()
-                                                      .toIso8601String(),
-                                                  userId: userId,
-                                                  raceId: raceId,
-                                                );
-                                                log(
-                                                  DateTime.now()
-                                                      .toIso8601String(),
-                                                );
-                                                var revResult =
-                                                    await reviewService
-                                                        .reviews(reviewdto);
-
-                                                if (revResult.data.massage ==
-                                                    "Insert Success") {
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                        content: Text(
-                                                            'รีวิวสำเร็จ :)')),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          cancleBtns(context),
+                                          Container(
+                                            width: 100,
+                                            child: ElevatedButton(
+                                                onPressed: () async {
+                                                  Reviewdto reviewdto =
+                                                      Reviewdto(
+                                                    revText: revText.text,
+                                                    revPoint:
+                                                        latingPoint.toInt(),
+                                                    revDatetime: DateTime.now()
+                                                        .toIso8601String(),
+                                                    userId: userId,
+                                                    raceId: raceId,
                                                   );
-                                                  Get.back();
-                                                  Get.back();
-                                                  Get.to(() => raceReview());
-                                                  return;
-                                                } else {
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                        content: Text(
-                                                            'รีวิวผิดพลาดกรุณาดำเนินการใหม่')),
+                                                  log(
+                                                    DateTime.now()
+                                                        .toIso8601String(),
                                                   );
+                                                  var revResult =
+                                                      await reviewService
+                                                          .reviews(reviewdto);
 
-                                                  return;
-                                                }
-                                              },
-                                              child: Text("ตกลง")),
-                                        ),
-                                      ],
-                                    )
-                                  ],
+                                                  if (revResult.data.massage ==
+                                                      "Insert Success") {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                          content: Text(
+                                                              'รีวิวสำเร็จ :)')),
+                                                    );
+                                                    Get.back();
+                                                    Get.back();
+                                                    Get.to(() => raceReview());
+                                                    return;
+                                                  } else {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                          content: Text(
+                                                              'รีวิวผิดพลาดกรุณาดำเนินการใหม่')),
+                                                    );
+
+                                                    return;
+                                                  }
+                                                },
+                                                child: Text("ตกลง")),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              } else {
-                return Container();
-              }
-            }),
+                  );
+                } else {
+                  return Container();
+                }
+              }),
+        ),
       ),
     );
   }
@@ -254,6 +272,13 @@ class _ReviewPageState extends State<ReviewPage> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
+        boxShadow: <BoxShadow>[
+          new BoxShadow(
+            color: Color.fromARGB(255, 153, 152, 152).withOpacity(0.8),
+            blurRadius: 3.0,
+            offset: new Offset(0.0, 3.0),
+          ),
+        ],
         color: Color.fromARGB(255, 255, 255, 255),
         border: Border.all(color: Colors.white, width: 20),
         shape: BoxShape.rectangle,
