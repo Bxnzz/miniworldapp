@@ -89,7 +89,9 @@ class _SpectatorState extends State<Spectator> {
         leading: IconButton(
           onPressed: () {
             try {
+              context.read<AppData>().updateLocationTimer.cancel();
               Get.back();
+              log("timer Stop");
             } catch (e) {
               log('ERRx ' + e.toString());
             }

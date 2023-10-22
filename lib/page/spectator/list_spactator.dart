@@ -179,7 +179,7 @@ class _ListSpactatorState extends State<ListSpactator> {
                                           splashColor:
                                               Colors.blue.withAlpha(30),
                                           onTap: () {
-                                            Get.to(Spectator());
+                                            Get.to(() => Spectator());
                                             context.read<AppData>().idrace =
                                                 e.raceId;
                                             log(e.raceId.toString());

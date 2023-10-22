@@ -75,9 +75,19 @@ class ShowMapPageState extends State<ShowMapPage> {
         AttendService(Dio(), baseUrl: context.read<AppData>().baseurl);
     rewardService =
         RewardService(Dio(), baseUrl: context.read<AppData>().baseurl);
-
-    // 2.2 async method
     loadDataMethod = loadData();
+    // 2.2 async method
+    if (context.read<AppData>().updateLocationTimer.isActive == false) {
+      context.read<AppData>().updateLocationTimer =
+          Timer.periodic(Duration(seconds: 3), (timer) {
+        markers = {};
+        _updateLocation().then((value) {
+          log('aa');
+          setState(() {});
+          return null;
+        });
+      });
+    }
   }
 
   Future<void> loadData() async {
@@ -103,8 +113,6 @@ class ShowMapPageState extends State<ShowMapPage> {
       sum1 = 0;
       sum2 = 0;
       sum3 = 0;
-
-      
     } catch (err) {
       // isLoaded = false;
       log('Error:$err');
@@ -126,11 +134,12 @@ class ShowMapPageState extends State<ShowMapPage> {
               title: "${e.team.teamName}",
               snippet: "${e.user.userName}",
               onTap: () async {
-                log('userrrrrrr '+e.user.userId.toString());
-                var t = await attendService.attendByUserID(userID: e.user.userId);
+                log('userrrrrrr ' + e.user.userId.toString());
+                var t =
+                    await attendService.attendByUserID(userID: e.user.userId);
                 teamAttends = t.data;
                 //  hostID = t.data.first
-               
+
                 //teamAttends = [];
                 teamAllRegis = {};
                 for (var tm in teamAttends) {
@@ -247,17 +256,6 @@ class ShowMapPageState extends State<ShowMapPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (context.read<AppData>().updateLocationTimer.isActive == false) {
-      context.read<AppData>().updateLocationTimer =
-          Timer.periodic(Duration(seconds: 3), (timer) {
-        markers = {};
-        _updateLocation().then((value) {
-          log('aa');
-          setState(() {});
-          return null;
-        });
-      });
-    }
     return WillPopScope(
       onWillPop: () async {
         context.read<AppData>().updateLocationTimer.cancel();
