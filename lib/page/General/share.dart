@@ -145,11 +145,38 @@ class _ShareState extends State<Share> {
       var atByrID = await attendService.attendByUserID(userID: idUser);
 
       attendUsers = atByrID.data;
+     
+      for (var element in attendUsers) {
+        if(element.team.raceId == idrace){
+          log('teammm '+element.team.teamId.toString());
+          teamIDme = element.team.teamId;
+      log('attTeam ' + teamIDme.toString());
+      var re = await rewardService.rewardByTeamID(teamID: teamIDme);
+      rewards = re.data;
+     
+       log('No.'+rewards.first.reType.toString());
+      orderMe = re.data.first.reType;
+      log("orderMe = $orderMe");
+      log('team in attend by uid ${teamIDme}');
+        }
+      }
+       teamIDme = attendUsers.first.teamId;
+      log('attTeam ' + teamIDme.toString());
+      var re = await rewardService.rewardByTeamID(teamID: 15);
+      rewards = re.data;
+     
+       log('No.'+rewards.first.reType.toString());
+      // orderMe = re.data.first.reType;
+      // log("orderMe = $orderMe");
+      // log('team in attend by uid ${teamIDme}');
+     
+
       attendUsers.map((e) async {
         if (e.team.raceId == idrace) {
           var atByTid =
               await attendService.attendByTeamID(teamID: e.team.teamId);
           attendBytid = atByTid.data;
+
           if (attendBytid.length < 2) {
             player1 = attendBytid[0].user.userName;
           } else if (attendBytid.length >= 2) {
@@ -164,25 +191,30 @@ class _ShareState extends State<Share> {
           log("teamid === ${e.team.teamId}");
           log("username1 ${e.user.userName}");
         }
-        log('team in attend by uid${e.team.teamId}');
+
+       // log('team in attend by uid ${teamIDme}');
       }).toList();
+
+     
+
       var a = attendUsers.where((element) => idUser == element.userId);
 
-      //log('user ' + a.first.teamId.toString());
+      log('user ' + a.first.teamId.toString());
       playerID = a.first.userId;
-      teamIDme = a.first.teamId;
 
+      log('team' + teamIDme.toString());
       // for (var att in attends) {
       //    playerName = att.user.userName;
       //   log(att.user.userName);
       // }
-      var re = await rewardService.rewardByTeamID(teamID: teamIDme);
-      rewards = re.data;
 
-      //hostID = re.data.first.team.race.user.userId;
+      // var re = await rewardService.rewardByTeamID(teamID: teamIDme);
+      // rewards = re.data;
 
-      orderMe = re.data.first.reType;
-      log("orderMe = $orderMe");
+      // //hostID = re.data.first.team.race.user.userId;
+
+      // orderMe = re.data.first.reType;
+      // log("orderMe = $orderMe");
       // for (var i = 0; i < attends.length; i++) {
       //   log(attends[i].user.userName);
       //   if (attends.length < 2) {
@@ -230,6 +262,7 @@ class _ShareState extends State<Share> {
                     reviews.length;
                 log("${reviews.length}");
               }
+
               return Container(
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
