@@ -336,24 +336,30 @@ class _DetailRaceState extends State<DetailRace> {
                                 ],
                               ),
                             ),
-                            const Divider(),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 15),
+                              child: const Divider(),
+                            ),
                             chkLimitTeam == false
                                 ? Center(
                                     child: SizedBox(
-                                    width: 200,
+                                    width: 250,
                                     child: Column(
                                       children: [
-                                        ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          CeateTeam()));
-                                              context.read<AppData>().idrace =
-                                                  idrace;
-                                            },
-                                            child: Text('ลงทะเบียน')),
+                                        SizedBox(
+                                          width: 250,
+                                          child: FilledButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            CeateTeam()));
+                                                context.read<AppData>().idrace =
+                                                    idrace;
+                                              },
+                                              child: Text('ลงทะเบียน')),
+                                        ),
                                         // ElevatedButton(
                                         // onPressed: () {
                                         //   Navigator.push(
@@ -366,9 +372,12 @@ class _DetailRaceState extends State<DetailRace> {
                                       ],
                                     ),
                                   ))
-                                : ElevatedButton(
-                                    onPressed: null,
-                                    child: Text("มีจำนวนทีมเต็มแล้ว"))
+                                : SizedBox(
+                                  width: 250,
+                                  child: FilledButton(
+                                      onPressed: null,
+                                      child: Text("มีจำนวนทีมเต็มแล้ว")),
+                                )
                           ]),
                         ))
                   ],

@@ -231,7 +231,7 @@ class _DetailHostState extends State<DetailHost> {
                                                               .showSnackBar(
                                                             const SnackBar(
                                                                 content: Text(
-                                                                    'delete Successful')),
+                                                                    'ลบสำเร็จ!!')),
                                                           );
                                                           //  setState(() {});
                                                           Navigator.pop(
@@ -248,7 +248,7 @@ class _DetailHostState extends State<DetailHost> {
                                                               .showSnackBar(
                                                             const SnackBar(
                                                                 content: Text(
-                                                                    'delete fail try agin!')),
+                                                                    'ลบไม่สำเร็จลองอีกครั้ง!')),
                                                           );
 
                                                           return;
@@ -445,25 +445,28 @@ class _DetailHostState extends State<DetailHost> {
                                 child: SizedBox(
                                   width: 200,
                                   child: races.first.raceStatus == 1
-                                      ? ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const DetailMission()));
-                                            context.read<AppData>().idrace =
-                                                idrace;
-                                          },
-                                          child: Text('ภารกิจทั้งหมด'))
+                                      ? SizedBox(
+                                        width: 250,
+                                        child: FilledButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const DetailMission()));
+                                              context.read<AppData>().idrace =
+                                                  idrace;
+                                            },
+                                            child: Text('ภารกิจทั้งหมด')),
+                                      )
                                       : Container(),
                                 ),
                               ),
                               Center(
                                   child: races.first.raceStatus == 1
                                       ? SizedBox(
-                                          width: 200,
-                                          child: ElevatedButton(
+                                          width: 250,
+                                          child: FilledButton(
                                               onPressed: () {
                                                 context.read<AppData>().idrace =
                                                     idrace;
@@ -479,8 +482,8 @@ class _DetailHostState extends State<DetailHost> {
                                         )
                                       : races.first.raceStatus == 2
                                           ? SizedBox(
-                                              width: 200,
-                                              child: ElevatedButton(
+                                              width: 250,
+                                              child: FilledButton(
                                                   onPressed: () {
                                                     Get.to(CheckMissionList());
                                                     context
@@ -505,8 +508,8 @@ class _DetailHostState extends State<DetailHost> {
                                             )
                                           : races.first.raceStatus == 3
                                               ? SizedBox(
-                                                  width: 200,
-                                                  child: ElevatedButton(
+                                                  width: 250,
+                                                  child: FilledButton(
                                                       onPressed: () {
                                                         context
                                                             .read<AppData>()

@@ -368,73 +368,83 @@ class _HomeJoinDetailState extends State<HomeJoinDetail> {
                                   const Divider(),
                                   Center(
                                     child: races.first.raceStatus == 1
-                                        ? ElevatedButton(
-                                            onPressed: () {
-                                              context.read<AppData>().idAt =
-                                                  idAttend;
-                                              context.read<AppData>().idUser =
-                                                  idUser;
-                                              context.read<AppData>().idrace =
-                                                  idrace;
-
-                                              context.read<AppData>().idTeam =
-                                                  teamid;
-                                              context.read<AppData>().status =
-                                                  status;
-                                              context
-                                                  .read<AppData>()
-                                                  .attendDateTime;
-                                              Get.to(() => Lobby());
-                                            },
-                                            child: const Text('เข้าการแข่งขัน'))
+                                        ? SizedBox(
+                                          width: 250,
+                                          child: FilledButton(
+                                              onPressed: () {
+                                                context.read<AppData>().idAt =
+                                                    idAttend;
+                                                context.read<AppData>().idUser =
+                                                    idUser;
+                                                context.read<AppData>().idrace =
+                                                    idrace;
+                                        
+                                                context.read<AppData>().idTeam =
+                                                    teamid;
+                                                context.read<AppData>().status =
+                                                    status;
+                                                context
+                                                    .read<AppData>()
+                                                    .attendDateTime;
+                                                Get.to(() => Lobby());
+                                              },
+                                              child: const Text('เข้าการแข่งขัน')),
+                                        )
                                         : races.first.raceStatus == 2
-                                            ? ElevatedButton(
-                                                onPressed: () {
-                                                  context.read<AppData>().idAt =
-                                                      idAttend;
-                                                  context
-                                                      .read<AppData>()
-                                                      .idUser = idUser;
-                                                  context
-                                                      .read<AppData>()
-                                                      .idrace = idrace;
-
-                                                  context
-                                                      .read<AppData>()
-                                                      .idTeam = teamid;
-                                                  context
-                                                      .read<AppData>()
-                                                      .status = status;
-                                                  Get.to(() =>
-                                                          PlayerRaceStartMenu())!
-                                                      .then((value) {
-                                                    setState(() {
-                                                      loadDataMethod =
-                                                          loadData();
-                                                      log('Goback');
+                                            ? SizedBox(
+                                              width: 250,
+                                              child: FilledButton(
+                                                  onPressed: () {
+                                                    context.read<AppData>().idAt =
+                                                        idAttend;
+                                                    context
+                                                        .read<AppData>()
+                                                        .idUser = idUser;
+                                                    context
+                                                        .read<AppData>()
+                                                        .idrace = idrace;
+                                            
+                                                    context
+                                                        .read<AppData>()
+                                                        .idTeam = teamid;
+                                                    context
+                                                        .read<AppData>()
+                                                        .status = status;
+                                                    Get.to(() =>
+                                                            PlayerRaceStartMenu())!
+                                                        .then((value) {
+                                                      setState(() {
+                                                        loadDataMethod =
+                                                            loadData();
+                                                        log('Goback');
+                                                      });
                                                     });
-                                                  });
-
-                                                  //Get.to(PlayerRaceStartMenu());
-                                                },
-                                                child: const Text(
-                                                    'การแข่งขันกำลังดำเนินการ'))
+                                            
+                                                    //Get.to(PlayerRaceStartMenu());
+                                                  },
+                                                  child: const Text(
+                                                      'การแข่งขันกำลังดำเนินการ')),
+                                            )
                                             : races.first.raceStatus == 3
-                                                ? ElevatedButton(
-                                                    onPressed: () {
-                                                      context
-                                                          .read<AppData>()
-                                                          .idUser = idUser;
-                                                      Get.to(ChatRoomPage(
-                                                          userID: idUser,
-                                                          raceID: idrace,
-                                                          userName: context
-                                                              .read<AppData>()
-                                                              .Username,
-                                                          raceName: Rname));
-                                                    },
-                                                    child:
-                                                        Text('รอประมวลผล...'))
+                                                ? SizedBox(
+                                                  width: 250,
+                                                  child: FilledButton(
+                                                    
+                                                      onPressed: () {
+                                                        context
+                                                            .read<AppData>()
+                                                            .idUser = idUser;
+                                                        Get.to(ChatRoomPage(
+                                                            userID: idUser,
+                                                            raceID: idrace,
+                                                            userName: context
+                                                                .read<AppData>()
+                                                                .Username,
+                                                            raceName: Rname));
+                                                      },
+                                                      child:
+                                                          Text('รอประมวลผล')),
+                                                )
                                                 : Container(),
                                   ),
                                 ]),

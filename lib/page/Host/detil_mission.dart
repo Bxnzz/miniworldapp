@@ -454,74 +454,76 @@ class _DetailMissionState extends State<DetailMission> {
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20)),
-                    height: 400,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            width: 300,
-                            height: 150,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              image: DecorationImage(
-                                image: NetworkImage(mis.misMediaUrl),
-                                fit: BoxFit.cover,
+                        height: 400,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              width: 300,
+                              height: 150,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                image: DecorationImage(
+                                  image: NetworkImage(mis.misMediaUrl),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Text(
-                            //int sortn = mis.misSeq,
-                            '# ${missions.indexOf(mis) + 1} ${mis.misName}',
-                            style: textTheme.bodyLarge?.copyWith(
-                              color: Colors.purple,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Text(
+                              //int sortn = mis.misSeq,
+                              '# ${missions.indexOf(mis) + 1} ${mis.misName}',
+                              style: textTheme.bodyLarge?.copyWith(
+                                color: Colors.purple,
+                              ),
                             ),
                           ),
-                        ),
-                         Padding(
-                          padding: const EdgeInsets.only(right: 20,left: 20),
-                          child: Divider(),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Text('รายละเอียด: ',
-                              style: textTheme.bodyLarge!),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            mis.misDiscrip,
-                            style: textTheme.bodyLarge!,
+                           Padding(
+                            padding: const EdgeInsets.only(right: 20,left: 20),
+                            child: Divider(),
                           ),
-                        ),
-                         Padding(
-                          padding: const EdgeInsets.only(right: 20,left: 20),
-                          child: Divider(),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Text('ประเภท: ' + misType,
-                              style: textTheme.bodyLarge!),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 20,left: 20),
-                          child: Divider(),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10,bottom: 10),
-                          child: Text(
-                              'ระยะภารกิจ: ' +
-                                  mis.misDistance.toString() +
-                                  ' เมตร',
-                              style: textTheme.bodyLarge!),
-                        ),
-                       
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Text('รายละเอียด: ',
+                                style: textTheme.bodyLarge!),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Text(
+                              mis.misDiscrip,
+                              style: textTheme.bodyLarge!,
+                            ),
+                          ),
+                           Padding(
+                            padding: const EdgeInsets.only(right: 20,left: 20),
+                            child: Divider(),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Text('ประเภท: ' + misType,
+                                style: textTheme.bodyLarge!),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 20,left: 20),
+                            child: Divider(),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10,bottom: 10),
+                            child: Text(
+                                'ระยะภารกิจ: ' +
+                                    mis.misDistance.toString() +
+                                    ' เมตร',
+                                style: textTheme.bodyLarge!),
+                          ),
+                         
+                        ],
+                      ),
                     ),
                   ),
                 );

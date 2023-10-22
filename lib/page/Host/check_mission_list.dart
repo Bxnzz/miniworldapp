@@ -383,131 +383,133 @@ class _CheckMissionListState extends State<CheckMissionList> {
                                               context: context,
                                               builder: (BuildContext context) {
                                                 return Dialog(
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20)),
-                                                    height: 400,
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: Container(
-                                                            width: 300,
-                                                            height: 150,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color:
-                                                                  Colors.white,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20),
-                                                              image:
-                                                                  DecorationImage(
-                                                                image: NetworkImage(
-                                                                    element
-                                                                        .misMediaUrl),
-                                                                fit: BoxFit
-                                                                    .cover,
+                                                  child: Expanded(
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.white,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(20)),
+                                                      height: 400,
+                                                      child: SingleChildScrollView(
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceEvenly,
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Container(
+                                                                width: 300,
+                                                                height: 150,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color:
+                                                                      Colors.white,
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              20),
+                                                                  image:
+                                                                      DecorationImage(
+                                                                    image: NetworkImage(
+                                                                        element
+                                                                            .misMediaUrl),
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  ),
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 10),
-                                                          child: Text(
-                                                            //int sortn = mis.misSeq,
-                                                            '# ${missions.indexOf(element) + 1} ${element.misName}',
-                                                            style: textTheme
-                                                                .bodyLarge
-                                                                ?.copyWith(
-                                                              color:
-                                                                  Colors.purple,
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 10),
+                                                              child: Text(
+                                                                //int sortn = mis.misSeq,
+                                                                '# ${missions.indexOf(element) + 1} ${element.misName}',
+                                                                style: textTheme
+                                                                    .bodyLarge
+                                                                    ?.copyWith(
+                                                                  color:
+                                                                      Colors.purple,
+                                                                ),
+                                                              ),
                                                             ),
-                                                          ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      right: 20,
+                                                                      left: 20),
+                                                              child: Divider(),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 10),
+                                                              child: Text(
+                                                                  'รายละเอียด: ',
+                                                                  style: textTheme
+                                                                      .bodyLarge!),
+                                                            ),
+                                                            Padding(
+                                                              padding: const EdgeInsets.only( left: 10),
+                                                              child: Text(
+                                                                element.misDiscrip,
+                                                                style: textTheme
+                                                                    .bodyLarge!,
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      right: 20,
+                                                                      left: 20),
+                                                              child: Divider(),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 10),
+                                                              child: Text(
+                                                                  'ประเภท: ' +
+                                                                      misType,
+                                                                  style: textTheme
+                                                                      .bodyLarge!),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      right: 20,
+                                                                      left: 20),
+                                                              child: Divider(),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 10,
+                                                                      bottom: 10),
+                                                              child: Text(
+                                                                  'ระยะภารกิจ: ' +
+                                                                      element
+                                                                          .misDistance
+                                                                          .toString() +
+                                                                      ' เมตร',
+                                                                  style: textTheme
+                                                                      .bodyLarge!),
+                                                            ),
+                                                          ],
                                                         ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 20,
-                                                                  left: 20),
-                                                          child: Divider(),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 10),
-                                                          child: Text(
-                                                              'รายละเอียด: ',
-                                                              style: textTheme
-                                                                  .bodyLarge!),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: Text(
-                                                            element.misDiscrip,
-                                                            style: textTheme
-                                                                .bodyLarge!,
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 20,
-                                                                  left: 20),
-                                                          child: Divider(),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 10),
-                                                          child: Text(
-                                                              'ประเภท: ' +
-                                                                  misType,
-                                                              style: textTheme
-                                                                  .bodyLarge!),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 20,
-                                                                  left: 20),
-                                                          child: Divider(),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 10,
-                                                                  bottom: 10),
-                                                          child: Text(
-                                                              'ระยะภารกิจ: ' +
-                                                                  element
-                                                                      .misDistance
-                                                                      .toString() +
-                                                                  ' เมตร',
-                                                              style: textTheme
-                                                                  .bodyLarge!),
-                                                        ),
-                                                      ],
+                                                      ),
                                                     ),
                                                   ),
                                                 );

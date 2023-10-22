@@ -248,7 +248,7 @@ class _raceReviewState extends State<raceReview> {
                           children: [
                             Container(
                               child: Padding(
-                                padding: const EdgeInsets.only(left: 60),
+                                padding: const EdgeInsets.only(left: 60,top: 15),
                                 child: Text(
                                   "${races.first.raceName}",
                                   style: textTheme.titleLarge?.copyWith(
