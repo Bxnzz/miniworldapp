@@ -286,14 +286,14 @@ class _ApproveMissionState extends State<ApproveMission> {
                   ),
                   onPressed: () async {
                     startLoading(context);
-                    if(message[_selected].masseage == 'อื่นๆ...'){
-                        masseageMC = anothor.text;
-                        log('message '+anothor.text);
-                    }else{
-                       masseageMC = message[_selected].masseage;
-                       log('message '+message[_selected].masseage);
+                    if (message[_selected].masseage == 'อื่นๆ...') {
+                      masseageMC = anothor.text;
+                      log('message ' + anothor.text);
+                    } else {
+                      masseageMC = message[_selected].masseage;
+                      log('message ' + message[_selected].masseage);
                     }
-                   
+
                     MissionCompStatus missionComDto = MissionCompStatus(
                         mcMasseage: masseageMC,
                         mcStatus: 3,
@@ -364,7 +364,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                                       setdialog(() {
                                         _selected = index;
                                         log(message[_selected].masseage);
-                                        
+
                                         // if(message[_selected].masseage == 'อื่นๆ...'){
                                         //    message[_selected].masseage == anothor.text;
                                         //    log('message');
@@ -380,6 +380,8 @@ class _ApproveMissionState extends State<ApproveMission> {
                           maxLines: 1,
                           style: TextStyle(fontSize: 18),
                           decoration: new InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
                             border: InputBorder.none,
                             hintText: "อื่นๆ....",
                           ),
@@ -622,12 +624,16 @@ class _ApproveMissionState extends State<ApproveMission> {
                 ),
                 actions: <Widget>[
                   ElevatedButton(
+                     style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.redAccent),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                     child: Text('ยกเลิก'.toUpperCase()),
                   ),
                   ElevatedButton(
+                     style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green),
                     onPressed: () async {
                       startLoading(context);
                       types.User _user = types.User(
@@ -715,6 +721,8 @@ class _ApproveMissionState extends State<ApproveMission> {
                           maxLines: 3,
                           textInputAction: TextInputAction.done,
                           decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
                             hintText: ' คำอธิบาย...',
                             focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
