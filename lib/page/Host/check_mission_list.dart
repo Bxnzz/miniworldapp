@@ -152,21 +152,7 @@ class _CheckMissionListState extends State<CheckMissionList> {
       missionComs = mcs.data;
       // log('ms '+misID.toString());
 
-      reMissions = missions.reversed.toList();
-      log(reMissions.first.misSeq.toString());
-      //    misStatus = mcs.data.where((element) => element.mcStatus == 1);
-      for (var mission in reMissions) {
-        var mcs =
-            missionComs.where((element) => element.misId == mission.misId);
-        // mcs = teams ที่ผ่าน mission id นี้ 110, 109, 108
-        for (var mcc in mcs) {
-          log('mcccc' + mcc.teamId.toString());
-          log('misid ' + mission.misId.toString());
-          if (teamRewards.where((e) => e.teamId == mcc.teamId).isEmpty) {
-            teamRewards.add(mcc);
-          }
-        }
-      }
+      
 
       isLoaded = true;
     } catch (err) {
@@ -234,7 +220,21 @@ class _CheckMissionListState extends State<CheckMissionList> {
         raceStatus = 4;
         RaceStatusDto racedto = RaceStatusDto(raceStatus: raceStatus);
         var racestatus = await raceService.updateStatusRaces(racedto, idrace);
-
+        reMissions = missions.reversed.toList();
+      log(reMissions.first.misSeq.toString());
+      //    misStatus = mcs.data.where((element) => element.mcStatus == 1);
+      for (var mission in reMissions) {
+        var mcs =
+            missionComs.where((element) => element.misId == mission.misId);
+        // mcs = teams ที่ผ่าน mission id นี้ 110, 109, 108
+        for (var mcc in mcs) {
+          log('mcccc' + mcc.teamId.toString());
+          log('misid ' + mission.misId.toString());
+          if (teamRewards.where((e) => e.teamId == mcc.teamId).isEmpty) {
+            teamRewards.add(mcc);
+          }
+        }
+      }
         for (var i = 0; i < teamRewards.length; i++) {
           log('Rank: ${i + 1} ${teamRewards[i].teamId} ${teamRewards[i].team.teamName} ${teamRewards[i].misId} ${teamRewards[i].mcDatetime}');
 
