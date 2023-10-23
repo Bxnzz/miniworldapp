@@ -488,12 +488,14 @@ class _PlayerRaceStartMisState extends State<PlayerRaceStartMis> {
               )),
           endChild: Container(
             height: 100,
-            padding: EdgeInsets.only(left: 25, top: 25),
-            margin: EdgeInsets.only(top: 25, bottom: 25),
+            padding: EdgeInsets.only(
+              left: 25,
+            ),
+            margin: EdgeInsets.only(bottom: 25),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10), color: Colors.purple),
             child: Text(
-              "${e.misName}",
+              "${e.misName}\n:${e.misDiscrip}",
               style: TextStyle(
                 color: Colors.yellow,
               ),
