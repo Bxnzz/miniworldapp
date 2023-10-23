@@ -629,7 +629,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text('ยกเลิก'.toUpperCase()),
+                    child: Text('ยกเลิก'.toUpperCase(),style: TextStyle(color: Get.theme.colorScheme.onPrimary),),
                   ),
                   ElevatedButton(
                      style: ElevatedButton.styleFrom(
@@ -688,7 +688,7 @@ class _ApproveMissionState extends State<ApproveMission> {
                       Navigator.of(context).pop();
                       stopLoading();
                     },
-                    child: Text('ตกลง'.toUpperCase()),
+                    child: Text('ตกลง'.toUpperCase(), style: TextStyle(color: Get.theme.colorScheme.onPrimary),),
                   ),
                 ],
                 content: SingleChildScrollView(

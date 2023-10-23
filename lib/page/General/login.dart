@@ -412,7 +412,7 @@ class _LoginState extends State<Login> {
                                                             'เริ่มการแข่งขัน',
                                                         content: Text(
                                                             "การแข่งขันได้เริ่มขึ้นแล้วไปสนุกกัน"),
-                                                        confirm: ElevatedButton(
+                                                        confirm: FilledButton(
                                                             onPressed: () {
                                                               if (Get.currentRoute ==
                                                                   '/Lobby') {
@@ -560,7 +560,9 @@ class _LoginState extends State<Login> {
                                                             false,
                                                         title:
                                                             'เริ่มการแข่งขัน',
-                                                        confirm: ElevatedButton(
+                                                            content: Text(
+                                                            "การแข่งขันได้เริ่มขึ้นแล้วไปสนุกกัน"),
+                                                        confirm: FilledButton(
                                                             onPressed: () {
                                                               if (Get.currentRoute ==
                                                                   '/Lobby') {
