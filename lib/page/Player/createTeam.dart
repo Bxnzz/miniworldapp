@@ -237,13 +237,22 @@ class _CeateTeamState extends State<CeateTeam> {
                                                     log("FN${raceFN}");
                                                     log("stJoin${j.team.race.raceTimeSt}");
                                                     log("fnJoin${j.team.race.raceTimeFn}");
-                                                    if (raceST.isAfter(j.team.race.raceTimeSt) &&
-                                                        raceST.isBefore(j.team
-                                                            .race.raceTimeFn) &&
-                                                        raceFN.isAfter(j.team
-                                                            .race.raceTimeSt) &&
-                                                        raceFN.isBefore(j.team
-                                                            .race.raceTimeFn)) {
+                                                    if (raceST.isAfter(j
+                                                                .team
+                                                                .race
+                                                                .raceTimeSt) &&
+                                                            raceST.isBefore(j
+                                                                .team
+                                                                .race
+                                                                .raceTimeFn) ||
+                                                        raceFN.isAfter(j
+                                                                .team
+                                                                .race
+                                                                .raceTimeSt) &&
+                                                            raceFN.isBefore(j
+                                                                .team
+                                                                .race
+                                                                .raceTimeFn)) {
                                                       isJoin = true;
                                                       log("can't join chk 4 condition");
                                                       ScaffoldMessenger.of(
