@@ -243,10 +243,7 @@ class _CeateTeamState extends State<CeateTeam> {
                                                         raceFN.isAfter(j.team
                                                             .race.raceTimeSt) &&
                                                         raceFN.isBefore(j.team
-                                                            .race.raceTimeFn) &&
-                                                        j.team.race
-                                                                .raceStatus ==
-                                                            1) {
+                                                            .race.raceTimeFn)) {
                                                       isJoin = true;
                                                       log("can't join chk 4 condition");
                                                       ScaffoldMessenger.of(
